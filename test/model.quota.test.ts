@@ -6,6 +6,8 @@ import { sampleModel } from "./helpers/sample-model.ts";
 import { quotaFromLimits, measuredCap } from "../src/model/quota.ts";
 import { deriveEconomy, exchangeRateLine, regimeOf, ECON } from "../src/model/economics.ts";
 import { sizeReward } from "../src/propose/anchors.ts";
+import { detectMoments } from "../src/model/moments.ts";
+import { withoutAllowanceMoments } from "../src/model/understand.ts";
 import type { ProductModel } from "../src/core/schema.ts";
 
 /** The sample app reshaped into a guest chat: no packs, no visible balance, capped after 5 sends. */
@@ -73,12 +75,33 @@ test("with no prices, the exchange rate is measured at cost to serve", () => {
   assert.equal(priced.economy.derived!.unitsPerView[0].basis, "list-price");
 });
 
-test("reward sizing with only a cost basis pays about the middle of the break-even range", () => {
+test("reward sizing with only a cost basis keeps serving it under ~60% of what the low end of a view nets", () => {
   const m = guestCapModel();
   m.economy = quotaFromLimits(m.economy, m.edges, m.screens);
   m.economy.derived = deriveEconomy(m.economy);
   const r = m.economy.resources.find(x => x.kind === "quota")!;
   const s = sizeReward(m, r.id)!;
-  assert.equal(s.amount, 4);
-  assert.match(s.buys, /four messages/);
+  // 3.5–5.8 messages per view at cost to serve: 2 messages cost ≤ 60% of what the low end nets [TRIG-4].
+  assert.equal(s.amount, 2);
+  assert.match(s.buys, /two messages/);
+  const net = ECON.grossPerViewUsd.US[0] * (1 - ECON.nonGameHaircut) * (1 - ECON.platformShare);
+  assert.ok(s.amount * ECON.cogsPerUnitUsd["text-cheap"] <= 0.6 * net + 1e-9);
+});
+
+test("the allowance is never a \"just received\" moment, including in models written before that rule", () => {
+  const m = guestCapModel();
+  m.economy = quotaFromLimits(m.economy, m.edges, m.screens);
+  const src = m.economy.sources.find(x => x.resource.startsWith("rq"))!;
+  assert.equal(src.screen, undefined, "an allowance is claimed nowhere");
+  const moments = detectMoments({ screens: m.screens, edges: m.edges, economy: m.economy, flows: m.flows }, "s01");
+  assert.ok(!moments.some(x => x.type === "post-reward" && x.resource === src.resource), moments.map(x => x.description).join(" | "));
+  assert.ok(moments.some(x => x.type === "wall" && x.resource === src.resource), "the cap is a wall moment");
+  // An older model: the allowance kept its screen and produced a post-reward moment. Loading drops it.
+  const old: ProductModel = { ...m, economy: { ...m.economy, sources: m.economy.sources.map(x => (x.id === src.id ? { ...x, screen: "s03" } : x)) } };
+  old.moments = detectMoments({ screens: old.screens, edges: old.edges, economy: old.economy, flows: old.flows }, "s01");
+  assert.ok(old.moments.some(x => x.type === "post-reward" && x.resource === src.resource));
+  const fixed = withoutAllowanceMoments(old);
+  assert.ok(!fixed.moments.some(x => x.type === "post-reward" && x.resource === src.resource));
+  assert.equal(fixed.economy.sources.find(x => x.id === src.id)!.screen, undefined);
+  assert.equal(fixed.moments.length, old.moments.length - 1);
 });

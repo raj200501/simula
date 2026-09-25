@@ -13,7 +13,7 @@ import type { Candidates, Moment, ProductModel, Proposal, Screen, UiElement } fr
 import type { Profile } from "../core/config.ts";
 import { ECON, cogsKindOf, deriveEconomy, proposalEconomics } from "../model/economics.ts";
 import { ACCOUNT_LIKE, SIGNUP, elText, isAccountResource, isConsumable, isSignupScreen, resolveAnchors, type Anchors, type Cogs, type Gated } from "./anchors.ts";
-import { midSentence, modeName } from "../core/humanize.ts";
+import { midSentence, modeName, repeatsUnit, unitCount } from "../core/humanize.ts";
 import type { LlmIdea } from "./schemas.ts";
 
 export interface Params { amount?: number; perDay: number; cooldownMin: number; cogsUnits: number; minutes?: number }
@@ -99,7 +99,7 @@ const ids = (...xs: (string | undefined)[]) => [...new Set(xs.filter((x): x is s
 export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Template[] {
   const T: Template[] = [];
   const res = a.res, s = a.sized;
-  const u = (n: number) => `${n} ${res?.unit ?? "units"}`;
+  const u = (n: number) => unitCount(n, res?.unit ?? "units");
   // The Game Partner is who the user already talks to (the chat's character or persona), else the app.
   const partner = a.partner;
   const Cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1);
@@ -117,21 +117,25 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   if (w && res && s && w.moment.resource === res.id) {
     const origin = w.from ?? w.screen;
     const upsell = elText(w.upsellEl) || "the paid option";
+    // "+2 messages, enough for two messages" says nothing: drop the equivalence when it repeats the unit.
+    const buysNote = repeatsUnit(s.buys, res.unit) ? "" : s.buys;
+    // A sign-up sheet that also ends a free allowance is named by what ran out, not by its title.
+    const wallName = isSignupScreen(w.screen) ? `${res.name} run out` : `"${w.screen.name}"`;
     T.push({
       key: "wall-refill", why: "Highest-intent reactive moment: the user is blocked on the core loop and the reward is the blocked resource.",
-      idea: { title: `Refill game on "${w.screen.name}"`, case: "existing", archetype: "TAX-1", moment: w.moment.id, reward: `+${u(s.amount)} (${s.buys})`, beyondBaseline: false },
+      idea: { title: isSignupScreen(w.screen) ? `Refill game when ${wallName}` : `Refill game on ${wallName}`, case: "existing", archetype: "TAX-1", moment: w.moment.id, reward: `+${u(s.amount)}${buysNote ? ` (${buysNote})` : ""}`, beyondBaseline: false },
       defaults: { amount: s.amount, perDay: 3, cooldownMin: 10, cogsUnits: s.cogsUnits },
       build: (pid, p) => {
         const amt = p.amount ?? s.amount;
         const before = Math.max(0, (w.blockedCost ?? amt) - amt);
         return {
-          id: pid, version: 1, title: `Refill game on "${w.screen.name}"`, case: "existing", archetype: "TAX-1", beyondBaseline: false,
-          oneLiner: `When ${res.name} run out and the user tries to ${midSentence(w.blockedIntent)}, ${w.screen.name} offers a ${SEC}-second game for +${u(amt)} (${s.buys}) under "${upsell}".`,
+          id: pid, version: 1, title: isSignupScreen(w.screen) ? `Refill game when ${wallName}` : `Refill game on ${wallName}`, case: "existing", archetype: "TAX-1", beyondBaseline: false,
+          oneLiner: `When ${res.name} run out and the user tries to ${midSentence(w.blockedIntent)}, ${w.screen.name} offers a ${SEC}-second game for +${u(amt)}${buysNote ? ` (${buysNote})` : ""} under "${upsell}".`,
           anchor: { moments: [w.moment.id], economy: ids(res.id, w.item?.id, a.cheapSink?.id) },
           surface: w.screen.id,
           trigger: `${w.screen.name} opens because ${res.name} are below what it costs to ${midSentence(w.blockedIntent)}${w.blockedCost ? ` (${u(w.blockedCost)})` : ""}. The offer sits under "${upsell}", appears only after the previous reply has finished, and the typed draft stays in the composer.`,
           eligibility: ELIG,
-          offer: { title: `Out of ${res.name}`, body: `Play a ${SEC}-second game to get +${u(amt)}, enough for ${s.buys}. ${p.perDay} per day.`, cta: `Play for +${amt}`, decline: "No thanks" },
+          offer: { title: `Out of ${res.name}`, body: `Play a ${SEC}-second game to get +${u(amt)}${buysNote ? `, enough for ${buysNote}` : ""}. ${p.perDay} per day.`, cta: `Play for +${amt}`, decline: "No thanks" },
           simula: { unit: "SIM-RWD", entry: "button", gamePartner: partner, minPlaySec: SEC },
           reward: resourceReward(amt),
           caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
@@ -854,7 +858,7 @@ function stubBaseline(m: ProductModel, a: Anchors): string[] {
   const home = a.hub?.screen.name ?? m.screens.find(s => s.kind === "tab")?.name ?? "the home screen";
   const store = m.screens.find(s => s.kind === "store" || s.kind === "paywall")?.name ?? "the store";
   return [
-    `A "Watch a video for free ${a.res?.name ?? "rewards"}" button on ${home}.`,
+    `A "Watch a video for ${/^free\b/i.test(a.res?.name ?? "") ? a.res!.name : `free ${a.res?.name ?? "rewards"}`}" button on ${home}.`,
     `An interstitial video every few ${a.chat ? "messages" : "screens"}.`,
     `Banner ads on ${store} and ${home}.`,
   ];

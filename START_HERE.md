@@ -173,7 +173,7 @@ Gemini's free quota resets at **midnight Pacific time** (07:00 UTC). If yesterda
 Open Terminal, paste `cd ~/simula && claude`, then paste this prompt:
 
 ```
-git pull. Run `npm run report`, then read out/<app>/NUMBERS.md for every app. For each app whose card starts with a "⚠ Produced by deterministic stubs" line, re-run from the earliest stubbed stage (model → understand, proposals → propose, judge → judge) with `npm run all -- --app <app> --from <stage>`; do luzia first. Never re-run explore. If every model reports a DAILY quota, stop and tell me. Then check out/README.md shows each app's flow slides and QA screenshots, run the key check from Part F step 6, commit out/ as Raj Kashikar <65059626+raj200501@users.noreply.github.com> with no Co-Authored-By line, and push to claude/serene-brahmagupta-owzz1n.
+git pull. Run `npm run report`, then read out/<app>/NUMBERS.md for every app. For each app whose card starts with a "⚠ Produced by deterministic stubs" line, re-run from the earliest stubbed stage (model → understand, proposals → propose, judge → judge) with `npm run all -- --app <app> --from <stage>`. Luzia always re-runs from propose (`npm run all -- --app luzia --from propose`), even without a stub warning, because the proposer and judge got fixes overnight; do luzia first. Never re-run explore. If every model reports a DAILY quota, stop and tell me. Then check out/README.md shows each app's flow slides and QA screenshots, run the key check from Part F step 6, commit out/ as Raj Kashikar <65059626+raj200501@users.noreply.github.com> with no Co-Authored-By line, and push to claude/serene-brahmagupta-owzz1n.
 ```
 
 ---

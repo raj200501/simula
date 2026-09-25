@@ -121,6 +121,9 @@ function numbers(s: string): number[] {
  * within ECON.maxRewardToView of what a view earns, otherwise about one view's worth of units.
  * This is the exchange-rate rule from [TRIG-4]/[CANN-4]: "1 premium reply, not 100 gems".
  */
+/** Serving a reward should cost at most this share of a view's net revenue [TRIG-4]. */
+export const COGS_TARGET_SHARE = 0.6;
+
 export function sizeReward(m: ProductModel, resource: string): Sized | undefined {
   const d = m.economy.derived ?? deriveEconomy(m.economy);
   const sinks = m.economy.sinks.filter(k => k.resource === resource && k.amount > 0).sort((a, b) => a.amount - b.amount || a.id.localeCompare(b.id));
@@ -130,7 +133,9 @@ export function sizeReward(m: ProductModel, resource: string): Sized | undefined
   const cogs = cheap ? cogsOf(m, cheap, sinks) : "none";
   const unitName = m.economy.resources.find(r => r.id === resource)?.unit ?? resource;
   if (cheap && !unit && upv?.basis === "cost-to-serve") {
-    const amount = Math.max(cheap.amount, Math.floor((upv.min + upv.max) / 2));
+    // At cost to serve, size so serving the reward costs at most ~60% of what the LOW end of a view
+    // nets [TRIG-4]: the judge's economics gate and its unit-economics anchors check exactly that.
+    const amount = Math.max(cheap.amount, Math.floor(COGS_TARGET_SHARE * upv.min));
     return { amount, buys: sinkUse(cheap.action, amount, cheap.context), cogs, cogsUnits: amount / cheap.amount };
   }
   if (cheap && (!unit || cheap.amount * unit.min <= ECON.maxRewardToView * d.viewValueUsd.US[1]))

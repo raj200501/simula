@@ -52,7 +52,8 @@ export function quotaFromLimits(economy: Economy, edges: Edge[], screens: Screen
     e.sources.push({
       id: `sq${n}`, resource: rid, amount: cap, cadence: "unknown",
       how: `Free allowance before the wall (measured: blocked after ${cap} ${cap === 1 ? noun : unit})`,
-      screen: wallEdge.from, conf: "observed", evidence: [{ obs: wallEdge.id, quote: `limit after ${cap} sends`, verified: false }],
+      // No screen: an allowance is not claimed anywhere, so it is never a "just received" moment.
+      conf: "observed", evidence: [{ obs: wallEdge.id, quote: `limit after ${cap} sends`, verified: false }],
     });
     const existing = e.walls.find(w => w.edge === wallEdge.id);
     if (existing) existing.resource ??= rid;

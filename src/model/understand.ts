@@ -93,7 +93,24 @@ export function loadModel(modelDir: string): ProductModel {
   // fix to economics.ts reaches models written by an older run (an override can still pin the regime).
   const pinned = overridesPinRegime(modelDir);
   const economy = { ...m.economy, derived: deriveEconomy(m.economy) };
-  return { ...m, economy, regime: pinned ? m.regime : regimeOf(economy) };
+  return { ...withoutAllowanceMoments({ ...m, economy }), regime: pinned ? m.regime : regimeOf(economy) };
+}
+
+/**
+ * A measured free allowance (quota.ts) is not something the user claims, so it is never a
+ * "post-reward" moment. Models written before quota.ts dropped the allowance's screen carry one:
+ * remove it on load, with the screen, so no proposal offers "a bonus after" an allowance.
+ */
+export function withoutAllowanceMoments(m: ProductModel): ProductModel {
+  const allowance = m.economy.sources.filter(s => s.cadence === "unknown" && /^Free allowance before the wall\b/.test(s.how));
+  if (!allowance.length) return m;
+  const ids = new Set(allowance.map(s => s.id));
+  const res = new Set(allowance.map(s => s.resource));
+  return {
+    ...m,
+    economy: { ...m.economy, sources: m.economy.sources.map(s => (ids.has(s.id) ? { ...s, screen: undefined } : s)) },
+    moments: m.moments.filter(x => !(x.type === "post-reward" && x.resource && res.has(x.resource) && /^Right after Free allowance before the wall\b/.test(x.description))),
+  };
 }
 
 function overridesPinRegime(modelDir: string): boolean {

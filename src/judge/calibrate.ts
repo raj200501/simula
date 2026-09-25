@@ -39,7 +39,7 @@ export function calibrationDict(m: ProductModel): Record<string, unknown> {
   const res = m.economy.resources.find(r => r.id === a.res?.id);
   put("res.id", a.res?.id); put("res.name", a.res?.name); put("res.unit", a.res?.unit); put("res.evidence", res?.evidence.slice(0, 2));
   put("reward.amount", a.sized?.amount); put("reward.buys", a.sized?.buys); put("reward.cogs", a.sized?.cogs ?? "none"); put("reward.cogsUnits", a.sized?.cogsUnits ?? 0);
-  put("session.cogsUnits", 2 * (a.sized?.cogsUnits ?? 0));
+  put("session.cogsUnits", a.sized ? 2 : 0); // the session is "up to 2" of the cheapest action, whatever the sized reward
   put("cheap.id", a.cheapSink?.id); put("cheap.label", a.cheapSink?.context ?? a.cheapSink?.action);
   const off = a.cheapestOffer;
   put("offer.cheapest", off ? `${off.label} for ${off.priceText}` : "the cheapest pack"); put("offer.cheapestAmount", off?.grants.amount);

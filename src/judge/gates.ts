@@ -161,10 +161,16 @@ export function accountWallProblems(p: Proposal, m: ProductModel): string[] {
   const skip = SKIP_SIGNUP.exec([p.offer.title, p.offer.body, p.offer.cta, p.reward.what, p.trigger].join("\n"));
   if (onAccountWall && skip) bad.push(`on the sign-up wall ${surface!.name}, the offer trades an ad for skipping sign-up ("${skip[0]}")`);
   // Features that only an account unlocks (saving, profile settings) cannot be earned with an ad.
-  const accountOnly = m.economy.walls.filter(w => isAccountResource(res(w.resource)) || (!w.resource && ACCOUNT_LIKE.test(w.blockedIntent)));
-  const want = new Set(stems(p.reward.what));
-  const hit = accountOnly.find(w => stems(w.blockedIntent).some(x => want.has(x)));
-  if (hit) bad.push(`the reward is "${hit.blockedIntent}", which only an account unlocks: an ad cannot stand in for signing up`);
+  // A reward counted in a consumable ("+3 messages") is units of that resource, never the account
+  // feature, whatever words the two share ("Save favorite messages").
+  if (!isConsumable(r)) {
+    const accountOnly = m.economy.walls.filter(w => isAccountResource(res(w.resource)) || (!w.resource && ACCOUNT_LIKE.test(w.blockedIntent)));
+    // Nor do words that name a consumable's unit ("up to 2 messages for 10 minutes" is not saving messages).
+    const unitWords = new Set(m.economy.resources.filter(isConsumable).flatMap(x => stems(`${x.name} ${x.unit}`)));
+    const want = new Set(stems(p.reward.what).filter(w => !unitWords.has(w)));
+    const hit = accountOnly.find(w => stems(w.blockedIntent).some(x => want.has(x)));
+    if (hit) bad.push(`the reward is "${hit.blockedIntent}", which only an account unlocks: an ad cannot stand in for signing up`);
+  }
   return bad;
 }
 

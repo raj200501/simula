@@ -82,6 +82,21 @@ export function actionNoun(action: string): string | undefined {
 }
 
 const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+/** A unit counted once: "1 message", "1 credit" (the units stay as the app names them otherwise). */
+export function unitCount(n: number, unit: string): string {
+  return `${n} ${n === 1 ? singular(unit) : unit}`;
+}
+
+export function singular(w: string): string {
+  return /[^aeiou]ies$/i.test(w) ? `${w.slice(0, -3)}y` : /(ss|us)$/i.test(w) ? w : /(x|ch|sh)es$/i.test(w) ? w.slice(0, -2) : /s$/i.test(w) ? w.slice(0, -1) : w;
+}
+
+/** True when "enough for two messages" would only repeat "+2 messages": the sink counts the unit itself. */
+export function repeatsUnit(buys: string, unit: string): boolean {
+  const noun = singular(unit.trim().split(/\s+/).pop() ?? unit).toLowerCase();
+  return noun.length >= 3 && new RegExp(`\\b${noun.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}s?\\b`, "i").test(buys);
+}
+
 const plural = (w: string, n: number) => (n === 1 ? w : /(s|x|ch|sh)$/.test(w) ? `${w}es` : /[^aeiou]y$/.test(w) ? `${w.slice(0, -1)}ies` : `${w}s`);
 
 /** "one message", "30 messages", or "3× claim" when the action has no countable noun. */

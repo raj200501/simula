@@ -3,7 +3,7 @@
 // product team can trace each claim back to an observed price, a cap or a judge score.
 import type { Candidates, JudgmentRound, Judgments, ProductModel, Proposal, ProposalEconomics, Verdict } from "../core/schema.ts";
 import { deriveEconomy, exchangeRateLine, ECON } from "../model/economics.ts";
-import { actionNoun, firstQuoted, midSentence, modeName, sinkUse } from "../core/humanize.ts";
+import { actionNoun, firstQuoted, midSentence, modeName, repeatsUnit, sinkUse } from "../core/humanize.ts";
 
 export const PHASES = ["today", "change", "offer", "ad", "value"] as const;
 export type PhaseId = (typeof PHASES)[number];
@@ -113,6 +113,7 @@ export function claimOf(p: Proposal, max = 70): string {
 export interface Headline { text: string; accent: string }
 
 const wordCount = (s: string) => s.split(/\s+/).filter(Boolean).length;
+const stemsOf = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 4).map(w => w.slice(0, 6));
 
 /**
  * The flow slide headline: at most `max` words, "where it happens: the exchange", with the reward as
@@ -152,6 +153,14 @@ export function gamesNeeded(p: Proposal): number {
 
 /** Where the offer happens, in at most four words: the surface screen, or the new surface's name. */
 function momentOf(p: Proposal, m: ProductModel): string {
+  // A wall screen titled for something else (a sign-up sheet that also ends a free allowance) is
+  // named by what ran out: "Out of free messages", not "Create Account Sheet".
+  const res = resourceOf(m, p.reward.resource);
+  const ownWall = !!res && (res.kind === "quota" || res.kind === "currency") && m.economy.walls.some(w => w.shows === p.surface && w.resource === res.id);
+  if (ownWall && !stemsOf(screenName(m, p.surface)).some(w => stemsOf(`${res!.name} ${res!.unit}`).includes(w))) {
+    const t = `Out of ${res!.name}`;
+    if (wordCount(t) <= 4) return t;
+  }
   const ns = p.patch.newScreens.find(s => s.id === p.surface);
   const raw = m.screens.some(s => s.id === p.surface)
     ? screenName(m, p.surface)
@@ -256,10 +265,15 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
   if (upv && amount != null) {
     const equiv = sinkEquivalent(m, res!.id, amount);
     const ratio = e.rewardToViewRatio != null ? ` (${e.rewardToViewRatio}× one view)` : "";
+    // At cost to serve there is no list price to compare with: say what serving the reward costs
+    // against what the view nets at the low end (the judge's economics gate uses the same numbers).
+    const net = e.viewValueUsd[0] * (1 - ECON.platformShare);
+    const share = upv.basis === "cost-to-serve" && net > 0 && e.cogsPerViewUsd > 0
+      ? `; serving it costs ≈ $${e.cogsPerViewUsd}, ${Math.round((e.cogsPerViewUsd / net) * 100)}% of what the view nets` : "";
     out.push({
       stat: `1 view ≈ ${num(upv.min)}–${num(upv.max)} ${unit}`,
-      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} ${upv.basis === "cost-to-serve" ? "at cost to serve (the app shows no prices)" : "at list price"}. The reward is ${amount} ${unit}${ratio}${equiv ? `, enough for ${equiv}` : ""}.`,
-      line: `The reward is ${amount} ${unit}${ratio}${equiv ? `, enough for ${equiv}` : ""}.`,
+      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} ${upv.basis === "cost-to-serve" ? "at cost to serve (the app shows no prices)" : "at list price"}. The reward is ${amount} ${unit}${ratio}${equiv ? `, enough for ${equiv}` : ""}${share}.`,
+      line: `The reward is ${amount} ${unit}${ratio}${equiv ? `, enough for ${equiv}` : ""}${share}.`,
     });
   } else {
     out.push({
@@ -299,8 +313,10 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
 /** "10 credits = one message in Basic": the reward translated into what users spend it on. */
 export function sinkEquivalent(m: ProductModel, resource: string, amount: number): string {
   const sinks = m.economy.sinks.filter(s => s.resource === resource && s.amount > 0).sort((a, b) => a.amount - b.amount);
+  const unit = m.economy.resources.find(r => r.id === resource)?.unit ?? "";
+  // "2 messages, enough for two messages" repeats itself: only translate into a different action.
   const parts = sinks.slice(0, 2).map(s => ({ n: Math.floor(amount / s.amount), s })).filter(x => x.n > 0)
-    .map(x => sinkUse(x.s.action, x.n, x.s.context));
+    .map(x => sinkUse(x.s.action, x.n, x.s.context)).filter(x => !repeatsUnit(x, unit));
   return parts.join(" or ");
 }
 

@@ -15,6 +15,10 @@ import { codeGates, rewardCoherence } from "../src/judge/gates.ts";
 import { stubJudge } from "../src/judge/stub.ts";
 import { judgeAll } from "../src/judge/judge.ts";
 import { calibrationItems, evalJudge } from "../src/judge/calibrate.ts";
+import { deriveEconomy, regimeOf } from "../src/model/economics.ts";
+import { quotaFromLimits } from "../src/model/quota.ts";
+import { detectMoments } from "../src/model/moments.ts";
+import { headlineOf } from "../src/slides/facts.ts";
 import { ctx, entitlementModel, tmpDir } from "./helpers/proposejudge-ctx.ts";
 
 setLlmContext({ mode: "stub" });
@@ -112,6 +116,21 @@ describe("reward-coherence and account-wall gates", () => {
     assert.ok(failed(onSheet).includes("not-for-account-wall"));
   });
 
+  test("a reward in a consumable unit never counts as an account-only feature, whatever words they share", () => {
+    // Luzia-like: guests are capped on free messages, and saving favorite messages needs an account.
+    const mq: ProductModel = structuredClone(m);
+    mq.economy.resources.push({ id: "rq9", name: "free messages", unit: "messages", kind: "quota", shownOn: [], observedValues: [10], conf: "observed", evidence: [] });
+    assert.ok(mq.economy.walls.some(w => /favorite messages/i.test(w.blockedIntent)), "the account-only wall shares the word 'messages'");
+    const p = plant(q => { q.reward = { what: "+3 messages", resource: "rq9", amount: 3, grantOn: "REWARD_VERIFIED" }; q.offer.body = "Play a 15-second game to get +3 messages."; });
+    assert.ok(!codeGates(p, mq).filter(g => !g.pass).map(g => g.gate).includes("not-for-account-wall"));
+    // A time-boxed session of messages names the unit, not the account feature.
+    const session = plant(q => { q.reward = { what: "Up to 2 messages at no cost for 10 minutes", duration: "10 minutes", grantOn: "REWARD_VERIFIED" }; });
+    assert.ok(!codeGates(session, mq).filter(g => !g.pass).map(g => g.gate).includes("not-for-account-wall"));
+    // The account-only feature itself still fails.
+    const q2 = plant(q => { q.reward = { what: "Save favorite messages today", duration: "today", grantOn: "REWARD_VERIFIED" }; });
+    assert.ok(codeGates(q2, mq).filter(g => !g.pass).map(g => g.gate).includes("not-for-account-wall"));
+  });
+
   test("consumable rewards are unaffected", async () => {
     const { sampleModel } = await import("./helpers/sample-model.ts");
     const sm = sampleModel();
@@ -148,5 +167,57 @@ describe("real entitlement-only model (out/luzia/model)", { skip: !fs.existsSync
     const verdicts = j.final.map(f => f.verdict);
     assert.ok(verdicts.includes("SHIP"), verdicts.join());
     assert.ok(verdicts.some(v => v !== "SHIP"), `not all SHIP: ${verdicts.join()}`);
+  });
+});
+
+describe("guest message cap that ends on a sign-up sheet (stub)", () => {
+  // Luzia-shaped: guests get N free messages, then a "Create your account" sheet; saving favorite
+  // messages needs an account. The cap is a quota wall, so a short game for a few more messages is
+  // a legitimate exchange (the sign-up stays first); the account-only feature is never a reward.
+  function guestCapOnSignup(): ProductModel {
+    const m = structuredClone(entitlementModel());
+    m.economy = { resources: [], sinks: [], sources: [], offers: [], walls: [], entitlements: m.economy.entitlements, ads: [] };
+    m.edges = m.edges.map(e => {
+      if (e.id === "g05" || e.id === "g06") return { ...e, effects: [{ kind: "appeared" as const, text: "Hmm, let me think." }] };
+      if (e.id === "g07") return { ...e, limitHit: true, effects: [{ kind: "appeared" as const, text: "limit after 10 sends" }] };
+      return e;
+    });
+    m.screens = m.screens.map(s => s.id === "s03"
+      ? { ...s, actions: [{ id: "a03_1", kind: "consume" as const, intent: "Send a message to the assistant", priority: 2, status: "done" as const, tries: 11 }] }
+      : s);
+    m.economy = quotaFromLimits(m.economy, m.edges, m.screens);
+    // The account-only feature next to it.
+    m.economy.resources.push({ id: "r2", name: "User Account", unit: "profile", kind: "entitlement", shownOn: [], observedValues: [], conf: "observed", evidence: [] });
+    m.economy.sinks.push({ id: "k2", resource: "r2", amount: 1, action: "Save favorite messages", edges: ["g10"], conf: "inferred", evidence: [] });
+    m.economy.walls.push({ id: "w2", edge: "g10", resource: "r2", blockedIntent: "Save favorite messages", shows: "s06", offers: [], conf: "observed", evidence: [] });
+    m.economy.derived = deriveEconomy(m.economy);
+    m.regime = regimeOf(m.economy);
+    m.moments = detectMoments({ screens: m.screens, edges: m.edges, economy: m.economy, flows: m.flows }, "s01");
+    return m;
+  }
+
+  test("the refill at the cap ships, sized under what a view nets, named by what ran out", async () => {
+    const m = guestCapOnSignup();
+    const quota = m.economy.resources.find(r => r.kind === "quota")!;
+    assert.equal(quota.name, "free messages");
+    assert.equal(m.regime, "consumable-economy");
+    const dir = tmpDir("guestcap");
+    const c = ctx(dir, "deep");
+    const cands = await propose(c, m);
+    const j = await judgeAll(c, m, cands);
+    const final = new Map(j.final.map(f => [f.proposalId, f]));
+    const refill = cands.proposals.find(p => p.reward.resource === quota.id && p.surface === "s04");
+    assert.ok(refill, cands.proposals.map(p => `${p.id} ${p.title}`).join(" | "));
+    assert.equal(final.get(refill!.id)!.verdict, "SHIP", JSON.stringify(j.rounds.filter(r => r.proposalId === refill!.id).map(r => r.reasons)));
+    assert.match(refill!.title, /when free messages run out/);
+    assert.doesNotMatch(`${refill!.oneLiner} ${refill!.offer.body}`, /enough for \w+ messages?/, "no '+2 messages, enough for two messages'");
+    assert.match(refill!.trigger, /\(1 message\)/);
+    assert.equal(headlineOf(refill!, m).text.split(":")[0], "Out of free messages");
+    // No quota reward ever trips the account gate on the shared word "messages".
+    for (const r of j.rounds) {
+      const p = cands.proposals.find(x => x.id === r.proposalId)!;
+      if (p.reward.resource === quota.id) assert.ok(!r.gates.some(g => g.gate === "not-for-account-wall" && !g.pass), `${p.id} round ${r.round}`);
+    }
+    assert.ok(!cands.baseline.join(" ").includes("free free"));
   });
 });
