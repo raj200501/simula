@@ -128,8 +128,9 @@
   function summaryOf(s, n) {
     var t = clean(String(s || "").replace(/\([^)]*\)/g, "").replace(/["“”«»]/g, ""));
     for (var k = 0; k < 3; k++) t = t.replace(SPEC_WORDS, "");
+    t = t.replace(/\s+(?:when|while|after|before|if|once|shown|visible|under|below|above|next to|for)\b.*$/i, "");
     var w = t.split(" ").filter(Boolean).slice(0, n || 5);
-    while (w.length > 1 && /^(a|an|the|to|and|or|of|with|for|in|on|at|under|after|before|next|shown)$/i.test(w[w.length - 1])) w.pop();
+    while (w.length > 1 && /^(a|an|the|to|and|or|of|with|for|in|on|at|under|after|before|next|shown|button|pill|chip|badge|card|row|tile|banner|modal|sheet|screen|container|variant)$/i.test(w[w.length - 1])) w.pop();
     var out = w.join(" ").replace(/[,;:.\-–—]+$/, "");
     return out ? out.charAt(0).toUpperCase() + out.slice(1) : "";
   }
@@ -175,6 +176,11 @@
   function defaultNewScreen(id, ps) {
     var m = ps.meta || {}, overlay = !!OVERLAY[m.kind];
     var sp = specOf(ps.change), change = String(ps.change || "");
+    // No quoted title in the spec: the proposal's own offer copy is what the user would read here.
+    var X = ps.pid && window.__PATCHES && window.__PATCHES[ps.pid];
+    var offer = X && X.proposal && X.proposal.offer;
+    var named = quotedIn(change).length > 0;
+    if (!named && offer && offer.title) sp.label = offer.title;
     var root = document.createElement("div");
     root.setAttribute("data-screen-root", id);
     css(root, { position: "relative", width: "100%", height: "100%", overflow: "hidden", background: overlay ? "transparent" : "#FFFFFF" });
@@ -193,6 +199,7 @@
     var rows = /(\d+)\s+(?:rows?|items?|tasks?|cards?)\s*(?:["“]([^"”]{1,80})["”])?/i.exec(change);
     var rest = change.replace(/["“][^"”]*["”]/g, "\u0000").split(/[,;]|:\s/).map(function (t) { return clean(clean(t.replace(/\u0000/g, "")).replace(SPEC_WORDS, "")); })
       .filter(function (t) { return t && t.length > 2 && !/^\d+\s+(rows?|items?|tasks?|cards?)\b/i.test(t) && t.split(" ").length <= 6; });
+    if (!named && offer && offer.body) rest = [String(offer.body).split(/(?<=[.!?])\s/)[0]];
     if (rest.length) { var d = document.createElement("div"); d.className = "mock-ns-sub"; d.textContent = rest.slice(0, 3).join(" · ").replace(/^./, function (c) { return c.toUpperCase(); }); panel.appendChild(d); }
     var body = document.createElement("div"); body.className = "mock-ns-body"; body.setAttribute("data-mock-ns-body", "");
     var mine = (S.patchElements[id] || []).filter(function (ne) { return /\b(row|item|task|card|tile)\b/i.test(ne.change || ""); }).length;
@@ -694,8 +701,11 @@
     var frag = X.html || {};
     (patch.newScreens || []).forEach(function (ns) {
       var kind = ns.kind === "screen" ? "page" : ns.kind;
+      // An overlay with no basedOn sits on the screen that opens it.
+      var opener = (patch.newEdges || []).filter(function (e) { return e.to === ns.id && e.from !== ns.id; })[0];
+      var under = ns.basedOn || (opener && opener.from) || undefined;
       S.patchScreens[ns.id] = {
-        meta: { id: ns.id, name: ns.id, kind: kind, render: "html", inScope: true, parent: OVERLAY[kind] ? ns.basedOn : undefined, isNew: true },
+        meta: { id: ns.id, name: ns.id, kind: kind, render: "html", inScope: true, parent: OVERLAY[kind] ? under : undefined, isNew: true },
         basedOn: ns.basedOn, change: ns.change, html: frag[ns.id] || null, pid: pid,
       };
     });
