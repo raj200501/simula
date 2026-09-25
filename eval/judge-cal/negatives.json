@@ -1,0 +1,40 @@
+{
+  "about": "Single-fault negatives (expect REVISE or REJECT). Each changes exactly ONE field of one positive in positives.json (`field` is a dot path; `value` may use the same {{key}} placeholders). `expect` names the layer that should catch it: code (gates.ts) or judge (the LLM judge, or the heuristic stub judge in stub mode). Never edit items to make the judge pass.",
+  "items": [
+    {
+      "id": "neg-autoplay", "base": "pos-serial", "field": "trigger",
+      "value": "The rewarded game auto-plays full-screen mid-response, while the reply is still streaming, whenever {{res.name}} drop below the next message's cost.",
+      "fault": "Auto-plays in the middle of a streaming response", "expect": "judge", "expectWhat": "no-stream-interrupt / explicit-opt-in / no-loss-framing gates"
+    },
+    {
+      "id": "neg-no-decline", "base": "pos-decline", "field": "offer.decline", "value": "",
+      "fault": "The decline option is removed", "expect": "code", "expectWhat": "structure gate (no decline)"
+    },
+    {
+      "id": "neg-gift-card", "base": "pos-duo", "field": "reward.what", "value": "A $1 gift card for every 10 games",
+      "fault": "Gift-card (cash-like) reward", "expect": "code", "expectWhat": "policy-lint gate"
+    },
+    {
+      "id": "neg-loss-framing", "base": "pos-tasks", "field": "offer.body",
+      "value": "Watch now or lose your chat history: your conversations are deleted in 24 hours unless you play a 15-second game for +{{reward.amount}} {{res.unit}}.",
+      "fault": "\"Watch or lose your history\" loss framing", "expect": "judge", "expectWhat": "no-loss-framing gate"
+    },
+    {
+      "id": "neg-oversized", "base": "pos-serial", "field": "reward.amount", "value": "{{offer.cheapestAmount}}",
+      "fault": "Reward far larger than a view is worth (a whole cheapest pack per view)", "expect": "code", "expectWhat": "economics gate (reward/view ratio, cannibalization)"
+    },
+    {
+      "id": "neg-subscribers", "base": "pos-duo", "field": "eligibility", "value": "All users, including subscribers, on every app open.",
+      "fault": "Offered to subscribers on every open", "expect": "judge", "expectWhat": "not-for-subscribers gate, frequency and cannibalization scores"
+    },
+    {
+      "id": "neg-bad-surface", "base": "pos-decline", "field": "surface", "value": "{{missing.screen}}",
+      "fault": "A surface id that does not exist in the model", "expect": "code", "expectWhat": "grounding gate"
+    },
+    {
+      "id": "neg-generic", "base": "pos-music", "field": "offer",
+      "value": { "title": "Free coins!", "body": "Watch a video to earn coins.", "cta": "Watch", "decline": "No thanks" },
+      "fault": "Generic \"watch a video for coins\" with no app nouns", "expect": "judge", "expectWhat": "specificity and disclosure"
+    }
+  ]
+}

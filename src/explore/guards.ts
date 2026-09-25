@@ -9,11 +9,12 @@ export const DESTRUCTIVE =
 
 /**
  * Surfaces that tell us nothing about the product's monetization, or that touch the user's device and data
- * (the camera, the microphone, files). "Rate us" is not here: it only opens the store or a browser, which
- * the explorer records as an external surface and leaves; it never acts inside another app.
+ * (the camera, the microphone, files). Not here: "Rate us" (it only opens the store or a browser, which the
+ * explorer records as an external surface and leaves; it never acts inside another app) and photo features
+ * ("Edit a photo" is often a paid feature; a photo picker is another app, recorded and left).
  */
 export const OUT_OF_SCOPE =
-  /\b(camera|gallery|photos?|upload|attach(ment)?|microphone|mic|voice|audio|dictat(e|ion)|record(ing)?|share|privacy|terms|licen[cs]es?)\b/i;
+  /\b(camera|gallery|upload|attach(ment)?|microphone|mic|voice|audio|dictat(e|ion)|record(ing)?|share|privacy|terms|licen[cs]es?)\b/i;
 
 /** Fields a human fills in. The explorer never types credentials, codes, phone numbers or CAPTCHA answers. */
 export const CREDENTIALS =

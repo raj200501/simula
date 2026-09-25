@@ -45,7 +45,7 @@ async function checkEdge(page: Page, indexHtml: string, m: ProductModel, e: Edge
     // Reproduce the wall: empty the resource this action spends.
     const sibling = m.edges.find(x => x.from === e.from && x.el === e.el && x.effects.some(f => f.kind === "counter" && f.delta < 0));
     const res = m.economy.walls.find(w => w.edge === e.id)?.resource
-      ?? sibling?.effects.find(f => f.kind === "counter" && f.delta < 0)?.resource;
+      ?? sibling?.effects.flatMap(f => (f.kind === "counter" && f.delta < 0 ? [f.resource] : []))[0];
     if (res) await page.evaluate(`window.__mock.set(${JSON.stringify(res)}, 0)`);
   } else {
     for (const [res, d] of deltas) if (d < 0) await page.evaluate(`(() => { const v = window.__mock.get(${JSON.stringify(res)}); if (typeof v !== "number" || v < ${-d}) window.__mock.set(${JSON.stringify(res)}, ${-d}); })()`);
