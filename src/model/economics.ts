@@ -101,7 +101,11 @@ function groupSum<T>(xs: T[], key: (x: T) => string, val: (x: T) => number): Map
  */
 export function regimeOf(e: Economy): Regime {
   const soldResources = new Set(e.offers.map(o => o.grants.resource).filter(Boolean));
-  if (e.sinks.length && (e.walls.length || e.sinks.some(s => soldResources.has(s.resource)))) return "consumable-economy";
+  // Only spending a consumable (currency or quota) makes a consumable economy. "Using" an entitlement
+  // (a membership feature) is gating, not spending, however the synthesizer phrased it.
+  const consumable = new Set(e.resources.filter(r => r.kind === "currency" || r.kind === "quota").map(r => r.id));
+  const spends = e.sinks.filter(s => consumable.has(s.resource));
+  if (spends.length && (e.walls.some(w => !w.resource || consumable.has(w.resource)) || spends.some(s => soldResources.has(s.resource)))) return "consumable-economy";
   if (e.entitlements.length || e.offers.some(o => o.kind === "subscription" || o.kind === "trial")) return "subscription-gated";
   return "no-scarcity";
 }

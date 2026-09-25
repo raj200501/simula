@@ -88,7 +88,18 @@ export async function understand(c: StageCtx, graphFile: string): Promise<{ mode
 
 /** product-model.json + overrides.json, validated. What every downstream stage calls. */
 export function loadModel(modelDir: string): ProductModel {
-  return applyOverrides(load(ProductModel, path.join(modelDir, "product-model.json")), modelDir);
+  const m = applyOverrides(load(ProductModel, path.join(modelDir, "product-model.json")), modelDir);
+  // Derived numbers and the regime are pure functions of the economy: recompute them on load so a
+  // fix to economics.ts reaches models written by an older run (an override can still pin the regime).
+  const pinned = overridesPinRegime(modelDir);
+  const economy = { ...m.economy, derived: deriveEconomy(m.economy) };
+  return { ...m, economy, regime: pinned ? m.regime : regimeOf(economy) };
+}
+
+function overridesPinRegime(modelDir: string): boolean {
+  const file = path.join(modelDir, "overrides.json");
+  if (!fs.existsSync(file)) return false;
+  try { return "regime" in JSON.parse(fs.readFileSync(file, "utf8")); } catch { return false; }
 }
 
 // ------------------------------------------------------------------------------------------------
