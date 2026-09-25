@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P1:ne1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne1\" style=\"position: absolute; left: 12.2px; top: 724px; width: 386.6px; height: 82px; background-color: #FFFFFF; border-radius: 16px; border: 1px solid #E2E0EE; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; padding: 10px 14px; box-sizing: border-box; font-family: var(--font-body); z-index: 5;\">\n  <div>\n    <div style=\"font-size: 13px; font-weight: 700; color: #17152B;\">Out of Free Messages</div>\n    <div style=\"font-size: 11px; color: #6E6A85; margin-top: 1px; line-height: 1.3;\">Play a quick 15-second game to earn 15 free credits right now.</div>\n  </div>\n  <div style=\"display: flex; gap: 8px; justify-content: flex-end; align-items: center;\">\n    <button style=\"background: none; border: none; color: #6E6A85; font-family: var(--font-body); font-size: 11.5px; font-weight: 600; cursor: pointer; padding: 2px 6px;\">No thanks</button>\n    <button style=\"background-color: #6C4DF6; color: #FFFFFF; border: none; border-radius: 6px; padding: 4px 10px; font-family: var(--font-body); font-size: 11.5px; font-weight: 700; cursor: pointer;\">Play Now</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 8229,
+  "output": 460,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 5768
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:58:24.154Z"
+}

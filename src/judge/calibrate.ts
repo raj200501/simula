@@ -11,6 +11,7 @@ import path from "node:path";
 import { Proposal, type JudgmentRound, type ProductModel } from "../core/schema.ts";
 import { ROOT, MODELS } from "../core/config.ts";
 import { writeText } from "../core/io.ts";
+import { servedModels } from "../core/llm.ts";
 import { trace } from "../core/trace.ts";
 import type { StageCtx } from "../core/run.ts";
 import { digest } from "../model/digest.ts";
@@ -134,7 +135,7 @@ const cell = (s: unknown) => String(s ?? "").replace(/\|/g, "\\|").replace(/\n/g
 
 export function judgeEvalMd(m: ProductModel, rows: CalRow[], skipped: { id: string; why: string }[]): string {
   const by = new Set(rows.map(r => r.round.judgedBy));
-  const judgeName = by.has("llm") ? `LLM judge (${MODELS.main})` : "judge (stub heuristic, no LLM)";
+  const judgeName = by.has("llm") ? `LLM judge (${servedModels().join(", ") || MODELS.main})` : "judge (stub heuristic, no LLM)";
   const layer = (row: CalRow) => {
     if (!row.caught) return "**missed**";
     const j = row.round.judgedBy === "code-only" ? false : row.judge;

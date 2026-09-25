@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P3:ne1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne1\" class=\"scrim\">\n  <div class=\"modal\">\n    <div class=\"modal-icon-container\">\n      <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n        <polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon>\n      </svg>\n    </div>\n    <div class=\"badge\" style=\"margin-bottom: 12px;\">Try 15m Premium via Game Partner</div>\n    <div class=\"modal-title\">Unlock 15 Min Premium</div>\n    <div class=\"modal-body\">Play a 15-second game with Starship Galley to try Premium mode free.</div>\n    <button class=\"btn btn-primary\" style=\"margin-bottom: 12px;\">Play Now</button>\n    <button class=\"btn\" style=\"background: transparent; color: var(--c-muted); font-size: var(--fs-sm); font-weight: 600; padding: 8px;\">No Thanks</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 8235,
+  "output": 362,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 16774
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:59:14.977Z"
+}

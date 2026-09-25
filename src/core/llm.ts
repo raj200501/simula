@@ -69,6 +69,9 @@ export function setLlmContext(c: Partial<Ctx>): void {
   }
 }
 export function llmMode(): LlmMode { return ctx.mode; }
+const served = new Set<string>();
+/** Models that actually answered in this process (live or from cache): fallbacks included, so reports can say who judged. */
+export function servedModels(): string[] { return [...served]; }
 export function llmStats() { return { ...stats, mode: ctx.mode }; }
 export function resetLlmStats() { stats.calls = 0; stats.cached = 0; stats.usd = 0; }
 
@@ -164,6 +167,7 @@ async function run<T>(req: LlmReq<T>): Promise<{ value: T | string; cached: bool
   if (ctx.mode !== "live" && fs.existsSync(file)) {
     const e = JSON.parse(fs.readFileSync(file, "utf8")) as CacheEntry;
     stats.calls++; stats.cached++;
+    if (e.model) served.add(e.model);
     ledger({ ts: nowIso(), app: ctx.app, stage: req.stage, purpose: req.purpose, model, effort, usd: 0, cached: true, key });
     trace("llm_call", { purpose: req.purpose, key, cached: true, usd: 0 });
     const v = req.schema ? req.schema.parse(e.parsed) : (e.text ?? "");
@@ -175,9 +179,10 @@ async function run<T>(req: LlmReq<T>): Promise<{ value: T | string; cached: bool
   const t0 = Date.now();
   const r = PROVIDER === "gemini" ? await callGemini(req, model, effort) : await callAnthropic(req, model, effort);
   // The ledger names the model that actually answered (a fallback model when the requested one was busy).
-  const served = r.model ?? model;
-  record(req, served, effort, r.usage, t0, key, r.stop, served !== model ? model : undefined);
-  const entry: CacheEntry = { purpose: req.purpose, model: served, effort, parsed: r.parsed, text: req.schema ? undefined : r.text, usage: r.usage, stop: r.stop, ts: nowIso() };
+  const by = r.model ?? model;
+  served.add(by);
+  record(req, by, effort, r.usage, t0, key, r.stop, by !== model ? model : undefined);
+  const entry: CacheEntry = { purpose: req.purpose, model: by, effort, parsed: r.parsed, text: req.schema ? undefined : r.text, usage: r.usage, stop: r.stop, ts: nowIso() };
   ensureDir(path.dirname(file));
   fs.writeFileSync(file, JSON.stringify(entry, null, 1));
   return { value: (req.schema ? r.parsed : r.text) as T | string, cached: false };
@@ -258,7 +263,7 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
   const usage: Usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, thoughts: 0 };
   let maxOut = Math.min(req.maxTokens ?? (req.schema ? 16000 : 32000), 65536);
   let feedback = "";
-  let served = model;
+  let servedBy = model;
   let thinking = THINKING[effort];
   for (let attempt = 0; attempt < 3; attempt++) {
     const config: GenerateContentConfig = { systemInstruction: req.system.join("\n\n"), maxOutputTokens: maxOut };
@@ -267,7 +272,7 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
     const turn: Content[] = feedback ? [...contents, { role: "user", parts: [{ text: feedback }] }] : contents;
     const params = { model, contents: turn, config };
     const res = await geminiWithRetry(req.purpose, model, params);
-    served = params.model;
+    servedBy = params.model;
     const um = res.usageMetadata;
     usage.input += um?.promptTokenCount ?? 0; usage.output += um?.candidatesTokenCount ?? 0;
     usage.thoughts += um?.thoughtsTokenCount ?? 0; usage.cacheRead += um?.cachedContentTokenCount ?? 0;
@@ -284,11 +289,11 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
       trace("failure", { where: `llm:${req.purpose}`, error: `MAX_TOKENS after ${thought} thinking tokens; retrying with maxOutputTokens=${maxOut}, thinking ${thinking}` });
       continue;
     }
-    if (!req.schema) return { text, usage, stop: finish, model: served };
+    if (!req.schema) return { text, usage, stop: finish, model: servedBy };
     let raw: unknown;
     try { raw = JSON.parse(text); } catch { feedback = "Your previous reply was not valid JSON. Reply with JSON only, matching the schema."; continue; }
     const ok = req.schema.safeParse(raw);
-    if (ok.success) return { parsed: ok.data, text: "", usage, stop: finish, model: served };
+    if (ok.success) return { parsed: ok.data, text: "", usage, stop: finish, model: servedBy };
     const issues = ok.error.issues.slice(0, 12).map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
     trace("failure", { where: `llm:${req.purpose}`, error: `schema validation failed: ${issues.slice(0, 300)}` });
     feedback = `Your previous JSON failed validation: ${issues}. Return the complete corrected JSON.`;
