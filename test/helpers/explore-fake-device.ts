@@ -54,7 +54,13 @@ const rect = (x: number, y: number, w: number, h: number): Rect => ({ x, y, w, h
 const T = (name: string) => `android.widget.${name}`;
 const area = (e: El) => e.rect.w * e.rect.h;
 
-export interface FakeOpts { balance?: number; cost?: number; replyDelayMs?: number }
+export interface FakeOpts {
+  balance?: number;
+  cost?: number;
+  replyDelayMs?: number;
+  /** After this many device calls every call throws, like an emulator that went away. */
+  failAfter?: number;
+}
 
 export class FakeCreditChat implements Device {
   readonly kind = "android" as const;
@@ -81,11 +87,18 @@ export class FakeCreditChat implements Device {
   sends = 0;
   billingOpens = 0;
   maxMessages = 1;
+  calls = 0;
+  failAfter: number;
 
   constructor(o: FakeOpts = {}) {
     this.balance = o.balance ?? 120;
     this.cost = o.cost ?? 10;
     this.replyDelayMs = o.replyDelayMs ?? 30;
+    this.failAfter = o.failAfter ?? Infinity;
+  }
+
+  private alive(): void {
+    if (++this.calls > this.failAfter) throw new Error("device offline");
   }
 
   get screen(): Screen { return this.stack[this.stack.length - 1]; }
@@ -103,15 +116,18 @@ export class FakeCreditChat implements Device {
   }
 
   async foreground(): Promise<string> {
+    this.alive();
     return this.external === "billing" ? BILLING_PKG : this.external === "launcher" ? LAUNCHER_PKG : FAKE_PKG;
   }
 
   async elements(): Promise<RawElement[]> {
+    this.alive();
     this.tick();
     return this.render().map(({ tap: _t, overlay: _o, ...e }) => e);
   }
 
   async screenshot(file: string): Promise<void> {
+    this.alive();
     const s = 4;
     const cw = W / s;
     const ch = H / s;
@@ -129,6 +145,7 @@ export class FakeCreditChat implements Device {
   }
 
   async tap(x: number, y: number): Promise<void> {
+    this.alive();
     const els = this.render();
     const hit = (e: El) => x >= e.rect.x && x < e.rect.x + e.rect.w && y >= e.rect.y && y < e.rect.y + e.rect.h;
     const labelled = els.filter(e => hit(e) && (e.text || e.label)).sort((a, b) => area(a) - area(b))[0];
@@ -160,6 +177,7 @@ export class FakeCreditChat implements Device {
   }
 
   async launch(o: { cold?: boolean } = {}): Promise<void> {
+    this.alive();
     this.external = null;
     if (o.cold) {
       if (this.pending) { this.messages.push({ me: false, text: this.pending.text }); this.pending = null; }

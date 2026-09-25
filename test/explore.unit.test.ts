@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { setLlmContext } from "../src/core/llm.ts";
-import type { DeviceInfo, Observation, State } from "../src/core/schema.ts";
+import type { DeviceInfo, ExploreGraph, Observation, State } from "../src/core/schema.ts";
 import { excludeTyped, newExclusions, normalize, readCounters, textsOf, type Exclusions } from "../src/explore/observe.ts";
 import { diffEffects, jaccard, matchState, signatureOf, templateSame } from "../src/explore/signature.ts";
 import { guardReason, isGuardSkip } from "../src/explore/guards.ts";
@@ -230,14 +230,14 @@ test("wall test (T2): a different chat state is not a wall; a sheet or a new lim
 });
 
 test("gap check: the stub asks for nothing, and targets never un-skip a guard rail", async () => {
-  const g = {
-    schema: "simula.explore-graph/1" as const, app: { id: "x", package: "p", name: "X" }, runId: "r", device: INFO, startedAt: "",
+  const g: ExploreGraph = {
+    schema: "simula.explore-graph/1", app: { id: "x", package: "p", name: "X" }, runId: "r", device: INFO, startedAt: "",
     states: [{
-      id: "s03", signature: [], dhash: "", obs: [], name: "Profile", kind: "tab" as const, purpose: "", inScope: true, scrollable: false, loginWall: false,
-      annotatedBy: "heuristic" as const, visits: 1, firstStep: 0, signals: [],
+      id: "s03", signature: [], dhash: "", obs: [], name: "Profile", kind: "tab", purpose: "", inScope: true, scrollable: false, loginWall: false,
+      annotatedBy: "heuristic", visits: 1, firstStep: 0, signals: [],
       actions: [
-        { id: "a03_1", kind: "tap" as const, intent: "tap Log out", priority: 0, status: "skipped" as const, tries: 0, skip: "guard: destructive" },
-        { id: "a03_2", kind: "tap" as const, intent: "tap Settings", priority: 1, status: "no-effect" as const, tries: 1 },
+        { id: "a03_1", kind: "tap", intent: "tap Log out", priority: 0, status: "skipped", tries: 0, skip: "guard: destructive" },
+        { id: "a03_2", kind: "tap", intent: "tap Settings", priority: 1, status: "no-effect", tries: 1 },
       ],
     }],
     edges: [], observations: [], resources: [], externals: [], typed: [], steps: 0, stepsSinceNew: 0, usd: 0, human: [],
@@ -249,8 +249,9 @@ test("gap check: the stub asks for nothing, and targets never un-skip a guard ra
   ]);
   assert.equal(n, 2);
   assert.equal(g.states[0].actions[0].status, "skipped");
-  assert.equal(g.states[0].actions[1].status, "untried");
-  assert.equal(g.states[0].actions[1].priority, 3);
+  const retried = g.states[0].actions[1] as { status: string; priority: number };
+  assert.equal(retried.status, "untried");
+  assert.equal(retried.priority, 3);
   assert.ok(g.states[0].actions.some(a => a.kind === "scroll" && a.id === "a03_3"));
 });
 
@@ -263,5 +264,6 @@ test("probe: one-screen go/no-go, insets saved to the device file", async () => 
   assert.ok(rep.counters.some(c => c.name === "credits"));
   assert.deepEqual(JSON.parse(fs.readFileSync(deviceFile, "utf8")), { widthPx: W, heightPx: H, density: 2.625, statusBarPx: STATUS, navBarPx: NAV });
   assert.ok(fs.existsSync(path.join(tmp, "fakechat", "explore", "probe", "probe.json")));
-  assert.equal(typeof rep.go, "boolean");
+  assert.ok(rep.labelledActionable >= 10, `${rep.labelledActionable} labelled actionables`);
+  assert.equal(rep.go, true);
 });
