@@ -3,14 +3,34 @@
 // model with generic rules. The stub proposer, the stub reviser and the judge calibration set all
 // build their proposals from these, so every id they emit exists in the model.
 import type { Economy, Moment, ProductModel, Proposal, Screen, UiElement } from "../core/schema.ts";
-import { ECON, deriveEconomy } from "../model/economics.ts";
+import { ECON, cogsKindOf, deriveEconomy } from "../model/economics.ts";
 import { cleanName, humanizeAction, sinkUse, topBarTitle } from "../core/humanize.ts";
 
 type Sink = Economy["sinks"][number];
 type Source = Economy["sources"][number];
 type Offer = Economy["offers"][number];
 type Wall = Economy["walls"][number];
+type Resource = Economy["resources"][number];
 export type Cogs = Proposal["assumptions"]["cogs"];
+
+/**
+ * A wall on something that is not a consumable: a plan feature (entitlement) or a paywall with no
+ * priced resource. It is SAMPLED (a number of uses or a time box, named with the feature), never
+ * refilled: "+1 tier" is not a reward.
+ */
+export interface Gated {
+  moment: Moment; screen: Screen; item?: Wall; from?: Screen;
+  resource?: Resource;
+  signup: boolean;          // the wall asks the user to create an account or sign in first
+  feature: string;          // what is gated, in the app's words (an entitlement benefit, else the blocked action)
+  plan?: string;            // the paid plan that unlocks it, when known
+  perUse: boolean;          // used per action (sample a number of uses) vs a mode (sample a time box)
+  cogs: Cogs;               // cost class of one use (a reasoning answer costs inference)
+  useMoment: Moment;        // where the feature is wanted (a desire moment on it), else the wall
+  useScreen?: Screen;       // where the feature is used (never a sign-up or first-value screen)
+  useEl?: UiElement;        // the control that hit the wall
+  decline?: { moment: Moment; to?: Screen; el?: UiElement };
+}
 
 export interface Sized {
   amount: number;          // units granted per completed view
@@ -35,6 +55,44 @@ export interface Anchors {
   /** Who plays along in the game: the character or persona shown on the chat, else the app itself. */
   partner: string;
   noOfferScreens: Set<string>;
+  /** Walls on plan features or paywalls without a consumable: sampled, never refilled. */
+  gated: Gated[];
+  /** Walls where the account itself is the gate: rewarded ads cannot stand in for signing up. */
+  accountWalls: Moment[];
+}
+
+// Resource kinds. Only currencies and quotas are spent and refilled in units (same rule as regimeOf).
+// A plan, tier, membership or account is an entitlement.
+export const TIER_LIKE = /\b(tiers?|plans?|memberships?|subscriptions?|accounts?|profiles?|levels?|status)\b/i;
+export const ACCOUNT_LIKE = /\b(accounts?|profiles?|users?|sign[- ]?ups?|log[- ]?ins?|registration)\b/i;
+export const SIGNUP = /\b(sign[- ]?up|sign[- ]?in|log[- ]?in|create (?:an |your )?account|register)\b/i;
+
+export function isConsumable(r?: { kind: string; name: string; unit: string }): boolean {
+  return !!r && (r.kind === "currency" || r.kind === "quota") && !TIER_LIKE.test(`${r.name} ${r.unit}`);
+}
+
+/** The gated thing IS the account (sign-up, profile): no ad can stand in for it. */
+export function isAccountResource(r?: { kind: string; name: string; unit: string }): boolean {
+  return !!r && !isConsumable(r) && ACCOUNT_LIKE.test(`${r.name} ${r.unit}`);
+}
+
+/** A screen that asks the user to create an account or sign in. */
+export function isSignupScreen(s?: Screen): boolean {
+  if (!s) return false;
+  return s.kind === "login" || SIGNUP.test(s.name) || s.signals.some(g => SIGNUP.test(g.text))
+    || s.elements.some(e => e.role === "button" && txt(e).length <= 40 && SIGNUP.test(txt(e)));
+}
+
+/** The gated feature in the app's words: the entitlement benefit that shares a word with the blocked action. */
+function featureOf(m: ProductModel, texts: string[], r?: Resource): { feature: string; plan?: string } {
+  const words = (x: string) => x.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 5);
+  const want = new Set(texts.flatMap(words));
+  for (const en of m.economy.entitlements)
+    for (const b of en.benefits) if (words(b).some(w => want.has(w))) return { feature: b.trim(), plan: en.plan };
+  const rn = new Set(words(r?.name ?? ""));
+  const plan = m.economy.entitlements.find(en => words(en.plan).some(w => rn.has(w)))?.plan
+    ?? (m.economy.entitlements.length === 1 ? m.economy.entitlements[0].plan : undefined);
+  return { feature: humanizeAction(texts[0]) || r?.name || "this feature", plan };
 }
 
 const REACH = { "core-loop": 4, frequent: 3, occasional: 2, rare: 1 } as const;
@@ -89,16 +147,17 @@ export function cogsOf(m: ProductModel, k: Sink, all: Sink[]): Cogs {
 }
 
 export function resolveAnchors(m: ProductModel): Anchors {
-  const a: Anchors = { noOfferScreens: new Set(m.moments.filter(x => x.noOffer).map(x => x.screen)), partner: cleanName(m.app.name) };
+  const a: Anchors = { noOfferScreens: new Set(m.moments.filter(x => x.noOffer).map(x => x.screen)), partner: cleanName(m.app.name), gated: [], accountWalls: [] };
   const offerable = m.moments.filter(x => !x.noOffer);
   const of = (t: Moment["type"]) => offerable.filter(x => x.type === t).sort(byReach);
 
-  // The primary resource: the one users hit a wall on, else the one they spend most often.
-  const wallM = of("wall").sort((x, y) => Number(!!y.resource) - Number(!!x.resource))[0];
+  // The primary resource is a CONSUMABLE: the one users hit a wall on, else the one they spend most.
+  // Entitlement walls are handled as gated features below.
+  const consumable = new Set(m.economy.resources.filter(isConsumable).map(r => r.id));
+  const wallM = of("wall").filter(x => x.resource && consumable.has(x.resource))[0];
   const resId = wallM?.resource
-    ?? m.economy.sinks.slice().sort((x, y) => y.edges.length - x.edges.length)[0]?.resource
-    ?? m.economy.resources.find(r => r.kind === "currency" || r.kind === "quota")?.id
-    ?? m.economy.resources[0]?.id;
+    ?? m.economy.sinks.filter(k => consumable.has(k.resource)).sort((x, y) => y.edges.length - x.edges.length)[0]?.resource
+    ?? m.economy.resources.find(isConsumable)?.id;
   const r = m.economy.resources.find(x => x.id === resId);
   if (r) a.res = { id: r.id, name: r.name, unit: r.unit || r.name };
   if (a.res) {
@@ -129,7 +188,10 @@ export function resolveAnchors(m: ProductModel): Anchors {
       blockedIntent: humanizeAction(item?.blockedIntent ?? blocked?.action) || "Continue" };
   }
 
-  const dec = of("decline").sort((x, y) => Number(y.edge === a.wall?.item?.declineEdge) - Number(x.edge === a.wall?.item?.declineEdge))[0];
+  // Declines of entitlement or account walls belong to the gated anchors, not to the refill fallback.
+  const gatedWallScreens = new Set(of("wall").filter(x => !(x.resource && consumable.has(x.resource))).map(x => x.screen));
+  const dec = of("decline").filter(x => x.edge === a.wall?.item?.declineEdge || !gatedWallScreens.has(x.screen))
+    .sort((x, y) => Number(y.edge === a.wall?.item?.declineEdge) - Number(x.edge === a.wall?.item?.declineEdge))[0];
   if (dec) {
     const screen = screenOf(m, dec.screen)!;
     const edge = m.edges.find(e => e.id === dec.edge);
@@ -152,7 +214,7 @@ export function resolveAnchors(m: ProductModel): Anchors {
     a.hub = { moment: hubs[0], screen, balanceEl, anchorEl };
   }
 
-  const post = of("post-reward").sort((x, y) => Number(y.resource === a.res?.id) - Number(x.resource === a.res?.id) || byReach(x, y))[0];
+  const post = of("post-reward").filter(x => !x.resource || consumable.has(x.resource)).sort((x, y) => Number(y.resource === a.res?.id) - Number(x.resource === a.res?.id) || byReach(x, y))[0];
   if (post) {
     const screen = screenOf(m, post.screen)!;
     const source = m.economy.sources.find(s => s.screen === post.screen && (!post.resource || s.resource === post.resource));
@@ -160,7 +222,7 @@ export function resolveAnchors(m: ProductModel): Anchors {
     a.postReward = { moment: post, screen, parent: screenOf(m, screen.parent), source, claimEl };
   }
 
-  const des = of("desire").sort((x, y) => Number(y.resource === a.res?.id) - Number(x.resource === a.res?.id) || byReach(x, y))[0];
+  const des = of("desire").filter(x => (!x.resource || consumable.has(x.resource)) && !isSignupScreen(screenOf(m, x.screen))).sort((x, y) => Number(y.resource === a.res?.id) - Number(x.resource === a.res?.id) || byReach(x, y))[0];
   if (des) {
     const screen = screenOf(m, des.screen)!;
     const priceEl = screen.signals.find(s => s.kind === "price" && s.el)?.el;
@@ -174,6 +236,32 @@ export function resolveAnchors(m: ProductModel): Anchors {
     a.chat = { screen: chat, inputEl: chat.elements.find(e => e.role === "input"), titleEl: chat.elements.find(e => txt(e) === persona) ?? chat.elements.find(e => e.role === "text" && txt(e)), persona };
     if (persona) a.partner = persona;
   }
+
+  for (const w of of("wall")) {
+    const r = m.economy.resources.find(x => x.id === w.resource);
+    const screen = screenOf(m, w.screen);
+    if ((r && isConsumable(r)) || !screen) continue;
+    if (isAccountResource(r)) { a.accountWalls.push(w); continue; }
+    const item = m.economy.walls.find(x => x.shows === w.screen && (!w.edge || x.edge === w.edge)) ?? m.economy.walls.find(x => x.shows === w.screen);
+    const edge = m.edges.find(e => e.id === w.edge);
+    const from = screenOf(m, edge?.from);
+    const sinks = r ? m.economy.sinks.filter(k => k.resource === r.id) : [];
+    const { feature, plan } = featureOf(m, [item?.blockedIntent ?? sinks[0]?.action ?? w.description, ...sinks.map(k => k.action)], r);
+    const usable = (x?: Screen) => !!x && !isSignupScreen(x) && !a.noOfferScreens.has(x.id);
+    const useMoment = offerable.filter(x => x.type === "desire" && !!r && x.resource === r.id && usable(screenOf(m, x.screen))).sort(byReach)[0];
+    const useScreen = useMoment ? screenOf(m, useMoment.screen) : usable(from) ? from : undefined;
+    const dm = offerable.find(x => x.type === "decline" && !!item?.declineEdge && x.edge === item.declineEdge);
+    const dEdge = m.edges.find(e => e.id === dm?.edge);
+    const dTo = dEdge && !dEdge.to.startsWith("ext:") ? screenOf(m, dEdge.to) : undefined;
+    a.gated.push({
+      moment: w, screen, item, from, resource: r, signup: isSignupScreen(screen), feature, plan,
+      perUse: sinks.length > 0, cogs: (cogsKindOf({ name: `${feature} ${plan ?? ""}`, unit: "" }) ?? "none") as Cogs,
+      useMoment: useMoment ?? w, useScreen, useEl: from?.elements.find(e => e.id === edge?.el),
+      decline: dm ? { moment: dm, to: usable(dTo) ? dTo : undefined, el: screen.elements.find(e => e.id === dEdge?.el) ?? screen.elements.find(e => DECLINE.test(txt(e))) } : undefined,
+    });
+  }
+  // One sample per gated feature.
+  a.gated = a.gated.filter((g, i) => a.gated.findIndex(x => x.feature.toLowerCase() === g.feature.toLowerCase()) === i);
   return a;
 }
 
