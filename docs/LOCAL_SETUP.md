@@ -64,7 +64,7 @@ If any of these differ, stop and hand back. Otherwise run `npm ci` and `npx play
 ### 1. SDK and AVD
 
 1. Run `bash scripts/device.sh setup`. It downloads about 2 GB and creates the AVD `simula_pixel_8_api35` (Android 15, Google Play, arm64).
-2. Confirm the image was installed: `sdkmanager --list_installed | grep 'android-35;google_apis_playstore;arm64-v8a'`.
+2. Confirm the image was installed: `sdkmanager --list_installed | grep -E 'android-35[;/]google_apis_playstore[;/]arm64-v8a'` (newer sdkmanager prints `/` instead of `;`).
 3. Add the two `export` lines that `setup` prints to `~/.zshrc`, then run `source ~/.zshrc`.
 
 ### 2. Boot

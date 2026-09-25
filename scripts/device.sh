@@ -137,6 +137,14 @@ cmd_boot() {
     sleep 3
   fi
   wait_boot
+  # SystemUI may still be starting right after boot, and then the demo-mode status bar broadcast is
+  # ignored. Wait until it is running, then give it a moment.
+  local k=0
+  until sh_ pidof com.android.systemui >/dev/null && [[ -n "$(sh_ pidof com.android.systemui)" ]]; do
+    (( ++k > 30 )) && break
+    sleep 1
+  done
+  sleep 4
   cmd_prep
 }
 
