@@ -41,6 +41,7 @@ const IMAGE = /Image|\bimg\b|svg|Icon/i;
 const BUTTON = /Button|Chip|MenuItem/i;
 const IMAGE_ID = /avatar|icon|logo|thumb|photo|image|img|picture|banner|cover/i;
 const OVERLAY_KINDS = new Set(["modal", "sheet", "dialog"]);
+const NAV_CONTROL = /^(back|navigate up|up|close|menu|more options|open navigation drawer|search|settings|[←<×✕])$/i;
 
 const label = (e: { text?: string; label?: string }) => e.text || e.label || "";
 const r1 = (n: number) => Math.round(n * 10) / 10;
@@ -53,8 +54,9 @@ export function pickRepresentative(st: State, obs: Map<string, Observation>): Ob
 }
 
 /** Tab bars: explicit (type / resource id says tab) or positional (3-6 short labels in one row of
- *  the top or bottom 15% band that together span most of the width). Nested labels inside a tab
- *  container are left as text, so the mock does not render a tab inside a tab. */
+ *  the top or bottom 15% band that together span most of the width, with comparable widths and no
+ *  back / close / menu control: a toolbar "Back · avatar · title · chip" is a header, not tabs).
+ *  Nested labels inside a tab container are left as text, so the mock does not render a tab inside a tab. */
 export function tabIds(els: NormElement[], dev: DeviceInfo): Set<string> {
   const W = dev.widthPx || 1, H = dev.heightPx || 1;
   const out = new Set<string>();
@@ -72,7 +74,10 @@ export function tabIds(els: NormElement[], dev: DeviceInfo): Set<string> {
   for (const row of rows) {
     const outer = row.filter(e => !row.some(o => inside(e.rect, o.rect)));
     const span = Math.max(...outer.map(e => e.rect.x + e.rect.w)) - Math.min(...outer.map(e => e.rect.x));
-    if (outer.length >= 3 && outer.length <= 6 && span >= W * 0.6) outer.forEach(e => out.add(e.id));
+    const widths = outer.map(e => e.rect.w);
+    const even = Math.max(...widths) <= 2.5 * Math.max(1, Math.min(...widths));
+    if (outer.length >= 3 && outer.length <= 6 && span >= W * 0.6 && even && !outer.some(e => NAV_CONTROL.test(label(e).trim())))
+      outer.forEach(e => out.add(e.id));
   }
   return out;
 }
@@ -229,9 +234,11 @@ export async function compile(graph: ExploreGraph, runDir: string, modelDir: str
 
     // Signals were annotated on the state's first observation; re-point their element ids at the representative.
     const first = obs.get(st.obs[0]);
+    // The annotator may reference the element by id (on the first observation) or by its re-find key.
     const signals = st.signals.map(s => {
-      const src = s.el ? first?.elements.find(e => e.id === s.el) : undefined;
-      return { ...s, text: redactText(s.text), el: src ? resolveEl(src.key, rep, first) : s.el && rep?.elements.some(e => e.id === s.el) ? s.el : undefined };
+      const src = s.el ? first?.elements.find(e => e.id === s.el) ?? first?.elements.find(e => e.key === s.el) : undefined;
+      const el = src ? resolveEl(src.key, rep, first) : s.el && rep?.elements.some(e => e.id === s.el) ? s.el : resolveEl(s.el, rep);
+      return { ...s, text: redactText(s.text), el };
     });
     const bindings = graph.resources.flatMap(r => r.bindings.filter(b => b.state === st.id).map(b => ({ resource: r.id, el: resolveEl(b.elKey, rep) }))
       .filter((b): b is { resource: string; el: string } => !!b.el));

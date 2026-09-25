@@ -7,6 +7,12 @@
 //   Chat --Send (-30 Premium / -10 Basic, inferred)--> Chat ; Chat --Send, LIMIT--> Out-of-credits sheet
 //   sheet --Refill now--> Store ; sheet --Not now--> Chat ; Store --pack--> ext:billing
 //   Home <-> Store tabs ; Home --> Profile (email, Log out skipped, Rate us -> ext:browser)
+//
+// Options reproduce what real explorer runs produce and the stub synthesis must survive:
+//   adCard      the sponsored card is a flagged container whose every child is flagged too, with one
+//               `ad` signal per child text, referenced by element KEY (not id)
+//   unmeasured  no counter effects on the sends (the balance never showed a change) and no wall: the
+//               cost is only quoted by the selected mode chip
 import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
@@ -66,13 +72,21 @@ const checkin: Spec[] = [
   { t: "text", s: "Come back every day for more", r: [40, 390, 280, 24] },
   { t: "button", s: "Claim", r: [40, 440, 280, 48], fill: PURPLE, ink: "#FFFFFF" },
 ];
+export const AD_CARD: Spec[] = [
+  { t: "view", idf: "web:id/ad_container", r: [16, 300, 328, 110], ad: true, fill: "#FEF3C7" },
+  { t: "text", s: "Sponsored", r: [28, 308, 120, 18], ad: true },
+  { t: "text", s: "SkyBank", r: [28, 330, 200, 24], ad: true },
+  { t: "text", s: "Get 3% back on groceries", r: [28, 356, 280, 20], ad: true },
+  { t: "button", s: "Learn more", r: [28, 378, 120, 28], ad: true, fill: "#1D4ED8", ink: "#FFFFFF" },
+];
+let adCard = false;
 const home = (balance: number): Spec[] => [
   { t: "text", s: "Stories", r: [16, 40, 200, 32] },
   { t: "button", s: `${balance} credits`, idf: "web:id/balance_chip", r: [240, 40, 104, 32], fill: "#EEF2FF", ink: "#4F46E5" },
   { t: "view", s: "The Last Lighthouse", r: [16, 100, 328, 90], group: "g1", fill: "#F3F4F6" },
   { t: "image", l: "Author avatar", r: [24, 116, 56, 56] },
   { t: "view", s: "Neon Detective", r: [16, 200, 328, 90], group: "g1", fill: "#F3F4F6" },
-  { t: "view", s: "Sponsored · SkyBank", idf: "web:id/ad_container", r: [16, 300, 328, 90], group: "g1", ad: true, fill: "#FEF3C7" },
+  ...(adCard ? AD_CARD : [{ t: "view", s: "Sponsored · SkyBank", idf: "web:id/ad_container", r: [16, 300, 328, 90], group: "g1", ad: true, fill: "#FEF3C7" } as Spec]),
   ...tabs("Home"),
 ];
 const story: Spec[] = [
@@ -119,8 +133,11 @@ const find = (specs: Spec[], s: string) => specs.find(x => x.s === s || x.l === 
 
 export const EMAIL_RECT_DP = { x: 16, y: 90, w: 328, h: 24 };
 
-export async function writeSampleGraph(dir: string): Promise<{ graphFile: string; graph: ExploreGraph }> {
+export interface SampleOpts { adCard?: boolean; unmeasured?: boolean }
+
+export async function writeSampleGraph(dir: string, o: SampleOpts = {}): Promise<{ graphFile: string; graph: ExploreGraph }> {
   shots.length = 0;
+  adCard = !!o.adCard;
   const reply: Spec[] = [
     { t: "text", s: "Hi! What happens next?", r: [100, 180, 244, 40], fill: "#EDE9FE" },
     { t: "text", s: "The door creaks open.", r: [16, 230, 260, 40], fill: "#F3F4F6" },
@@ -150,20 +167,21 @@ export async function writeSampleGraph(dir: string): Promise<{ graphFile: string
       actions: [act("a_ci_1", "tap", "Claim", find(checkin, "Claim"), { priority: 3 })] },
     { id: "st-home", signature: obs[1].signature, dhash: "0", obs: ["o0002", "o0010"], name: "Home", kind: "tab", purpose: "Browse stories; shows the balance",
       inScope: true, scrollable: true, loginWall: false, annotatedBy: "heuristic", visits: 9, firstStep: 1,
-      signals: [{ kind: "balance", text: "750 credits", el: "e2" }, { kind: "ad", text: "Sponsored · SkyBank", el: "e6" }],
+      signals: [{ kind: "balance", text: "750 credits", el: "e2" },
+        ...(adCard ? AD_CARD.filter(sp => sp.s).map(sp => ({ kind: "ad" as const, text: sp.s!, el: keyOf(sp) })) : [{ kind: "ad" as const, text: "Sponsored · SkyBank", el: "e6" }])],
       actions: [
         act("a_home_1", "tap", "Open balance", find(home(750), "750 credits"), { status: "untried", tries: 0 }),
         act("a_home_2", "tap", "Open story", find(home(750), "The Last Lighthouse")),
         act("a_home_3", "tap", "Open Store tab", find(home(750), "Store")),
         act("a_home_4", "tap", "Open Profile tab", find(home(750), "Profile")),
-        act("a_home_5", "tap", "Sponsored card", find(home(750), "Sponsored · SkyBank"), { status: "skipped", tries: 0, skip: "ad: observe, never click" }),
+        act("a_home_5", "tap", "Sponsored card", adCard ? AD_CARD[4] : find(home(750), "Sponsored · SkyBank"), { status: "skipped", tries: 0, skip: "ad: observe, never click" }),
       ] },
     { id: "st-story", signature: obs[2].signature, dhash: "0", obs: ["o0003"], name: "Story detail", kind: "page", purpose: "Story synopsis and start chat",
       inScope: true, scrollable: false, loginWall: false, annotatedBy: "heuristic", visits: 3, firstStep: 2, signals: [],
       actions: [act("a_story_1", "tap", "Start chat", find(story, "Start chat"))] },
     { id: "st-sheet", signature: obs[6].signature, dhash: "0", obs: ["o0007"], name: "Out of credits", kind: "sheet", purpose: "Blocks sending when the balance is too low",
       inScope: true, scrollable: false, loginWall: false, annotatedBy: "heuristic", visits: 2, firstStep: 8,
-      signals: [{ kind: "limit", text: "Out of credits", el: "e7" }, { kind: "upsell", text: "Refill now", el: "e9" }],
+      signals: o.unmeasured ? [{ kind: "upsell", text: "Refill now", el: "e9" }] : [{ kind: "limit", text: "Out of credits", el: "e7" }, { kind: "upsell", text: "Refill now", el: "e9" }],
       actions: [act("a_sheet_1", "tap", "Refill now", find(sheet, "Refill now")), act("a_sheet_2", "tap", "Not now", find(sheet, "Not now"))] },
     { id: "st-store", signature: obs[7].signature, dhash: "0", obs: ["o0008"], name: "Store", kind: "store", purpose: "Buy credit packs",
       inScope: true, scrollable: false, loginWall: false, annotatedBy: "heuristic", visits: 4, firstStep: 9, signals: [{ kind: "price", text: "$1.39", el: "e2" }],
@@ -190,10 +208,10 @@ export async function writeSampleGraph(dir: string): Promise<{ graphFile: string
       edge("g0002", "st-home", "st-story", "a_home_2", "o0002", "o0003", 2, { seen: 3 }),
       edge("g0003", "st-story", "st-chat", "a_story_1", "o0003", "o0004", 3, { seen: 3 }),
       edge("g0004", "st-chat", "st-chat", "a_chat_1", "o0004", "o0005", 4, { seen: 5, context: { selected: ["Premium · 30"] },
-        effects: [{ kind: "counter", resource: "r1", before: 750, after: 720, delta: -30, inferred: true }, { kind: "appeared", text: "The door creaks open." }] }),
+        effects: [...(o.unmeasured ? [] : [{ kind: "counter" as const, resource: "r1", before: 750, after: 720, delta: -30, inferred: true }]), { kind: "appeared", text: "The door creaks open." }] }),
       edge("g0005", "st-chat", "st-chat", "a_chat_1", "o0006", "o0006", 6, { seen: 2, context: { selected: ["Basic · 10"] },
-        effects: [{ kind: "counter", resource: "r1", before: 720, after: 710, delta: -10, inferred: true }] }),
-      edge("g0006", "st-chat", "st-sheet", "a_chat_1", "o0005", "o0007", 8, { limitHit: true, context: { selected: ["Premium · 30"] } }),
+        effects: o.unmeasured ? [] : [{ kind: "counter", resource: "r1", before: 720, after: 710, delta: -10, inferred: true }] }),
+      edge("g0006", "st-chat", "st-sheet", "a_chat_1", "o0005", "o0007", 8, { limitHit: !o.unmeasured || undefined, context: { selected: ["Premium · 30"] } }),
       edge("g0007", "st-sheet", "st-store", "a_sheet_1", "o0007", "o0008", 9),
       edge("g0008", "st-sheet", "st-chat", "a_sheet_2", "o0007", "o0004", 10),
       edge("g0009", "st-store", "ext:billing", "a_store_1", "o0008", "o0020", 11),

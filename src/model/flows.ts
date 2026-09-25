@@ -22,14 +22,15 @@ export function isConsume(e: Edge, a: Action | undefined): boolean {
   return a?.kind !== "back" && a?.kind !== "scroll" && e.effects.some(f => f.kind === "counter" && f.delta < 0);
 }
 
-/** BFS over in-app edges. Forward edges first; BACK edges only if nothing else connects. Among
+/** BFS over in-app edges. Forward edges first; BACK edges only if nothing else connects; edges that
+ *  failed more often than they worked only as a last resort (the path is real, just flaky). Among
  *  parallel edges the most reliable (most seen, fewest failures) wins. */
 export function shortestPath(edges: Edge[], from: string, to: string): Edge[] | null {
   if (from === to) return [];
-  for (const allowBack of [false, true]) {
+  for (const [allowBack, allowFlaky] of [[false, false], [true, false], [true, true]]) {
     const adj = new Map<string, Edge[]>();
     for (const e of edges) {
-      if (isExt(e.to) || e.from === e.to || (!allowBack && e.transition === "back") || e.failures > e.seen) continue;
+      if (isExt(e.to) || e.from === e.to || (!allowBack && e.transition === "back") || (!allowFlaky && e.failures > e.seen)) continue;
       adj.set(e.from, [...(adj.get(e.from) ?? []), e]);
     }
     for (const l of adj.values()) l.sort((a, b) => b.seen - a.seen || a.failures - b.failures || a.id.localeCompare(b.id));
@@ -70,7 +71,10 @@ function coreFlow(g: FlowGraph, name: (id: string) => string): Flow | null {
   for (const e of spend) by.set(e.from, [...(by.get(e.from) ?? []), e]);
   const [hub, hubEdges] = [...by].sort(([, a], [, b]) => Number(b.some(e => e.limitHit)) - Number(a.some(e => e.limitHit))
     || b.reduce((s, e) => s + e.seen, 0) - a.reduce((s, e) => s + e.seen, 0))[0];
-  const lead = shortestPath(g.edges, g.launch, hub) ?? [];
+  // The way in from launch; if the explorer never recorded one, the flow starts at the drain screen
+  // rather than jumping from launch straight into it.
+  const lead = shortestPath(g.edges, g.launch, hub);
+  const start = lead ? g.launch : hub;
   const cost = (e: Edge) => Math.min(0, ...e.effects.map(f => (f.kind === "counter" ? f.delta : 0)));
   // Up to two spends in distinct selection contexts (e.g. a cheap and an expensive mode).
   const sends: Edge[] = [];
@@ -78,21 +82,25 @@ function coreFlow(g: FlowGraph, name: (id: string) => string): Flow | null {
     if (sends.length < 2 && !sends.some(s => s.context.selected.join("|") === e.context.selected.join("|"))) sends.push(e);
   }
   const wall = hubEdges.find(e => e.limitHit) ?? g.edges.find(e => e.from === hub && e.limitHit && !isExt(e.to));
-  const path = [...lead, ...sends];
+  const path = [...(lead ?? []), ...sends];
   if (!sends.length && !wall) path.push(hubEdges[0]);
   if (wall) {
     path.push(wall);
-    // After the wall: the edge that leads to buying (a store or paywall, else any forward edge).
-    const out = g.edges.filter(e => e.from === wall.to && !isExt(e.to) && e.to !== wall.to && e.transition !== "back");
+    // After the wall: the way to buying, i.e. a store or paywall at most two taps away. Leaving the
+    // wall any other way (back, another tab) is the decline moment, not part of the loop.
     const kind = (id: string) => g.screens.find(s => s.id === id)?.kind;
-    const buy = out.find(e => kind(e.to) === "store" || kind(e.to) === "paywall") ?? out[0];
-    if (buy) path.push(buy);
+    const shops = g.screens.filter(s => s.kind === "store" || s.kind === "paywall").map(s => s.id);
+    const direct = g.edges.filter(e => e.from === wall.to && !isExt(e.to) && e.transition !== "back" && (kind(e.to) === "store" || kind(e.to) === "paywall"))
+      .sort((a, b) => b.seen - a.seen || a.id.localeCompare(b.id))[0];
+    const viaForward = direct ? [direct] : shops.map(s => shortestPath(g.edges.filter(e => e.transition !== "back"), wall.to, s))
+      .filter((p): p is Edge[] => !!p && p.length > 0 && p.length <= 2).sort((a, b) => a.length - b.length)[0];
+    if (viaForward) path.push(...viaForward);
   }
   const intent = g.actionOf.get((sends[0] ?? wall ?? hubEdges[0]).id)?.intent ?? "use the app";
   return {
     id: "", kind: "core", name: wall ? `Core loop: ${intent} until ${name(wall.to)}` : `Core loop: ${intent}`,
     goal: wall ? `Reach ${name(hub)} and ${intent.toLowerCase()} until the resource runs out` : `Reach ${name(hub)} and ${intent.toLowerCase()}`,
-    steps: stepsOf(g, g.launch, path),
+    steps: stepsOf(g, start, path),
   };
 }
 

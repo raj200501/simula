@@ -6,7 +6,7 @@
 import path from "node:path";
 import sharp from "sharp";
 import { z } from "zod";
-import { AdPlacement, Brief, EconomyResource, MomentType, Offer, Source, type Action, type Economy, type Edge, type Evidence, type Flow, type GraphEdge, type Observation, type Screen } from "../core/schema.ts";
+import { AdPlacement, Brief, EconomyResource, MomentType, Offer, Source, type Action, type Economy, type Edge, type Evidence, type Flow, type GraphEdge, type Observation, type Rect, type Screen } from "../core/schema.ts";
 import { json, type Img } from "../core/llm.ts";
 import { MODELS } from "../core/config.ts";
 import { canonical, sha256 } from "../core/io.ts";
@@ -31,6 +31,7 @@ type SourceT = Economy["sources"][number];
 type OfferT = Economy["offers"][number];
 type WallT = Economy["walls"][number];
 type AdT = Economy["ads"][number];
+type UiEl = Screen["elements"][number];
 
 // ------------------------------------------------------------------------------------------------
 // Shared helpers
@@ -144,29 +145,61 @@ function resources(x: Ctx): Res[] {
   return out;
 }
 
-/** Sinks: negative counter deltas grouped by (action, selection context, resource); amount = most common |delta|. */
+/**
+ * Sinks: negative counter deltas, measured or back-filled per send (`inferred`), grouped by (action,
+ * selection context, resource); amount = most common |delta|. Groups that describe the same spend from
+ * two graph states (same intent, context, resource and amount) are merged. A spend action whose cost
+ * was never measured still yields a sink when its selection context quotes one ("Premium · 30",
+ * "Basic 10 credits per message"): verify then grounds the number in that on-screen quote.
+ */
 function sinks(x: Ctx): SinkT[] {
-  const groups = new Map<string, { e: Edge[]; deltas: number[]; resource: string }>();
+  type G = { e: Edge[]; deltas: number[]; resource: string; quoted?: boolean };
+  const groups = new Map<string, G>();
+  const ctxOf = (e: Edge) => e.context.selected.join(" / ");
   for (const e of x.cm.edges) {
     const a = x.action(e);
     if (a?.kind === "back" || a?.kind === "scroll") continue;
     for (const f of e.effects) {
       if (f.kind !== "counter" || f.delta >= 0) continue;
-      const k = `${e.action}|${e.context.selected.join(" / ")}|${f.resource}`;
+      const k = `${e.action}|${ctxOf(e)}|${f.resource}`;
       const g = groups.get(k) ?? { e: [], deltas: [], resource: f.resource };
-      g.e.push(e); g.deltas.push(-f.delta);
+      if (!g.e.includes(e)) g.e.push(e);
+      g.deltas.push(-f.delta);
       groups.set(k, g);
     }
   }
-  return [...groups.values()].map((g, i) => {
+  // Unmeasured spends: the price is read from the selected mode / option the spend ran under.
+  const measured = new Set([...groups.values()].flatMap(g => g.e.map(e => `${x.action(e)?.intent ?? e.action}|${ctxOf(e)}`)));
+  for (const e of x.cm.edges) {
+    const a = x.action(e);
+    if (e.to.startsWith("ext:") || (a?.kind !== "consume" && a?.kind !== "type-send") || measured.has(`${a.intent}|${ctxOf(e)}`)) continue;
+    const quote = e.context.selected.find(t => numbersIn(t).length && !pricesIn(t).length);
+    const amount = quote ? amountIn(quote, x.allWords()) : undefined;
+    const resource = quote && (x.resFor(quote) ?? x.resFor(x.screenTexts(e.from).join(" ")) ?? (x.words.length === 1 ? x.words[0].id : undefined));
+    if (!quote || amount == null || !resource) continue;
+    const k = `${a.intent}|${ctxOf(e)}|${resource}`;
+    const g = groups.get(k) ?? { e: [], deltas: [], resource, quoted: true };
+    if (!g.e.includes(e)) g.e.push(e);
+    g.deltas.push(amount);
+    groups.set(k, g);
+  }
+  const merged: G[] = [];
+  for (const g of groups.values()) {
+    const intent = (e: Edge) => x.action(e)?.intent ?? e.action;
+    const twin = merged.find(m => intent(m.e[0]) === intent(g.e[0]) && ctxOf(m.e[0]) === ctxOf(g.e[0]) && m.resource === g.resource && mode(m.deltas) === mode(g.deltas));
+    if (twin) { twin.e.push(...g.e.filter(e => !twin.e.includes(e))); twin.deltas.push(...g.deltas); twin.quoted = twin.quoted && g.quoted; }
+    else merged.push({ ...g, e: [...g.e], deltas: [...g.deltas] });
+  }
+  return merged.map((g, i) => {
     const e0 = g.e[0], a = x.action(e0), o = x.obsBefore(e0);
     const amount = mode(g.deltas);
-    const context = e0.context.selected.join(" / ") || undefined;
+    const context = ctxOf(e0) || undefined;
     const evidence: Evidence[] = [];
     if (o) {
       for (const sel of e0.context.selected) {
-        const el = o.elements.find(k => label(k) === sel);
+        const el = o.elements.find(k => redactText(label(k)) === sel);
         if (el) evidence.push(ev(o.id, sel, el.id));
+        else if (g.quoted && numbersIn(sel).includes(amount)) evidence.push(ev(o.id, sel));
       }
       const act = a?.elKey ? o.elements.find(k => k.key === a.elKey) : undefined;
       if (act && label(act)) evidence.push(ev(o.id, label(act), act.id));
@@ -191,6 +224,8 @@ function sources(x: Ctx, offers: OfferT[]): SourceT[] {
     if (a?.kind === "back" || a?.kind === "scroll") continue;
     for (const f of e.effects) {
       if (f.kind !== "counter" || f.delta <= 0) continue;
+      // A back-filled per-send delta that went UP on a spend edge is noise between readings, not income.
+      if (f.inferred && isConsume(e, a)) continue;
       const k = `${e.action}|${f.resource}`;
       const g = groups.get(k) ?? { e: [], deltas: [], resource: f.resource };
       g.e.push(e); g.deltas.push(f.delta);
@@ -327,24 +362,62 @@ function entitlements(x: Ctx, offerList: OfferT[]): Economy["entitlements"] {
   });
 }
 
-/** Ads seen today (never tapped): placement format from geometry and screen kind. */
+/** Ads seen today (never tapped): ONE placement per ad container per screen, format from geometry and
+ *  screen kind. The explorer flags every element of a sponsored card ("Sponsored", the advertiser, its
+ *  CTA) and the annotator may add an `ad` signal per text; all of them fold into their outermost ad
+ *  element. Loose ad texts with no container fold into one placement per screen. */
 function ads(x: Ctx): AdT[] {
   const { cm } = x;
   const d = cm.graph.device.density || 1, W = cm.graph.device.widthPx / d, H = cm.graph.device.heightPx / d;
   const out: AdT[] = [];
+  const within = (a: Rect, b: Rect) => {
+    const ix = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), iy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+    return ix > 0 && iy > 0 && (ix * iy) / Math.max(1, a.w * a.h) >= 0.8;
+  };
+  const AD_WORD = /^(ad|ads|sponsored|advertisement|adchoices|promoted)\b/i;
   for (const s of cm.screens) {
-    const els = s.elements.filter(e => e.ad);
-    for (const sig of s.signals.filter(k => k.kind === "ad")) {
+    const flagged = s.elements.filter(e => e.ad);
+    const sigs = s.signals.filter(k => k.kind === "ad");
+    for (const sig of sigs) {
       const el = s.elements.find(e => e.id === sig.el);
-      if (el && !els.includes(el)) els.push(el);
-      if (!el && !els.length) out.push({ format: "unknown", screen: s.id, conf: "inferred", evidence: [ev(s.representative, sig.text)] });
+      if (el && !flagged.includes(el)) flagged.push(el);
     }
-    for (const el of els) {
-      const { w, h } = el.rectDp;
+    // Outermost first: a flagged element inside a bigger flagged element belongs to that container.
+    const byArea = [...flagged].sort((a, b) => b.rectDp.w * b.rectDp.h - a.rectDp.w * a.rectDp.h || a.id.localeCompare(b.id));
+    const roots: { el: UiEl; members: UiEl[]; box?: Rect }[] = [];
+    for (const el of byArea) {
+      const root = roots.find(r => within(el.rectDp, r.el.rectDp));
+      if (root) root.members.push(el); else roots.push({ el, members: [el] });
+    }
+    // Loose flagged texts stacked in one card (no container flagged): merge roots that touch vertically and overlap horizontally.
+    for (let i = 0; i < roots.length; i++) {
+      for (let j = i + 1; j < roots.length; j++) {
+        const a = roots[i].box ?? roots[i].el.rectDp, b = roots[j].el.rectDp;
+        const xo = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+        const gap = Math.max(a.y, b.y) - Math.min(a.y + a.h, b.y + b.h);
+        if (!roots[i].el.identifier && !roots[j].el.identifier && b.h < 120 && xo > 0 && gap <= 12 && roots[i].members.length + roots[j].members.length <= 8) {
+          roots[i].members.push(...roots[j].members);
+          const [x0, y0] = [Math.min(a.x, b.x), Math.min(a.y, b.y)];
+          const bb = { x: x0, y: y0, w: Math.max(a.x + a.w, b.x + b.w) - x0, h: Math.max(a.y + a.h, b.y + b.h) - y0 };
+          if (b.w * b.h > a.w * a.h) roots[i].el = roots[j].el;
+          roots[i].box = bb;
+          roots.splice(j--, 1);
+        }
+      }
+    }
+    for (const r of roots) {
+      const { w, h } = r.box ?? r.el.rectDp;
       const format: AdT["format"] = w * h >= 0.6 * W * H ? "interstitial" : w >= 0.9 * W && h <= 70 ? "banner"
-        : s.kind === "chat" ? "sponsored-answer" : el.role === "list-item" || (w >= 0.8 * W && h > 70) ? "native" : "unknown";
-      out.push({ format, screen: s.id, el: el.id, conf: "inferred", evidence: [ev(s.representative, label(el), el.id)] });
+        : s.kind === "chat" ? "sponsored-answer" : r.members.some(m => m.role === "list-item") || (w >= 0.8 * W && h > 70) ? "native" : "unknown";
+      // Evidence: the "Sponsored" marker first, then the advertiser's words.
+      const texts = r.members.map(m => ({ m, t: label(m) })).filter(k => k.t);
+      const marked = texts.find(k => AD_WORD.test(k.t)) ?? texts.find(k => k.t.length >= 3) ?? texts[0];
+      const evidence = marked ? [ev(s.representative, marked.t, marked.m.id)] : [ev(s.representative, undefined, r.el.id)];
+      out.push({ format, screen: s.id, el: r.el.id, conf: "inferred", evidence });
     }
+    // Ad signals with no element anywhere on the screen: one placement, not one per text.
+    const loose = sigs.filter(k => !s.elements.some(e => e.id === k.el));
+    if (loose.length && !roots.length) out.push({ format: "unknown", screen: s.id, conf: "inferred", evidence: [ev(s.representative, (loose.find(k => AD_WORD.test(k.text)) ?? loose[0]).text)] });
   }
   for (const v of cm.graph.externals.filter(k => k.kind === "ad")) {
     const screen = cm.screenOf.get(v.from);
