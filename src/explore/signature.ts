@@ -60,16 +60,93 @@ export function hamming(a: string, b: string): number {
  * heuristic answer to the annotator's sameAs question (story detail A vs story detail B).
  */
 export function templateSame(a: string[], b: string[]): boolean {
+  const d = labelDiff(a, b);
+  if (!d) return false;
+  const diff = [...d.onlyA, ...d.onlyB];
+  if (diff.some(t => t.endsWith("|sel") || isWallText(textOf(t)))) return false;
+  // labels only added (or only removed) is not another item on the template: something opened on top
+  // (a sheet whose rows are too long to carry identity, a dialog) or a panel expanded
+  if (!d.onlyA.length !== !d.onlyB.length) return false;
+  return d.onlyA.length <= 1 && d.onlyB.length <= 1;
+}
+
+/** Same skeleton (types + resource ids) on both sides: the chrome labels only on one side, else null. */
+function labelDiff(a: string[], b: string[]): { onlyA: string[]; onlyB: string[] } | null {
   const sa = new Set(a.map(skeletonOf));
   const sb = new Set(b.map(skeletonOf));
-  if (sa.size !== sb.size || [...sa].some(t => !sb.has(t))) return false;
+  if (sa.size !== sb.size || [...sa].some(t => !sb.has(t))) return false as unknown as null;
   const ca = new Set(chromeTexts(a));
   const cb = new Set(chromeTexts(b));
-  const onlyA = [...ca].filter(t => !cb.has(t));
-  const onlyB = [...cb].filter(t => !ca.has(t));
-  const diff = [...onlyA, ...onlyB];
-  if (diff.some(t => t.endsWith("|sel") || isWallText(textOf(t)))) return false;
-  return onlyA.length <= 1 && onlyB.length <= 1;
+  return { onlyA: [...ca].filter(t => !cb.has(t)), onlyB: [...cb].filter(t => !ca.has(t)) };
+}
+
+/**
+ * The same screen with some controls relabelled: identical skeleton, and every label that changed did so
+ * on an element of the same type and resource id ("Basic · 10" -> "Premium · 30" on the mode chip, one
+ * item's title for another's). Looser than templateSame: used by the wall test, where a mode switch or
+ * another item must never count as a wall even when the new label is monetization vocabulary.
+ */
+export function relabelOnly(a: string[], b: string[]): boolean {
+  const d = labelDiff(a, b);
+  if (!d) return false;
+  const ka = d.onlyA.map(skeletonOf).sort();
+  const kb = d.onlyB.map(skeletonOf).sort();
+  return ka.length === kb.length && ka.every((t, i) => t === kb[i]);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Overlays: a sheet, dialog or menu drawn over a screen whose elements are still listed
+// ---------------------------------------------------------------------------------------------
+const area = (r: Rect) => Math.max(0, r.w) * Math.max(0, r.h);
+
+function interArea(a: Rect, b: Rect): number {
+  const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+  const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+  return w > 0 && h > 0 ? w * h : 0;
+}
+
+/** Share of the smaller rect covered by the other one. */
+export function overlapRatio(a: Rect, b: Rect): number {
+  const m = Math.min(area(a), area(b));
+  return m > 0 ? interArea(a, b) / m : 0;
+}
+
+const INTERSECT_MIN_PX = 4;
+const intersects = (a: Rect, b: Rect) =>
+  Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x) > INTERSECT_MIN_PX && Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y) > INTERSECT_MIN_PX;
+
+export const OVERLAY_KEEP = 0.5;   // share of the base screen still in place when something opened on top of it
+type Screenish = { elements: NormElement[] };
+type Dims = { widthPx: number; heightPx: number };
+
+/**
+ * Elements of `top` that sit over `base`: most of base is still there (same token at the same place; a dimmed
+ * backdrop is invisible in an element list), and what is new - at least two labels, one of them chrome (a
+ * title or a button) - is drawn over something that was there. A control that only changed in place (mic
+ * -> Send, a chip's label, a switch) is not part of it, nor are replies below the last message.
+ * Also answers the reverse question: overlayOf(before, after) = what closed. Returns the elements or null.
+ */
+export function overlayOf(top: Screenish, base: Screenish | null | undefined, dims: Dims): NormElement[] | null {
+  if (!base?.elements.length || !top.elements.length) return null;
+  const big = (e: NormElement) => area(e.rect) >= 0.9 * dims.widthPx * dims.heightPx; // root containers are always there
+  const samePlace = (a: NormElement, b: NormElement) =>
+    token(a) === token(b) && Math.abs(a.rect.x - b.rect.x) <= 8 && Math.abs(a.rect.y - b.rect.y) <= 8;
+  const under = base.elements.filter(e => !big(e));
+  if (!under.length) return null;
+  const kept = under.filter(b => top.elements.some(e => samePlace(e, b)));
+  if (kept.length / under.length < OVERLAY_KEEP) return null;
+  const gone = under.filter(b => !kept.includes(b));
+  const relabelled = (e: NormElement) => gone.some(b => shortType(b.type) === shortType(e.type)
+    && (b.identifier ?? "") === (e.identifier ?? "") && overlapRatio(b.rect, e.rect) >= 0.5);
+  const added = top.elements.filter(e => !big(e) && !base.elements.some(b => samePlace(e, b)) && !relabelled(e));
+  const labelled = added.filter(e => labelOf(e));
+  if (labelled.length < 2 || !labelled.some(e => e.chrome)) return null;
+  return added.some(e => kept.some(b => intersects(e.rect, b.rect))) ? added : null;
+}
+
+/** The identity tokens an overlay contributes (its labelled chrome): a state that shows it must have them. */
+export function overlayTokens(els: NormElement[]): string[] {
+  return [...new Set(els.filter(e => e.chrome && labelOf(e)).map(token))].sort();
 }
 
 export const SAME = 0.85;      // Jaccard at or above: same state

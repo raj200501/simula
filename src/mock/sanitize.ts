@@ -5,8 +5,9 @@ import { fenced } from "../core/llm.ts";
 
 export interface Sanitized { html: string; removed: string[] }
 
-/** Clean an HTML fragment and make sure it has exactly one [data-screen-root] wrapper. */
-export function sanitizeFragment(raw: string, screenId: string): Sanitized {
+/** Clean an HTML fragment and (unless wrap is false, for element fragments) make sure it has exactly
+ *  one [data-screen-root] wrapper. */
+export function sanitizeFragment(raw: string, screenId: string, o: { wrap?: boolean } = {}): Sanitized {
   const removed: string[] = [];
   let html = /```/.test(raw) ? fenced(raw, "html") : raw.trim();
   const body = /<body[^>]*>([\s\S]*?)<\/body>/i.exec(html);
@@ -31,6 +32,7 @@ export function sanitizeFragment(raw: string, screenId: string): Sanitized {
   const ru = html.match(/url\(\s*["']?(?:https?:)?\/\/[^)]*\)/gi);
   if (ru?.length) { removed.push(`${ru.length} remote url() value(s)`); html = html.replace(/url\(\s*["']?(?:https?:)?\/\/[^)]*\)/gi, "none"); }
   html = html.trim();
+  if (o.wrap === false) return { html, removed };
   const roots = html.match(/data-screen-root\s*=/gi)?.length ?? 0;
   if (roots !== 1 || !/^\s*(?:<!--[\s\S]*?-->\s*)*<[a-z]+[^>]*data-screen-root/i.test(html)) {
     if (roots === 0) removed.push("missing [data-screen-root] wrapper (added)");

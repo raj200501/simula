@@ -129,7 +129,7 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
   if (pack && dailyUnits && pack.grants.amount) {
     const x = pack.grants.amount / dailyUnits;
     out.push(x >= 1
-      ? { stat: `Pack = ${num(x)}× a day of ads`, text: `The cheapest pack (${pack.label}, ${pack.priceText}) still buys ${num(x)}× the most ads can earn in a day (${dailyUnits} ${unit} at ${p.caps.perDay}/day).` }
+      ? { stat: `1 pack = ${num(x)} days of ads`, text: `The cheapest pack (${pack.label}, ${pack.priceText}) equals ${num(x)} days of the most ads can earn (${dailyUnits} ${unit} a day at ${p.caps.perDay}/day), so buying stays the fast path.` }
       : { stat: `A day of ads > cheapest pack`, text: `Daily ad earnings (${dailyUnits} ${unit}) exceed the cheapest pack (${pack.label}); guard: ${clip(p.cannibalizationGuard, 90)}` });
   } else if (e.maxDailyEarnUsdAtList != null && e.cheapestPaidUnitUsd != null) {
     const pct = (e.maxDailyEarnUsdAtList / e.cheapestPaidUnitUsd) * 100;

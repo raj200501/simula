@@ -7,7 +7,6 @@
 // the KB headings (to name cited precedents).
 import fs from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 import sharp from "sharp";
 import { chromium } from "playwright";
 import { ROOT } from "../core/config.ts";
@@ -20,6 +19,7 @@ import { proposalEconomics } from "../model/economics.ts";
 import { readQa, rollupCost } from "../report/data.ts";
 import { captureFlow } from "./capture.ts";
 import { renderDeck, type FlowInput } from "./deck.ts";
+import { exportDeck } from "./export.ts";
 import {
   accentOf, claimOf, declineTarget, econTable, judgeChanges, latestFinals, moneyToday, normalizeStoryboard, resourceOf, screenName, shipped, unitOf, whyBullets,
 } from "./facts.ts";
@@ -28,8 +28,8 @@ import { variantFragments, type Fragment } from "./variants.ts";
 
 export async function buildSlides(c: StageCtx, m: ProductModel, modelDir: string, cands: Candidates, j: Judgments): Promise<{ deckHtml: string; pdf: string }> {
   const outDir = ensureDir(c.paths.slides);
-  // Start from clean image folders so a proposal that no longer ships leaves no stale frames behind.
-  for (const d of ["img", "png"]) fs.rmSync(path.join(outDir, d), { recursive: true, force: true });
+  // Start from a clean image folder so a proposal that no longer ships leaves no stale frames behind.
+  fs.rmSync(path.join(outDir, "img"), { recursive: true, force: true });
 
   const ships = shipped(cands, j);
   const missing = latestFinals(j).filter(f => f.verdict === "SHIP" && !ships.some(s => s.p.id === f.proposalId));
@@ -86,20 +86,8 @@ export async function buildSlides(c: StageCtx, m: ProductModel, modelDir: string
     writeText(deckHtml, html);
 
     // 4. Export: one PDF page and one PNG per 1920x1080 section.
-    const pdf = path.join(outDir, "deck.pdf");
-    const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
-    await page.goto(pathToFileURL(deckHtml).href, { waitUntil: "load" });
-    await page.pdf({ path: pdf, width: "1920px", height: "1080px", printBackground: true });
-    await page.emulateMedia({ media: "print" }); // print CSS renders every slide at 1:1
-    const sections = page.locator("section.slide");
-    const n = await sections.count();
-    ensureDir(path.join(outDir, "png"));
-    for (let i = 0; i < n; i++) {
-      const id = (await sections.nth(i).getAttribute("id")) ?? `slide-${i + 1}`;
-      await sections.nth(i).screenshot({ path: path.join(outDir, "png", `${String(i + 1).padStart(2, "0")}-${id.replace(/[^A-Za-z0-9_-]+/g, "_")}.png`) });
-    }
-    await page.close();
-    trace("info", { stage: "slides", slides: n, flowSlides: flows.length, deck: rel(c.paths.out, deckHtml) });
+    const { pdf, pngs } = await exportDeck(browser, deckHtml);
+    trace("info", { stage: "slides", slides: pngs.length, flowSlides: flows.length, deck: rel(c.paths.out, deckHtml) });
     return { deckHtml, pdf };
   } finally {
     await browser.close();

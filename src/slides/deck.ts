@@ -117,7 +117,7 @@ function exchangeBand(d: DeckInput): string {
   const daily = d.flows.filter(f => res && resourceOf(m, f.p.reward.resource)?.id === res.id && f.p.reward.amount != null)
     .reduce((a, f) => a + (f.p.reward.amount as number) * f.p.caps.perDay, 0);
   const right = pack && daily && pack.grants.amount
-    ? `<div class="stat-k">Cannibalization check</div><div class="stat-v">${h(num(pack.grants.amount / daily))}×</div><p>The cheapest pack (${h(pack.label)}, ${h(pack.priceText)}) buys ${h(num(pack.grants.amount / daily))}× the most a user can earn from ads in a day (${daily} ${h(res ? unitOf(res) : "")} across ${d.flows.length === 1 ? "this flow" : "all flows"}, at the caps).</p>`
+    ? `<div class="stat-k">Cannibalization check</div><div class="stat-v">1 pack = ${h(num(pack.grants.amount / daily))} days of ads</div><p>The cheapest pack (${h(pack.label)}, ${h(pack.priceText)}) equals ${h(num(pack.grants.amount / daily))} days of the most a user can earn from ads (${daily} ${h(res ? unitOf(res) : "")} a day across ${d.flows.length === 1 ? "this flow" : "all flows"}, at the caps).</p>`
     : pack
       ? `<div class="stat-k">Cheapest pack</div><div class="stat-v">${h(pack.priceText)}</div><p>${h(pack.label)}. Rewards are capped per day so a full day of ads stays well below it.</p>`
       : `<div class="stat-k">Cheapest pack</div><p>No priced pack was observed, so there is no paid path to cannibalize in currency terms.</p>`;

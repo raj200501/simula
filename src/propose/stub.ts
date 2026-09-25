@@ -225,7 +225,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
 
   const des = a.desire;
   const prem = a.premiumSink, cheapSink = a.cheapSink;
-  if (des && res && prem && cheapSink && des.moment.resource === res.id) {
+  if (des && res && prem && cheapSink && (!des.moment.resource || des.moment.resource === res.id)) {
     const premLabel = prem.context ?? `the ${prem.amount}-${res.unit} mode`;
     const cheapLabel = cheapSink.context ?? "the standard mode";
     const pc: Cogs = cogs === "none" ? "none" : "text-premium";

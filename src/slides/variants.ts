@@ -2,7 +2,7 @@
 // that edits the mock's own HTML for the base screen, so the "What changed" frame looks like the
 // app rather than a generic overlay. The stub returns no fragment: the mock runtime then renders its
 // default (a clone of basedOn with a callout card, or an accent pill button), which is honest and
-// still clearly marked as new.
+// still clearly marked as new. Safety cleaning of the markup happens once, in buildMock.
 import fs from "node:fs";
 import path from "node:path";
 import { MODELS } from "../core/config.ts";
@@ -70,33 +70,13 @@ ${css.slice(0, 16000)}
       stage: "slides", purpose: `variant:${p.id}:${job.id}`, model: MODELS.main, effort: "high",
       system: SYSTEM, prompt, stub: () => "",
     });
-    const html = sanitizeFragment(raw ? fenced(raw, "html") : "", job.id);
-    if (html) out.push({ id: job.id, html });
+    // buildMock sanitizes every fragment (scripts, handlers, remote URLs) and the runtime stamps
+    // data-new on what it inserts, so here we only drop output that contains no markup at all.
+    const html = raw ? fenced(raw, "html").trim() : "";
+    if (/<[a-z]/i.test(html)) out.push({ id: job.id, html });
     else trace("decision", { stage: "slides", proposal: p.id, entry: job.id, choice: "runtime-default", why: raw ? "model output unusable after sanitizing" : "stub: no fragment" });
   }
   return out;
-}
-
-/**
- * Keep generated markup inert and self-contained: drop scripts, handlers, external references and
- * document wrappers, and make sure the added element is marked data-new (the slide outlines it).
- */
-export function sanitizeFragment(html: string, id: string): string {
-  let s = html.trim();
-  const body = /<body[^>]*>([\s\S]*)<\/body>/i.exec(s);
-  if (body) s = body[1].trim();
-  s = s
-    .replace(/<!doctype[^>]*>/gi, "")
-    .replace(/<\/?(html|head|body)[^>]*>/gi, "")
-    .replace(/<(script|iframe|object|embed|link|meta|base)\b[\s\S]*?(<\/\1>|\/?>)/gi, "")
-    .replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(/\s(href|src)\s*=\s*("|')\s*(https?:|javascript:|\/\/)[^"']*\2/gi, "")
-    .replace(/@import[^;]+;/gi, "")
-    .replace(/url\(\s*['"]?\s*(https?:|\/\/)[^)]*\)/gi, "none")
-    .trim();
-  if (!/<[a-z]/i.test(s)) return "";
-  if (!/\sdata-new(\s|=|>)/i.test(s)) s = s.replace(/<([a-z][a-z0-9-]*)/i, `<$1 data-new="${id.replace(/"/g, "")}"`);
-  return s;
 }
 
 function readOr(file: string): string {

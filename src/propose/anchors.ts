@@ -64,7 +64,7 @@ export function sizeReward(m: ProductModel, resource: string): Sized | undefined
   const cogs = cheap ? cogsOf(m, cheap, sinks) : "none";
   const unitName = m.economy.resources.find(r => r.id === resource)?.unit ?? resource;
   if (cheap && (!unit || cheap.amount * unit.min <= ECON.maxRewardToView * d.viewValueUsd.US[1]))
-    return { amount: cheap.amount, buys: `one ${cheap.action}${cheap.context ? ` (${cheap.context})` : ""}`, cogs, cogsUnits: 1 };
+    return { amount: cheap.amount, buys: `one "${cheap.action}"${cheap.context ? ` in ${cheap.context}` : ""}`, cogs, cogsUnits: 1 };
   if (upv) {
     const amount = Math.max(1, Math.floor(upv.max));
     return { amount, buys: `about one view's worth of ${unitName}`, cogs, cogsUnits: cheap ? Math.round((amount / cheap.amount) * 100) / 100 : 0 };
