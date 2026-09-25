@@ -1,4 +1,4 @@
-// The ONLY module that calls Claude. Every call is:
+// The ONLY module that calls an LLM (Claude, or Gemini with a free Google AI Studio key). Every call is:
 //   - schema-bound when it returns data (structured outputs via betaZodOutputFormat -> parsed_output),
 //   - cached on disk (cache/llm/<stage>/...) so runs are reproducible and replayable without a key,
 //   - costed into out/<app>/cost.jsonl and traced,
@@ -13,9 +13,10 @@ import fs from "node:fs";
 import path from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
-import type { z } from "zod";
-import { ROOT, BUDGET_USD, MODELS } from "./config.ts";
-import { canonical, ensureDir, nowIso, sha256 } from "./io.ts";
+import { z } from "zod";
+import { ApiError, GoogleGenAI, ThinkingLevel, type Content, type GenerateContentConfig, type GenerateContentResponse, type Part } from "@google/genai";
+import { ROOT, BUDGET_USD, MODELS, PROVIDER } from "./config.ts";
+import { canonical, ensureDir, nowIso, sha256, sleep } from "./io.ts";
 import { trace } from "./trace.ts";
 
 export type LlmMode = "record" | "replay" | "stub" | "live";
@@ -85,7 +86,7 @@ function price(model: string, u: { input_tokens: number; output_tokens: number; 
 }
 
 let client: Anthropic | null = null;
-function api(): Anthropic {
+function anthropic(): Anthropic {
   if (!client) client = new Anthropic({ maxRetries: 3, timeout: 15 * 60_000 });
   return client;
 }
@@ -172,6 +173,19 @@ async function run<T>(req: LlmReq<T>): Promise<{ value: T | string; cached: bool
   checkBudget(req.stage);
 
   const t0 = Date.now();
+  const r = PROVIDER === "gemini" ? await callGemini(req, model, effort) : await callAnthropic(req, model, effort);
+  record(req, model, effort, r.usage, t0, key, r.stop);
+  const entry: CacheEntry = { purpose: req.purpose, model, effort, parsed: r.parsed, text: req.schema ? undefined : r.text, usage: r.usage, stop: r.stop, ts: nowIso() };
+  ensureDir(path.dirname(file));
+  fs.writeFileSync(file, JSON.stringify(entry, null, 1));
+  return { value: (req.schema ? r.parsed : r.text) as T | string, cached: false };
+}
+
+interface Usage { input: number; output: number; cacheRead: number; cacheWrite: number; thoughts: number }
+interface CallResult { parsed?: unknown; text: string; usage: Usage; stop: string | null }
+
+// ------------------------------------------------------------------ Anthropic (Claude)
+async function callAnthropic<T>(req: LlmReq<T>, model: string, effort: Effort): Promise<CallResult> {
   const params = {
     model,
     max_tokens: req.maxTokens ?? (req.schema ? 16000 : 32000),
@@ -180,42 +194,135 @@ async function run<T>(req: LlmReq<T>): Promise<{ value: T | string; cached: bool
     system: systemBlocks(req.system),
     messages: [{ role: "user" as const, content: content(req as LlmReq<unknown>) }],
   };
-  let parsed: unknown; let text = ""; let usage: Anthropic.Beta.BetaUsage; let stop: string | null;
+  const u = (x: Anthropic.Beta.BetaUsage): Usage => ({ input: x.input_tokens, output: x.output_tokens, cacheRead: x.cache_read_input_tokens ?? 0, cacheWrite: x.cache_creation_input_tokens ?? 0, thoughts: 0 });
   if (req.schema) {
     let maxTokens = params.max_tokens;
     for (let attempt = 0; ; attempt++) {
-      const msg = await api().beta.messages.parse({ ...params, max_tokens: maxTokens, output_config: { effort, format: betaZodOutputFormat(req.schema as never) } });
-      usage = msg.usage; stop = msg.stop_reason;
-      if (stop === "refusal") { record(req, model, effort, usage, t0, key, stop); throw new RefusalError(`${req.purpose}: refused (${msg.stop_details?.category ?? "?"})`); }
-      parsed = msg.parsed_output;
-      if (parsed != null) break;
-      record(req, model, effort, usage, t0, key, stop);
-      if (attempt >= 1) throw new Error(`${req.purpose}: no parseable output after retry (stop=${stop})`);
+      const msg = await anthropic().beta.messages.parse({ ...params, max_tokens: maxTokens, output_config: { effort, format: betaZodOutputFormat(req.schema as never) } });
+      if (msg.stop_reason === "refusal") throw new RefusalError(`${req.purpose}: refused (${msg.stop_details?.category ?? "?"})`);
+      if (msg.parsed_output != null) return { parsed: msg.parsed_output, text: "", usage: u(msg.usage), stop: msg.stop_reason };
+      if (attempt >= 1) throw new Error(`${req.purpose}: no parseable output after retry (stop=${msg.stop_reason})`);
       maxTokens *= 2;
-      trace("failure", { where: `llm:${req.purpose}`, error: `unparseable output (stop=${stop}); retrying with max_tokens=${maxTokens}` });
+      trace("failure", { where: `llm:${req.purpose}`, error: `unparseable output (stop=${msg.stop_reason}); retrying with max_tokens=${maxTokens}` });
     }
-  } else {
-    const stream = api().beta.messages.stream({ ...params, output_config: { effort } });
-    const msg = await stream.finalMessage();
-    usage = msg.usage; stop = msg.stop_reason;
-    if (stop === "refusal") { record(req, model, effort, usage, t0, key, stop); throw new RefusalError(`${req.purpose}: refused`); }
-    text = msg.content.filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text").map(b => b.text).join("");
   }
-  const usd = record(req, model, effort, usage!, t0, key, stop!);
-  const entry: CacheEntry = { purpose: req.purpose, model, effort, parsed, text: req.schema ? undefined : text, usage: usage!, stop: stop!, ts: nowIso() };
-  ensureDir(path.dirname(file));
-  fs.writeFileSync(file, JSON.stringify(entry, null, 1));
-  void usd;
-  return { value: (req.schema ? parsed : text) as T | string, cached: false };
+  const msg = await anthropic().beta.messages.stream({ ...params, output_config: { effort } }).finalMessage();
+  if (msg.stop_reason === "refusal") throw new RefusalError(`${req.purpose}: refused`);
+  const text = msg.content.filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text").map(b => b.text).join("");
+  return { text, usage: u(msg.usage), stop: msg.stop_reason };
 }
 
-function record(req: LlmReq<unknown>, model: string, effort: string, u: Anthropic.Beta.BetaUsage, t0: number, key: string, stop: string | null): number {
-  const usd = price(model, u);
+// ------------------------------------------------------------------ Gemini (Google AI Studio key; free tier works)
+let gem: GoogleGenAI | null = null;
+function gemini(): GoogleGenAI {
+  if (!gem) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY is not set (put it in .env). Or run with --llm stub / --llm replay.");
+    gem = new GoogleGenAI({ apiKey });
+  }
+  return gem;
+}
+
+// Free-tier requests are rate limited per model. Space calls out instead of bursting into 429s;
+// override with SIMULA_RPM if your key has higher limits.
+const nextSlot = new Map<string, number>();
+async function pace(model: string): Promise<void> {
+  const rpm = Number(process.env.SIMULA_RPM || (/lite/.test(model) ? 14 : 9));
+  const gap = 60_000 / Math.max(1, rpm);
+  const now = Date.now();
+  const at = Math.max(now, nextSlot.get(model) ?? 0);
+  nextSlot.set(model, at + gap);
+  if (at > now) await sleep(at - now);
+}
+
+const THINKING: Record<Effort, ThinkingLevel> = { low: ThinkingLevel.LOW, medium: ThinkingLevel.MEDIUM, high: ThinkingLevel.HIGH, xhigh: ThinkingLevel.HIGH, max: ThinkingLevel.HIGH };
+const noThinking = new Set<string>(); // models that rejected thinkingConfig
+
+/** zod -> JSON Schema for Gemini's responseJsonSchema (drop the $schema marker it doesn't need). */
+function geminiSchema(schema: z.ZodType<unknown>): unknown {
+  const js = z.toJSONSchema(schema, { unrepresentable: "any" }) as Record<string, unknown>;
+  delete js.$schema;
+  return js;
+}
+
+async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Promise<CallResult> {
+  const parts: Part[] = [];
+  for (const i of req.images ?? []) {
+    if (i.label) parts.push({ text: i.label });
+    parts.push({ inlineData: { mimeType: i.mediaType, data: imgBytes(i).toString("base64") } });
+  }
+  parts.push({ text: req.prompt });
+  const contents: Content[] = [{ role: "user", parts }];
+  const usage: Usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, thoughts: 0 };
+  let maxOut = Math.min(req.maxTokens ?? (req.schema ? 16000 : 32000), 65536);
+  let feedback = "";
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const config: GenerateContentConfig = { systemInstruction: req.system.join("\n\n"), maxOutputTokens: maxOut };
+    if (!noThinking.has(model)) config.thinkingConfig = { thinkingLevel: THINKING[effort] };
+    if (req.schema) { config.responseMimeType = "application/json"; config.responseJsonSchema = geminiSchema(req.schema as z.ZodType<unknown>); }
+    const turn: Content[] = feedback ? [...contents, { role: "user", parts: [{ text: feedback }] }] : contents;
+    const res = await geminiWithRetry(req.purpose, model, { model, contents: turn, config });
+    const um = res.usageMetadata;
+    usage.input += um?.promptTokenCount ?? 0; usage.output += um?.candidatesTokenCount ?? 0;
+    usage.thoughts += um?.thoughtsTokenCount ?? 0; usage.cacheRead += um?.cachedContentTokenCount ?? 0;
+    const block = res.promptFeedback?.blockReason;
+    const finish = res.candidates?.[0]?.finishReason ?? null;
+    if (block || finish === "SAFETY" || finish === "PROHIBITED_CONTENT" || finish === "BLOCKLIST") throw new RefusalError(`${req.purpose}: blocked by Gemini (${block ?? finish})`);
+    const text = res.text ?? "";
+    if (!req.schema) return { text, usage, stop: finish };
+    if (finish === "MAX_TOKENS") { maxOut = Math.min(maxOut * 2, 65536); trace("failure", { where: `llm:${req.purpose}`, error: `MAX_TOKENS; retrying with ${maxOut}` }); continue; }
+    let raw: unknown;
+    try { raw = JSON.parse(text); } catch { feedback = "Your previous reply was not valid JSON. Reply with JSON only, matching the schema."; continue; }
+    const ok = req.schema.safeParse(raw);
+    if (ok.success) return { parsed: ok.data, text: "", usage, stop: finish };
+    const issues = ok.error.issues.slice(0, 12).map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
+    trace("failure", { where: `llm:${req.purpose}`, error: `schema validation failed: ${issues.slice(0, 300)}` });
+    feedback = `Your previous JSON failed validation: ${issues}. Return the complete corrected JSON.`;
+  }
+  throw new Error(`${req.purpose}: Gemini returned no valid output after 3 attempts`);
+}
+
+async function geminiWithRetry(purpose: string, model: string, params: { model: string; contents: Content[]; config: GenerateContentConfig }): Promise<GenerateContentResponse> {
+  for (let attempt = 0; ; attempt++) {
+    await pace(params.model);
+    try {
+      return await gemini().models.generateContent(params);
+    } catch (e) {
+      const status = e instanceof ApiError ? e.status : 0;
+      const msg = String((e as Error)?.message ?? e);
+      if (status === 400 && params.config.thinkingConfig && /think/i.test(msg)) {
+        noThinking.add(model); delete params.config.thinkingConfig;       // model has no thinking controls
+        continue;
+      }
+      // A model that stays overloaded (503) gets swapped for the fallback Flash model for this call.
+      const fallback = process.env.SIMULA_MODEL_FALLBACK ?? "gemini-3.5-flash";
+      if (status === 503 && attempt >= 1 && fallback && params.model !== fallback) {
+        trace("recovery", { how: `${params.model} overloaded; switching this call to ${fallback}` });
+        params.model = fallback;
+        continue;
+      }
+      if ((status === 429 || status === 503 || status === 500) && attempt < 5) {
+        if (status === 429 && /per ?day|PerDay|daily/i.test(msg)) throw new BudgetExceeded(`Gemini free-tier DAILY quota reached for ${model}. Resume tomorrow (cached calls replay free), or set SIMULA_MODEL / SIMULA_MODEL_FAST to another Flash model.`);
+        const m = /retry(?:Delay"?:?\s*"?| in )(\d+(?:\.\d+)?)s/i.exec(msg);
+        const wait = m ? Math.ceil(Number(m[1]) * 1000) + 500 : Math.min(60_000, 4000 * 2 ** attempt);
+        trace("failure", { where: `gemini:${purpose}`, error: `${status} ${msg.slice(0, 160)}` });
+        trace("recovery", { how: `waited ${Math.round(wait / 1000)}s and retried (attempt ${attempt + 1})` });
+        await sleep(wait);
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
+function record(req: LlmReq<unknown>, model: string, effort: string, u: Usage, t0: number, key: string, stop: string | null): number {
+  // Gemini free tier costs nothing; tokens are still logged so the ledger shows real usage.
+  const usd = PROVIDER === "gemini" ? 0 : price(model, { input_tokens: u.input, output_tokens: u.output, cache_read_input_tokens: u.cacheRead, cache_creation_input_tokens: u.cacheWrite });
   spent.total += usd;
   spent.byStage.set(req.stage, (spent.byStage.get(req.stage) ?? 0) + usd);
   stats.calls++; stats.usd += usd;
-  ledger({ ts: nowIso(), app: ctx.app, stage: req.stage, purpose: req.purpose, model, effort, in: u.input_tokens, out: u.output_tokens,
-    cacheRead: u.cache_read_input_tokens ?? 0, cacheWrite: u.cache_creation_input_tokens ?? 0, usd: Number(usd.toFixed(5)), ms: Date.now() - t0, key, cached: false, stop });
+  ledger({ ts: nowIso(), app: ctx.app, stage: req.stage, purpose: req.purpose, provider: PROVIDER, model, effort, in: u.input, out: u.output, thoughts: u.thoughts,
+    cacheRead: u.cacheRead, cacheWrite: u.cacheWrite, usd: Number(usd.toFixed(5)), ms: Date.now() - t0, key, cached: false, stop });
   trace("llm_call", { purpose: req.purpose, key, cached: false, usd: Number(usd.toFixed(4)), stop });
   return usd;
 }
