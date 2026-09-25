@@ -5,6 +5,19 @@ import { z } from "zod";
 
 export const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
 
+// Load <repo>/.env before anything reads process.env (ESM imports are hoisted, so this has to
+// live here rather than in cli.ts). Existing environment variables always win.
+(function loadDotEnv() {
+  const f = path.join(ROOT, ".env");
+  if (!fs.existsSync(f)) return;
+  for (const line of fs.readFileSync(f, "utf8").split(/\r?\n/)) {
+    const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/.exec(line);
+    if (!m || line.trimStart().startsWith("#")) continue;
+    const v = m[2].replace(/^(['"])(.*)\1$/, "$2");
+    if (process.env[m[1]] === undefined && v !== "") process.env[m[1]] = v;
+  }
+})();
+
 export const AppConfig = z.object({
   id: z.string(),
   package: z.string(),
@@ -69,10 +82,26 @@ export function paths(appId: string, opts: { modelDir?: string; outRoot?: string
   };
 }
 
+/**
+ * Which LLM provider to call. Explicit SIMULA_PROVIDER wins; otherwise whichever key is present
+ * (a Gemini key from Google AI Studio works on the free tier). Stub/replay modes need no key.
+ */
+export type Provider = "anthropic" | "gemini";
+export const PROVIDER: Provider =
+  (process.env.SIMULA_PROVIDER as Provider) ||
+  (process.env.ANTHROPIC_API_KEY ? "anthropic" : process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY ? "gemini" : "anthropic");
+
+const DEFAULT_MODELS: Record<Provider, { main: string; fast: string }> = {
+  // Claude: the most capable general model for everything.
+  anthropic: { main: "claude-opus-5", fast: "claude-opus-5" },
+  // Gemini free tier: Flash models only (Pro models have no free quota). Flash-Lite is the
+  // high-volume per-screen annotator; Flash does generation, proposals and judging.
+  gemini: { main: "gemini-3.8-flash", fast: "gemini-3.5-flash-lite" },
+};
+
 export const MODELS = {
-  // Defaults follow the Claude API guidance: claude-opus-5 unless you choose otherwise.
-  main: process.env.SIMULA_MODEL || "claude-opus-5",
-  fast: process.env.SIMULA_MODEL_FAST || process.env.SIMULA_MODEL || "claude-opus-5",
+  main: process.env.SIMULA_MODEL || DEFAULT_MODELS[PROVIDER].main,
+  fast: process.env.SIMULA_MODEL_FAST || DEFAULT_MODELS[PROVIDER].fast,
 };
 
 export const BUDGET_USD = Number(process.env.SIMULA_BUDGET_USD || 150);

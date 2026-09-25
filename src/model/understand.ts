@@ -90,17 +90,18 @@ export function loadModel(modelDir: string): ProductModel {
 // ------------------------------------------------------------------------------------------------
 // Hand overrides: <modelDir>/overrides.json is a JSON-merge patch in which arrays are addressed by
 // item id, e.g. {"screens":{"s03":{"name":"Chat"}}, "economy":{"sinks":{"k1":{"amount":90}}}}.
-// null deletes; an unknown id adds an item. Applied on every load (idempotent) and recorded in
-// model.human, so "what did a person fix by hand" has an answer. Economy edits re-derive the numbers.
+// null deletes; an unknown id adds an item; id-less items use a natural key (see matchIndex).
+// Applied on every load (idempotent) and recorded in model.human, so "what did a person fix by
+// hand" has an answer. Economy edits re-derive the numbers.
 // ------------------------------------------------------------------------------------------------
 type J = unknown;
 const isObj = (v: J): v is Record<string, J> => !!v && typeof v === "object" && !Array.isArray(v);
 
+/** Items without an id are addressed by a natural key: entitlements by plan, ads by "screen/el"
+ *  (or "screen"). Never by position: a positional delete would remove another item on every load. */
 function matchIndex(arr: J[], key: string): number {
-  let i = arr.findIndex(x => isObj(x) && x.id === key);
-  if (i < 0) i = arr.findIndex(x => isObj(x) && x.plan === key); // entitlements have no id
-  if (i < 0 && /^\d+$/.test(key) && Number(key) < arr.length) i = Number(key);
-  return i;
+  const natural = (x: Record<string, J>) => x.id ?? x.plan ?? (typeof x.screen === "string" && !("id" in x) ? (x.el ? `${x.screen}/${x.el}` : x.screen) : undefined);
+  return arr.findIndex(x => isObj(x) && natural(x) === key);
 }
 
 function merge(target: J, patch: J, at: string, log: string[]): J {
