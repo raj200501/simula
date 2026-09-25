@@ -132,6 +132,7 @@
 - "Third, the verdict is computed in code from the scores and gates. Thresholds are explicit."
 - "Weak proposals go back with required changes, at most twice. The reviser never sees the scores."
 - "Only SHIP becomes a slide. REVISE is never promoted."
+- "Last, a portfolio check in code: two SHIPs that are the same idea in different words would split one moment. The better-scored one ships; the other gets one revision to become different, or it's rejected."
 - "How do I know the judge is good? This table."
 - "I take good examples from the knowledge base, and break exactly one thing in each copy."
 - "Then I check that each broken one is caught, and whether code or the model caught it. <Say the numbers from out/luzia/NUMBERS.md, "Judge self-check".>"
