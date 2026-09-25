@@ -14,6 +14,7 @@ export async function exportDeck(browser: Browser, deckHtml: string): Promise<{ 
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   try {
     await page.goto(pathToFileURL(deckHtml).href, { waitUntil: "load" });
+    await page.evaluate("document.fonts ? document.fonts.ready.then(() => true) : true"); // bundled fonts before PDF/PNG
     await page.pdf({ path: pdf, width: "1920px", height: "1080px", printBackground: true });
     await page.emulateMedia({ media: "print" }); // print CSS renders every slide at 1:1, no gaps
     const sections = page.locator("section.slide");

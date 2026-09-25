@@ -78,7 +78,8 @@ describe("evalJudge (stub)", () => {
 
   test("builds 5 positives and 8 single-fault negatives grounded in the model", () => {
     const { items, skipped } = calibrationItems(m);
-    assert.deepEqual(skipped, []);
+    // Only the entitlement items do not apply to a consumable-economy model.
+    assert.deepEqual(skipped.map(x => x.id).sort(), ["neg-account-swap", "neg-entitlement-amount", "pos-ent-decline", "pos-ent-sample", "pos-ent-tasks"]);
     assert.equal(items.filter(i => i.kind === "positive").length, 5);
     assert.equal(items.filter(i => i.kind === "negative").length, 8);
     const serial = items.find(i => i.id === "pos-serial")!.proposal;

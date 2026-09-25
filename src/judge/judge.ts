@@ -53,6 +53,13 @@ ${LLM_GATES.map(g => `   - ${g.id} (${g.severity}): ${g.question}`).join("\n")}
    pasted into any app score low.
 6. requiredChanges: the concrete changes that would make the proposal shippable, most important first (empty if
    none). topConcern: the single most important required change.
+7. Entitlements are not currencies. A plan, tier, membership or account is granted as a time box ("30 minutes
+   of <feature>") or a number of uses of a named feature ("3 <feature> answers"), never as "+N <tier>" or
+   "+1 <membership>". A reward that treats an entitlement as a currency scores value-moment-fit at most 2 and
+   earns no specificity credit for that noun.
+8. An ad never stands in for creating an account. On a sign-up wall the account stays the first path; at most a
+   gated feature may be sampled after the user declines. Account-only features (saving, profile settings) are
+   never rewards.
 </procedure>
 
 <criteria>

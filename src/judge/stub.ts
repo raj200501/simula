@@ -12,7 +12,8 @@
 // Rounds judged by it are marked judgedBy "stub".
 import type { Criterion, GateResult, ProductModel, Proposal } from "../core/schema.ts";
 import { ECON } from "../model/economics.ts";
-import { grounding } from "./gates.ts";
+import { isConsumable } from "../propose/anchors.ts";
+import { grounding, rewardCoherence } from "./gates.ts";
 import { LLM_GATES, type LlmGateId } from "./rubric.ts";
 import { WEIGHTS } from "./verdict.ts";
 
@@ -37,6 +38,8 @@ export function unnegated(text: string, re: RegExp): string | null {
   return null;
 }
 
+const escapeRe = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const nameRe = (r: { name: string; unit: string }) => new RegExp(`\\b(${escapeRe(r.name)}|${escapeRe(r.unit)})\\b`, "i");
 const offerText = (p: Proposal) => `${p.offer.title}. ${p.offer.body} [${p.offer.cta}] [${p.offer.decline}]`;
 const userText = (p: Proposal) => [p.title, p.oneLiner, p.trigger, offerText(p), p.reward.what, ...p.storyboard.map(b => b.caption), ...p.patch.newElements.map(e => e.change)].join(" \n");
 
@@ -45,7 +48,8 @@ export function appNouns(m: ProductModel): string[] {
   const STOP = new Set(["ok", "cancel", "close", "back", "next", "yes", "no", "done", "send", "message", "home", "settings", "profile", "search", "more", "menu", "the", "and", "for", "now", "not",
     "there", "their", "about", "which", "would", "these", "those", "other", "after", "before", "today", "first", "every", "while", "where", "still", "again", "right", "great", "hello", "thanks"]);
   const raw = [
-    ...m.economy.resources.flatMap(r => [r.name, r.unit]),
+    // Entitlement names ("Membership", "tier") are not credited: used as a currency they are a red flag.
+    ...m.economy.resources.filter(r => isConsumable(r)).flatMap(r => [r.name, r.unit]),
     ...m.economy.sinks.flatMap(k => [k.context ?? ""]),
     ...m.economy.offers.map(o => o.label),
     ...m.economy.entitlements.flatMap(x => [x.plan, ...x.benefits]),
@@ -84,10 +88,12 @@ function gates(p: Proposal, m: ProductModel): JudgeOut["gates"] {
 
   const action = /\b(play|watch|game|video)\b/i.test(offer);
   const amountShown = p.reward.amount !== undefined && offer.includes(String(p.reward.amount));
-  const unitShown = !!res && new RegExp(`\\b(${res.name}|${res.unit})\\b`, "i").test(offer);
+  const consumable = isConsumable(res);
+  const unitShown = !!res && consumable && nameRe(res).test(offer);
   const durShown = !!p.reward.duration && (/\d+/.exec(p.reward.duration)?.[0] ?? p.reward.duration).length > 0 && offer.includes(/\d+/.exec(p.reward.duration)?.[0] ?? p.reward.duration);
   const whatShown = nounHits(offer, p.reward.what.toLowerCase().split(/\W+/).filter(w => w.length >= 5)).length > 0;
-  const disclosed = action && (res ? amountShown && unitShown : p.reward.duration ? durShown : whatShown);
+  // A consumable is disclosed as an amount of its unit; an entitlement sample by its feature or time box.
+  const disclosed = action && (consumable ? amountShown && unitShown : p.reward.duration ? durShown || whatShown : whatShown);
 
   const penalty = unnegated(`${p.trigger}\n${offer}\n${p.eligibility}`, /\b(penalt\w*|locked out|can'?t continue|must watch|lose (your|their|the))\b/i);
   const decline = !p.offer.decline.trim() ? "no decline option" : confirmshame ?? penalty;
@@ -135,8 +141,12 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     }
     const cheapest = m.economy.sinks.filter(k => k.resource === p.reward.resource && k.amount > 0).sort((a, b) => a.amount - b.amount)[0];
     if (p.reward.amount !== undefined && cheapest && p.reward.amount < cheapest.amount / 2) { v -= 1; why += `; ${p.reward.amount} does not buy even one "${cheapest.action}" (${cheapest.amount}) [ANTI-3]`; }
-    if (res && !new RegExp(`\\b(${res.name}|${res.unit})\\b`, "i").test(offer)) { v -= 1; why += `; the offer never names ${res.name}`; }
+    if (res && isConsumable(res) && !nameRe(res).test(offer)) { v -= 1; why += `; the offer never names ${res.name}`; }
     if (!sized && !p.reward.resource) { v -= 1; why += "; the reward has no amount or duration"; }
+    // A reward must name something this app has (a feature, mode, plan or its currency) [ANTI-3].
+    if (!(isConsumable(res) && p.reward.amount != null) && !nounHits(p.reward.what, appNouns(m)).length) { v -= 1; why += "; the reward names nothing this app has"; }
+    const incoherent = rewardCoherence(p, m);
+    if (incoherent.length) { v = Math.min(v, 2); why += `; incoherent reward: ${incoherent[0]}`; }
     // [AI-17]: an ad-free window is only worth something where ads actually interrupt.
     if (/ad-?free|without (?:the )?(?:in-feed )?ads|no ads/i.test(p.reward.what) && !m.economy.ads.some(x => x.format === "interstitial" || x.format === "banner")) {
       v -= 2; why += `; the app runs no interstitial or banner ads (${m.economy.ads.map(x => x.format).join(", ") || "none"}), so an ad-free window removes little [AI-17][ANTI-3]`;
@@ -167,11 +177,15 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     if (p.cannibalizationGuard.trim().length < 30) { v -= 1; why.push("no real cannibalization guard"); }
     if (/\bunlimited\b/i.test(p.reward.what) && !p.reward.duration) { v -= 1; why.push("unlimited reward with no time box"); }
     // Sampling the paid plan's core benefit is fine only if short [TAX-2]; long or repeated is [ANTI-4].
-    const benefit = m.economy.entitlements.flatMap(x => x.benefits).find(b => nounHits(p.reward.what, b.toLowerCase().split(/\W+/).filter(w => w.length >= 5)).length > 0);
+    // A sample that expires tonight costs 1; a longer time box 2; days of the plan per view 3 [ANTI-4].
+    const benefit = m.economy.entitlements.flatMap(x => x.benefits).find(b => nounHits(p.reward.what, b.toLowerCase().split(/\W+/).filter(w => w.length >= 5)).length > 0)
+      ?? m.economy.entitlements.map(x => x.plan).find(pl => new RegExp(`(^|\\W)${escapeRe(pl)}(\\W|$)`, "i").test(p.reward.what));
     if (benefit) {
-      const min = Number(/(\d+)\s*min/i.exec(p.reward.duration ?? "")?.[1] ?? 0) + 60 * Number(/(\d+)\s*h/i.exec(p.reward.duration ?? "")?.[1] ?? 0);
-      v -= min > 30 || /day|week/i.test(p.reward.duration ?? "") ? 2 : 1;
-      why.push(`samples the paid plan's "${benefit}"${p.reward.duration ? ` for ${p.reward.duration}` : ""}`);
+      const d = p.reward.duration ?? "";
+      const min = Number(/(\d+)\s*min/i.exec(d)?.[1] ?? 0) + 60 * Number(/(\d+)\s*h/i.exec(d)?.[1] ?? 0);
+      const days = /\d+\s*(?:days?|weeks?|months?)\b|\b(?:a|one) (?:week|month)\b/i.test(d);
+      v -= days ? 3 : min > 30 ? 2 : 1;
+      why.push(`samples the paid plan's "${benefit}"${d ? ` for ${d}` : ""}${days ? ": days of the plan per view [ANTI-4]" : ""}`);
     }
     add("cannibalization-safety", v, why.length ? why.join("; ") : `Non-payers only, ${p.caps.perDay}/day, reward far below the cheapest pack (${e.maxDailyEarnUsdAtList != null ? `$${e.maxDailyEarnUsdAtList}/day max vs $${e.cheapestPaidUnitUsd}` : "time-boxed"}).`);
   }
@@ -216,6 +230,7 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     const idShare = Math.max(0, 1 - bad / refs);
     let v = 1 + Math.min(3, Math.floor(inAll.length / 2)) + (idShare >= 0.9 ? 1 : 0);
     if (!inOffer.length) v = Math.min(v, 2);
+    if (rewardCoherence(p, m).length) v = Math.min(v, 2); // an entitlement used as a currency earns no credit
     add("specificity", v, `app nouns in the offer: ${inOffer.slice(0, 5).map(n => `"${n}"`).join(", ") || "none"}; overall ${inAll.length}; ${bad ? `${bad} unresolved ids` : "all ids resolve"}`);
   }
 

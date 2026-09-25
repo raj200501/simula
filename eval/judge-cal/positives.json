@@ -1,41 +1,166 @@
 {
-  "about": "Judge calibration positives (expect SHIP). Each adapts one KB precedent to the target app's own model. {{key}} placeholders are resolved by src/judge/calibrate.ts from the model's anchors (the wall, the decline, the hub, the desire moment, the primary resource and its exchange-rate-sized reward). An item whose `requires` anchors are missing is skipped and reported. Never edit items to make the judge pass.",
+  "about": "Judge calibration positives (expect SHIP). Each adapts one KB precedent to the target app's own model. {{key}} placeholders are resolved by src/judge/calibrate.ts from the model's anchors (the wall, the decline, the hub, the desire moment, the primary resource and its exchange-rate-sized reward). Items for consumable economies (a priced or metered resource) come first; items for entitlement apps (a plan feature behind a paywall or sign-up wall, sampled as a number of uses or a time box, never '+1 tier') follow. An item whose `requires` anchors are missing is skipped and reported. Never edit items to make the judge pass.",
   "items": [
     {
       "id": "pos-serial",
       "precedent": "EX-SERIAL",
       "pattern": "Rate-limited 'wait or watch' unlock (Tapas: 1 ad = 1 episode, 3 per day)",
-      "requires": ["res.id", "wall.moment", "reward.amount"],
+      "requires": [
+        "res.id",
+        "wall.moment",
+        "reward.amount"
+      ],
       "proposal": {
-        "id": "pos-serial", "version": 1,
+        "id": "pos-serial",
+        "version": 1,
         "title": "Wait or play: +{{reward.amount}} {{res.unit}} at {{wall.screenName}}",
         "oneLiner": "A rate-limited unlock: when {{res.name}} run out, one 15-second game unlocks +{{reward.amount}} {{res.unit}} ({{reward.buys}}), up to 3 times a day.",
-        "case": "existing", "archetype": "TAX-3", "beyondBaseline": true,
-        "anchor": { "moments": ["{{wall.moment}}"], "economy": ["{{res.id}}", "{{cheap.id}}"] },
+        "case": "existing",
+        "archetype": "TAX-3",
+        "beyondBaseline": true,
+        "anchor": {
+          "moments": [
+            "{{wall.moment}}"
+          ],
+          "economy": [
+            "{{res.id}}",
+            "{{cheap.id}}"
+          ]
+        },
         "surface": "{{wall.screen}}",
         "trigger": "{{wall.screenName}} opens because {{res.name}} are too low for \"{{wall.intent}}\"; the option sits under the paid refill and appears only after the previous reply has finished.",
         "eligibility": "Non-payers only, returning users from their second session on; never shown to subscribers or within 24 h of a purchase.",
-        "offer": { "title": "Out of {{res.name}}", "body": "Play a 15-second game to unlock +{{reward.amount}} {{res.unit}} now. 3 per day.", "cta": "Play for +{{reward.amount}}", "decline": "No thanks" },
-        "simula": { "unit": "SIM-RWD", "entry": "button", "minPlaySec": 15 },
-        "reward": { "what": "+{{reward.amount}} {{res.unit}}", "resource": "{{res.id}}", "amount": "{{reward.amount}}", "grantOn": "REWARD_VERIFIED" },
-        "caps": { "perDay": 3, "cooldownMin": 10 },
+        "offer": {
+          "title": "Out of {{res.name}}",
+          "body": "Play a 15-second game to unlock +{{reward.amount}} {{res.unit}} now. 3 per day.",
+          "cta": "Play for +{{reward.amount}}",
+          "decline": "No thanks"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "button",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "+{{reward.amount}} {{res.unit}}",
+          "resource": "{{res.id}}",
+          "amount": "{{reward.amount}}",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 3,
+          "cooldownMin": 10
+        },
         "cannibalizationGuard": "Rate-limited to 3 a day, like 1 ad = 1 episode; the paid refill stays the first choice; one view is a small slice of {{offer.cheapest}}.",
-        "assumptions": { "engagedShare": 0.2, "viewsPerEngager": 1.5, "cogs": "{{reward.cogs}}", "cogsUnitsPerView": "{{reward.cogsUnits}}" },
-        "kpis": { "primary": "Wall unlocks per DAU and total revenue per user against the holdout", "guardrails": ["Pack conversion non-inferior within -3% relative", "D7 retention"], "holdout": "10% user-level holdout for 4 weeks" },
-        "precedents": ["EX-SERIAL", "TAX-3", "TAX-1"],
-        "risks": ["Some pack buyers may wait for the free unlock."],
+        "assumptions": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 1.5,
+          "cogs": "{{reward.cogs}}",
+          "cogsUnitsPerView": "{{reward.cogsUnits}}"
+        },
+        "kpis": {
+          "primary": "Wall unlocks per DAU and total revenue per user against the holdout",
+          "guardrails": [
+            "Pack conversion non-inferior within -3% relative",
+            "D7 retention"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "EX-SERIAL",
+          "TAX-3",
+          "TAX-1"
+        ],
+        "risks": [
+          "Some pack buyers may wait for the free unlock."
+        ],
         "evidence": "{{wall.evidence}}",
         "patch": {
           "newScreens": [],
-          "newElements": [{ "id": "ne1", "in": "{{wall.screen}}", "near": "{{wall.upsellEl}}", "place": "after", "change": "Secondary button \"Play 15 s: +{{reward.amount}} {{res.unit}} (3 left today)\"" }],
-          "newEdges": [{ "from": "{{wall.screen}}", "el": "ne1", "to": "rwd", "effects": [{ "resource": "{{res.id}}", "delta": "{{reward.amount}}" }] }]
+          "newElements": [
+            {
+              "id": "ne1",
+              "in": "{{wall.screen}}",
+              "near": "{{wall.upsellEl}}",
+              "place": "after",
+              "change": "Secondary button \"Play 15 s: +{{reward.amount}} {{res.unit}} (3 left today)\""
+            }
+          ],
+          "newEdges": [
+            {
+              "from": "{{wall.screen}}",
+              "el": "ne1",
+              "to": "rwd",
+              "effects": [
+                {
+                  "resource": "{{res.id}}",
+                  "delta": "{{reward.amount}}"
+                }
+              ]
+            }
+          ]
         },
         "storyboard": [
-          { "phase": "today", "screen": "{{wall.from}}", "counters": [{ "resource": "{{res.id}}", "value": "{{balance.low}}" }], "overlay": "none", "callouts": [], "caption": "{{res.name}} at {{balance.low}}: not enough for \"{{wall.intent}}\"." },
-          { "phase": "change", "screen": "{{wall.screen}}", "counters": [], "overlay": "none", "callouts": [{ "node": "ne1", "text": "NEW: play to unlock" }], "caption": "A rate-limited rewarded option under the paid refill." },
-          { "phase": "offer", "screen": "{{wall.screen}}", "counters": [], "overlay": "invite", "callouts": [{ "node": "ne1", "text": "Reward and length disclosed" }], "caption": "\"Play for +{{reward.amount}}\" or \"No thanks\"." },
-          { "phase": "ad", "screen": "{{wall.screen}}", "counters": [], "overlay": "game", "callouts": [], "caption": "A 15-second game; the grant waits for REWARD_VERIFIED." },
-          { "phase": "value", "screen": "{{wall.from}}", "counters": [{ "resource": "{{res.id}}", "value": "{{balance.after}}" }], "overlay": "verified", "callouts": [], "caption": "+{{reward.amount}} {{res.unit}}; back where the user was." }
+          {
+            "phase": "today",
+            "screen": "{{wall.from}}",
+            "counters": [
+              {
+                "resource": "{{res.id}}",
+                "value": "{{balance.low}}"
+              }
+            ],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "{{res.name}} at {{balance.low}}: not enough for \"{{wall.intent}}\"."
+          },
+          {
+            "phase": "change",
+            "screen": "{{wall.screen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: play to unlock"
+              }
+            ],
+            "caption": "A rate-limited rewarded option under the paid refill."
+          },
+          {
+            "phase": "offer",
+            "screen": "{{wall.screen}}",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Reward and length disclosed"
+              }
+            ],
+            "caption": "\"Play for +{{reward.amount}}\" or \"No thanks\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "{{wall.screen}}",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "A 15-second game; the grant waits for REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "{{wall.from}}",
+            "counters": [
+              {
+                "resource": "{{res.id}}",
+                "value": "{{balance.after}}"
+              }
+            ],
+            "overlay": "verified",
+            "callouts": [],
+            "caption": "+{{reward.amount}} {{res.unit}}; back where the user was."
+          }
         ]
       }
     },
@@ -43,40 +168,162 @@
       "id": "pos-music",
       "precedent": "EX-MUSIC",
       "pattern": "Session unlock triggered by an intent signal (Pandora Premium Access: search -> 15 s video -> on-demand session)",
-      "requires": ["res.id", "desire.moment", "reward.amount"],
+      "requires": [
+        "res.id",
+        "desire.moment",
+        "reward.amount"
+      ],
       "proposal": {
-        "id": "pos-music", "version": 1,
+        "id": "pos-music",
+        "version": 1,
         "title": "Intent-triggered session on {{desire.screenName}}",
         "oneLiner": "When the user reaches for more on {{desire.screenName}} with too few {{res.name}}, one 15-second game opens a 10-minute session of up to 2 {{cheap.label}} messages at no {{res.name}} cost.",
-        "case": "product-change", "archetype": "TAX-2", "beyondBaseline": true,
+        "case": "product-change",
+        "archetype": "TAX-2",
+        "beyondBaseline": true,
         "anchor": {
-          "moments": ["{{desire.moment}}"], "economy": ["{{res.id}}", "{{cheap.id}}"],
-          "newMechanic": { "name": "Sponsored session", "description": "A 10-minute time box in which up to 2 {{cheap.label}} messages cost no {{res.name}}.", "whyNeeded": "Spending is per message today; there is no way to keep going for a few minutes without paying.", "removesFreeValue": false }
+          "moments": [
+            "{{desire.moment}}"
+          ],
+          "economy": [
+            "{{res.id}}",
+            "{{cheap.id}}"
+          ],
+          "newMechanic": {
+            "name": "Sponsored session",
+            "description": "A 10-minute time box in which up to 2 {{cheap.label}} messages cost no {{res.name}}.",
+            "whyNeeded": "Spending is per message today; there is no way to keep going for a few minutes without paying.",
+            "removesFreeValue": false
+          }
         },
         "surface": "{{desire.screen}}",
         "trigger": "The user taps {{desire.modeLabel}} while {{res.name}} are below its price, after the reply has finished (the intent signal, as with a song search).",
         "eligibility": "Non-payers only, returning users from their second session on; never shown to subscribers.",
-        "offer": { "title": "Keep going for 10 minutes?", "body": "Play a 15-second game: your next 2 {{cheap.label}} messages in the next 10 minutes cost no {{res.name}}.", "cta": "Play to unlock", "decline": "Not now" },
-        "simula": { "unit": "SIM-RWD", "entry": "button", "minPlaySec": 15 },
-        "reward": { "what": "Up to 2 {{cheap.label}} messages at no {{res.name}} cost for 10 minutes", "duration": "10 minutes", "grantOn": "REWARD_VERIFIED" },
-        "caps": { "perDay": 1, "cooldownMin": 0 },
+        "offer": {
+          "title": "Keep going for 10 minutes?",
+          "body": "Play a 15-second game: your next 2 {{cheap.label}} messages in the next 10 minutes cost no {{res.name}}.",
+          "cta": "Play to unlock",
+          "decline": "Not now"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "button",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "Up to 2 {{cheap.label}} messages at no {{res.name}} cost for 10 minutes",
+          "duration": "10 minutes",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 1,
+          "cooldownMin": 0
+        },
         "cannibalizationGuard": "Once a day, 10 minutes, at most 2 messages, visibly expiring; packs remain the only way to keep going longer.",
-        "assumptions": { "engagedShare": 0.12, "viewsPerEngager": 1, "cogs": "{{reward.cogs}}", "cogsUnitsPerView": "{{session.cogsUnits}}" },
-        "kpis": { "primary": "Sessions unlocked per DAU and later pack purchases against the holdout", "guardrails": ["Pack conversion non-inferior within -3% relative", "Messages per DAU"], "holdout": "10% user-level holdout for 4 weeks" },
-        "precedents": ["EX-MUSIC", "TAX-2", "TAX-11"],
-        "risks": ["A session can feel like a trial that ends abruptly; show the countdown."],
+        "assumptions": {
+          "engagedShare": 0.12,
+          "viewsPerEngager": 1,
+          "cogs": "{{reward.cogs}}",
+          "cogsUnitsPerView": "{{session.cogsUnits}}"
+        },
+        "kpis": {
+          "primary": "Sessions unlocked per DAU and later pack purchases against the holdout",
+          "guardrails": [
+            "Pack conversion non-inferior within -3% relative",
+            "Messages per DAU"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "EX-MUSIC",
+          "TAX-2",
+          "TAX-11"
+        ],
+        "risks": [
+          "A session can feel like a trial that ends abruptly; show the countdown."
+        ],
         "evidence": "{{desire.evidence}}",
         "patch": {
           "newScreens": [],
-          "newElements": [{ "id": "ne1", "in": "{{desire.screen}}", "near": "{{desire.modeEl}}", "place": "after", "change": "Chip \"Play 15 s: 10 free minutes\"" }],
-          "newEdges": [{ "from": "{{desire.screen}}", "el": "ne1", "to": "rwd", "effects": [] }]
+          "newElements": [
+            {
+              "id": "ne1",
+              "in": "{{desire.screen}}",
+              "near": "{{desire.modeEl}}",
+              "place": "after",
+              "change": "Chip \"Play 15 s: 10 free minutes\""
+            }
+          ],
+          "newEdges": [
+            {
+              "from": "{{desire.screen}}",
+              "el": "ne1",
+              "to": "rwd",
+              "effects": []
+            }
+          ]
         },
         "storyboard": [
-          { "phase": "today", "screen": "{{desire.screen}}", "counters": [{ "resource": "{{res.id}}", "value": "{{balance.low}}" }], "overlay": "none", "callouts": [], "caption": "The user wants to keep going but {{res.name}} are low." },
-          { "phase": "change", "screen": "{{desire.screen}}", "counters": [], "overlay": "none", "callouts": [{ "node": "ne1", "text": "NEW: session chip" }], "caption": "An intent-triggered session offer." },
-          { "phase": "offer", "screen": "{{desire.screen}}", "counters": [], "overlay": "invite", "callouts": [{ "node": "ne1", "text": "Duration and cap disclosed" }], "caption": "\"Play to unlock\" or \"Not now\"." },
-          { "phase": "ad", "screen": "{{desire.screen}}", "counters": [], "overlay": "game", "callouts": [], "caption": "A 15-second game; unlock on REWARD_VERIFIED." },
-          { "phase": "value", "screen": "{{desire.screen}}", "counters": [], "overlay": "verified", "callouts": [{ "node": "ne1", "text": "10:00 left" }], "caption": "Two messages free for 10 minutes, with a countdown." }
+          {
+            "phase": "today",
+            "screen": "{{desire.screen}}",
+            "counters": [
+              {
+                "resource": "{{res.id}}",
+                "value": "{{balance.low}}"
+              }
+            ],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "The user wants to keep going but {{res.name}} are low."
+          },
+          {
+            "phase": "change",
+            "screen": "{{desire.screen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: session chip"
+              }
+            ],
+            "caption": "An intent-triggered session offer."
+          },
+          {
+            "phase": "offer",
+            "screen": "{{desire.screen}}",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Duration and cap disclosed"
+              }
+            ],
+            "caption": "\"Play to unlock\" or \"Not now\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "{{desire.screen}}",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "A 15-second game; unlock on REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "{{desire.screen}}",
+            "counters": [],
+            "overlay": "verified",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "10:00 left"
+              }
+            ],
+            "caption": "Two messages free for 10 minutes, with a countdown."
+          }
         ]
       }
     },
@@ -84,37 +331,166 @@
       "id": "pos-duo",
       "precedent": "EX-DUO",
       "pattern": "Partial refill of the depleting resource where the balance is shown (Duolingo Energy: watch to earn back some Energy)",
-      "requires": ["res.id", "hub.moment", "reward.amount"],
+      "requires": [
+        "res.id",
+        "hub.moment",
+        "reward.amount"
+      ],
       "proposal": {
-        "id": "pos-duo", "version": 1,
+        "id": "pos-duo",
+        "version": 1,
         "title": "Earn back {{res.name}} from the balance on {{hub.screenName}}",
         "oneLiner": "Tapping the {{res.name}} balance on {{hub.screenName}} while it is low offers a 15-second game for +{{reward.amount}} {{res.unit}}, up to 3 times a day.",
-        "case": "existing", "archetype": "TAX-1", "beyondBaseline": true,
-        "anchor": { "moments": ["{{hub.moment}}"], "economy": ["{{res.id}}", "{{cheap.id}}"] },
+        "case": "existing",
+        "archetype": "TAX-1",
+        "beyondBaseline": true,
+        "anchor": {
+          "moments": [
+            "{{hub.moment}}"
+          ],
+          "economy": [
+            "{{res.id}}",
+            "{{cheap.id}}"
+          ]
+        },
         "surface": "{{hub.screen}}",
         "trigger": "The user taps the {{res.name}} balance on {{hub.screenName}} while it is below {{balance.threshold}}; nothing opens on its own.",
         "eligibility": "Non-payers only, returning users from their second session on; never shown to subscribers.",
-        "offer": { "title": "Earn back {{res.name}}", "body": "Play a 15-second game to get +{{reward.amount}} {{res.unit}}. 3 per day.", "cta": "Play for +{{reward.amount}}", "decline": "Not now" },
-        "simula": { "unit": "SIM-RWD", "entry": "button", "minPlaySec": 15 },
-        "reward": { "what": "+{{reward.amount}} {{res.unit}}", "resource": "{{res.id}}", "amount": "{{reward.amount}}", "grantOn": "REWARD_VERIFIED" },
-        "caps": { "perDay": 3, "cooldownMin": 30 },
+        "offer": {
+          "title": "Earn back {{res.name}}",
+          "body": "Play a 15-second game to get +{{reward.amount}} {{res.unit}}. 3 per day.",
+          "cta": "Play for +{{reward.amount}}",
+          "decline": "Not now"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "button",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "+{{reward.amount}} {{res.unit}}",
+          "resource": "{{res.id}}",
+          "amount": "{{reward.amount}}",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 3,
+          "cooldownMin": 30
+        },
         "cannibalizationGuard": "A partial refill of one action per view, 3 a day, far below {{offer.cheapest}}; the grant screen shows the pack line.",
-        "assumptions": { "engagedShare": 0.2, "viewsPerEngager": 1.5, "cogs": "{{reward.cogs}}", "cogsUnitsPerView": "{{reward.cogsUnits}}" },
-        "kpis": { "primary": "Refills per DAU and total revenue per user against the holdout", "guardrails": ["Pack conversion non-inferior within -3% relative", "D7 retention"], "holdout": "10% user-level holdout for 4 weeks" },
-        "precedents": ["EX-DUO", "TAX-1", "AI-2"],
-        "risks": ["Changing how a core resource refills can draw backlash; this only adds a path."],
+        "assumptions": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 1.5,
+          "cogs": "{{reward.cogs}}",
+          "cogsUnitsPerView": "{{reward.cogsUnits}}"
+        },
+        "kpis": {
+          "primary": "Refills per DAU and total revenue per user against the holdout",
+          "guardrails": [
+            "Pack conversion non-inferior within -3% relative",
+            "D7 retention"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "EX-DUO",
+          "TAX-1",
+          "AI-2"
+        ],
+        "risks": [
+          "Changing how a core resource refills can draw backlash; this only adds a path."
+        ],
         "evidence": "{{res.evidence}}",
         "patch": {
           "newScreens": [],
-          "newElements": [{ "id": "ne1", "in": "{{hub.screen}}", "near": "{{hub.balanceEl}}", "place": "after", "change": "\"Earn back ▶ +{{reward.amount}}\" pill next to the balance while it is low" }],
-          "newEdges": [{ "from": "{{hub.screen}}", "el": "ne1", "to": "rwd", "effects": [{ "resource": "{{res.id}}", "delta": "{{reward.amount}}" }], "guard": { "resource": "{{res.id}}", "lt": "{{balance.threshold}}" } }]
+          "newElements": [
+            {
+              "id": "ne1",
+              "in": "{{hub.screen}}",
+              "near": "{{hub.balanceEl}}",
+              "place": "after",
+              "change": "\"Earn back ▶ +{{reward.amount}}\" pill next to the balance while it is low"
+            }
+          ],
+          "newEdges": [
+            {
+              "from": "{{hub.screen}}",
+              "el": "ne1",
+              "to": "rwd",
+              "effects": [
+                {
+                  "resource": "{{res.id}}",
+                  "delta": "{{reward.amount}}"
+                }
+              ],
+              "guard": {
+                "resource": "{{res.id}}",
+                "lt": "{{balance.threshold}}"
+              }
+            }
+          ]
         },
         "storyboard": [
-          { "phase": "today", "screen": "{{hub.screen}}", "counters": [{ "resource": "{{res.id}}", "value": "{{balance.low}}" }], "overlay": "none", "callouts": [], "caption": "{{res.name}} are low on {{hub.screenName}}." },
-          { "phase": "change", "screen": "{{hub.screen}}", "counters": [], "overlay": "none", "callouts": [{ "node": "ne1", "text": "NEW: earn back" }], "caption": "An earn-back pill next to the balance." },
-          { "phase": "offer", "screen": "{{hub.screen}}", "counters": [], "overlay": "invite", "callouts": [{ "node": "ne1", "text": "Reward disclosed" }], "caption": "\"Play for +{{reward.amount}}\" or \"Not now\"." },
-          { "phase": "ad", "screen": "{{hub.screen}}", "counters": [], "overlay": "game", "callouts": [], "caption": "A 15-second game; grant on REWARD_VERIFIED." },
-          { "phase": "value", "screen": "{{hub.screen}}", "counters": [{ "resource": "{{res.id}}", "value": "{{balance.after}}" }], "overlay": "verified", "callouts": [], "caption": "+{{reward.amount}} {{res.unit}}." }
+          {
+            "phase": "today",
+            "screen": "{{hub.screen}}",
+            "counters": [
+              {
+                "resource": "{{res.id}}",
+                "value": "{{balance.low}}"
+              }
+            ],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "{{res.name}} are low on {{hub.screenName}}."
+          },
+          {
+            "phase": "change",
+            "screen": "{{hub.screen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: earn back"
+              }
+            ],
+            "caption": "An earn-back pill next to the balance."
+          },
+          {
+            "phase": "offer",
+            "screen": "{{hub.screen}}",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Reward disclosed"
+              }
+            ],
+            "caption": "\"Play for +{{reward.amount}}\" or \"Not now\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "{{hub.screen}}",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "A 15-second game; grant on REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "{{hub.screen}}",
+            "counters": [
+              {
+                "resource": "{{res.id}}",
+                "value": "{{balance.after}}"
+              }
+            ],
+            "overlay": "verified",
+            "callouts": [],
+            "caption": "+{{reward.amount}} {{res.unit}}."
+          }
         ]
       }
     },
@@ -122,37 +498,162 @@
       "id": "pos-decline",
       "precedent": "TAX-10",
       "pattern": "Paywall-decline fallback: the rewarded option appears only after the paid option is declined",
-      "requires": ["res.id", "decline.moment", "reward.amount"],
+      "requires": [
+        "res.id",
+        "decline.moment",
+        "reward.amount"
+      ],
       "proposal": {
-        "id": "pos-decline", "version": 1,
+        "id": "pos-decline",
+        "version": 1,
         "title": "Not ready to buy? A one-time fallback after \"{{decline.label}}\"",
         "oneLiner": "Only after the user taps \"{{decline.label}}\" on {{decline.screenName}}, {{decline.toName}} shows a one-time card: play 15 s for +{{reward.amount}} {{res.unit}}.",
-        "case": "existing", "archetype": "TAX-10", "beyondBaseline": true,
-        "anchor": { "moments": ["{{decline.moment}}"], "economy": ["{{res.id}}", "{{wall.item}}"] },
+        "case": "existing",
+        "archetype": "TAX-10",
+        "beyondBaseline": true,
+        "anchor": {
+          "moments": [
+            "{{decline.moment}}"
+          ],
+          "economy": [
+            "{{res.id}}",
+            "{{wall.item}}"
+          ]
+        },
         "surface": "{{decline.to}}",
         "trigger": "The user dismisses {{decline.screenName}} with \"{{decline.label}}\"; the card appears once per session, after any reply has finished.",
         "eligibility": "Only non-payers who just declined the paid refill, from their second session on; never subscribers.",
-        "offer": { "title": "Not ready to buy?", "body": "Play a 15-second game for +{{reward.amount}} {{res.unit}}, or carry on without it.", "cta": "Play for +{{reward.amount}}", "decline": "Dismiss" },
-        "simula": { "unit": "SIM-RWD", "entry": "button", "minPlaySec": 15 },
-        "reward": { "what": "+{{reward.amount}} {{res.unit}}", "resource": "{{res.id}}", "amount": "{{reward.amount}}", "grantOn": "REWARD_VERIFIED" },
-        "caps": { "perDay": 1, "cooldownMin": 60 },
+        "offer": {
+          "title": "Not ready to buy?",
+          "body": "Play a 15-second game for +{{reward.amount}} {{res.unit}}, or carry on without it.",
+          "cta": "Play for +{{reward.amount}}",
+          "decline": "Dismiss"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "button",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "+{{reward.amount}} {{res.unit}}",
+          "resource": "{{res.id}}",
+          "amount": "{{reward.amount}}",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 1,
+          "cooldownMin": 60
+        },
         "cannibalizationGuard": "Shown only after the price was seen and declined, so the paid option stays first; once a day; far below {{offer.cheapest}}.",
-        "assumptions": { "engagedShare": 0.1, "viewsPerEngager": 1, "cogs": "{{reward.cogs}}", "cogsUnitsPerView": "{{reward.cogsUnits}}" },
-        "kpis": { "primary": "Fallback opt-in among decliners and total revenue per user against the holdout", "guardrails": ["Pack conversion non-inferior within -3% relative", "Decline-then-churn rate"], "holdout": "10% user-level holdout for 4 weeks" },
-        "precedents": ["TAX-10", "AI-15", "CANN-4"],
-        "risks": ["Users may learn to decline to get the fallback; keep it once a day."],
+        "assumptions": {
+          "engagedShare": 0.1,
+          "viewsPerEngager": 1,
+          "cogs": "{{reward.cogs}}",
+          "cogsUnitsPerView": "{{reward.cogsUnits}}"
+        },
+        "kpis": {
+          "primary": "Fallback opt-in among decliners and total revenue per user against the holdout",
+          "guardrails": [
+            "Pack conversion non-inferior within -3% relative",
+            "Decline-then-churn rate"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "TAX-10",
+          "AI-15",
+          "CANN-4"
+        ],
+        "risks": [
+          "Users may learn to decline to get the fallback; keep it once a day."
+        ],
         "evidence": "{{wall.evidence}}",
         "patch": {
           "newScreens": [],
-          "newElements": [{ "id": "ne1", "in": "{{decline.to}}", "near": "{{decline.toInputEl}}", "place": "before", "change": "One-time card \"Not ready to buy? Play 15 s for +{{reward.amount}} {{res.unit}}\"" }],
-          "newEdges": [{ "from": "{{decline.to}}", "el": "ne1", "to": "rwd", "effects": [{ "resource": "{{res.id}}", "delta": "{{reward.amount}}" }] }]
+          "newElements": [
+            {
+              "id": "ne1",
+              "in": "{{decline.to}}",
+              "near": "{{decline.toInputEl}}",
+              "place": "before",
+              "change": "One-time card \"Not ready to buy? Play 15 s for +{{reward.amount}} {{res.unit}}\""
+            }
+          ],
+          "newEdges": [
+            {
+              "from": "{{decline.to}}",
+              "el": "ne1",
+              "to": "rwd",
+              "effects": [
+                {
+                  "resource": "{{res.id}}",
+                  "delta": "{{reward.amount}}"
+                }
+              ]
+            }
+          ]
         },
         "storyboard": [
-          { "phase": "today", "screen": "{{decline.screen}}", "counters": [{ "resource": "{{res.id}}", "value": "{{balance.low}}" }], "overlay": "none", "callouts": [], "caption": "The user sees the paid refill and declines." },
-          { "phase": "change", "screen": "{{decline.to}}", "counters": [], "overlay": "none", "callouts": [{ "node": "ne1", "text": "NEW: one-time fallback" }], "caption": "A small card offers a free path, once." },
-          { "phase": "offer", "screen": "{{decline.to}}", "counters": [], "overlay": "invite", "callouts": [{ "node": "ne1", "text": "Reward disclosed" }], "caption": "\"Play for +{{reward.amount}}\" or \"Dismiss\"." },
-          { "phase": "ad", "screen": "{{decline.to}}", "counters": [], "overlay": "game", "callouts": [], "caption": "A 15-second game; grant on REWARD_VERIFIED." },
-          { "phase": "value", "screen": "{{decline.to}}", "counters": [{ "resource": "{{res.id}}", "value": "{{balance.after}}" }], "overlay": "verified", "callouts": [], "caption": "+{{reward.amount}} {{res.unit}}; exactly where the user was." }
+          {
+            "phase": "today",
+            "screen": "{{decline.screen}}",
+            "counters": [
+              {
+                "resource": "{{res.id}}",
+                "value": "{{balance.low}}"
+              }
+            ],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "The user sees the paid refill and declines."
+          },
+          {
+            "phase": "change",
+            "screen": "{{decline.to}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: one-time fallback"
+              }
+            ],
+            "caption": "A small card offers a free path, once."
+          },
+          {
+            "phase": "offer",
+            "screen": "{{decline.to}}",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Reward disclosed"
+              }
+            ],
+            "caption": "\"Play for +{{reward.amount}}\" or \"Dismiss\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "{{decline.to}}",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "A 15-second game; grant on REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "{{decline.to}}",
+            "counters": [
+              {
+                "resource": "{{res.id}}",
+                "value": "{{balance.after}}"
+              }
+            ],
+            "overlay": "verified",
+            "callouts": [],
+            "caption": "+{{reward.amount}} {{res.unit}}; exactly where the user was."
+          }
         ]
       }
     },
@@ -160,46 +661,665 @@
       "id": "pos-tasks",
       "precedent": "TAX-9",
       "pattern": "Sponsored daily tasks: a capped daily list of sponsored games that pay the app's currency (ReelShort tasks, Discord Quests)",
-      "requires": ["res.id", "hub.moment", "reward.amount"],
+      "requires": [
+        "res.id",
+        "hub.moment",
+        "reward.amount"
+      ],
       "proposal": {
-        "id": "pos-tasks", "version": 1,
+        "id": "pos-tasks",
+        "version": 1,
         "title": "Sponsored daily tasks on {{hub.screenName}}",
         "oneLiner": "A Daily tasks sheet on {{hub.screenName}}: 3 sponsored 15-second games a day, each for +{{reward.amount}} {{res.unit}}.",
-        "case": "product-change", "archetype": "TAX-9", "beyondBaseline": true,
+        "case": "product-change",
+        "archetype": "TAX-9",
+        "beyondBaseline": true,
         "anchor": {
-          "moments": ["{{hub.moment}}"], "economy": ["{{res.id}}"],
-          "newMechanic": { "name": "Daily tasks", "description": "A sheet with 3 sponsored mini-game tasks per day, each paying +{{reward.amount}} {{res.unit}}; resets at midnight.", "whyNeeded": "There is no proactive, daily way to earn {{res.name}} beyond the existing sources; a capped list adds inventory without interrupting.", "removesFreeValue": false }
+          "moments": [
+            "{{hub.moment}}"
+          ],
+          "economy": [
+            "{{res.id}}"
+          ],
+          "newMechanic": {
+            "name": "Daily tasks",
+            "description": "A sheet with 3 sponsored mini-game tasks per day, each paying +{{reward.amount}} {{res.unit}}; resets at midnight.",
+            "whyNeeded": "There is no proactive, daily way to earn {{res.name}} beyond the existing sources; a capped list adds inventory without interrupting.",
+            "removesFreeValue": false
+          }
         },
         "surface": "ns1",
         "trigger": "A \"Daily tasks 0/3\" badge on {{hub.screenName}}; the user opens the sheet and picks a task.",
         "eligibility": "Non-payers only, returning users from their second session on; never subscribers.",
-        "offer": { "title": "Daily tasks", "body": "Play a 15-second sponsored game to get +{{reward.amount}} {{res.unit}}. 3 tasks a day.", "cta": "Play task", "decline": "Close" },
-        "simula": { "unit": "SIM-RWD", "entry": "invitation", "gamePartner": "a sponsor-approved Game Partner", "minPlaySec": 15 },
-        "reward": { "what": "+{{reward.amount}} {{res.unit}}", "resource": "{{res.id}}", "amount": "{{reward.amount}}", "grantOn": "REWARD_VERIFIED" },
-        "caps": { "perDay": 3, "cooldownMin": 5 },
+        "offer": {
+          "title": "Daily tasks",
+          "body": "Play a 15-second sponsored game to get +{{reward.amount}} {{res.unit}}. 3 tasks a day.",
+          "cta": "Play task",
+          "decline": "Close"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "invitation",
+          "gamePartner": "a sponsor-approved Game Partner",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "+{{reward.amount}} {{res.unit}}",
+          "resource": "{{res.id}}",
+          "amount": "{{reward.amount}}",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 3,
+          "cooldownMin": 5
+        },
         "cannibalizationGuard": "3 tasks a day, one action each; existing free sources unchanged; far below {{offer.cheapest}}.",
-        "assumptions": { "engagedShare": 0.2, "viewsPerEngager": 2, "cogs": "{{reward.cogs}}", "cogsUnitsPerView": "{{reward.cogsUnits}}" },
-        "kpis": { "primary": "Tasks completed per DAU and D7 retention against the holdout", "guardrails": ["Pack conversion non-inferior within -3% relative", "Sessions per DAU"], "holdout": "10% user-level holdout for 4 weeks" },
-        "precedents": ["TAX-9", "AI-3", "EX-SOCIAL"],
-        "risks": ["Sponsor demand for tasks must be confirmed."],
+        "assumptions": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 2,
+          "cogs": "{{reward.cogs}}",
+          "cogsUnitsPerView": "{{reward.cogsUnits}}"
+        },
+        "kpis": {
+          "primary": "Tasks completed per DAU and D7 retention against the holdout",
+          "guardrails": [
+            "Pack conversion non-inferior within -3% relative",
+            "Sessions per DAU"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "TAX-9",
+          "AI-3",
+          "EX-SOCIAL"
+        ],
+        "risks": [
+          "Sponsor demand for tasks must be confirmed."
+        ],
         "evidence": "{{res.evidence}}",
         "patch": {
-          "newScreens": [{ "id": "ns1", "basedOn": "{{hub.screen}}", "kind": "sheet", "change": "Daily tasks sheet: 3 rows \"Play a 15-second game: +{{reward.amount}} {{res.unit}}\", progress 0/3" }],
+          "newScreens": [
+            {
+              "id": "ns1",
+              "basedOn": "{{hub.screen}}",
+              "kind": "sheet",
+              "change": "Daily tasks sheet: 3 rows \"Play a 15-second game: +{{reward.amount}} {{res.unit}}\", progress 0/3"
+            }
+          ],
           "newElements": [
-            { "id": "ne1", "in": "{{hub.screen}}", "near": "{{hub.balanceEl}}", "place": "after", "change": "Badge \"Daily tasks 0/3\"" },
-            { "id": "ne2", "in": "ns1", "place": "overlay", "change": "Task row with a Play button" }
+            {
+              "id": "ne1",
+              "in": "{{hub.screen}}",
+              "near": "{{hub.balanceEl}}",
+              "place": "after",
+              "change": "Badge \"Daily tasks 0/3\""
+            },
+            {
+              "id": "ne2",
+              "in": "ns1",
+              "place": "overlay",
+              "change": "Task row with a Play button"
+            }
           ],
           "newEdges": [
-            { "from": "{{hub.screen}}", "el": "ne1", "to": "ns1", "effects": [] },
-            { "from": "ns1", "el": "ne2", "to": "rwd", "effects": [{ "resource": "{{res.id}}", "delta": "{{reward.amount}}" }] }
+            {
+              "from": "{{hub.screen}}",
+              "el": "ne1",
+              "to": "ns1",
+              "effects": []
+            },
+            {
+              "from": "ns1",
+              "el": "ne2",
+              "to": "rwd",
+              "effects": [
+                {
+                  "resource": "{{res.id}}",
+                  "delta": "{{reward.amount}}"
+                }
+              ]
+            }
           ]
         },
         "storyboard": [
-          { "phase": "today", "screen": "{{hub.screen}}", "counters": [], "overlay": "none", "callouts": [], "caption": "{{hub.screenName}} today." },
-          { "phase": "change", "screen": "{{hub.screen}}", "counters": [], "overlay": "none", "callouts": [{ "node": "ne1", "text": "NEW: Daily tasks 0/3" }], "caption": "A Daily tasks badge opens a sheet." },
-          { "phase": "offer", "screen": "ns1", "counters": [], "overlay": "invite", "callouts": [{ "node": "ne2", "text": "Task disclosed" }], "caption": "\"Play task\" or \"Close\"." },
-          { "phase": "ad", "screen": "ns1", "counters": [], "overlay": "game", "callouts": [], "caption": "A 15-second sponsored game; grant on REWARD_VERIFIED." },
-          { "phase": "value", "screen": "ns1", "counters": [], "overlay": "verified", "callouts": [{ "node": "ne2", "text": "1/3 done" }], "caption": "+{{reward.amount}} {{res.unit}}." }
+          {
+            "phase": "today",
+            "screen": "{{hub.screen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "{{hub.screenName}} today."
+          },
+          {
+            "phase": "change",
+            "screen": "{{hub.screen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: Daily tasks 0/3"
+              }
+            ],
+            "caption": "A Daily tasks badge opens a sheet."
+          },
+          {
+            "phase": "offer",
+            "screen": "ns1",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne2",
+                "text": "Task disclosed"
+              }
+            ],
+            "caption": "\"Play task\" or \"Close\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "ns1",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "A 15-second sponsored game; grant on REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "ns1",
+            "counters": [],
+            "overlay": "verified",
+            "callouts": [
+              {
+                "node": "ne2",
+                "text": "1/3 done"
+              }
+            ],
+            "caption": "+{{reward.amount}} {{res.unit}}."
+          }
+        ]
+      }
+    },
+    {
+      "id": "pos-ent-sample",
+      "precedent": "EX-MUSIC",
+      "pattern": "Intent-triggered sample of a paid feature (Pandora Premium Access: the missing premium capability, small and expiring)",
+      "requires": [
+        "gated.feature",
+        "gated.useScreen"
+      ],
+      "proposal": {
+        "id": "pos-ent-sample",
+        "version": 1,
+        "title": "Try {{gated.feature}} for a game",
+        "oneLiner": "Where {{gated.feature}} needs {{gated.plan}}, {{gated.games}} unlock {{gated.sample}} for today.",
+        "case": "existing",
+        "archetype": "TAX-2",
+        "beyondBaseline": true,
+        "anchor": {
+          "moments": [
+            "{{gated.useMoment}}",
+            "{{gated.moment}}"
+          ],
+          "economy": [
+            "{{gated.resource}}",
+            "{{gated.item}}"
+          ]
+        },
+        "surface": "{{gated.useScreen}}",
+        "trigger": "The user reaches for {{gated.feature}} on {{gated.useScreenName}}, where it needs {{gated.plan}}; the chip appears next to the upsell once the current answer has finished.",
+        "eligibility": "{{gated.eligibility}}",
+        "offer": {
+          "title": "Try {{gated.feature}}",
+          "body": "Play {{gated.games}} to unlock {{gated.sample}} today.",
+          "cta": "Play to try",
+          "decline": "No thanks"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "button",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "{{gated.sample}} (today)",
+          "resource": "{{gated.resource}}",
+          "duration": "today",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 2,
+          "cooldownMin": 60
+        },
+        "cannibalizationGuard": "{{gated.plan}} stays the only unlimited way to use {{gated.feature}}; a sample is {{gated.sample}}, twice a day, expiring tonight; the grant screen shows {{gated.plan}}.",
+        "assumptions": {
+          "engagedShare": 0.1,
+          "viewsPerEngager": "{{gated.views}}",
+          "cogs": "{{gated.cogs}}",
+          "cogsUnitsPerView": "{{gated.units}}"
+        },
+        "kpis": {
+          "primary": "Sample opt-ins per eligible DAU and later {{gated.plan}} conversion against the holdout",
+          "guardrails": [
+            "Paid plan conversion non-inferior within -3% relative",
+            "D7 retention"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "EX-MUSIC",
+          "TAX-2",
+          "CANN-1"
+        ],
+        "risks": [
+          "Sampling a paid feature can substitute for buying it: keep it small and expiring."
+        ],
+        "evidence": "{{gated.evidence}}",
+        "patch": {
+          "newScreens": [],
+          "newElements": [
+            {
+              "id": "ne1",
+              "in": "{{gated.useScreen}}",
+              "near": "{{gated.useEl}}",
+              "place": "after",
+              "change": "Chip \"Try {{gated.feature}}: play to unlock\""
+            }
+          ],
+          "newEdges": [
+            {
+              "from": "{{gated.useScreen}}",
+              "el": "ne1",
+              "to": "rwd",
+              "effects": []
+            }
+          ]
+        },
+        "storyboard": [
+          {
+            "phase": "today",
+            "screen": "{{gated.useScreen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "{{gated.feature}} needs {{gated.plan}} today."
+          },
+          {
+            "phase": "change",
+            "screen": "{{gated.useScreen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: sample chip"
+              }
+            ],
+            "caption": "A sample offer appears; the paid path stays first."
+          },
+          {
+            "phase": "offer",
+            "screen": "{{gated.useScreen}}",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Games and sample disclosed"
+              }
+            ],
+            "caption": "\"Play to try\" or \"No thanks\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "{{gated.useScreen}}",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "{{gated.games}}; unlock on REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "{{gated.useScreen}}",
+            "counters": [],
+            "overlay": "verified",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Unlocked"
+              }
+            ],
+            "caption": "{{gated.sample}} unlocked for today."
+          }
+        ]
+      }
+    },
+    {
+      "id": "pos-ent-decline",
+      "precedent": "TAX-10",
+      "pattern": "Decline fallback for a gated feature: one small sample, only after the paid (or sign-up) path was declined",
+      "requires": [
+        "gated.feature",
+        "gated.declineMoment",
+        "gated.declineTo"
+      ],
+      "proposal": {
+        "id": "pos-ent-decline",
+        "version": 1,
+        "title": "One {{gated.feature}} sample after \"{{gated.declineLabel}}\"",
+        "oneLiner": "After \"{{gated.declineLabel}}\" on {{gated.declineScreenName}}, {{gated.declineToName}} offers {{gated.games}} for {{gated.sampleOne}}, once a day.",
+        "case": "{{gated.declineCase}}",
+        "archetype": "TAX-10",
+        "beyondBaseline": true,
+        "anchor": {
+          "moments": [
+            "{{gated.declineMoment}}",
+            "{{gated.moment}}"
+          ],
+          "economy": [
+            "{{gated.resource}}",
+            "{{gated.item}}"
+          ],
+          "newMechanic": "{{gated.declineMechanic}}"
+        },
+        "surface": "{{gated.declineTo}}",
+        "trigger": "Only after the user dismisses {{gated.declineScreenName}} with \"{{gated.declineLabel}}\"; on {{gated.declineToName}} a one-time card appears once any answer has finished. The paid or sign-up path stays first.",
+        "eligibility": "{{gated.declineEligibility}}",
+        "offer": {
+          "title": "Not ready yet?",
+          "body": "Play {{gated.games}} to try {{gated.sampleOne}} now.",
+          "cta": "Play to try",
+          "decline": "No thanks"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "button",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "{{gated.sampleOne}} (today)",
+          "resource": "{{gated.resource}}",
+          "duration": "today",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 1,
+          "cooldownMin": 0
+        },
+        "cannibalizationGuard": "Once a day and only after the paid or sign-up path was declined; {{gated.plan}} stays the only unlimited path.",
+        "assumptions": {
+          "engagedShare": 0.08,
+          "viewsPerEngager": "{{gated.views}}",
+          "cogs": "{{gated.cogs}}",
+          "cogsUnitsPerView": "{{gated.unitsOne}}"
+        },
+        "kpis": {
+          "primary": "Fallback opt-in among decliners and later sign-ups or {{gated.plan}} conversion against the holdout",
+          "guardrails": [
+            "Paid plan conversion non-inferior within -3% relative",
+            "D7 retention"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "TAX-10",
+          "TAX-2",
+          "AI-15"
+        ],
+        "risks": [
+          "The paid or sign-up path is a growth lever: sample only, once, after it is declined."
+        ],
+        "evidence": "{{gated.evidence}}",
+        "patch": {
+          "newScreens": [],
+          "newElements": [
+            {
+              "id": "ne1",
+              "in": "{{gated.declineTo}}",
+              "place": "before",
+              "change": "One-time card \"Not ready yet? Play to try {{gated.sampleOne}}\""
+            }
+          ],
+          "newEdges": [
+            {
+              "from": "{{gated.declineTo}}",
+              "el": "ne1",
+              "to": "rwd",
+              "effects": []
+            }
+          ]
+        },
+        "storyboard": [
+          {
+            "phase": "today",
+            "screen": "{{gated.declineScreen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "The user declines {{gated.declineScreenName}}."
+          },
+          {
+            "phase": "change",
+            "screen": "{{gated.declineTo}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: sample chip"
+              }
+            ],
+            "caption": "A sample offer appears; the paid path stays first."
+          },
+          {
+            "phase": "offer",
+            "screen": "{{gated.declineTo}}",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Games and sample disclosed"
+              }
+            ],
+            "caption": "\"Play to try\" or \"No thanks\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "{{gated.declineTo}}",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "{{gated.games}}; unlock on REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "{{gated.declineTo}}",
+            "counters": [],
+            "overlay": "verified",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "Unlocked"
+              }
+            ],
+            "caption": "{{gated.sampleOne}}; the paid path stays available."
+          }
+        ]
+      }
+    },
+    {
+      "id": "pos-ent-tasks",
+      "precedent": "TAX-9",
+      "pattern": "Sponsored daily tasks whose completed set unlocks one use of a paid feature (Character.AI Charms, Discord Quests)",
+      "requires": [
+        "gated.feature",
+        "hub.moment"
+      ],
+      "proposal": {
+        "id": "pos-ent-tasks",
+        "version": 1,
+        "title": "Daily tasks on {{hub.screenName}}",
+        "oneLiner": "A Daily tasks sheet on {{hub.screenName}}: 3 sponsored 15-second games a day; finishing all 3 unlocks {{gated.sampleOne}}.",
+        "case": "product-change",
+        "archetype": "TAX-9",
+        "beyondBaseline": true,
+        "anchor": {
+          "moments": [
+            "{{hub.moment}}"
+          ],
+          "economy": [
+            "{{gated.resource}}"
+          ],
+          "newMechanic": {
+            "name": "Daily tasks",
+            "description": "A sheet with 3 sponsored mini-game tasks per day; finishing all 3 unlocks {{gated.sampleOne}}; resets at midnight.",
+            "whyNeeded": "There is no daily way to feel {{gated.feature}} without {{gated.plan}}; a capped task list adds proactive inventory without interrupting.",
+            "removesFreeValue": false
+          }
+        },
+        "surface": "ns1",
+        "trigger": "A \"Daily tasks 0/3\" badge on {{hub.screenName}}; the user opens the sheet and picks a task.",
+        "eligibility": "Non-payers only, returning users from their second session on; never subscribers.",
+        "offer": {
+          "title": "Daily tasks",
+          "body": "Play three 15-second sponsored games today to unlock {{gated.sampleOne}}.",
+          "cta": "Play task",
+          "decline": "Close"
+        },
+        "simula": {
+          "unit": "SIM-RWD",
+          "entry": "invitation",
+          "minPlaySec": 15
+        },
+        "reward": {
+          "what": "{{gated.sampleOne}} for finishing all 3 tasks (today)",
+          "resource": "{{gated.resource}}",
+          "duration": "today",
+          "grantOn": "REWARD_VERIFIED"
+        },
+        "caps": {
+          "perDay": 3,
+          "cooldownMin": 5
+        },
+        "cannibalizationGuard": "3 tasks a day for one use; {{gated.plan}} stays the only unlimited path; existing free value unchanged.",
+        "assumptions": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 2,
+          "cogs": "{{gated.cogs}}",
+          "cogsUnitsPerView": "{{gated.unitsTask}}"
+        },
+        "kpis": {
+          "primary": "Tasks completed per DAU and D7 retention against the holdout",
+          "guardrails": [
+            "Paid plan conversion non-inferior within -3% relative",
+            "D7 retention"
+          ],
+          "holdout": "10% user-level holdout for 4 weeks"
+        },
+        "precedents": [
+          "TAX-9",
+          "AI-3",
+          "EX-SOCIAL"
+        ],
+        "risks": [
+          "Sponsor demand for tasks must be confirmed."
+        ],
+        "evidence": "{{gated.evidence}}",
+        "patch": {
+          "newScreens": [
+            {
+              "id": "ns1",
+              "basedOn": "{{hub.screen}}",
+              "kind": "sheet",
+              "change": "Daily tasks sheet: 3 rows, progress 0/3"
+            }
+          ],
+          "newElements": [
+            {
+              "id": "ne1",
+              "in": "{{hub.screen}}",
+              "near": "{{hub.balanceEl}}",
+              "place": "after",
+              "change": "Badge \"Daily tasks 0/3\""
+            },
+            {
+              "id": "ne2",
+              "in": "ns1",
+              "place": "overlay",
+              "change": "Task row with a Play button"
+            }
+          ],
+          "newEdges": [
+            {
+              "from": "{{hub.screen}}",
+              "el": "ne1",
+              "to": "ns1",
+              "effects": []
+            },
+            {
+              "from": "ns1",
+              "el": "ne2",
+              "to": "rwd",
+              "effects": []
+            }
+          ]
+        },
+        "storyboard": [
+          {
+            "phase": "today",
+            "screen": "{{hub.screen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [],
+            "caption": "{{hub.screenName}} today."
+          },
+          {
+            "phase": "change",
+            "screen": "{{hub.screen}}",
+            "counters": [],
+            "overlay": "none",
+            "callouts": [
+              {
+                "node": "ne1",
+                "text": "NEW: Daily tasks 0/3"
+              }
+            ],
+            "caption": "A Daily tasks badge opens a sheet."
+          },
+          {
+            "phase": "offer",
+            "screen": "ns1",
+            "counters": [],
+            "overlay": "invite",
+            "callouts": [
+              {
+                "node": "ne2",
+                "text": "Task disclosed"
+              }
+            ],
+            "caption": "\"Play task\" or \"Close\"."
+          },
+          {
+            "phase": "ad",
+            "screen": "ns1",
+            "counters": [],
+            "overlay": "game",
+            "callouts": [],
+            "caption": "A 15-second sponsored game; grant on REWARD_VERIFIED."
+          },
+          {
+            "phase": "value",
+            "screen": "ns1",
+            "counters": [],
+            "overlay": "verified",
+            "callouts": [
+              {
+                "node": "ne2",
+                "text": "3/3 done"
+              }
+            ],
+            "caption": "{{gated.sampleOne}} unlocked for today."
+          }
         ]
       }
     }

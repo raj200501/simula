@@ -84,6 +84,7 @@ export async function buildSlides(c: StageCtx, m: ProductModel, modelDir: string
     });
     const deckHtml = path.join(outDir, "deck.html");
     writeText(deckHtml, html);
+    copyFonts(outDir);
 
     // 4. Export: one PDF page and one PNG per 1920x1080 section.
     const { pdf, pngs } = await exportDeck(browser, deckHtml);
@@ -108,6 +109,18 @@ async function moneyShots(m: ProductModel, modelDir: string, outDir: string): Pr
     out.set(s.screen, relPath);
   }
   return out;
+}
+
+/** The deck's two bundled OFL fonts (display + text), next to deck.html so it stays self-contained. */
+function copyFonts(outDir: string): void {
+  const src = path.join(import.meta.dirname, "fonts");
+  try {
+    ensureDir(path.join(outDir, "fonts"));
+    for (const f of fs.readdirSync(src)) fs.copyFileSync(path.join(src, f), path.join(outDir, "fonts", f));
+  } catch (e) {
+    trace("failure", { where: "slides:fonts", error: String((e as Error)?.message ?? e).slice(0, 200) });
+    trace("recovery", { how: "the deck falls back to system fonts" });
+  }
 }
 
 let kbCache: Map<string, string> | null = null;

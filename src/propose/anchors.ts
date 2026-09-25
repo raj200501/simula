@@ -68,7 +68,8 @@ export const ACCOUNT_LIKE = /\b(accounts?|profiles?|users?|sign[- ]?ups?|log[- ]
 export const SIGNUP = /\b(sign[- ]?up|sign[- ]?in|log[- ]?in|create (?:an |your )?account|register)\b/i;
 
 export function isConsumable(r?: { kind: string; name: string; unit: string }): boolean {
-  return !!r && (r.kind === "currency" || r.kind === "quota") && !TIER_LIKE.test(`${r.name} ${r.unit}`);
+  // The unit decides: "membership points" are a currency, a unit of "tier" never is.
+  return !!r && (r.kind === "currency" || r.kind === "quota") && !TIER_LIKE.test(r.unit || r.name);
 }
 
 /** The gated thing IS the account (sign-up, profile): no ad can stand in for it. */
@@ -97,6 +98,9 @@ function featureOf(m: ProductModel, texts: string[], r?: Resource): { feature: s
 
 const REACH = { "core-loop": 4, frequent: 3, occasional: 2, rare: 1 } as const;
 const DECLINE = /not now|no,? thanks|maybe later|later|cancel|close|dismiss|skip/i;
+const DECLINE_SOFT = /not now|no,? thanks|maybe later|later/i;
+/** The decline control users read: "Maybe later" beats a generic close icon. */
+const declineButton = (s: Screen) => s.elements.find(e => DECLINE_SOFT.test(txt(e))) ?? s.elements.find(e => DECLINE.test(txt(e)));
 const CLAIM = /claim|collect|get|receive|redeem/i;
 const CTA = /refill|top.?up|buy|get (more|premium|pro|plus)|upgrade|subscribe|unlock|go (premium|pro|plus)|continue|purchase|recharge|store|shop|see (plans|offers)|try (free|premium|pro)/i;
 
@@ -176,7 +180,7 @@ export function resolveAnchors(m: ProductModel): Anchors {
     const buttons = screen.elements.filter(e => e.role === "button");
     const upsellId = screen.signals.find(s => s.kind === "upsell" && s.el)?.el;
     const declineEdge = item?.declineEdge ? m.edges.find(e => e.id === item.declineEdge) : undefined;
-    const declineEl = screen.elements.find(e => e.id === declineEdge?.el) ?? buttons.find(e => DECLINE.test(txt(e)));
+    const declineEl = screen.elements.find(e => e.id === declineEdge?.el) ?? declineButton(screen);
     // The paid call to action ("Refill now", "Upgrade"), not the sentence that explains the wall.
     const cta = buttons.filter(e => e !== declineEl && CTA.test(txt(e)) && txt(e).length <= 30);
     const upsellEl = cta[0] ?? screen.elements.find(e => e.id === upsellId) ?? buttons.find(e => e !== declineEl);
@@ -196,7 +200,7 @@ export function resolveAnchors(m: ProductModel): Anchors {
     const screen = screenOf(m, dec.screen)!;
     const edge = m.edges.find(e => e.id === dec.edge);
     const to = edge && !edge.to.startsWith("ext:") ? screenOf(m, edge.to) : undefined;
-    a.decline = { moment: dec, screen, to: to && !a.noOfferScreens.has(to.id) ? to : undefined, declineEl: screen.elements.find(e => e.id === edge?.el) ?? screen.elements.find(e => DECLINE.test(txt(e))) };
+    a.decline = { moment: dec, screen, to: to && !a.noOfferScreens.has(to.id) ? to : undefined, declineEl: screen.elements.find(e => e.id === edge?.el) ?? declineButton(screen) };
   }
 
   // Hub: prefer a tab that shows the resource balance.
@@ -234,7 +238,8 @@ export function resolveAnchors(m: ProductModel): Anchors {
     const dev = { h: m.device.heightPx / (m.device.density || 1) };
     const persona = topBarTitle(chat.elements, dev.h);
     a.chat = { screen: chat, inputEl: chat.elements.find(e => e.role === "input"), titleEl: chat.elements.find(e => txt(e) === persona) ?? chat.elements.find(e => e.role === "text" && txt(e)), persona };
-    if (persona) a.partner = persona;
+    // A control label ("User avatar", "Back") is not a persona: keep the app's name then.
+    if (persona && !/\b(avatar|icon|image|photo|button|menu|back|close|settings|profile|logo|new chat)\b/i.test(persona)) a.partner = persona;
   }
 
   for (const w of of("wall")) {
@@ -257,7 +262,7 @@ export function resolveAnchors(m: ProductModel): Anchors {
       moment: w, screen, item, from, resource: r, signup: isSignupScreen(screen), feature, plan,
       perUse: sinks.length > 0, cogs: (cogsKindOf({ name: `${feature} ${plan ?? ""}`, unit: "" }) ?? "none") as Cogs,
       useMoment: useMoment ?? w, useScreen, useEl: from?.elements.find(e => e.id === edge?.el),
-      decline: dm ? { moment: dm, to: usable(dTo) ? dTo : undefined, el: screen.elements.find(e => e.id === dEdge?.el) ?? screen.elements.find(e => DECLINE.test(txt(e))) } : undefined,
+      decline: dm ? { moment: dm, to: usable(dTo) ? dTo : undefined, el: screen.elements.find(e => e.id === dEdge?.el) ?? declineButton(screen) } : undefined,
     });
   }
   // One sample per gated feature.

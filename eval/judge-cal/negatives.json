@@ -1,40 +1,161 @@
 {
-  "about": "Single-fault negatives (expect REVISE or REJECT). Each changes exactly ONE field of one positive in positives.json (`field` is a dot path; `value` may use the same {{key}} placeholders). `expect` names the layer that should catch it: code (gates.ts) or judge (the LLM judge, or the heuristic stub judge in stub mode). Never edit items to make the judge pass.",
+  "about": "Single-fault negatives (expect REVISE or REJECT). Each changes exactly ONE field of one positive in positives.json; `base` lists the positives it can be built from in preference order, and `alt` rephrases the fault for a given base (`field` is a dot path; `value` may use the same {{key}} placeholders). `expect` names the layer that should catch it: code (gates.ts) or judge (the LLM judge, or the heuristic stub judge in stub mode). Never edit items to make the judge pass.",
   "items": [
     {
-      "id": "neg-autoplay", "base": "pos-serial", "field": "trigger",
+      "id": "neg-autoplay",
+      "base": [
+        "pos-serial",
+        "pos-ent-sample"
+      ],
+      "field": "trigger",
       "value": "The rewarded game auto-plays full-screen mid-response, while the reply is still streaming, whenever {{res.name}} drop below the next message's cost.",
-      "fault": "Auto-plays in the middle of a streaming response", "expect": "judge", "expectWhat": "no-stream-interrupt / explicit-opt-in / no-loss-framing gates"
+      "fault": "Auto-plays in the middle of a streaming response",
+      "expect": "judge",
+      "expectWhat": "no-stream-interrupt / explicit-opt-in / no-loss-framing gates",
+      "alt": {
+        "pos-ent-sample": {
+          "value": "The rewarded game auto-plays full-screen mid-response, while the answer is still streaming, whenever the user touches {{gated.feature}}."
+        }
+      }
     },
     {
-      "id": "neg-no-decline", "base": "pos-decline", "field": "offer.decline", "value": "",
-      "fault": "The decline option is removed", "expect": "code", "expectWhat": "structure gate (no decline)"
+      "id": "neg-no-decline",
+      "base": [
+        "pos-decline",
+        "pos-ent-decline"
+      ],
+      "field": "offer.decline",
+      "value": "",
+      "fault": "The decline option is removed",
+      "expect": "code",
+      "expectWhat": "structure gate (no decline)"
     },
     {
-      "id": "neg-gift-card", "base": "pos-duo", "field": "reward.what", "value": "A $1 gift card for every 10 games",
-      "fault": "Gift-card (cash-like) reward", "expect": "code", "expectWhat": "policy-lint gate"
+      "id": "neg-gift-card",
+      "base": [
+        "pos-duo",
+        "pos-ent-sample"
+      ],
+      "field": "reward.what",
+      "value": "A $1 gift card for every 10 games",
+      "fault": "Gift-card (cash-like) reward",
+      "expect": "code",
+      "expectWhat": "policy-lint gate"
     },
     {
-      "id": "neg-loss-framing", "base": "pos-tasks", "field": "offer.body",
+      "id": "neg-loss-framing",
+      "base": [
+        "pos-tasks",
+        "pos-ent-tasks"
+      ],
+      "field": "offer.body",
       "value": "Watch now or lose your chat history: your conversations are deleted in 24 hours unless you play a 15-second game for +{{reward.amount}} {{res.unit}}.",
-      "fault": "\"Watch or lose your history\" loss framing", "expect": "judge", "expectWhat": "no-loss-framing gate"
+      "fault": "\"Watch or lose your history\" loss framing",
+      "expect": "judge",
+      "expectWhat": "no-loss-framing gate",
+      "alt": {
+        "pos-ent-tasks": {
+          "value": "Watch now or lose your chat history: your conversations are deleted in 24 hours unless you play a 15-second game."
+        }
+      }
     },
     {
-      "id": "neg-oversized", "base": "pos-serial", "field": "reward.amount", "value": "{{offer.cheapestAmount}}",
-      "fault": "Reward far larger than a view is worth (a whole cheapest pack per view)", "expect": "code", "expectWhat": "economics gate (reward/view ratio, cannibalization)"
+      "id": "neg-oversized",
+      "base": [
+        "pos-serial",
+        "pos-ent-sample"
+      ],
+      "field": "reward.amount",
+      "value": "{{offer.cheapestAmount}}",
+      "fault": "Reward far larger than a view is worth (a whole cheapest pack per view)",
+      "expect": "code",
+      "expectWhat": "economics gate (reward/view ratio, cannibalization)",
+      "alt": {
+        "pos-ent-sample": {
+          "field": "reward",
+          "value": {
+            "what": "7 days of {{gated.plan}}",
+            "resource": "{{gated.resource}}",
+            "duration": "7 days",
+            "grantOn": "REWARD_VERIFIED"
+          },
+          "expect": "judge",
+          "expectWhat": "cannibalization (a week of the paid plan per view) [ANTI-4]",
+          "fault": "Reward far larger than a view is worth (a week of the paid plan per view)"
+        }
+      }
     },
     {
-      "id": "neg-subscribers", "base": "pos-duo", "field": "eligibility", "value": "All users, including subscribers, on every app open.",
-      "fault": "Offered to subscribers on every open", "expect": "judge", "expectWhat": "not-for-subscribers gate, frequency and cannibalization scores"
+      "id": "neg-subscribers",
+      "base": [
+        "pos-duo",
+        "pos-ent-sample"
+      ],
+      "field": "eligibility",
+      "value": "All users, including subscribers, on every app open.",
+      "fault": "Offered to subscribers on every open",
+      "expect": "judge",
+      "expectWhat": "not-for-subscribers gate, frequency and cannibalization scores"
     },
     {
-      "id": "neg-bad-surface", "base": "pos-decline", "field": "surface", "value": "{{missing.screen}}",
-      "fault": "A surface id that does not exist in the model", "expect": "code", "expectWhat": "grounding gate"
+      "id": "neg-bad-surface",
+      "base": [
+        "pos-decline",
+        "pos-ent-decline"
+      ],
+      "field": "surface",
+      "value": "{{missing.screen}}",
+      "fault": "A surface id that does not exist in the model",
+      "expect": "code",
+      "expectWhat": "grounding gate"
     },
     {
-      "id": "neg-generic", "base": "pos-music", "field": "offer",
-      "value": { "title": "Free coins!", "body": "Watch a video to earn coins.", "cta": "Watch", "decline": "No thanks" },
-      "fault": "Generic \"watch a video for coins\" with no app nouns", "expect": "judge", "expectWhat": "specificity and disclosure"
+      "id": "neg-generic",
+      "base": [
+        "pos-music",
+        "pos-ent-sample"
+      ],
+      "field": "offer",
+      "value": {
+        "title": "Free coins!",
+        "body": "Watch a video to earn coins.",
+        "cta": "Watch",
+        "decline": "No thanks"
+      },
+      "fault": "Generic \"watch a video for coins\" with no app nouns",
+      "expect": "judge",
+      "expectWhat": "specificity and disclosure"
+    },
+    {
+      "id": "neg-entitlement-amount",
+      "base": [
+        "pos-ent-sample"
+      ],
+      "field": "reward",
+      "value": {
+        "what": "+1 {{gated.unit}}",
+        "resource": "{{gated.resource}}",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "fault": "An entitlement granted as a currency (\"+1 <tier>\")",
+      "expect": "code",
+      "expectWhat": "reward-coherence gate"
+    },
+    {
+      "id": "neg-account-swap",
+      "base": [
+        "pos-ent-sample"
+      ],
+      "field": "reward",
+      "value": {
+        "what": "{{account.feature}} without an account for today",
+        "duration": "today",
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "fault": "An account-only feature offered for an ad (an ad in place of signing up)",
+      "expect": "code",
+      "expectWhat": "not-for-account-wall gate"
     }
   ]
 }

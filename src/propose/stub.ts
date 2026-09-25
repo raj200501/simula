@@ -11,8 +11,8 @@
 // Output is marked generatedBy "stub" by the caller. Every id it emits comes from resolveAnchors().
 import type { Candidates, Moment, ProductModel, Proposal, Screen, UiElement } from "../core/schema.ts";
 import type { Profile } from "../core/config.ts";
-import { proposalEconomics } from "../model/economics.ts";
-import { elText, resolveAnchors, type Anchors, type Cogs } from "./anchors.ts";
+import { ECON, cogsKindOf, deriveEconomy, proposalEconomics } from "../model/economics.ts";
+import { ACCOUNT_LIKE, SIGNUP, elText, isAccountResource, isConsumable, isSignupScreen, resolveAnchors, type Anchors, type Cogs, type Gated } from "./anchors.ts";
 import { midSentence, modeName } from "../core/humanize.ts";
 import type { LlmIdea } from "./schemas.ts";
 
@@ -30,11 +30,40 @@ type Board = Proposal["storyboard"][number];
 type Callout = { node: string; text: string };
 
 const SEC = 15; // Simula default minPlayThreshold [POL-8]
+const SIGNED_IN = "Signed-in non-subscribers from their second session on; guests keep seeing the account sheet first; never subscribers [TRIG-2] [CANN-4].";
+const WORD = ["zero", "one", "two", "three", "four", "five"];
+
+/**
+ * How big a sample one view can pay for: uses whose cost to serve stays under 80% of the net revenue
+ * of one view (ECON). When a single use costs more, the sample is ONE use for a disclosed two-game
+ * bundle [JUDGE-5] [POL-2 #3]. Code arithmetic on cited constants; the LLM never does this.
+ */
+export function sampleSize(m: ProductModel, cogs: Cogs, want = 3): { uses: number; views: number } {
+  const vv = (m.economy.derived ?? deriveEconomy(m.economy)).viewValueUsd.US[0];
+  const budget = 0.8 * vv * (1 - ECON.platformShare);
+  const per = ECON.cogsPerUnitUsd[cogs] ?? 0;
+  if (!per) return { uses: want, views: 1 };
+  if (per <= budget) return { uses: Math.max(1, Math.min(want, Math.floor(budget / per))), views: 1 };
+  return { uses: 1, views: Math.min(2, Math.ceil(per / budget)) };
+}
+
+export function useNoun(g: Gated): string {
+  if (g.cogs.startsWith("text") || g.useScreen?.kind === "chat") return "answer";
+  if (g.cogs === "image") return "image";
+  if (g.cogs === "voice") return "voice minute";
+  return "use";
+}
+
+/** "1 Deep reasoning answer", "3 Deep reasoning answers" (a count of uses, never "+1 tier"). */
+export function usesPhrase(feature: string, noun: string, n: number): string {
+  return `${n} ${feature} ${n === 1 ? noun : `${noun}s`}`;
+}
+
 const ELIG = "Non-payers only (no purchase in the last 30 days), returning users from their second session on; suppressed for 24 h after any purchase and never shown to subscribers [TRIG-2] [CANN-4].";
 
 // Priority for the depth pick: diversity first (reactive, proactive, product change), then the rest.
-const PICK_ORDER = ["wall-refill", "wall-unlock", "post-reward-multiplier", "daily-tasks", "sponsored-session", "decline-fallback", "decline-sample",
-  "premium-sample", "desire-unlock", "hub-refill", "scene-end-game", "pre-session", "bonus-pass", "tasks-bonus", "wait-or-watch", "cosmetic"];
+const PICK_ORDER = ["wall-refill", "gated-sample", "post-reward-multiplier", "daily-tasks", "sponsored-session", "decline-fallback", "gated-decline",
+  "guest-sample", "upsell-sample", "premium-sample", "desire-unlock", "hub-refill", "scene-end-game", "pre-session", "bonus-pass", "tasks-bonus", "wait-or-watch", "cosmetic"];
 
 function phase(p: Board["phase"], screen: Screen, counters: [string, number][], overlay: Board["overlay"], callouts: Callout[], caption: string): Board {
   return { phase: p, screen: screen.id, counters: counters.map(([resource, value]) => ({ resource, value })), overlay, callouts, caption };
@@ -74,11 +103,14 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   // The Game Partner is who the user already talks to (the chat's character or persona), else the app.
   const partner = a.partner;
   const Cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1);
-  const cheapest = a.cheapestOffer ? `${a.cheapestOffer.label} for ${a.cheapestOffer.priceText}` : "the cheapest pack";
+  const paid = m.economy.offers.find(o => o.kind === "subscription" || o.kind === "trial");
+  const cheapest = a.cheapestOffer ? `${a.cheapestOffer.label} for ${a.cheapestOffer.priceText}`
+    : paid ? `${paid.label} for ${paid.priceText}` : m.economy.entitlements[0]?.plan ?? "the paid option";
   const guard = (lead: string) => `${lead} Non-payers only; capped per day; the grant screen repeats the paid option (${cheapest}); a remote-config kill switch rolls it back if paid conversion drops [CANN-4].`;
   const baseBalance = (m.economy.resources.find(r => r.id === res?.id)?.observedValues[0]) ?? 0;
   const resourceReward = (amt: number): Proposal["reward"] => ({ what: `+${u(amt)}`, resource: res!.id, amount: amt, grantOn: "REWARD_VERIFIED" });
   const cogs: Cogs = s?.cogs ?? "none";
+  const nonRes = (what: string, duration?: string): Proposal["reward"] => ({ what, duration, grantOn: "REWARD_VERIFIED" });
 
   // --- existing opportunities ------------------------------------------------------------------
   const w = a.wall;
@@ -317,49 +349,222 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
     });
   }
 
-  // Walls and desires with no priced resource (paywalls, locked features): a short time-boxed unlock
-  // of exactly the blocked thing [TAX-2]; nothing that is free today is taken away.
-  const unlockOn: { key: string; archetype: string; mo: Moment; screen: Screen; what: string; el?: UiElement }[] = [];
-  if (w && !(res && s && w.moment.resource === res.id)) unlockOn.push({ key: "wall-unlock", archetype: "TAX-2", mo: w.moment, screen: w.screen, what: w.blockedIntent, el: w.upsellEl });
-  const plan = m.economy.entitlements[0];
-  if (dec && !(res && s) && plan) unlockOn.push({ key: "decline-sample", archetype: "TAX-10", mo: dec.moment, screen: dec.to ?? dec.screen, what: `${plan.plan}: ${plan.benefits[0] ?? "its benefits"}` });
-  // A locked feature is a clean time-unlock anchor; a priced consumable is better served by the refill templates.
-  const lockMo = m.moments.filter(x => x.type === "desire" && !x.noOffer).map(x => ({ x, screen: m.screens.find(sc => sc.id === x.screen)! }))
-    .map(({ x, screen }) => ({ x, screen, sig: screen?.signals.find(g => g.kind === "lock" || (!s && (g.kind === "upsell" || g.kind === "price"))) }))
-    .find(o => o.screen && o.sig);
-  if (lockMo) unlockOn.push({ key: "desire-unlock", archetype: "TAX-2", mo: lockMo.x, screen: lockMo.screen, what: lockMo.sig!.text, el: lockMo.screen.elements.find(e => e.id === lockMo.sig!.el) });
-  for (const x of unlockOn) {
-    const what = `"${x.what.slice(0, 40)}" unlocked`;
+  // Gated features (a plan feature behind a paywall or a sign-up wall) are SAMPLED: a number of uses or
+  // a time box, named with the feature [TAX-2][AI-4]. Never "+1 tier": an entitlement is not a currency.
+  // Account-only features get nothing: an ad cannot stand in for signing up.
+  for (const [gi, g] of a.gated.slice(0, 2).entries()) {
+    const size = sampleSize(m, g.cogs);
+    const noun = useNoun(g);
+    const plan = g.plan ?? "the paid plan";
+    const games = size.views === 1 ? `a ${SEC}-second game` : `${WORD[size.views]} ${SEC}-second games`;
+    const minutesFor = (min?: number) => min ?? (g.cogs === "none" ? 30 : 10);
+    const sampleText = (n: number, min?: number) => (g.perUse ? usesPhrase(g.feature, noun, n) : `${minutesFor(min)} minutes of ${g.feature}`);
+    const sampleReward = (n: number, min?: number): Proposal["reward"] => ({
+      what: g.perUse ? `${sampleText(n)} (today)` : sampleText(n, min), resource: g.resource?.id,
+      duration: g.perUse ? "today" : `${minutesFor(min)} minutes`, grantOn: "REWARD_VERIFIED",
+    });
+    // What one view costs to serve: uses (or ten-minute blocks of use) per view.
+    const units = (n: number, min?: number) => (g.cogs === "none" ? 0 : Math.round(((g.perUse ? n : Math.max(1, Math.round(minutesFor(min) / 10))) / size.views) * 100) / 100);
+    const arche = g.perUse ? (g.cogs.startsWith("text") ? "AI-4" : "TAX-3") : "TAX-2";
+    const sampleRisk = size.views > 1
+      ? `One ${g.feature} ${noun} costs more to serve than one view earns, hence the disclosed ${WORD[size.views]}-game bundle [JUDGE-5].`
+      : "Sampling a paid feature can substitute for buying it: keep it small and expiring.";
+
+    // (1) Existing: sample the feature where it is used. Behind a sign-up wall this targets signed-in
+    // free users (guests keep seeing the account sheet); behind a paywall it sits under the paid option.
+    const surface = g.signup ? g.useScreen : g.screen;
+    const mo = g.signup ? g.useMoment : g.moment;
+    if (surface) {
+      const near = surface.elements.some(e => e.id === g.useEl?.id) ? g.useEl : undefined;
+      T.push({
+        key: `gated-sample:${gi}`, why: `Samples ${g.feature}, a ${plan} feature, at the moment the user reaches for it: a taste that shows the paid difference [CANN-1].`,
+        idea: { title: `Try ${g.feature} for a game`, case: "existing", archetype: arche, moment: mo.id, reward: g.perUse ? `${sampleText(size.uses)} today` : sampleText(size.uses), beyondBaseline: true },
+        defaults: { perDay: 2, cooldownMin: 60, cogsUnits: units(size.uses), minutes: g.perUse ? undefined : minutesFor() },
+        build: (pid, p) => ({
+          id: pid, version: 1, title: `Try ${g.feature} for a game`, case: "existing", archetype: arche, beyondBaseline: true,
+          oneLiner: `Where ${g.feature} needs ${plan}, ${games} unlock ${sampleText(size.uses, p.minutes)}${g.perUse ? " for today" : ""}.`,
+          anchor: { moments: ids(mo.id, g.moment.id), economy: ids(g.resource?.id, g.item?.id) },
+          surface: surface.id,
+          trigger: g.signup
+            ? `A signed-in free user reaches for ${g.feature} on ${surface.name}, where it needs ${plan}; the chip appears next to the ${plan} upsell once the current answer has finished.`
+            : `${g.screen.name} blocks ${g.feature}; the rewarded option sits under the paid one and never interrupts an answer.`,
+          eligibility: g.signup ? SIGNED_IN : ELIG,
+          offer: { title: `Try ${g.feature}`, body: `Play ${games} to unlock ${sampleText(size.uses, p.minutes)}${g.perUse ? " today" : ""}.`, cta: "Play to try", decline: "No thanks" },
+          simula: { unit: "SIM-RWD", entry: "button", gamePartner: partner, minPlaySec: SEC },
+          reward: sampleReward(size.uses, p.minutes),
+          caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
+          cannibalizationGuard: guard(`${Cap(plan)} stays the only unlimited way to use ${g.feature}; a sample is ${sampleText(size.uses, p.minutes)}, ${p.perDay} a day, and expires${g.perUse ? " tonight" : " visibly"}.`),
+          assumptions: { engagedShare: 0.1, viewsPerEngager: size.views, cogs: g.cogs, cogsUnitsPerView: p.cogsUnits },
+          kpis: kpis(`Sample opt-ins per eligible DAU and later ${plan} conversion against the holdout`),
+          precedents: [...new Set([arche, "TAX-2", "EX-MUSIC", "CANN-1"])],
+          risks: [sampleRisk],
+          evidence: evidenceFor(m, [mo, g.moment], [g.resource?.id, g.item?.id]),
+          patch: {
+            newScreens: [],
+            newElements: [{ id: "ne1", in: surface.id, near: near?.id, place: "after", change: `Chip "Try ${g.feature}: play ${size.views > 1 ? `${size.views} × ` : ""}${SEC} s"` }],
+            newEdges: [{ from: surface.id, el: "ne1", to: "rwd", effects: [] }],
+          },
+          storyboard: [
+            phase("today", surface, [], "none", co(surface, near, `${g.feature}: ${plan} only`), `${g.feature} needs ${plan} today.`),
+            phase("change", surface, [], "none", [{ node: "ne1", text: `NEW: try ${g.feature}` }], `A sample chip appears next to the ${plan} upsell.`),
+            phase("offer", surface, [], "invite", [{ node: "ne1", text: "Games and sample disclosed" }], `"Play to try" or "No thanks"; nothing else changes.`),
+            phase("ad", surface, [], "game", [], `${Cap(games)} with ${partner}; unlock on REWARD_VERIFIED.`),
+            phase("value", surface, [], "verified", [{ node: "ne1", text: "Unlocked" }], `${Cap(sampleText(size.uses, p.minutes))} unlocked${g.perUse ? " for today" : ""}.`),
+          ],
+        }),
+      });
+    }
+
+    // (2) After the user declines: behind a sign-up wall a guest sample (a product change: the account
+    // wall is a growth lever, so sample only, once, after it is dismissed); behind a paywall the
+    // classic paywall-decline fallback [TAX-10].
+    const d = g.decline;
+    // Where the user lands after declining; when that is a first-value screen, the next time they
+    // reach for the feature instead.
+    const to = d?.to ?? (d ? g.useScreen : undefined);
+    if (d && to) {
+      const later = !d.to;
+      const said = elText(d.el) || "Not now";
+      const input = to.id === a.chat?.screen.id ? a.chat.inputEl : undefined;
+      const guest = g.signup;
+      const title = guest ? `Guest sample of ${g.feature}` : `${g.feature} sample after declining ${plan}`;
+      T.push({
+        key: `${guest ? "guest-sample" : "gated-decline"}:${gi}`,
+        why: guest ? `Lets guests feel ${g.feature} once without replacing sign-up; the account sheet stays first.` : `Shown only after ${plan} was seen and declined, so the paywall stays the first choice [TAX-10].`,
+        idea: { title, case: guest ? "product-change" : "existing", archetype: "TAX-10", moment: d.moment.id, reward: `${sampleText(1)} once, after "${said}"`, beyondBaseline: true },
+        defaults: { perDay: 1, cooldownMin: 0, cogsUnits: units(1), minutes: g.perUse ? undefined : minutesFor() },
+        build: (pid, p) => ({
+          id: pid, version: 1, title, case: guest ? "product-change" : "existing", archetype: "TAX-10", beyondBaseline: true,
+          oneLiner: later
+            ? `After "${said}" on ${g.screen.name}, the next time the user reaches for ${g.feature} on ${to.name}, ${games} unlock ${sampleText(1, p.minutes)}, once a day.`
+            : `Only after "${said}" on ${g.screen.name}, ${to.name} offers ${games} for ${sampleText(1, p.minutes)}, once a day.`,
+          anchor: {
+            moments: ids(d.moment.id, g.moment.id), economy: ids(g.resource?.id, g.item?.id),
+            newMechanic: guest ? { name: title, description: `${Cap(sampleText(1, p.minutes))} for guests who dismiss ${g.screen.name}, once a day, then a sign-up prompt to keep using it.`,
+              whyNeeded: `Guests meet ${g.screen.name} before they can feel ${g.feature}; one sponsored sample shows its value without replacing sign-up.`, removesFreeValue: false } : undefined,
+          },
+          surface: to.id,
+          trigger: `${later ? `The next time a user who dismissed ${g.screen.name} with "${said}" reaches for ${g.feature}` : `Only after the user dismisses ${g.screen.name} with "${said}"; back`} on ${to.name}, a one-time card appears once any answer has finished.${guest ? " The account sheet stays the first path." : ""}`,
+          eligibility: guest ? "Guests who just declined the account sheet (never payers or subscribers), from their second session on, once a day [TRIG-2]." : `Only users who just declined ${plan}; ${ELIG}`,
+          offer: { title: guest ? "Not ready to sign up?" : `Not ready for ${plan}?`, body: `Play ${games} to try ${sampleText(1, p.minutes)} now.`, cta: "Play to try", decline: "No thanks" },
+          simula: { unit: "SIM-RWD", entry: "button", gamePartner: partner, minPlaySec: SEC },
+          reward: sampleReward(1, p.minutes),
+          caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
+          cannibalizationGuard: guard(`Once a day and only after ${guest ? "the account sheet" : plan} was declined; ${Cap(plan)} stays the only unlimited path.`),
+          assumptions: { engagedShare: 0.08, viewsPerEngager: size.views, cogs: g.cogs, cogsUnitsPerView: p.cogsUnits },
+          kpis: kpis(guest ? `Sign-ups after the sample, and total revenue per user against the holdout` : `Fallback opt-in among decliners and later ${plan} conversion against the holdout`),
+          precedents: ["TAX-10", "TAX-2", "AI-15"],
+          risks: [guest ? "The account wall is a growth lever: sample only. Sign-up stays first; the sample is offered once, after the sheet is dismissed, and ends with a sign-up prompt." : "Users could learn to decline to get the sample: once a day only.", sampleRisk],
+          evidence: evidenceFor(m, [g.moment, d.moment], [g.resource?.id, g.item?.id]),
+          patch: {
+            newScreens: [],
+            newElements: [{ id: "ne1", in: to.id, near: input?.id, place: "before", change: `One-time card "${guest ? "Not ready to sign up?" : `Not ready for ${plan}?`} Play to try ${sampleText(1, p.minutes)}"` }],
+            newEdges: [{ from: to.id, el: "ne1", to: "rwd", effects: [] }],
+          },
+          storyboard: [
+            phase("today", g.screen, [], "none", co(g.screen, d.el, `User taps "${said}"`), `${g.feature} needs ${guest ? "an account" : plan}; the user declines.`),
+            phase("change", to, [], "none", [{ node: "ne1", text: "NEW: one-time sample card" }], `Back on ${to.name}, a card offers one sample.`),
+            phase("offer", to, [], "invite", [{ node: "ne1", text: "Games and sample disclosed" }], `"Play to try" or "No thanks".`),
+            phase("ad", to, [], "game", [], `${Cap(games)} with ${partner}; unlock on REWARD_VERIFIED.`),
+            phase("value", to, [], "verified", co(to, input, "Answer with the sample"), `${Cap(sampleText(1, p.minutes))}${guest ? ", then a sign-up prompt to keep it" : ""}.`),
+          ],
+        }),
+      });
+    }
+  }
+
+  // A plan upsell on a screen users return to ("Try <plan>"): sample the plan's per-use feature there,
+  // proactively, with the same sizing as at the wall [TAX-2].
+  const gu = a.gated.find(g => g.perUse);
+  const upsell = gu && m.moments.filter(x => x.type === "desire" && !x.noOffer && !x.resource)
+    .map(x => ({ x, screen: m.screens.find(sc => sc.id === x.screen)! }))
+    .filter(o => o.screen && !isSignupScreen(o.screen) && o.screen.id !== gu.useScreen?.id)
+    .map(o => ({ ...o, sig: o.screen.signals.find(g => g.kind === "upsell" && !SIGNUP.test(g.text) && !ACCOUNT_LIKE.test(g.text)) }))
+    .filter(o => o.sig).sort((p1, p2) => ({ "core-loop": 0, frequent: 1, occasional: 2, rare: 3 })[p1.x.reach] - ({ "core-loop": 0, frequent: 1, occasional: 2, rare: 3 })[p2.x.reach])[0];
+  if (gu && upsell) {
+    const size = sampleSize(m, gu.cogs);
+    const noun = useNoun(gu);
+    const plan = gu.plan ?? "the paid plan";
+    const games = size.views === 1 ? `a ${SEC}-second game` : `${WORD[size.views]} ${SEC}-second games`;
+    const sample = usesPhrase(gu.feature, noun, size.uses);
+    const sig = upsell.sig!;
+    const el = upsell.screen.elements.find(e => e.id === sig.el);
+    const units = gu.cogs === "none" ? 0 : size.uses / size.views;
     T.push({
-      key: x.key, why: "Reactive moment of need on a gated feature: a time-boxed taste, the paid plan stays the only unlimited path [TAX-2].",
-      idea: { title: `Play to unlock ${x.what.slice(0, 40)} for a while`, case: "existing", archetype: x.archetype, moment: x.mo.id, reward: `${what} for 30 minutes`, beyondBaseline: true },
+      key: "upsell-sample", why: `Gives the "${sig.text.slice(0, 30)}" upsell a free path: a sample of ${gu.feature} for users not ready for ${plan} [TAX-2].`,
+      idea: { title: `"${sig.text.slice(0, 30)}" with a free sample`, case: "existing", archetype: "TAX-2", moment: upsell.x.id, reward: `${sample} from the ${upsell.screen.name} upsell`, beyondBaseline: true },
+      defaults: { perDay: 1, cooldownMin: 0, cogsUnits: units },
+      build: (pid, p) => ({
+        id: pid, version: 1, title: `"${sig.text.slice(0, 30)}" with a free sample`, case: "existing", archetype: "TAX-2", beyondBaseline: true,
+        oneLiner: `Next to the "${sig.text.slice(0, 30)}" upsell on ${upsell.screen.name}, ${games} unlock ${sample} for today.`,
+        anchor: { moments: ids(upsell.x.id, gu.useMoment.id), economy: ids(gu.resource?.id, gu.item?.id) },
+        surface: upsell.screen.id,
+        trigger: `The user sees the "${sig.text.slice(0, 30)}" upsell on ${upsell.screen.name}; a secondary "Try it free" link sits under it. Nothing opens on its own.`,
+        eligibility: SIGNED_IN,
+        offer: { title: `Try ${gu.feature}`, body: `Play ${games} to unlock ${sample} today.`, cta: "Play to try", decline: "No thanks" },
+        simula: { unit: "SIM-RWD", entry: "button", gamePartner: partner, minPlaySec: SEC },
+        reward: { what: `${sample} (today)`, resource: gu.resource?.id, duration: "today", grantOn: "REWARD_VERIFIED" },
+        caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
+        cannibalizationGuard: guard(`The upsell stays first; ${sample} once a day, expiring tonight; ${plan} stays the only unlimited path.`),
+        assumptions: { engagedShare: 0.08, viewsPerEngager: size.views, cogs: gu.cogs, cogsUnitsPerView: p.cogsUnits },
+        kpis: kpis(`Upsell taps, sample opt-ins and later ${plan} conversion against the holdout`),
+        precedents: ["TAX-2", "EX-MUSIC", "TRIG-1"],
+        risks: ["A free path next to the upsell can pull users away from buying: once a day, small, expiring."],
+        evidence: evidenceFor(m, [upsell.x, gu.moment], [gu.resource?.id]),
+        patch: {
+          newScreens: [],
+          newElements: [{ id: "ne1", in: upsell.screen.id, near: el?.id, place: "after", change: `Secondary link "Try ${gu.feature} free: play ${size.views > 1 ? `${size.views} × ` : ""}${SEC} s"` }],
+          newEdges: [{ from: upsell.screen.id, el: "ne1", to: "rwd", effects: [] }],
+        },
+        storyboard: [
+          phase("today", upsell.screen, [], "none", co(upsell.screen, el, "Upsell today"), `"${sig.text.slice(0, 30)}" leads only to ${plan}.`),
+          phase("change", upsell.screen, [], "none", [{ node: "ne1", text: "NEW: try it free" }], "A free sample link sits under the upsell."),
+          phase("offer", upsell.screen, [], "invite", [{ node: "ne1", text: "Games and sample disclosed" }], `"Play to try" or "No thanks".`),
+          phase("ad", upsell.screen, [], "game", [], `${Cap(games)} with ${partner}; unlock on REWARD_VERIFIED.`),
+          phase("value", upsell.screen, [], "verified", [{ node: "ne1", text: "Unlocked" }], `${Cap(sample)} unlocked for today.`),
+        ],
+      }),
+    });
+  }
+
+  // A locked feature that is not an account feature: a short time-boxed unlock [TAX-2].
+  const lockMo = m.moments.filter(x => x.type === "desire" && !x.noOffer).map(x => ({ x, screen: m.screens.find(sc => sc.id === x.screen)! }))
+    .filter(o => o.screen && !isSignupScreen(o.screen) && !a.gated.some(g => g.useMoment.id === o.x.id))
+    .map(o => ({ ...o, sig: o.screen.signals.find(g => g.kind === "lock" && !SIGNUP.test(g.text) && !ACCOUNT_LIKE.test(g.text)) }))
+    .find(o => o.sig);
+  if (lockMo) {
+    const x = { mo: lockMo.x, screen: lockMo.screen, what: lockMo.sig!.text.slice(0, 40), el: lockMo.screen.elements.find(e => e.id === lockMo.sig!.el) };
+    T.push({
+      key: "desire-unlock", why: "Reactive moment of need on a locked feature: a time-boxed taste, the paid plan stays the only unlimited path [TAX-2].",
+      idea: { title: `Play to unlock "${x.what}" for a while`, case: "existing", archetype: "TAX-2", moment: x.mo.id, reward: `"${x.what}" unlocked for 30 minutes`, beyondBaseline: true },
       defaults: { perDay: 1, cooldownMin: 0, cogsUnits: 0, minutes: 30 },
       build: (pid, p) => {
         const min = p.minutes ?? 30;
+        const what = `"${x.what}" unlocked for ${min} minutes`;
         return {
-          id: pid, version: 1, title: `Play to unlock ${x.what.slice(0, 40)} for ${min} minutes`, case: "existing", archetype: x.archetype, beyondBaseline: true,
-          oneLiner: `Where ${x.screen.name} blocks "${x.what.slice(0, 40)}", a ${SEC}-second game unlocks it for ${min} minutes, once a day.`,
-          anchor: { moments: [x.mo.id], economy: ids(w?.item?.id) },
+          id: pid, version: 1, title: `Play to unlock "${x.what}" for ${min} minutes`, case: "existing", archetype: "TAX-2", beyondBaseline: true,
+          oneLiner: `Where ${x.screen.name} locks "${x.what}", a ${SEC}-second game unlocks it for ${min} minutes, once a day.`,
+          anchor: { moments: [x.mo.id], economy: [] },
           surface: x.screen.id,
-          trigger: `The user hits "${x.what.slice(0, 40)}" on ${x.screen.name}; the rewarded option sits below the paid one.`,
+          trigger: `The user taps the locked "${x.what}" on ${x.screen.name}; the rewarded option sits below the paid one.`,
           eligibility: ELIG,
-          offer: { title: "Try it for free", body: `Play a ${SEC}-second game to get ${what} for ${min} minutes.`, cta: "Play to unlock", decline: "No thanks" },
+          offer: { title: "Try it for free", body: `Play a ${SEC}-second game to get ${what}.`, cta: "Play to unlock", decline: "No thanks" },
           simula: { unit: "SIM-RWD", entry: "button", gamePartner: partner, minPlaySec: SEC },
-          reward: nonRes(`${what} for ${min} minutes`, `${min} minutes`),
+          reward: nonRes(what, `${min} minutes`),
           caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
           cannibalizationGuard: guard(`${min} minutes once a day with a visible countdown; the paid plan remains unlimited.`),
           assumptions: { engagedShare: 0.1, viewsPerEngager: 1, cogs: "none", cogsUnitsPerView: 0 },
           kpis: kpis(`Unlock opt-in rate and later paid conversion against the holdout`),
-          precedents: [x.archetype, "EX-MUSIC", "AI-15"],
+          precedents: ["TAX-2", "EX-MUSIC", "AI-15"],
           risks: ["If the unlocked feature is the plan's core promise, sampling can substitute for buying: keep it short."],
-          evidence: evidenceFor(m, [x.mo], [w?.item?.id]),
+          evidence: evidenceFor(m, [x.mo], []),
           patch: {
             newScreens: [],
             newElements: [{ id: "ne1", in: x.screen.id, near: x.el?.id, place: "after", change: `Secondary button "▶ Play ${SEC} s: ${min} minutes free"` }],
             newEdges: [{ from: x.screen.id, el: "ne1", to: "rwd", effects: [] }],
           },
           storyboard: [
-            phase("today", x.screen, [], "none", co(x.screen, x.el, "Blocked today"), `"${x.what.slice(0, 40)}" is gated.`),
+            phase("today", x.screen, [], "none", co(x.screen, x.el, "Locked today"), `"${x.what}" is locked.`),
             phase("change", x.screen, [], "none", [{ node: "ne1", text: "NEW: play to unlock" }], "A secondary rewarded option appears under the paid one."),
             phase("offer", x.screen, [], "invite", [{ node: "ne1", text: "Duration disclosed" }], `"Play to unlock" or "No thanks".`),
             phase("ad", x.screen, [], "game", [], `A ${SEC}-second game; unlock on REWARD_VERIFIED.`),
@@ -372,41 +577,53 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
 
   // --- product changes ---------------------------------------------------------------------------
   const hasAds = m.economy.ads.length > 0;
-  const nonRes = (what: string, duration?: string): Proposal["reward"] => ({ what, duration, grantOn: "REWARD_VERIFIED" });
   if (hub) {
     const bal = hub.balanceEl ?? hub.anchorEl;
     const dailySource = m.economy.sources.find(x => x.cadence === "daily");
-    // Without a priced resource: a short taste of the paid plan, else an ad-free window where ads
-    // interrupt, else a collectible.
+    // Without a consumable: one use of a gated feature for the day's set (a count, never "+1 tier"),
+    // else a short taste of the paid plan, else an ad-free window where ads interrupt, else a collectible.
     const plan = m.economy.entitlements[0];
+    const g0 = a.gated.find(g => g.perUse);
     const interruptive = m.economy.ads.some(x => x.format === "interstitial" || x.format === "banner");
-    const reward = (amt?: number) => (res && s && amt ? resourceReward(amt)
+    const planCogs = (plan ? cogsKindOf({ name: `${plan.plan} ${plan.benefits.join(" ")}`, unit: "" }) ?? "none" : "none") as Cogs;
+    const setReward = !(res && s) && g0;
+    const reward = (amt?: number): Proposal["reward"] => (res && s && amt ? resourceReward(amt)
+      : g0 ? { what: `${usesPhrase(g0.feature, useNoun(g0), 1)} for finishing all 3 tasks (today)`, resource: g0.resource?.id, duration: "today", grantOn: "REWARD_VERIFIED" }
       : plan ? nonRes(`15 minutes of ${plan.plan}${plan.benefits[0] ? ` (${plan.benefits[0]})` : ""}`, "15 minutes")
       : interruptive ? nonRes(`30 minutes of ${hub.screen.name} without ads`, "30 minutes")
       : nonRes("a collectible profile badge for completing all 3 tasks"));
+    // Cost to serve per view: the consumable's units, one gated use per 3 tasks, or ~1 use per 10 plan minutes.
+    const taskCogs: { cogs: Cogs; units: (p: Params) => number } = res && s ? { cogs, units: p => p.cogsUnits }
+      : g0 ? { cogs: g0.cogs, units: () => (g0.cogs === "none" ? 0 : 0.33) }
+      : plan ? { cogs: planCogs, units: () => (planCogs === "none" ? 0 : 1.5) }
+      : { cogs: "none", units: () => 0 };
     T.push({
       key: "daily-tasks", why: "A capped, proactive daily habit loop: predictable inventory with no interruption [TAX-9].",
-      idea: { title: `Daily tasks on ${hub.screen.name}`, case: "product-change", archetype: "TAX-9", moment: hub.moment.id, reward: `${res && s ? `+${u(s.amount)}` : "a reward"} per sponsored task, 3 a day`, beyondBaseline: true },
+      idea: { title: `Daily tasks on ${hub.screen.name}`, case: "product-change", archetype: "TAX-9", moment: hub.moment.id, reward: res && s ? `+${u(s.amount)} per sponsored task, 3 a day` : `${reward().what}, 3 tasks a day`, beyondBaseline: true },
       defaults: { amount: s?.amount, perDay: 3, cooldownMin: 5, cogsUnits: s?.cogsUnits ?? 0 },
       build: (pid, p) => {
         const r = reward(p.amount);
         return {
           id: pid, version: 1, title: `Daily tasks on ${hub.screen.name}`, case: "product-change", archetype: "TAX-9", beyondBaseline: true,
-          oneLiner: `A "Daily tasks" sheet on ${hub.screen.name}: 3 sponsored ${SEC}-second games a day with ${partner}, each for ${r.what}.`,
+          oneLiner: setReward
+            ? `A "Daily tasks" sheet on ${hub.screen.name}: 3 sponsored ${SEC}-second games a day with ${partner}; finishing all 3 unlocks ${usesPhrase(g0.feature, useNoun(g0), 1)}.`
+            : `A "Daily tasks" sheet on ${hub.screen.name}: 3 sponsored ${SEC}-second games a day with ${partner}, each for ${r.what}.`,
           anchor: {
             moments: [hub.moment.id], economy: ids(res?.id, dailySource?.id),
-            newMechanic: { name: "Daily tasks", description: `A ${hub.screen.name} sheet listing 3 sponsored mini-game tasks per day, each paying ${r.what}; resets at midnight.`,
+            newMechanic: { name: "Daily tasks", description: setReward
+                ? `A ${hub.screen.name} sheet listing 3 sponsored mini-game tasks per day; finishing all 3 unlocks ${usesPhrase(g0.feature, useNoun(g0), 1)}; resets at midnight.`
+                : `A ${hub.screen.name} sheet listing 3 sponsored mini-game tasks per day, each paying ${r.what}; resets at midnight.`,
               whyNeeded: dailySource ? `The only free daily source today is "${dailySource.how}"; a capped task list adds proactive inventory without touching it.` : "Nothing renews daily today; a capped task list creates a daily habit and predictable inventory.", removesFreeValue: false },
           },
           surface: "ns1",
           trigger: `A "Daily tasks 0/3" badge on ${hub.screen.name}; the user opens the sheet and picks a task. No pop-ups.`,
           eligibility: ELIG,
-          offer: { title: "Daily tasks", body: `Play a ${SEC}-second sponsored game to get ${r.what}. 3 tasks a day.`, cta: "Play task", decline: "Close" },
+          offer: { title: "Daily tasks", body: setReward ? `Play three ${SEC}-second sponsored games today to unlock ${usesPhrase(g0.feature, useNoun(g0), 1)}.` : `Play a ${SEC}-second sponsored game to get ${r.what}. 3 tasks a day.`, cta: "Play task", decline: "Close" },
           simula: { unit: "SIM-RWD", entry: "invitation", gamePartner: partner, minPlaySec: SEC },
           reward: r,
           caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
           cannibalizationGuard: guard(`At most ${p.perDay} tasks a day; the free daily sources are unchanged.`),
-          assumptions: { engagedShare: 0.2, viewsPerEngager: 2, cogs: r.resource ? cogs : "none", cogsUnitsPerView: r.resource ? p.cogsUnits : 0 },
+          assumptions: { engagedShare: 0.2, viewsPerEngager: 2, cogs: taskCogs.cogs, cogsUnitsPerView: taskCogs.units(p) },
           kpis: kpis(`Tasks completed per DAU and D7 retention against the holdout`),
           precedents: ["TAX-9", "AI-3", "EX-SOCIAL", "TRIG-1"],
           risks: ["New surface to build and maintain; sponsor demand for the tasks must be confirmed."],
@@ -447,7 +664,10 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
         why: `${premLabel} is priced per message today; there is no way to feel it for a while without paying.`, paid: "mode",
         precedents: ["TAX-11", "TAX-2", "EX-MUSIC", "EX-DUO"], risk: `${premLabel} replies cost more to serve; a time box has no per-message cap.` }
     : plan0 && hub
-      ? { where: hub.screen, mo: hub.moment, near: hub.anchorEl, minutes: 30, cogs: "none", units: 0, archetype: "TAX-11", title: `Sponsored ${plan0.plan} half hour`,
+      ? { where: hub.screen, mo: hub.moment, near: hub.anchorEl, minutes: 30, archetype: "TAX-11", title: `Sponsored ${plan0.plan} session`,
+          // A time box of an AI plan still costs inference: assume ~1 use per 10 minutes (stated, code-computed).
+          cogs: (cogsKindOf({ name: `${plan0.plan} ${plan0.benefits.join(" ")}`, unit: "" }) ?? "none") as Cogs,
+          units: cogsKindOf({ name: `${plan0.plan} ${plan0.benefits.join(" ")}`, unit: "" }) ? 3 : 0,
           what: min => `${min} minutes of ${plan0.plan}${plan0.benefits[0] ? ` (${plan0.benefits[0]})` : ""}`, today: `${plan0.plan} is subscription-only`,
           why: `${plan0.plan} can only be felt by subscribing; a sponsored time box samples it [CANN-1].`, paid: "plan",
           precedents: ["TAX-11", "TAX-2", "EX-MUSIC"], risk: `Sampling ${plan0.plan}'s core benefit can substitute for subscribing: keep it short.` }
@@ -596,7 +816,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
       "A cosmetic collectible earned by play", "Cosmetics have near-zero cost to serve [TAX-13].", ["TAX-13", "EX-SOCIAL"], 1));
   }
 
-  const rank = (k: string) => { const i = PICK_ORDER.indexOf(k); return i < 0 ? PICK_ORDER.length : i; };
+  const rank = (k: string) => { const i = PICK_ORDER.indexOf(k.split(":")[0]); return i < 0 ? PICK_ORDER.length : i; };
   return T.sort((x, y) => rank(x.key) - rank(y.key));
 }
 
@@ -643,13 +863,25 @@ function stubBaseline(m: ProductModel, a: Anchors): string[] {
 function stubSweep(m: ProductModel, a: Anchors): Candidates["momentSweep"] {
   const res = a.res?.name ?? "the resource";
   const amt = a.sized ? `${a.sized.amount} ${a.res?.unit}` : "a small reward";
+  const resource = (id?: string) => m.economy.resources.find(r => r.id === id);
+  const accountScreens = new Set(a.accountWalls.map(x => x.screen));
+  const gatedOf = (mo: Moment) => a.gated.find(g => g.moment.id === mo.id || g.useMoment.id === mo.id || g.decline?.moment.id === mo.id);
   return m.moments.map(mo => {
     if (mo.noOffer) return { moment: mo.id, exchange: "Offers are forbidden before first value.", viable: false };
+    const r = resource(mo.resource);
+    if (isAccountResource(r) || (accountScreens.has(mo.screen) && mo.type !== "hub"))
+      return { moment: mo.id, exchange: "The account itself is the gate here: an ad cannot stand in for signing up, so no rewarded exchange.", viable: false };
+    const g = gatedOf(mo);
+    if (g) {
+      const s = sampleSize(m, g.cogs);
+      const sample = g.perUse ? usesPhrase(g.feature, useNoun(g), mo.type === "decline" ? 1 : s.uses) : `a short time box of ${g.feature}`;
+      return { moment: mo.id, exchange: `${g.feature} needs ${g.plan ?? "the paid plan"}${g.signup ? " (behind sign-up)" : ""}: sample it (${sample}${s.views > 1 ? ` for ${WORD[s.views]} games` : ""}), never "+1 ${r?.unit ?? "tier"}".`, viable: true };
+    }
     switch (mo.type) {
       case "wall": return { moment: mo.id, exchange: mo.resource ? `Blocked on ${res}: a game for ${amt} (one cheapest action) closes the loop.` : "Blocked on a paid feature: a short time-boxed unlock.", viable: true };
       case "decline": return { moment: mo.id, exchange: `After declining the paid option: a one-time smaller fallback (${amt}).`, viable: !!a.res };
       case "hub": return { moment: mo.id, exchange: "Proactive surface: a refill station or daily tasks, capped per day.", viable: true };
-      case "post-reward": return { moment: mo.id, exchange: "Right after a free claim: a bonus or 2x for one game.", viable: true };
+      case "post-reward": return { moment: mo.id, exchange: r && !isConsumable(r) ? "A one-time grant of an entitlement: nothing to multiply with an ad." : "Right after a free claim: a bonus or 2x for one game.", viable: !r || isConsumable(r) };
       case "desire": return { moment: mo.id, exchange: a.premiumSink ? `Wants the pricier option (${a.premiumSink.context ?? a.premiumSink.amount}): sample it for one reply.` : "Wants something locked or priced: sample it.", viable: true };
       default: return { moment: mo.id, exchange: mo.description, viable: mo.reach !== "rare" };
     }

@@ -29,6 +29,8 @@ export interface Frame {
   choices: { play: Box | null; decline: Box | null };
   /** Visible text on the frame (leaf elements), so pins can avoid covering words. */
   texts?: Box[];
+  /** Visible, unobscured interactive controls (buttons, tabs, inputs): a pin never covers one. */
+  controls?: Box[];
   caption: string;
   source: "mock" | "model-screenshot" | "placeholder";
 }
@@ -86,15 +88,13 @@ const MEASURE = `(a) => {
     const x = Math.max(0, r.left), y = Math.max(0, r.top);
     return { x, y, w: Math.min(vw, r.right) - x, h: Math.min(vh, r.bottom) - y };
   };
+  // A callout counts only where the user can see it: an element under a scrim or sheet gets no ring.
   const pick = (els) => {
-    let fallback = null;
     for (const el of els) {
       const r = rectOf(el);
-      if (!r) continue;
-      if (onTop(el, r)) return box(r);
-      fallback = fallback || box(r);
+      if (r && onTop(el, r)) return box(r);
     }
-    return fallback;
+    return null;
   };
   const byAttr = (name, v) => Array.from(document.querySelectorAll("[" + name + "]")).filter(e => e.getAttribute(name) === v);
   const find = (node) => pick(byAttr("data-node", node).concat(byAttr("data-new", node), byAttr("id", node)));
@@ -123,7 +123,14 @@ const MEASURE = `(a) => {
     const r = rectOf(el);
     if (r && onTop(el, r)) texts.push(box(r));
   }
-  return { vw, vh, callouts: a.nodes.map(find), newBoxes, play: byText(a.play), decline: byText(a.decline), texts };
+  const controls = [];
+  const CTRL = 'button, a[href], [role="button"], [role="tab"], [role="switch"], input, textarea, select, [data-rw], [data-role="send"], [data-role="composer"], .mock-hotspot, [data-new]';
+  for (const el of document.querySelectorAll(CTRL)) {
+    if (controls.length >= 120) break;
+    const r = rectOf(el);
+    if (r && onTop(el, r)) controls.push(box(r));
+  }
+  return { vw, vh, callouts: a.nodes.map(find), newBoxes, play: byText(a.play), decline: byText(a.decline), texts, controls };
 }`;
 
 export interface CaptureInput {
@@ -169,14 +176,14 @@ export async function captureFlow(o: CaptureInput): Promise<Frame[]> {
         nodes: sb.callouts.map(c => c.node),
         play: phase === "offer" ? [o.p.offer.cta, "Play now", "Play"] : [],
         decline: phase === "offer" ? [o.p.offer.decline, "No thanks", "No, thanks", "Not now"] : [],
-      })})`)) as { vw: number; vh: number; callouts: (Box | null)[]; newBoxes: Box[]; play: Box | null; decline: Box | null; texts: Box[] };
+      })})`)) as { vw: number; vh: number; callouts: (Box | null)[]; newBoxes: Box[]; play: Box | null; decline: Box | null; texts: Box[]; controls: Box[] };
       if (errors.length) trace("failure", { where: `slides:capture:${o.p.id}:${phase}`, error: errors.slice(0, 3).join(" | ") });
       if (phase === "offer" && (!meas.play || !meas.decline))
         trace("failure", { where: `slides:capture:${o.p.id}:offer`, error: `offer frame is missing ${!meas.play ? "the play button" : ""}${!meas.play && !meas.decline ? " and " : ""}${!meas.decline ? "the decline button" : ""}` });
       frames.push({
         phase, screen: sb.screen, img: rel, vw: meas.vw, vh: meas.vh,
         callouts: sb.callouts.map((c, k) => ({ text: c.text, box: meas.callouts[k] ?? null })),
-        newBoxes: meas.newBoxes.slice(0, 4), choices: { play: meas.play, decline: meas.decline }, texts: meas.texts,
+        newBoxes: meas.newBoxes.slice(0, 4), choices: { play: meas.play, decline: meas.decline }, texts: meas.texts, controls: meas.controls,
         caption: sb.caption, source: "mock",
       });
     } catch (e) {

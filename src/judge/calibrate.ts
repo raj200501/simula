@@ -16,13 +16,19 @@ import { trace } from "../core/trace.ts";
 import type { StageCtx } from "../core/run.ts";
 import { digest } from "../model/digest.ts";
 import { elText, resolveAnchors } from "../propose/anchors.ts";
+import { sampleSize, useNoun, usesPhrase } from "../propose/stub.ts";
 import { judgeOnce } from "./judge.ts";
 import { THRESHOLDS, WEIGHTS } from "./verdict.ts";
 
 export const CAL_DIR = path.join(ROOT, "eval", "judge-cal");
 
 interface PositiveT { id: string; precedent: string; pattern: string; requires: string[]; proposal: unknown }
-interface NegativeT { id: string; base: string; field: string; value: unknown; fault: string; expect: "code" | "judge"; expectWhat: string }
+// A negative lists the positives it can be built from, in preference order (consumable-economy
+// positives first, entitlement ones second); `alt` rephrases the fault for a given base when needed.
+interface NegativeT {
+  id: string; base: string | string[]; field: string; value: unknown; fault: string; expect: "code" | "judge"; expectWhat: string;
+  alt?: Record<string, { field?: string; value?: unknown; fault?: string; expect?: "code" | "judge"; expectWhat?: string }>;
+}
 export interface CalItem { id: string; kind: "positive" | "negative"; base?: string; field?: string; label: string; expect: "SHIP" | "code" | "judge"; expectWhat: string; proposal: Proposal }
 
 /** Placeholder values resolved from the model's anchors. Undefined keys drop optional fields. */
@@ -60,6 +66,37 @@ export function calibrationDict(m: ProductModel): Record<string, unknown> {
   let n = 99;
   while (m.screens.some(s => s.id === `s${n}`)) n--;
   put("missing.screen", `s${n}`);
+
+  // Entitlement apps: a plan feature behind a paywall or sign-up wall, sampled (never "+1 tier").
+  const g = a.gated.find(x => x.perUse) ?? a.gated[0];
+  if (g) {
+    const size = sampleSize(m, g.cogs);
+    const noun = useNoun(g);
+    const words = ["zero", "one", "two", "three"];
+    const phrase = (k: number) => (g.perUse ? usesPhrase(g.feature, noun, k) : `${g.cogs === "none" ? 30 : 10} minutes of ${g.feature}`);
+    const units = (k: number) => (g.cogs === "none" ? 0 : Math.round(((g.perUse ? k : 1) / size.views) * 100) / 100);
+    const to = g.decline?.to ?? (g.decline ? g.useScreen : undefined);
+    put("gated.feature", g.feature); put("gated.plan", g.plan ?? "the paid plan"); put("gated.resource", g.resource?.id); put("gated.unit", g.resource?.unit);
+    put("gated.moment", g.moment.id); put("gated.item", g.item?.id); put("gated.evidence", g.moment.evidence.slice(0, 2));
+    put("gated.useMoment", g.useMoment.id); put("gated.useScreen", (g.signup ? g.useScreen : g.screen)?.id); put("gated.useScreenName", (g.signup ? g.useScreen : g.screen)?.name);
+    put("gated.useEl", g.useEl && (g.signup ? g.useScreen : g.screen)?.elements.some(e => e.id === g.useEl!.id) ? g.useEl.id : undefined);
+    put("gated.sample", phrase(size.uses)); put("gated.sampleOne", phrase(1)); put("gated.cogs", g.cogs);
+    put("gated.units", units(size.uses)); put("gated.unitsOne", units(1)); put("gated.unitsTask", g.cogs === "none" ? 0 : 0.33);
+    put("gated.games", size.views === 1 ? "a 15-second game" : `${words[size.views]} 15-second games`); put("gated.views", size.views);
+    put("gated.eligibility", g.signup ? "Signed-in non-subscribers from their second session on; guests keep seeing the account sheet first; never subscribers."
+      : "Non-payers only, returning users from their second session on; never shown to subscribers.");
+    if (g.decline && to) {
+      put("gated.declineMoment", g.decline.moment.id); put("gated.declineScreen", g.screen.id); put("gated.declineScreenName", g.screen.name);
+      put("gated.declineTo", to.id); put("gated.declineToName", to.name); put("gated.declineLabel", elText(g.decline.el) || "Not now");
+      put("gated.declineCase", g.signup ? "product-change" : "existing");
+      put("gated.declineMechanic", g.signup ? { name: `Guest sample of ${g.feature}`, description: `${phrase(1)} for guests who dismiss ${g.screen.name}, once a day.`,
+        whyNeeded: `Guests meet ${g.screen.name} before they can feel ${g.feature}; one sample shows its value without replacing sign-up.`, removesFreeValue: false } : undefined);
+      put("gated.declineEligibility", g.signup ? "Guests who just declined the account sheet (never payers or subscribers), from their second session on, once a day."
+        : `Only non-payers who just declined ${g.plan ?? "the paid plan"}, from their second session on; never subscribers.`);
+    }
+  }
+  const acct = a.accountWalls[0];
+  put("account.feature", acct ? m.economy.walls.find(w => w.shows === acct.screen)?.blockedIntent : undefined);
   return d;
 }
 
@@ -104,15 +141,25 @@ export function calibrationItems(m: ProductModel, dir = CAL_DIR): { items: CalIt
     items.push({ id: t.id, kind: "positive", label: `${t.precedent}: ${t.pattern}`, expect: "SHIP", expectWhat: "SHIP", proposal: r.data });
   }
   for (const t of neg) {
-    const b = base.get(t.base);
-    if (!b) { skipped.push({ id: t.id, why: `base ${t.base} was skipped` }); continue; }
-    const raw = structuredClone(b);
-    const missing = new Set<string>();
-    setPath(raw, t.field, resolvePlaceholders(t.value, dict, missing));
-    raw.id = t.id;
-    if (missing.size) { skipped.push({ id: t.id, why: `model lacks ${[...missing].join(", ")}` }); continue; }
-    // A single-fault negative may break the schema on purpose; codeGates reports that as the schema gate.
-    items.push({ id: t.id, kind: "negative", base: t.base, field: t.field, label: t.fault, expect: t.expect, expectWhat: t.expectWhat, proposal: raw as unknown as Proposal });
+    const bases = Array.isArray(t.base) ? t.base : [t.base];
+    let built: CalItem | undefined;
+    const why: string[] = [];
+    for (const id of bases) {
+      const b = base.get(id);
+      if (!b) { why.push(`base ${id} not available`); continue; }
+      const o = t.alt?.[id] ?? {};
+      const field = o.field ?? t.field;
+      const raw = structuredClone(b);
+      const missing = new Set<string>();
+      setPath(raw, field, resolvePlaceholders(o.value !== undefined ? o.value : t.value, dict, missing));
+      raw.id = t.id;
+      if (missing.size) { why.push(`${id}: model lacks ${[...missing].join(", ")}`); continue; }
+      // A single-fault negative may break the schema on purpose; codeGates reports that as the schema gate.
+      built = { id: t.id, kind: "negative", base: id, field, label: o.fault ?? t.fault, expect: o.expect ?? t.expect, expectWhat: o.expectWhat ?? t.expectWhat, proposal: raw as unknown as Proposal };
+      break;
+    }
+    if (built) items.push(built);
+    else skipped.push({ id: t.id, why: why.join("; ") || "no base" });
   }
   return { items, skipped };
 }
@@ -170,7 +217,7 @@ export function judgeEvalMd(m: ProductModel, rows: CalRow[], skipped: { id: stri
   L.push(`- Caught by the layer expected to catch it: ${asExpected} / ${negs.length}.`);
   L.push(`- Negatives that would SHIP: ${negs.length - caught.length}${negs.filter(r => !r.caught).map(r => ` (${r.item.id})`).join("")}.`);
   L.push(`- Positives that SHIP: **${pos.filter(r => !r.caught).length} / ${pos.length}**${pos.filter(r => r.caught).map(r => `; ${r.item.id} got ${r.round.verdict} (${r.round.reasons.slice(0, 2).join("; ")})`).join("")}.`);
-  if (skipped.length) L.push(`- Skipped: ${skipped.map(s => `${s.id} (${s.why})`).join("; ")}.`);
+  if (skipped.length) L.push(`- Not applicable to this model: ${skipped.map(s => `${s.id} (${s.why})`).join("; ")}.`);
   L.push("", "## Top concern per item", "");
   for (const row of rows) L.push(`- **${row.item.id}** (${row.round.verdict}): ${cell(row.round.topConcern)}`);
   return L.join("\n") + "\n";

@@ -34,6 +34,23 @@
   html.style.setProperty("--mock-accent", M.accent || "#3B82F6");
   html.style.setProperty("--mock-on-accent", M.onAccent || "#FFFFFF");
 
+  // Inline SVG icons for proposal defaults and the rewarded overlay (rewarded.js reads this set).
+  var SVG = 'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+  var ICONS = window.__mockIcons = {
+    pad: "<svg " + SVG + ' fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M7.2 6.5h9.6a4.6 4.6 0 0 1 4.5 3.7l1 5.1a2.7 2.7 0 0 1-4.8 2.1l-1.8-2.4H8.3l-1.8 2.4a2.7 2.7 0 0 1-4.8-2.1l1-5.1a4.6 4.6 0 0 1 4.5-3.7z"/>'
+      + '<path d="M8 9.6v3.4M6.3 11.3h3.4"/><circle cx="15.6" cy="10.3" r=".6" fill="currentColor"/><circle cx="17.6" cy="12.4" r=".6" fill="currentColor"/></svg>',
+    spark: "<svg " + SVG + ' fill="currentColor"><path d="M12 1.5l2.1 6.4 6.4 2.1-6.4 2.1L12 18.5l-2.1-6.4L3.5 10l6.4-2.1z"/><path d="M19.5 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg>',
+    close: "<svg " + SVG + ' fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+    back: "<svg " + SVG + ' fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+    check: "<svg " + SVG + ' fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    gift: "<svg " + SVG + ' fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7M12 8.5v12M12 8.5c-1.8-3.6-5.6-3.4-5.6-1.2 0 1.2 1.4 1.2 5.6 1.2zM12 8.5c1.8-3.6 5.6-3.4 5.6-1.2 0 1.2-1.4 1.2-5.6 1.2z"/></svg>',
+    clock: "<svg " + SVG + ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+    chevron: "<svg " + SVG + ' fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  };
+  /** An icon element (<span class=cls> with the SVG inside). */
+  function iconEl(name, cls) { var sp = document.createElement("span"); sp.className = cls; sp.setAttribute("aria-hidden", "true"); sp.innerHTML = ICONS[name] || ""; return sp; }
+
   var OVERLAY = { modal: 1, sheet: 1, dialog: 1 };
   var DUR = { push: 250, back: 250, modal: 200, sheet: 250, tab: 0, replace: 0, none: 0 };
   var screenEl = document.getElementById("mock-screen");
@@ -146,71 +163,115 @@
     return { kind: kind, label: q[0] || summaryOf(c, 5) || "New", sub: sub && sub !== q[0] ? sub : "", actions: acts };
   }
   function css(el, rules) { for (var k in rules) el.style.setProperty(k, rules[k]); return el; }
+  /** Labels written with a play glyph ("▶ Play 15 s …") lose the glyph: the control draws its own icon. */
+  function cleanLabel(s) { return clean(String(s || "").replace(/^[\s▶►▷⏵⯈➤→]+/, "")); }
+  function textEl(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; e.textContent = text; return e; }
+  /**
+   * A proposal element the model did not render, drawn as a native-looking control in the app's own
+   * tokens: a card (icon badge, bold title, one-line value, one CTA), a pill, or a tinted button with
+   * a game-controller icon.
+   */
   function newControl(ne, wide) {
-    var sp = specOf(ne.change), el;
+    var sp = specOf(ne.change), el, label = cleanLabel(sp.label) || sp.label;
     if (sp.kind === "card") {
       el = document.createElement("div");
       el.className = "mock-new-card";
+      el.appendChild(iconEl("pad", "mock-new-ic"));
       var body = document.createElement("div");
       body.className = "mock-new-card-text";
-      var b = document.createElement("b"); b.textContent = sp.label; body.appendChild(b);
-      if (sp.sub) { var sm = document.createElement("span"); sm.textContent = sp.sub; body.appendChild(sm); }
+      body.appendChild(textEl("b", "", label));
+      if (sp.sub) body.appendChild(textEl("span", "", sp.sub));
       el.appendChild(body);
-      var acts = sp.actions.length ? sp.actions : [];
-      if (acts.length) {
-        var row = document.createElement("div"); row.className = "mock-new-card-acts";
-        acts.forEach(function (a, i) { var x = document.createElement("span"); x.className = i ? "mock-new-ghost" : "mock-new-cta"; x.textContent = a; row.appendChild(x); });
-        el.appendChild(row);
-      }
+      var acts = sp.actions.length ? sp.actions : ["Play"];
+      var row = document.createElement("div"); row.className = "mock-new-card-acts";
+      acts.slice(0, 2).forEach(function (a, i) { row.appendChild(textEl("span", i ? "mock-new-ghost" : "mock-new-cta", a)); });
+      el.appendChild(row);
     } else {
       el = document.createElement("button");
       el.type = "button";
       el.className = sp.kind === "pill" ? "mock-new-pill" : "mock-new-button";
-      el.textContent = sp.label;
-      if (sp.sub) { var s2 = document.createElement("small"); s2.textContent = sp.sub; el.appendChild(s2); }
+      el.appendChild(iconEl("pad", "mock-new-ic"));
+      el.appendChild(textEl("span", "mock-new-label", label));
+      if (sp.sub) el.appendChild(textEl("small", "", sp.sub));
       if (sp.kind === "button" && wide) el.classList.add("mock-new-wide");
     }
     return el;
   }
 
+  /** The offer copy of a proposal, with the reward in bold where the body names it. */
+  function offerBody(offer, reward) {
+    var d = document.createElement("p"); d.className = "mock-ns-sub";
+    var body = String((offer && offer.body) || ""), rw = String(reward || "");
+    var i = rw ? body.indexOf(rw) : -1;
+    if (i < 0 && rw.charAt(0) === "+") { rw = rw.slice(1); i = body.indexOf(rw); }
+    if (i < 0) { d.textContent = body; return d; }
+    d.appendChild(document.createTextNode(body.slice(0, i)));
+    d.appendChild(textEl("b", "", rw));
+    d.appendChild(document.createTextNode(body.slice(i + rw.length)));
+    return d;
+  }
+
+  /**
+   * A new screen the model did not render: a sheet / modal / page in the app's tokens with an icon
+   * badge, a bold title and close control, one line of detail, and either its rows (task cards with a
+   * Play button) or, for an offer variant, the offer itself: the body with the reward in bold, one
+   * large Play button and an equally sized No thanks.
+   */
   function defaultNewScreen(id, ps) {
     var m = ps.meta || {}, overlay = !!OVERLAY[m.kind];
     var sp = specOf(ps.change), change = String(ps.change || "");
     // No quoted title in the spec: the proposal's own offer copy is what the user would read here.
     var X = ps.pid && window.__PATCHES && window.__PATCHES[ps.pid];
-    var offer = X && X.proposal && X.proposal.offer;
+    var prop = X && X.proposal, offer = prop && prop.offer;
     var named = quotedIn(change).length > 0;
     if (!named && offer && offer.title) sp.label = offer.title;
     var root = document.createElement("div");
     root.setAttribute("data-screen-root", id);
-    css(root, { position: "relative", width: "100%", height: "100%", overflow: "hidden", background: overlay ? "transparent" : "#FFFFFF" });
+    css(root, { position: "relative", width: "100%", height: "100%", overflow: "hidden", background: overlay ? "transparent" : "var(--c-bg, #FFFFFF)" });
     if (overlay) { var scrim = document.createElement("div"); scrim.className = "mock-ns-scrim"; root.appendChild(scrim); }
     var panel = document.createElement("div");
     panel.className = overlay ? (m.kind === "sheet" ? "mock-ns-sheet" : "mock-ns-modal") : "mock-ns-page";
     if (m.kind === "sheet") css(panel, { "padding-bottom": (M.device.navDp + 20) + "px" });
     if (!overlay) css(panel, { "padding-top": (M.device.statusDp + 12) + "px" });
     var head = document.createElement("div"); head.className = "mock-ns-head";
-    var h = document.createElement("div"); h.className = "mock-ns-title"; h.textContent = sp.label; head.appendChild(h);
-    var x = document.createElement("button"); x.type = "button"; x.className = "mock-ns-close"; x.setAttribute("aria-label", "Close"); x.textContent = overlay ? "✕" : "←";
+    head.appendChild(iconEl("pad", "mock-ns-icon"));
+    head.appendChild(textEl("div", "mock-ns-title", cleanLabel(sp.label) || sp.label));
+    var x = document.createElement("button"); x.type = "button"; x.className = "mock-ns-close"; x.setAttribute("aria-label", overlay ? "Close" : "Back");
+    x.innerHTML = ICONS[overlay ? "close" : "back"];
     x.addEventListener("click", function (ev) { ev.stopPropagation(); back(); });
-    if (overlay) head.appendChild(x); else head.insertBefore(x, h);
+    if (overlay) head.appendChild(x); else head.insertBefore(x, head.firstChild);
     panel.appendChild(head);
     // Details: the spec's remaining clauses ("progress 0/3", "resets at midnight"), minus the rows spec.
     var rows = /(\d+)\s+(?:rows?|items?|tasks?|cards?)\s*(?:["“]([^"”]{1,80})["”])?/i.exec(change);
     var rest = change.replace(/["“][^"”]*["”]/g, "\u0000").split(/[,;]|:\s/).map(function (t) { return clean(clean(t.replace(/\u0000/g, "")).replace(SPEC_WORDS, "")); })
       .filter(function (t) { return t && t.length > 2 && !/^\d+\s+(rows?|items?|tasks?|cards?)\b/i.test(t) && t.split(" ").length <= 6; });
-    if (!named && offer && offer.body) rest = [String(offer.body).split(/(?<=[.!?])\s/)[0]];
-    if (rest.length) { var d = document.createElement("div"); d.className = "mock-ns-sub"; d.textContent = rest.slice(0, 3).join(" · ").replace(/^./, function (c) { return c.toUpperCase(); }); panel.appendChild(d); }
-    var body = document.createElement("div"); body.className = "mock-ns-body"; body.setAttribute("data-mock-ns-body", "");
     var mine = (S.patchElements[id] || []).filter(function (ne) { return /\b(row|item|task|card|tile)\b/i.test(ne.change || ""); }).length;
     var n = rows ? Math.max(0, Math.min(6, Number(rows[1])) - mine) : 0;
+    var isOffer = !n && !(S.patchElements[id] || []).length && !!(offer && (offer.cta || offer.body));
+    if (isOffer) panel.appendChild(offerBody(offer, prop.reward && prop.reward.what));
+    else if (!named && offer && offer.body) panel.appendChild(textEl("div", "mock-ns-sub", String(offer.body).split(/(?<=[.!?])\s/)[0]));
+    else if (rest.length) panel.appendChild(textEl("div", "mock-ns-sub", rest.slice(0, 3).join(" · ").replace(/^./, function (c) { return c.toUpperCase(); })));
+    var body = document.createElement("div"); body.className = "mock-ns-body"; body.setAttribute("data-mock-ns-body", "");
     for (var i = 0; i < n; i++) {
-      var r = document.createElement("div"); r.className = "mock-ns-row";
-      var t = document.createElement("span"); t.textContent = rows[2] ? clean(rows[2]) : sp.label + " " + (i + 1); r.appendChild(t);
-      var p = document.createElement("span"); p.className = "mock-new-cta"; p.textContent = "Play"; r.appendChild(p);
+      var r = document.createElement("div"); r.className = "mock-new-card mock-ns-row";
+      r.appendChild(iconEl("pad", "mock-new-ic"));
+      var tx = document.createElement("div"); tx.className = "mock-new-card-text";
+      tx.appendChild(textEl("b", "", rows[2] ? clean(rows[2]) : sp.label + " " + (i + 1)));
+      r.appendChild(tx);
+      var pa = document.createElement("div"); pa.className = "mock-new-card-acts"; pa.appendChild(textEl("span", "mock-new-cta", "Play")); r.appendChild(pa);
       body.appendChild(r);
     }
     panel.appendChild(body);
+    if (isOffer) {
+      var acts = document.createElement("div"); acts.className = "mock-ns-actions";
+      var play = document.createElement("button"); play.type = "button"; play.className = "mock-ns-btn mock-ns-primary";
+      play.innerHTML = ICONS.pad; play.appendChild(document.createTextNode(offer.cta || "Play now"));
+      play.addEventListener("click", function (ev) { ev.stopPropagation(); openRewarded("game", ps.pid); });
+      var no = textEl("button", "mock-ns-btn mock-ns-secondary", offer.decline || "No thanks"); no.type = "button";
+      no.addEventListener("click", function (ev) { ev.stopPropagation(); back(); });
+      acts.appendChild(play); acts.appendChild(no);
+      panel.appendChild(acts);
+    }
     root.appendChild(panel);
     return root;
   }

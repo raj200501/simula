@@ -109,6 +109,83 @@ export function claimOf(p: Proposal, max = 70): string {
   return out || (t || p.title).slice(0, max);
 }
 
+/** A slide headline with one accent-coloured key phrase (`accent` is a substring of `text`, or ""). */
+export interface Headline { text: string; accent: string }
+
+const wordCount = (s: string) => s.split(/\s+/).filter(Boolean).length;
+
+/**
+ * The flow slide headline: at most `max` words, "where it happens: the exchange", with the reward as
+ * the accent phrase ("Out of credits: play a game for +10 credits"). A reward that is not a short
+ * amount falls back to the offer's own title ("Unlock 15 Min Premium for one short game").
+ */
+export function headlineOf(p: Proposal, m: ProductModel, max = 8): Headline {
+  const res = resourceOf(m, p.reward.resource);
+  const what = oneLine(p.reward.what).replace(/[.!;:,]+$/, "");
+  let reward = "";
+  if (p.reward.amount != null && res) reward = what.includes(String(p.reward.amount)) && wordCount(what) <= 4 ? what : `+${num(p.reward.amount)} ${unitOf(res)}`;
+  else if (what && wordCount(what) <= 4) reward = what;
+  const moment = momentOf(p, m);
+  const title = oneLine(p.offer.title).replace(/[.!:;,]+$/, "");
+  const sec = p.simula.minPlaySec;
+  const cands: Headline[] = [];
+  if (reward) {
+    if (moment) cands.push({ text: `${moment}: play a game for ${reward}`, accent: reward }, { text: `${moment}: play for ${reward}`, accent: reward });
+    cands.push({ text: `Play a ${sec}-second game for ${reward}`, accent: reward }, { text: `Play for ${reward}`, accent: reward });
+  }
+  if (title && !/\?$/.test(title)) cands.push({ text: `${title} for one short game`, accent: title });
+  if (title) cands.push({ text: title, accent: title });
+  const hit = cands.find(c => wordCount(c.text) <= max);
+  if (hit) return hit;
+  const short = clampWords(p.title, max).replace(/…$/, "");
+  return { text: short, accent: "" };
+}
+
+/** Where the offer happens, in at most four words: the surface screen, or the new surface's name. */
+function momentOf(p: Proposal, m: ProductModel): string {
+  const ns = p.patch.newScreens.find(s => s.id === p.surface);
+  const raw = m.screens.some(s => s.id === p.surface)
+    ? screenName(m, p.surface)
+    : ns ? firstQuoted(ns.change) ?? p.anchor.newMechanic?.name ?? "" : p.anchor.newMechanic?.name ?? "";
+  const t = oneLine(raw).replace(/^["“'«]|["”'»]$/g, "").replace(/[.!?:;,]+$/, "");
+  if (!t || wordCount(t) > 4 || /^n?s\d+$/i.test(t)) return "";
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+/** The recommendation headline: what users get, with the exchange as the accent phrase. */
+export function recommendationHeadline(m: ProductModel, ps: Proposal[]): Headline {
+  if (!ps.length) return { text: `No rewarded flow for ${m.app.name} is ready to ship yet.`, accent: "" };
+  const units = [...new Set(ps.map(p => resourceOf(m, p.reward.resource)).filter(Boolean).map(r => unitOf(r!)))];
+  const accent = `play a short game for ${units.length ? units.join(" and ") : "a reward"}`;
+  return { text: `Let users ${accent}.`, accent };
+}
+
+/**
+ * A flow-slide caption that fits two lines: the caption itself when short enough, else its first
+ * clause, else a word-boundary cut. The full caption stays on the details slide.
+ */
+export function shortCaption(s: string, max = 60): string {
+  const t = oneLine(s);
+  if (t.length <= max) return t;
+  const stop = (x: string) => `${x.replace(/[.,;:\-–—]+$/, "")}.`;
+  const sentence1 = firstSentence(t);
+  if (sentence1 !== t && sentence1.length <= max && wordCount(sentence1) >= 3) return sentence1;
+  const clause = t.split(/[,;(]\s|\s[–—]\s/)[0].trim();
+  if (clause.length <= max && wordCount(clause) >= 4) return stop(clause);
+  // Drop a trailing qualifier ("… option under "Refill now"") so the caption stays a sentence.
+  const cuts = [...t.matchAll(/\s(?:under|above|below|next to|with|for|in|on|at|after|before|until|when|while|so|and|which|where|from|beyond|than|without|into|via|through|because)\s/gi)]
+    .map(x => t.slice(0, x.index).trim()).filter(x => x.length <= max && wordCount(x) >= 4);
+  if (cuts.length) return stop(cuts[cuts.length - 1]);
+  let out = "";
+  for (const w of t.split(" ")) { if (`${out} ${w}`.trim().length > max - 1) break; out = `${out} ${w}`.trim(); }
+  return `${out.replace(/[,;:.\-–—]+$/, "")}…`;
+}
+
+/** The first sentence of a text (for one-line labels such as the trigger). */
+export function firstSentenceOf(s: string): string {
+  return firstSentence(oneLine(s));
+}
+
 /** Where the offer lives, in words: an existing screen's name, or the new surface the proposal adds. */
 export function surfaceLabel(p: Proposal, m: ProductModel): string {
   if (m.screens.some(s => s.id === p.surface)) return screenName(m, p.surface);
@@ -134,7 +211,8 @@ export const oneLine = (s: string | undefined) => (s ?? "").replace(/\s+/g, " ")
 const firstSentence = (s: string) => (/^(.+?[.!?])(\s|$)/.exec(s)?.[1] ?? s);
 
 // ---------------------------------------------------------------------------------------------- economics copy
-export interface WhyBullet { stat: string; text: string }
+/** `stat` is the big number, `text` the full reasoning (details), `line` one sentence for the flow slide's rail. */
+export interface WhyBullet { stat: string; text: string; line: string }
 
 /** "Why this works": exactly three bullets, each led by a number computed in code (T10, E5g). */
 export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): WhyBullet[] {
@@ -148,14 +226,17 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
   // 1. The exchange rate: what one completed view is worth, in the app's own currency.
   if (upv && amount != null) {
     const equiv = sinkEquivalent(m, res!.id, amount);
+    const ratio = e.rewardToViewRatio != null ? ` (${e.rewardToViewRatio}× one view)` : "";
     out.push({
       stat: `1 view ≈ ${num(upv.min)}–${num(upv.max)} ${unit}`,
-      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} ${upv.basis === "cost-to-serve" ? "at cost to serve (the app shows no prices)" : "at list price"}. The reward is ${amount} ${unit}${e.rewardToViewRatio != null ? ` (${e.rewardToViewRatio}× one view)` : ""}${equiv ? `, enough for ${equiv}` : ""}.`,
+      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} ${upv.basis === "cost-to-serve" ? "at cost to serve (the app shows no prices)" : "at list price"}. The reward is ${amount} ${unit}${ratio}${equiv ? `, enough for ${equiv}` : ""}.`,
+      line: `The reward is ${amount} ${unit}${ratio}${equiv ? `, enough for ${equiv}` : ""}.`,
     });
   } else {
     out.push({
       stat: `$${e.viewValueUsd[0]}–$${e.viewValueUsd[1]} per view`,
       text: `Revenue per completed US view after a ${ECON.nonGameHaircut * 100}% non-game haircut; the reward (${clip(p.reward.what, 60)}) costs ≈ $${e.cogsPerViewUsd} to serve.`,
+      line: `Earned per completed US view; the reward costs ≈ $${e.cogsPerViewUsd} to serve.`,
     });
   }
 
@@ -165,19 +246,23 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
   if (pack && dailyUnits && pack.grants.amount) {
     const x = pack.grants.amount / dailyUnits;
     out.push(x >= 1
-      ? { stat: `1 pack = ${num(x)} days of ads`, text: `The cheapest pack (${pack.label}, ${pack.priceText}) equals ${num(x)} days of the most ads can earn (${dailyUnits} ${unit} a day at ${p.caps.perDay}/day), so buying stays the fast path.` }
-      : { stat: `A day of ads > cheapest pack`, text: `Daily ad earnings (${dailyUnits} ${unit}) exceed the cheapest pack (${pack.label}); guard: ${clip(p.cannibalizationGuard, 90)}` });
+      ? { stat: `1 pack = ${num(x)} days of ads`, text: `The cheapest pack (${pack.label}, ${pack.priceText}) equals ${num(x)} days of the most ads can earn (${dailyUnits} ${unit} a day at ${p.caps.perDay}/day), so buying stays the fast path.`,
+          line: `The cheapest pack (${pack.priceText}) outlasts ${num(x)} days of capped ad rewards, so buying stays the fast path.` }
+      : { stat: `A day of ads > cheapest pack`, text: `Daily ad earnings (${dailyUnits} ${unit}) exceed the cheapest pack (${pack.label}); guard: ${clip(p.cannibalizationGuard, 90)}`,
+          line: `Capped daily ad rewards (${dailyUnits} ${unit}) exceed the cheapest pack; the guard is on the details slide.` });
   } else if (e.maxDailyEarnUsdAtList != null && e.cheapestPaidUnitUsd != null) {
     const pct = (e.maxDailyEarnUsdAtList / e.cheapestPaidUnitUsd) * 100;
-    out.push({ stat: `${Math.round(pct)}% of the cheapest pack`, text: `Max earnable per day ≈ $${e.maxDailyEarnUsdAtList.toFixed(2)} at list vs $${e.cheapestPaidUnitUsd.toFixed(2)} for the cheapest pack.` });
+    out.push({ stat: `${Math.round(pct)}% of the cheapest pack`, text: `Max earnable per day ≈ $${e.maxDailyEarnUsdAtList.toFixed(2)} at list vs $${e.cheapestPaidUnitUsd.toFixed(2)} for the cheapest pack.`,
+      line: `A full day of ads earns ≈ $${e.maxDailyEarnUsdAtList.toFixed(2)} at list, below the cheapest pack.` });
   } else {
-    out.push({ stat: "Paid path untouched", text: clip(p.cannibalizationGuard, 150) });
+    out.push({ stat: "Paid path untouched", text: clip(p.cannibalizationGuard, 150), line: firstSentence(clip(p.cannibalizationGuard, 120)) });
   }
 
   // 3. Caps and eligibility: how often, and for whom.
   out.push({
     stat: `≤ ${p.caps.perDay} a day`,
     text: `Opt-in only, ${p.caps.cooldownMin} min apart. Eligible: ${clip(p.eligibility, 110)}`,
+    line: `Opt-in only, at least ${p.caps.cooldownMin} min apart; nothing plays unless the user taps.`,
   });
   return out;
 }

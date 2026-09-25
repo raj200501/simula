@@ -7,8 +7,11 @@
 //   policy-lint     cash-like rewards, incentivized clicks/installs, "support us" policy  -> REJECT
 //   economics       code-computed flags (reward vs view, cannibalization, COGS)  fixable
 //   structure       REWARD_VERIFIED, a decline, caps, 5 storyboard phases, no first-value surface  fixable
+//   reward-coherence  an entitlement is granted as a time box or a number of uses, never "+N tier"  fixable
+//   not-for-account-wall  no ad in place of creating an account                   fixable
 import { GateResult, Proposal, type ProductModel } from "../core/schema.ts";
 import { proposalEconomics } from "../model/economics.ts";
+import { ACCOUNT_LIKE, isAccountResource, isConsumable, isSignupScreen } from "../propose/anchors.ts";
 
 const PHASES = ["today", "change", "offer", "ad", "value"];
 
@@ -109,6 +112,60 @@ function structure(p: Proposal, m: ProductModel): string[] {
 
 const FORMAT = { "SIM-RWD": "rewarded", "SIM-INT": "interstitial", "SIM-NAT": "native" } as const;
 
+// A count of uses of something named: "3 Deep reasoning answers", "1 image".
+const USE_COUNT = /\b\d+\s+(?:[\w+'-]+\s+){0,4}?(?:uses?|answers?|repl(?:y|ies)|messages?|images?|generations?|tries|questions?|edits?|videos?|photos?|minutes?|sessions?|chats?|episodes?|chapters?|articles?)\b/i;
+const TIER_WORD = /\+\s?\d+\s*(?:tiers?|plans?|memberships?|subscriptions?|accounts?|profiles?|levels?)\b/i;
+const escapeRe = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Entitlements (a plan, tier, membership, account) are not currencies: a reward on one is a time box
+ * or a number of uses of a named feature. "+1 tier" / "+1 Membership" is incoherent.
+ */
+export function rewardCoherence(p: Proposal, m: ProductModel): string[] {
+  const bad: string[] = [];
+  const res = (id?: string) => m.economy.resources.find(x => x.id === id);
+  const r = res(p.reward.resource);
+  if (r && !isConsumable(r)) {
+    if (p.reward.amount != null) bad.push(`the reward grants ${p.reward.amount} "${r.unit}" of ${r.name}, an entitlement: grant a time box or a number of uses of a named feature instead`);
+    else if (!p.reward.duration && !USE_COUNT.test(p.reward.what)) bad.push(`the reward on ${r.name} (an entitlement) has neither a duration nor a use count`);
+  }
+  const copy = [p.title, p.oneLiner, p.offer.title, p.offer.body, p.offer.cta, p.reward.what, ...p.storyboard.map(b => b.caption), ...p.storyboard.flatMap(b => b.callouts.map(c => c.text))].join("\n");
+  const words = m.economy.resources.filter(x => !isConsumable(x)).flatMap(x => [x.unit, x.name]).filter(w => w && w.trim().length >= 3);
+  for (const w of words) {
+    const hit = new RegExp(`\\+\\s?\\d+\\s*${escapeRe(w.trim())}(?![\\w])`, "i").exec(copy);
+    if (hit) bad.push(`the copy says "${hit[0]}": an entitlement is not a currency`);
+  }
+  const tier = TIER_WORD.exec(copy);
+  if (tier) bad.push(`the copy says "${tier[0]}": a plan or account is not a currency`);
+  for (const e of p.patch.newEdges) for (const f of e.effects) {
+    const x = res(f.resource);
+    if (x && !isConsumable(x)) bad.push(`the patch adds ${f.delta} "${x.unit}" of ${x.name} on REWARD_VERIFIED`);
+  }
+  return [...new Set(bad)];
+}
+
+const SKIP_SIGNUP = /\b(skip (?:the )?sign[- ]?(?:up|in)|instead of (?:signing|creating|logging|registering)|without (?:signing (?:up|in)|logging in|creating an account|an account)|no (?:account|sign[- ]?up|login) (?:needed|required)|continue as (?:a )?guest)\b/i;
+const stems = (x: string) => x.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 5).map(w => w.slice(0, 6));
+
+/** Rewarded ads cannot replace sign-up: no account for an ad, no account-only feature for an ad. */
+export function accountWallProblems(p: Proposal, m: ProductModel): string[] {
+  const bad: string[] = [];
+  const res = (id?: string) => m.economy.resources.find(x => x.id === id);
+  const r = res(p.reward.resource);
+  if (isAccountResource(r)) bad.push(`the reward is ${r!.name}: an ad cannot stand in for creating an account`);
+  const surface = m.screens.find(s => s.id === p.surface);
+  const onAccountWall = !!surface && (surface.kind === "login"
+    || m.economy.walls.some(w => w.shows === surface.id && (isAccountResource(res(w.resource)) || isSignupScreen(surface))));
+  const skip = SKIP_SIGNUP.exec([p.offer.title, p.offer.body, p.offer.cta, p.reward.what, p.trigger].join("\n"));
+  if (onAccountWall && skip) bad.push(`on the sign-up wall ${surface!.name}, the offer trades an ad for skipping sign-up ("${skip[0]}")`);
+  // Features that only an account unlocks (saving, profile settings) cannot be earned with an ad.
+  const accountOnly = m.economy.walls.filter(w => isAccountResource(res(w.resource)) || (!w.resource && ACCOUNT_LIKE.test(w.blockedIntent)));
+  const want = new Set(stems(p.reward.what));
+  const hit = accountOnly.find(w => stems(w.blockedIntent).some(x => want.has(x)));
+  if (hit) bad.push(`the reward is "${hit.blockedIntent}", which only an account unlocks: an ad cannot stand in for signing up`);
+  return bad;
+}
+
 /** Run every code gate. `p` should carry code-computed economics (recomputed here if absent). */
 export function codeGates(input: Proposal, m: ProductModel): GateResult[] {
   const parsed = Proposal.safeParse(input);
@@ -140,5 +197,11 @@ export function codeGates(input: Proposal, m: ProductModel): GateResult[] {
 
   const st = structure(p, m);
   out.push(g("structure", !st.length, "fixable", st.length ? st.join("; ") : "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"));
+
+  const rc = rewardCoherence(p, m);
+  out.push(g("reward-coherence", !rc.length, "fixable", rc.length ? rc.join("; ") : "consumables granted as amounts; entitlements as a time box or a number of uses"));
+
+  const aw = accountWallProblems(p, m);
+  out.push(g("not-for-account-wall", !aw.length, "fixable", aw.length ? aw.join("; ") : "no ad in place of creating an account"));
   return out;
 }
