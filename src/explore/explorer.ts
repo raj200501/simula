@@ -182,8 +182,8 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
     trace("info", { phase: "crawl", end: reason }, g.steps);
     if (!r.stop && reason !== "budget_usd" && reason !== "budget_time") await gapPhase(r);
     if (!r.stop) {
-      const end = await drainProbe(r);
-      if (end === "wall" && !r.stop) {
+      const ends = await drainProbe(r);
+      if (ends.includes("wall") && !r.stop) {
         const after = await crawl(r, { stepCap: g.steps + AFTER_WALL_STEPS, noConsume: true, saturation: false, grace: true });
         trace("info", { phase: "after-wall", end: after }, g.steps);
       }
@@ -1135,13 +1135,14 @@ async function gapPhase(r: Run): Promise<void> {
 // Phase 3: drain probe (T1)
 // =============================================================================================
 /** One spending action under one selection (the mode it runs in), with its measured per-action cost. */
-interface DrainTarget { state: string; action: string; context: string[]; cost: number | null }
+interface DrainTarget { state: string; action: string; context: string[]; cost: number | null; chat: boolean; replies: boolean }
 /** Balance readings, valid as the base for the next sends while no action ran since (`steps`). */
 interface Reading { values: Map<string, number>; steps: number }
 
 const ctxText = (c: readonly string[]) => (c.length ? c.join(" / ") : "(no selection)");
 const hintOf = (c: readonly string[]) => Math.max(0, ...c.flatMap(t => (t.match(/\d+/g) ?? []).map(Number)));
 const TERMINAL = /^(wall|external|time|interrupted|device_unhealthy)/;
+const HARD_STOP = /^(time|interrupted|device_unhealthy)/;
 
 /** Per-action cost measured on this action's edges under this selection: the most negative delta, or null. */
 function costOf(r: Run, state: string, action: string, context: readonly string[]): number | null {
@@ -1153,16 +1154,23 @@ function costOf(r: Run, state: string, action: string, context: readonly string[
   return deltas.length ? Math.min(...deltas) : null;
 }
 
+/** Successful sends of this action so far (all selections): how many it took to reach a wall. */
+const sendsOf = (r: Run, state: string, action: string) =>
+  r.g.edges.filter(e => e.from === state && e.action === action && !e.limitHit && !e.to.startsWith("ext:")).reduce((n, e) => n + e.seen, 0);
+
 /**
- * What the drain can repeat: every consume action that worked during the crawl, under every selection its
- * screen was seen with (a mode chip reading "Basic · 10" or "Premium · 30"), because each may cost differently.
+ * What the drain can repeat: every consume action that worked during the crawl and has not hit a wall of
+ * its own yet (walls elsewhere - a sign-up sheet behind a settings tap, a photo tool's prompt - never stop
+ * the drain of the core loop), under every selection its screen was seen with (a mode chip reading
+ * "Basic · 10" or "Premium · 30"), because each may cost differently.
  */
 function drainTargets(r: Run): DrainTarget[] {
   const g = r.g;
   const out: DrainTarget[] = [];
   for (const s of g.states) {
     const acts = s.actions.filter(a => a.kind === "consume" && a.status !== "skipped"
-      && g.edges.some(e => e.from === s.id && e.action === a.id && !e.to.startsWith("ext:")));
+      && g.edges.some(e => e.from === s.id && e.action === a.id && !e.to.startsWith("ext:"))
+      && !g.edges.some(e => e.from === s.id && e.action === a.id && e.limitHit));
     if (!acts.length) continue;
     const ctxs = new Map<string, string[]>();
     for (const id of s.obs) {
@@ -1170,7 +1178,10 @@ function drainTargets(r: Run): DrainTarget[] {
       if (o) { const c = contextOf(r, o); ctxs.set(c.join("\n"), c); }
     }
     for (const a of acts) {
-      for (const c of [...ctxs.values()].slice(0, MAX_CONTEXTS)) out.push({ state: s.id, action: a.id, context: c, cost: costOf(r, s.id, a.id, c) });
+      const replies = g.edges.some(e => e.from === s.id && e.action === a.id && e.to === s.id && e.effects.some(f => f.kind === "appeared" && !isExcludedTyped(r, f.text)));
+      for (const c of [...ctxs.values()].slice(0, MAX_CONTEXTS)) {
+        out.push({ state: s.id, action: a.id, context: c, cost: costOf(r, s.id, a.id, c), chat: s.kind === "chat", replies });
+      }
     }
   }
   return out;
@@ -1225,9 +1236,23 @@ async function reachTarget(r: Run, t: DrainTarget): Promise<boolean> {
 }
 
 /**
+ * The wall is the key evidence: how many sends it took ("guests get N free messages", "N Premium messages on
+ * the starting balance"). Kept on the action's note and as the first effect of the wall edge.
+ */
+function noteWall(r: Run, t: DrainTarget, wall: GraphEdge | undefined, act: Action): void {
+  const n = sendsOf(r, t.state, t.action);
+  const text = `limit after ${n} sends`;
+  act.note = `${text}${t.context.length ? ` (${ctxText(t.context)})` : ""}: then "${r.cur.name}"`;
+  if (wall && !wall.effects.some(f => f.kind === "appeared" && f.text.startsWith("limit after "))) wall.effects.unshift({ kind: "appeared", text });
+  trace("info", { phase: "drain", wall: wall?.id, limitAfterSends: n, context: t.context, at: r.cur.id }, r.g.steps);
+}
+
+/**
  * Repeat one spending action under one selection. Stop only on a wall, an external app, `max` sends, or 3
- * sends in a row with no reply and no counter change (T1). If the balance is not shown where we send, read
- * it on another screen every 3 sends and back-fill the inferred per-send delta.
+ * sends in a row with no progress (T1). Progress is a counter change, or a reply on the same screen: with no
+ * balance known at all (a guest chat with a free-message cap), replies are the only sign the sends still go
+ * through, and the drain keeps sending until the cap shows. If a balance is known but not shown where we
+ * send, read it on another screen every 3 sends and back-fill the inferred per-send delta.
  */
 async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prior: Reading | null): Promise<{ end: string; sends: number; reading: Reading | null }> {
   const g = r.g;
@@ -1252,11 +1277,11 @@ async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prio
     const out = await step(r, r.cur, act, phase);
     if (out.failed) { end = "the action failed"; break; }
     if (out.external) { end = `external:${out.external}`; break; }
-    if (out.wall) { end = "wall"; break; }
+    if (out.wall) { noteWall(r, t, out.edge, act); end = "wall"; break; }
     sends++;
     n++;
     if (out.edge) last = out.edge;
-    const replied = out.fx.some(f => f.kind === "appeared" && !isExcludedTyped(r, f.text));
+    const replied = out.next.id === t.state && out.fx.some(f => f.kind === "appeared" && !isExcludedTyped(r, f.text));
     flat = counterEffects(out.fx).length || replied ? 0 : flat + 1;
     if (flat >= 3) { end = "3 sends with no reply and no counter change"; break; }
     if (base && n >= READ_EVERY && last && sends < max) {
@@ -1269,45 +1294,75 @@ async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prio
     const now = await readCounter(r);
     if (now) { backfill(r, last, base, now, n); base = now; }
   }
-  trace("info", { phase, end, sends, context: ctxText(t.context) }, g.steps);
+  trace("info", { phase, end, sends, context: ctxText(t.context), state: t.state, action: t.action }, g.steps);
   return { end, sends, reading: base };
 }
 
 /**
- * T1: first measure what each selection costs (3 sends each, cheapest-looking first, so the last one
- * measured is usually the one the drain continues on), then repeat the costliest until a wall.
+ * T1, per spending action that has not met a wall yet: the core loop first (sending in a chat), then the
+ * other spending actions (generate an image, edit a photo) with whatever send budget is left
+ * (profile.drainMax sends for the phase, measurements aside). Within a group: when a balance is known,
+ * first measure what each selection costs (3 sends each, cheapest-looking first, so the last one measured
+ * is usually the one the drain continues on), then repeat the costliest until a wall; with no balance
+ * anywhere (a guest chat), send until the cap shows. Returns how each drain ended.
  */
-async function drainProbe(r: Run): Promise<string> {
+async function drainProbe(r: Run): Promise<string[]> {
   const g = r.g;
-  if (r.o.noConsume) return "skipped: --no-consume";
-  if (g.edges.some(e => e.limitHit)) {
-    trace("info", { phase: "drain", end: "a wall was already observed during the crawl" }, g.steps);
-    return "skipped: a wall was already observed";
-  }
+  if (r.o.noConsume) return ["skipped: --no-consume"];
   refreshContexts(r);
-  const targets = drainTargets(r);
-  if (!targets.length) { trace("info", { phase: "drain", end: "no consume action observed" }, g.steps); return "none"; }
-  let reading: Reading | null = null;
-  const todo = targets.filter(t => t.cost === null).sort((x, y) => hintOf(x.context) - hintOf(y.context));
-  for (const t of todo) {
-    trace("info", { phase: "drain", measure: ctxText(t.context), state: t.state, action: t.action, sends: MEASURE_SENDS }, g.steps);
-    const res = await sendLoop(r, t, MEASURE_SENDS, "measure", reading);
-    reading = res.reading;
-    if (TERMINAL.test(res.end)) return drainEnd(r, res.end);
+  const all = drainTargets(r);
+  const walled = g.edges.filter(e => e.limitHit).map(e => e.id);
+  if (!all.length) {
+    trace("info", { phase: "drain", end: "no consume action without a wall of its own", walls: walled }, g.steps);
+    return ["none"];
   }
-  const ranked = drainTargets(r).sort((x, y) => (x.cost ?? 0) - (y.cost ?? 0) || hintOf(y.context) - hintOf(x.context));
-  const pick = ranked[0];
-  trace("info", {
-    phase: "drain", drain: ctxText(pick.context), state: pick.state, action: pick.action, cost: pick.cost,
-    why: pick.cost !== null ? `largest cost per action (${pick.cost}) among ${ranked.length} selection(s): ${ranked.map(x => `${ctxText(x.context)}=${x.cost}`).join(", ")}` : "no cost could be measured",
-  }, g.steps);
-  const res = await sendLoop(r, pick, r.c.profile.drainMax, "drain", reading);
-  return drainEnd(r, res.end);
+  const key = (t: DrainTarget) => `${t.state}|${t.action}`;
+  const groups = [all.filter(t => t.chat), all.filter(t => !t.chat)].filter(x => x.length);
+  const ends: string[] = [];
+  let budget = r.c.profile.drainMax;
+  let reading: Reading | null = null;
+  for (const group of groups) {
+    const actions = new Set(group.map(key));
+    for (;;) {
+      if (budget <= 0 || r.stop) break;
+      // targets of this group still without a wall of their own
+      const left = drainTargets(r).filter(t => actions.has(key(t)));
+      if (!left.length) break;
+      if (g.resources.length) {
+        const todo = left.filter(t => t.cost === null).sort((x, y) => hintOf(x.context) - hintOf(y.context));
+        let stop = "";
+        for (const t of todo) {
+          trace("info", { phase: "drain", measure: ctxText(t.context), state: t.state, action: t.action, sends: MEASURE_SENDS }, g.steps);
+          const res = await sendLoop(r, t, MEASURE_SENDS, "measure", reading);
+          reading = res.reading;
+          if (TERMINAL.test(res.end)) { stop = res.end; break; }
+        }
+        if (stop) { ends.push(stop); if (HARD_STOP.test(stop)) return drainEnd(r, ends); break; }
+      }
+      const ranked = drainTargets(r).filter(t => actions.has(key(t)))
+        .sort((x, y) => (x.cost ?? 0) - (y.cost ?? 0) || Number(y.replies) - Number(x.replies) || hintOf(y.context) - hintOf(x.context));
+      const pick = ranked[0];
+      if (!pick) break;
+      trace("info", {
+        phase: "drain", drain: ctxText(pick.context), state: pick.state, action: pick.action, cost: pick.cost, core: pick.chat, budget,
+        why: pick.cost !== null ? `largest cost per action (${pick.cost}) among ${ranked.length} target(s): ${ranked.map(x => `${x.state}/${ctxText(x.context)}=${x.cost}`).join(", ")}`
+          : g.resources.length ? "no cost could be measured" : "no balance shown anywhere: send until a limit shows",
+      }, g.steps);
+      const res = await sendLoop(r, pick, budget, "drain", reading);
+      budget -= res.sends;
+      reading = res.reading;
+      ends.push(res.end);
+      if (HARD_STOP.test(res.end)) return drainEnd(r, ends);
+      // one drain per group: a wall ends it, and so does a target that never walls within the budget
+      break;
+    }
+  }
+  return drainEnd(r, ends);
 }
 
-function drainEnd(r: Run, end: string): string {
-  trace("info", { phase: "drain", end, walls: r.g.edges.filter(e => e.limitHit).map(e => e.id) }, r.g.steps);
-  return end;
+function drainEnd(r: Run, ends: string[]): string[] {
+  trace("info", { phase: "drain", end: ends.join(", ") || "nothing to drain", walls: r.g.edges.filter(e => e.limitHit).map(e => e.id) }, r.g.steps);
+  return ends;
 }
 
 /** Our own typed text echoed back is not a reply. */
