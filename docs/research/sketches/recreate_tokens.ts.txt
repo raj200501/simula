@@ -1,0 +1,117 @@
+// tokens.ts - measure design tokens from full-res screenshot + tree, so the generator is told
+// numbers instead of guessing them from pixels. Everything is converted to dp (= CSS px in the mock).
+import sharp from "sharp";
+import { differenceCiede2000, formatHex, parse } from "culori";
+import { UiNode, Rect, walkTree } from "../explorer/uitree.js";
+import { dHash, hamming } from "../explorer/state.js";
+
+export type RGB = [number, number, number];
+const hex = (c: RGB) => "#" + c.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+const de = differenceCiede2000();
+export const deltaE = (a: string, b: string) => de(parse(a)!, parse(b)!);
+
+export async function rawRegion(png: Buffer, r: Rect) {
+  const meta = await sharp(png).metadata();
+  const left = Math.max(0, Math.round(r.x)), top = Math.max(0, Math.round(r.y));
+  const width = Math.max(1, Math.min(Math.round(r.w), meta.width! - left)), height = Math.max(1, Math.min(Math.round(r.h), meta.height! - top));
+  const { data, info } = await sharp(png).extract({ left, top, width, height }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  return { data, w: info.width, h: info.height };
+}
+
+/** k-means (k-means++ init, deterministic seed) over RGB pixels; returns clusters sorted by share. */
+export function kmeans(px: RGB[], k = 4, iters = 12): { color: RGB; share: number }[] {
+  if (px.length === 0) return [];
+  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const d2 = (a: RGB, b: RGB) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+  const cents: RGB[] = [px[Math.floor(rnd() * px.length)]];
+  while (cents.length < Math.min(k, px.length)) {
+    const ds = px.map((p) => Math.min(...cents.map((c) => d2(p, c)))); const tot = ds.reduce((a, b) => a + b, 0) || 1;
+    let r = rnd() * tot, i = 0; while ((r -= ds[i]) > 0 && i < px.length - 1) i++; cents.push(px[i]);
+  }
+  let assign = new Array(px.length).fill(0);
+  for (let it = 0; it < iters; it++) {
+    assign = px.map((p) => { let bi = 0, bd = Infinity; cents.forEach((c, j) => { const d = d2(p, c); if (d < bd) { bd = d; bi = j; } }); return bi; });
+    cents.forEach((_, j) => { const m = px.filter((_, i) => assign[i] === j); if (m.length) cents[j] = [0, 1, 2].map((ch) => m.reduce((s, p) => s + p[ch], 0) / m.length) as RGB; });
+  }
+  return cents.map((c, j) => ({ color: c, share: assign.filter((a) => a === j).length / px.length })).sort((a, b) => b.share - a.share);
+}
+
+const toPixels = (data: Buffer, step = 1): RGB[] => { const out: RGB[] = []; for (let i = 0; i < data.length; i += 3 * step) out.push([data[i], data[i + 1], data[i + 2]]); return out; };
+
+/** Background = dominant colour of the 2px border ring (robust to text/icons inside). Foreground = the
+ *  interior cluster farthest (CIEDE2000) from the background with >=3% share (text or icon colour). */
+export async function nodeColors(png: Buffer, r: Rect) {
+  const { data, w, h } = await rawRegion(png, r);
+  const ring: RGB[] = [], inner: RGB[] = [];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 3, p: RGB = [data[i], data[i + 1], data[i + 2]];
+    (x < 2 || y < 2 || x >= w - 2 || y >= h - 2 ? ring : inner).push(p);
+  }
+  const bg = hex(kmeans(ring, 2)[0]?.color ?? [255, 255, 255]);
+  const stride = Math.max(1, Math.floor(inner.length / 4000));
+  const fgC = kmeans(inner.filter((_, i) => i % stride === 0), 3).filter((c) => c.share > 0.03)
+    .map((c) => ({ hex: hex(c.color), d: deltaE(hex(c.color), bg) })).sort((a, b) => b.d - a.d)[0];
+  return { bg, fg: fgC && fgC.d > 8 ? fgC.hex : undefined };
+}
+
+/** Screen palette for the design-system prompt: k=8 over a downsampled full screenshot. */
+export async function screenPalette(png: Buffer, k = 8) {
+  const { data } = await sharp(png).resize(90, 200, { fit: "fill" }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  return kmeans(toPixels(data), k).map((c) => ({ hex: hex(c.color), share: +c.share.toFixed(3) }));
+}
+
+/** Font size from bounds. Android default line height ~= 1.17 x font size (Roboto, includeFontPadding).
+ *  Multi-line: choose the scale step whose implied line count is closest to an integer and consistent
+ *  with the text length (avg glyph width ~0.52em for Latin UI text). Snap to the app's own type scale. */
+export function estimateFontDp(heightDp: number, widthDp: number, text: string, scale: number[]): number {
+  let best = scale[0], bestErr = Infinity;
+  for (const s of scale) {
+    const lines = heightDp / (1.17 * s); const n = Math.max(1, Math.round(lines));
+    const expectedLines = Math.max(1, Math.ceil((text.length * 0.52 * s) / Math.max(1, widthDp)));
+    const err = Math.abs(lines - n) + 0.5 * Math.abs(n - expectedLines);
+    if (err < bestErr) { bestErr = err; best = s; }
+  }
+  return best;
+}
+/** App type scale = cluster single-line text heights across ALL screens (1-D gap clustering). */
+export function typeScale(singleLineHeightsDp: number[]): number[] {
+  const sizes = singleLineHeightsDp.map((h) => Math.round((h / 1.17) * 2) / 2).sort((a, b) => a - b);
+  const steps: number[] = [];
+  for (const s of sizes) if (!steps.length || s - steps[steps.length - 1] > 1.5) steps.push(s);
+  return steps.length ? steps : [12, 14, 16, 20, 24];
+}
+
+export interface Asset { file: string; hash: bigint; wDp: number; hDp: number; label: string; usedIn: string[] }
+
+/** Crop image-like leaves (icons, avatars, thumbnails, logos) at native px; dedupe across screens by dHash. */
+export async function extractAssets(png: Buffer, tree: UiNode, density: number, screenId: string, lib: Asset[], outDir: string) {
+  const dp = (px: number) => px / (density / 160);
+  for (const { node } of walkTree(tree)) {
+    const imageLike = /Image|Icon/.test(node.cls) || (!node.text && node.desc && node.children.length === 0);
+    if (!imageLike || node.rect.w < 8 || node.rect.h < 8 || node.rect.w * node.rect.h > 0.6 * 1080 * 2400) continue;
+    const { data, w, h } = await rawRegion(png, node.rect);
+    const crop = await sharp(data, { raw: { width: w, height: h, channels: 3 } }).png().toBuffer();
+    const hsh = await dHash(crop);
+    const dup = lib.find((a) => hamming(a.hash, hsh) <= 4 && Math.abs(a.wDp - dp(w)) < 4);
+    if (dup) { if (!dup.usedIn.includes(screenId)) dup.usedIn.push(screenId); continue; }
+    const file = `${outDir}/asset_${lib.length}.png`;
+    await sharp(crop).toFile(file);
+    lib.push({ file, hash: hsh, wDp: +dp(w).toFixed(1), hDp: +dp(h).toFixed(1), label: node.desc || node.rid || node.cls, usedIn: [screenId] });
+  }
+}
+
+/** Compact element spec for the generator: id, role, text, dp bounds, measured colours, font size. */
+export async function elementSpec(png: Buffer, tree: UiNode, density: number, scale: number[]) {
+  const k = density / 160, out: object[] = [];
+  for (const { node, depth } of walkTree(tree)) {
+    if (node === tree) continue;
+    const r = { x: +(node.rect.x / k).toFixed(1), y: +(node.rect.y / k).toFixed(1), w: +(node.rect.w / k).toFixed(1), h: +(node.rect.h / k).toFixed(1) };
+    const text = node.text || node.desc;
+    const colors = node.rect.w * node.rect.h < 400_000 ? await nodeColors(png, node.rect) : undefined;
+    out.push({ id: node.id, d: depth, cls: node.cls, rid: node.rid || undefined, text: text || undefined, hint: node.hint || undefined,
+      r, bg: colors?.bg, fg: colors?.fg, font: node.text ? estimateFontDp(r.h, r.w, node.text, scale) : undefined,
+      act: node.clickable || node.editable ? (node.editable ? "input" : "tap") : undefined });
+  }
+  return out;
+}
+export { formatHex };

@@ -1,0 +1,134 @@
+// Minimal, typed client for @mobilenext/mobile-mcp@1.0.5 over stdio.
+// deps: npm i @modelcontextprotocol/sdk@1.30.1 @mobilenext/mobile-mcp@1.0.5   (use npm, not pnpm)
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport, getDefaultEnvironment } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { createRequire } from "node:module";
+import { writeFileSync } from "node:fs";
+
+export interface UiElement {
+  ref?: string;            // "@e12" - DFS pre-order index, positional; re-resolved at tap time
+  type: string;            // Android: widget class e.g. "android.widget.TextView" ("text" if empty)
+  text?: string;           // Android: node text (often "" -> present but empty)
+  label?: string;          // Android: content-desc
+  name?: string;           // iOS only
+  value?: string;          // iOS only
+  identifier?: string;     // Android: resource-id e.g. "com.foo:id/send"
+  coordinates: { x: number; y: number; width: number; height: number }; // Android: device px; iOS: points
+  focused?: true; selected?: true; checked?: true; enabled?: false;
+}
+
+type ToolContent = { type: string; text?: string; data?: string; mimeType?: string };
+
+export class MobileMcpError extends Error {
+  readonly tool: string;
+  constructor(tool: string, message: string) { super(`${tool}: ${message}`); this.tool = tool; }
+}
+
+export class MobileMcp {
+  private client = new Client({ name: "simula-explorer", version: "0.1.0" });
+  private transport: StdioClientTransport;
+  stderrTail = "";
+
+  constructor(opts: { cwd?: string; extraEnv?: Record<string, string> } = {}) {
+    const require = createRequire(import.meta.url);
+    const serverEntry = require.resolve("@mobilenext/mobile-mcp/lib/index.js");
+    this.transport = new StdioClientTransport({
+      command: process.execPath,           // same node binary; avoids npx download on every run
+      args: [serverEntry, "--stdio"],
+      cwd: opts.cwd,                         // mobile_save_screenshot may only write under this cwd or os.tmpdir()
+      env: {
+        ...getDefaultEnvironment(),          // only HOME, LOGNAME, PATH, SHELL, TERM, USER are inherited by default!
+        MOBILEMCP_DISABLE_TELEMETRY: "1",
+        MOBILEMCP_ALLOW_UNSAFE_URLS: "1",    // allow custom-scheme deep links in mobile_open_url
+        ...(process.env.ANDROID_HOME ? { ANDROID_HOME: process.env.ANDROID_HOME } : {}),
+        ...opts.extraEnv,
+      },
+      stderr: "pipe",                        // server logs every call + full responses to stderr
+    });
+    this.transport.stderr?.on("data", (c: Buffer) => { this.stderrTail = (this.stderrTail + c.toString()).slice(-8000); });
+  }
+
+  async connect(): Promise<void> { await this.client.connect(this.transport); }
+  async close(): Promise<void> { await this.client.close(); }
+
+  /** Calls a tool; throws on BOTH failure styles (isError=true, and ActionableError text without isError). */
+  async call(name: string, args: Record<string, unknown>, timeoutMs = 90_000): Promise<ToolContent[]> {
+    const res = await this.client.callTool({ name, arguments: args }, undefined, { timeout: timeoutMs });
+    const content = (res.content ?? []) as ToolContent[];
+    const text = content.filter((c) => c.type === "text").map((c) => c.text ?? "").join("\n");
+    if (res.isError || /Please fix the issue and try again\.$/.test(text) || /^Error: /.test(text)) {
+      throw new MobileMcpError(name, text);
+    }
+    return content;
+  }
+
+  private async text(name: string, args: Record<string, unknown>): Promise<string> {
+    return (await this.call(name, args)).map((c) => c.text ?? "").join("\n");
+  }
+
+  async listDevices(): Promise<Array<{ id: string; name: string; platform: "android" | "ios"; type: string; version: string; state: string }>> {
+    return JSON.parse(await this.text("mobile_list_available_devices", {})).devices;
+  }
+
+  async screenSize(device: string): Promise<{ width: number; height: number }> {
+    const t = await this.text("mobile_get_screen_size", { device }); // "Screen size is 1080x2400 pixels"
+    const m = /(\d+)x(\d+)/.exec(t);
+    if (!m) throw new MobileMcpError("mobile_get_screen_size", t);
+    return { width: +m[1], height: +m[2] };
+  }
+
+  /** JPEG (q75) by default, longest side <= maxSize (default 1024). scaleX/Y map image px -> tap coords. */
+  async screenshot(device: string, maxSize = 1024): Promise<{ base64: string; mimeType: string; scaleX: number; scaleY: number }> {
+    const content = await this.call("mobile_take_screenshot", { device, maxSize });
+    const img = content.find((c) => c.type === "image");
+    if (!img?.data) throw new MobileMcpError("mobile_take_screenshot", "no image content");
+    const note = content.find((c) => c.type === "text")?.text ?? "";
+    // "Screenshot is 461x1024. Screen coordinates are 1080x2400. To tap ..., multiply its x by 2.343 and y by 2.344."
+    const m = /multiply its x by ([\d.]+) and y by ([\d.]+)/.exec(note);
+    return { base64: img.data, mimeType: img.mimeType ?? "image/jpeg", scaleX: m ? +m[1] : 1, scaleY: m ? +m[2] : 1 };
+  }
+
+  /** Full-resolution lossless PNG to disk (for asset capture / pixel diffs). Path must be under server cwd or tmpdir. */
+  async saveScreenshotPng(device: string, absPath: string): Promise<void> {
+    await this.call("mobile_save_screenshot", { device, saveTo: absPath });
+  }
+
+  async elements(device: string): Promise<UiElement[]> {
+    const t = await this.text("mobile_list_elements_on_screen", { device, format: "json" });
+    const prefix = "Found these elements on screen: ";
+    return JSON.parse(t.startsWith(prefix) ? t.slice(prefix.length) : t) as UiElement[];
+  }
+
+  /** Tap the center of an element's rect (deterministic; avoids the extra UI dump + positional re-resolution of ref taps). */
+  async tapElement(device: string, el: UiElement): Promise<void> {
+    const { x, y, width, height } = el.coordinates;
+    await this.tap(device, Math.round(x + width / 2), Math.round(y + height / 2));
+  }
+
+  async tap(device: string, x: number, y: number): Promise<void> {
+    await this.call("mobile_click_on_screen_at_coordinates", { device, x: Math.max(0, Math.round(x)), y: Math.max(0, Math.round(y)) });
+  }
+
+  async tapRef(device: string, ref: string): Promise<void> {
+    await this.call("mobile_click_on_screen_at_coordinates", { device, ref });
+  }
+}
+
+// ---- demo: node --experimental-strip-types mobile-client.ts  (Node >= 22.18 strips types by default)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const mcp = new MobileMcp({ cwd: process.cwd() });
+  await mcp.connect();
+  try {
+    const devices = await mcp.listDevices();
+    const dev = devices.find((d) => d.platform === "android") ?? devices[0];
+    if (!dev) throw new Error("no online device; start an emulator (adb devices) first");
+    const shot = await mcp.screenshot(dev.id);
+    writeFileSync("screen.jpg", Buffer.from(shot.base64, "base64"));
+    const els = await mcp.elements(dev.id);
+    console.log(els.slice(0, 15));
+    const target = els.find((e) => e.enabled !== false && (e.text || e.label));
+    if (target) await mcp.tapElement(dev.id, target);
+  } finally {
+    await mcp.close();
+  }
+}

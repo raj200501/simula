@@ -1,0 +1,111 @@
+// uitree.ts - one normalized UI tree type, built from either
+//   (a) `adb exec-out uiautomator dump /dev/tty` XML, or
+//   (b) `mobilecli dump ui --format raw` JSON (the full tree; mobile-mcp's
+//       mobile_list_elements_on_screen is flattened and drops clickable/scrollable).
+import { XMLParser } from "fast-xml-parser";
+
+export interface Rect { x: number; y: number; w: number; h: number }
+
+export interface UiNode {
+  id: string;            // stable-ish path id: "0/2/1" (child indices after pruning)
+  cls: string;           // short class name: "TextView", "View", "EditText"
+  rid: string;           // resource-id without package prefix ("" if none)
+  text: string;
+  desc: string;          // content-desc
+  hint: string;
+  pkg: string;
+  rect: Rect;            // device px
+  clickable: boolean; longClickable: boolean; scrollable: boolean;
+  checkable: boolean; checked: boolean; selected: boolean; enabled: boolean;
+  editable: boolean; password: boolean; focused: boolean;
+  children: UiNode[];
+}
+
+const SYSTEM_PKGS = /^(com\.android\.systemui|com\.google\.android\.inputmethod|com\.android\.inputmethod)/;
+
+function parseBounds(b: string): Rect {
+  const m = /\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]/.exec(b);
+  if (!m) return { x: 0, y: 0, w: 0, h: 0 };
+  const [l, t, r, bo] = m.slice(1).map(Number);
+  return { x: l, y: t, w: r - l, h: bo - t };
+}
+const shortCls = (c: string) => (c || "View").split(".").pop()!;
+const stripPkg = (rid: string) => (rid || "").replace(/^[\w.]+:id\//, "");
+const bool = (v: unknown) => v === true || v === "true";
+
+/** uiautomator XML -> UiNode (root is a synthetic "Hierarchy" node). */
+export function fromUiautomatorXml(xml: string): UiNode {
+  const p = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "", isArray: (n) => n === "node" });
+  const doc = p.parse(xml);
+  const conv = (n: any): UiNode => ({
+    id: "", cls: shortCls(n.class), rid: stripPkg(n["resource-id"]), text: n.text ?? "",
+    desc: n["content-desc"] ?? "", hint: n.hint ?? "", pkg: n.package ?? "",
+    rect: parseBounds(n.bounds ?? ""),
+    clickable: bool(n.clickable), longClickable: bool(n["long-clickable"]), scrollable: bool(n.scrollable),
+    checkable: bool(n.checkable), checked: bool(n.checked), selected: bool(n.selected),
+    enabled: n.enabled === undefined ? true : bool(n.enabled),
+    editable: /EditText|TextField/.test(n.class ?? ""), password: bool(n.password), focused: bool(n.focused),
+    children: (n.node ?? []).map(conv),
+  });
+  const roots = (doc.hierarchy?.node ?? []).map(conv);
+  return finalize({ ...emptyNode("Hierarchy"), children: roots });
+}
+
+/** mobilecli raw JSON -> UiNode. Field names per research/mobile-mcp.md §3.1.
+ *  VERIFY on day 1: the exact shape of `rect` ({x,y,width,height} assumed) and the top-level wrapper. */
+export function fromMobilecliJson(json: any): UiNode {
+  const conv = (n: any): UiNode => ({
+    id: "", cls: shortCls(n.class), rid: stripPkg(n["resource-id"]), text: n.text ?? "",
+    desc: n["content-desc"] ?? "", hint: n.hint ?? "", pkg: n.package ?? "",
+    rect: n.rect ? { x: n.rect.x, y: n.rect.y, w: n.rect.width, h: n.rect.height } : { x: 0, y: 0, w: 0, h: 0 },
+    clickable: !!n.clickable, longClickable: !!n["long-clickable"], scrollable: !!n.scrollable,
+    checkable: !!n.checkable, checked: !!n.checked, selected: !!n.selected, enabled: n.enabled !== false,
+    editable: /EditText|TextField/.test(n.class ?? ""), password: !!n.password, focused: !!n.focused,
+    children: (n.children ?? []).map(conv),
+  });
+  const roots = Array.isArray(json) ? json : json.windows ?? json.children ?? [json];
+  return finalize({ ...emptyNode("Hierarchy"), children: roots.map(conv) });
+}
+
+function emptyNode(cls: string): UiNode {
+  return { id: "", cls, rid: "", text: "", desc: "", hint: "", pkg: "", rect: { x: 0, y: 0, w: 0, h: 0 },
+    clickable: false, longClickable: false, scrollable: false, checkable: false, checked: false,
+    selected: false, enabled: true, editable: false, password: false, focused: false, children: [] };
+}
+
+/** Prune + flatten so the tree is robust to wrapper churn:
+ *  - drop system UI / keyboard windows, zero-area and fully off-screen nodes
+ *  - collapse "pure wrappers": no text/desc/rid/flags and exactly one child
+ *  - assign path ids after pruning */
+export function finalize(root: UiNode, screen?: { w: number; h: number }): UiNode {
+  const W = screen?.w ?? 1e9, H = screen?.h ?? 1e9;
+  const keep = (n: UiNode) =>
+    !SYSTEM_PKGS.test(n.pkg) && n.rect.w > 0 && n.rect.h > 0 &&
+    n.rect.x < W && n.rect.y < H && n.rect.x + n.rect.w > 0 && n.rect.y + n.rect.h > 0;
+  const isWrapper = (n: UiNode) =>
+    !n.text && !n.desc && !n.rid && !n.hint && !n.clickable && !n.scrollable && !n.checkable &&
+    !n.editable && n.children.length === 1;
+  const walk = (n: UiNode): UiNode => {
+    let kids = n.children.filter(keep).map(walk);
+    kids = kids.map((k) => (isWrapper(k) ? k.children[0] : k));
+    return { ...n, children: kids };
+  };
+  const out = walk(root);
+  const assign = (n: UiNode, id: string) => { n.id = id; n.children.forEach((c, i) => assign(c, id ? `${id}/${i}` : `${i}`)); };
+  assign(out, "");
+  return out;
+}
+
+export function* walkTree(n: UiNode, depth = 0, parent?: UiNode): Generator<{ node: UiNode; depth: number; parent?: UiNode }> {
+  yield { node: n, depth, parent };
+  for (const c of n.children) yield* walkTree(c, depth + 1, n);
+}
+
+/** Label for an actionable node = own text/desc, else concatenated descendant text (Compose/RN rows). */
+export function labelOf(n: UiNode, max = 80): string {
+  const own = (n.text || n.desc || n.hint).trim();
+  if (own) return own.slice(0, max);
+  const parts: string[] = [];
+  for (const { node } of walkTree(n)) { const t = (node.text || node.desc).trim(); if (t) parts.push(t); if (parts.join(" ").length > max) break; }
+  return parts.join(" ").slice(0, max);
+}

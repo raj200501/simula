@@ -1,0 +1,163 @@
+// judge.ts - rubric-decomposed, evidence-grounded judge panel + pairwise ranking + revise loop
+// + calibration metrics. Design choices and the literature behind them are in sota.md §4.
+import Anthropic from "@anthropic-ai/sdk";
+import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { z } from "zod";
+
+const client = new Anthropic();
+
+export interface Proposal {
+  id: string; title: string; type: "existing_opportunity" | "product_change";
+  anchor: string;              // the valued thing: resource / limit / entitlement / action
+  trigger: string;             // exact moment + screen where the offer appears
+  exchange: string;            // what the user does and gets (sizes, caps)
+  flow: { stateId: string; note: string }[];     // must reference product-model state ids
+  evidence: string[];          // product-model ids / quotes supporting the claims
+  risks: string; rationale: string;
+}
+
+// ---- rubric: 8 criteria, 1-5 with anchors; 3 are hard gates ----
+export const RUBRIC = [
+  { key: "value", gate: false, w: 0.20, q: "Is the reward something THIS app's users demonstrably value (cite the limit/currency/entitlement in the product model)?", a1: "reward is cosmetic or unrelated to any observed scarcity", a5: "reward relieves an observed, frequently-hit scarcity" },
+  { key: "trigger", gate: false, w: 0.15, q: "Does the offer appear at a moment of need, in context, without interrupting the core loop?", a1: "random/interstitial timing", a5: "appears exactly when the user hits the constraint or declines the paywall" },
+  { key: "opt_in", gate: true, w: 0.10, q: "Is the ad strictly user-initiated with a clear decline path and honest copy (no dark patterns)?", a1: "forced or deceptive", a5: "explicit choice, equal-weight decline, clear reward terms" },
+  { key: "cannibalization", gate: false, w: 0.15, q: "Does it protect subscription/IAP revenue (reward sizing vs paid tiers, frequency caps, who sees it)?", a1: "reward rivals the paid tier", a5: "sized/capped so payers are unaffected, targets non-payers or declined-paywall users" },
+  { key: "grounding", gate: true, w: 0.10, q: "Does every screen, element and mechanic referenced exist in the product model (or is the change explicitly marked as new)?", a1: "references things that do not exist", a5: "every claim cites a real state/element/mechanic" },
+  { key: "specificity", gate: false, w: 0.15, q: "Is this specific to this product (not 'watch a video for coins' boilerplate) and beyond the obvious placement?", a1: "generic, could be pasted into any app", a5: "only makes sense in this app; non-obvious" },
+  { key: "revenue", gate: false, w: 0.15, q: "Reach x frequency: how many users hit this trigger how often?", a1: "rare edge surface", a5: "daily core-loop moment for most free users" },
+  { key: "policy", gate: true, w: 0.00, q: "Store and brand safety: no incentivized ratings/installs, age rating and content suitability respected, no ads on sensitive content.", a1: "violates store/ad policy", a5: "clean" },
+] as const;
+type Key = (typeof RUBRIC)[number]["key"];
+
+// Gates are binary checklist items (CheckEval: yes/no decomposition agrees across judges far better than Likert).
+export const GATE_CHECKLIST = [
+  { id: "opt_in_tap", gate: "opt_in", q: "Does the ad start ONLY after an explicit user tap on an offer (no auto-play, no interstitial)?" },
+  { id: "decline", gate: "opt_in", q: "Is there a decline/close option of comparable prominence, and does declining leave the user no worse off than today?" },
+  { id: "terms", gate: "opt_in", q: "Is the reward stated before the ad starts, and delivered exactly as stated?" },
+  { id: "exists", gate: "grounding", q: "Does every referenced screen, element, resource and mechanic exist in the product model, or is it explicitly marked as a new product change?" },
+  { id: "no_incent_rating", gate: "policy", q: "Does it avoid rewarding ratings, reviews, installs of other apps, or other store-policy-prohibited incentives?" },
+  { id: "safe_context", gate: "policy", q: "Is the placement away from sensitive, NSFW or minor-targeted content, consistent with the app's age rating?" },
+] as const;
+
+const Score = z.object({
+  checklist: z.array(z.object({ id: z.string(), evidence: z.string(), yes: z.boolean() })),
+  criteria: z.array(z.object({
+    key: z.string(),
+    evidence: z.string().describe("quote product-model ids / proposal text that justify the score; write this BEFORE the score"),
+    score: z.number().int().min(1).max(5),
+  })),
+  required_changes: z.array(z.string()).describe("specific edits that would raise the lowest scores"),
+});
+
+const PERSONAS = {
+  pm: "You are the app's own head of product. You protect retention, the core loop and subscription revenue.",
+  ads: "You are a rewarded-ads monetization lead who has shipped rewarded placements in games and consumer apps. You know what drives opt-in rate, completion and eCPM.",
+  user: "You are a skeptical power user of this app and a UX-ethics reviewer. You flag anything that feels forced, deceptive or that degrades the free experience.",
+};
+
+async function scoreOnce(p: Proposal, productModelDigest: string, persona: keyof typeof PERSONAS, model = "claude-sonnet-5") {
+  const rubric = RUBRIC.map((c) => `- ${c.key}: ${c.q} 1 = ${c.a1}; 5 = ${c.a5}`).join("\n")
+    + "\n\nCHECKLIST (answer yes/no with evidence):\n" + GATE_CHECKLIST.map((g) => `- ${g.id}: ${g.q}`).join("\n");
+  const res = await client.messages.parse({
+    model, max_tokens: 6000, output_config: { effort: "medium", format: zodOutputFormat(Score) },
+    system: `${PERSONAS[persona]}\nScore the proposal on EVERY criterion independently. Write evidence first, then the score. Length and polish of the proposal are not evidence. If a claim is not supported by the product model, the grounding score must be <= 2.`,
+    messages: [{ role: "user", content: `PRODUCT MODEL (digest):\n${productModelDigest}\n\nRUBRIC:\n${rubric}\n\nPROPOSAL:\n${JSON.stringify(p, null, 1)}` }],
+  });
+  if (!res.parsed_output) throw new Error(`judge failed: ${res.stop_reason}`);
+  return res.parsed_output;
+}
+
+/** Deterministic pre-check: cited state ids must exist. Cheap, and removes the most common hallucination. */
+export function groundingCheck(p: Proposal, stateIds: Set<string>) {
+  const missing = p.flow.filter((f) => !stateIds.has(f.stateId) && !/^new:/.test(f.stateId)).map((f) => f.stateId);
+  return { ok: missing.length === 0, missing };
+}
+
+const median = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); return s[Math.floor(s.length / 2)]; };
+
+export interface Verdict { id: string; decision: "pass" | "revise" | "reject"; weighted: number;
+  perCriterion: Record<string, { median: number; spread: number; scores: number[] }>; gatesFailed: string[];
+  requiredChanges: string[]; raw: object[] }
+
+export async function judge(p: Proposal, digest: string, stateIds: Set<string>): Promise<Verdict> {
+  const g = groundingCheck(p, stateIds);
+  const panel = await Promise.all((Object.keys(PERSONAS) as (keyof typeof PERSONAS)[]).map((k) => scoreOnce(p, digest, k)));
+  const per: Verdict["perCriterion"] = {};
+  for (const c of RUBRIC) {
+    const xs = panel.map((r) => r.criteria.find((x) => x.key === c.key)?.score ?? 1);
+    per[c.key] = { median: median(xs), spread: Math.max(...xs) - Math.min(...xs), scores: xs };
+  }
+  // disagreement => one adjudication by the strongest model, which sees the three rationales
+  if (Object.values(per).some((v) => v.spread >= 2)) {
+    const chair = await scoreOnce({ ...p, rationale: p.rationale + "\n\nPANEL NOTES:\n" + JSON.stringify(panel.map((r) => r.criteria)) }, digest, "ads", "claude-opus-5-5");
+    for (const c of chair.criteria) if (per[c.key]?.spread >= 2) per[c.key].median = c.score;
+  }
+  if (!g.ok) per.grounding.median = Math.min(per.grounding.median, 1);
+  // a gate fails if the majority of the panel answers "no" to any of its checklist items (or the deterministic check fails)
+  const failedItems = GATE_CHECKLIST.filter((item) => panel.filter((r) => r.checklist.find((c) => c.id === item.id)?.yes === false).length >= 2);
+  const gatesFailed = [...new Set([...failedItems.map((i) => i.gate as string), ...(g.ok ? [] : ["grounding"])])];
+  const weighted = RUBRIC.reduce((s, c) => s + c.w * per[c.key].median, 0) / RUBRIC.reduce((s, c) => s + c.w, 0);
+  const anyLow = RUBRIC.some((c) => !c.gate && per[c.key].median <= 2);
+  const fixableGate = gatesFailed.length === 1 && gatesFailed[0] === "grounding";
+  const decision = gatesFailed.length && !fixableGate ? "reject" : weighted >= 3.6 && !anyLow && !gatesFailed.length ? "pass" : weighted >= 2.8 || fixableGate ? "revise" : "reject";
+  return { id: p.id, decision, weighted: +weighted.toFixed(2), perCriterion: per, gatesFailed,
+    requiredChanges: [...new Set(panel.flatMap((r) => r.required_changes))].slice(0, 6).concat(g.missing.map((m) => `state ${m} does not exist in the product model`)), raw: panel };
+}
+
+/** Revise-and-resubmit: max 2 rounds; re-judged blind (fresh panel, no previous score -> no anchoring);
+ *  stop early when the weighted score does not improve by >= 0.2. Every round is logged. */
+export async function reviseLoop(p: Proposal, digest: string, stateIds: Set<string>, revise: (p: Proposal, changes: string[]) => Promise<Proposal>, maxRounds = 2) {
+  const rounds: Verdict[] = [];
+  let cur = p, v = await judge(cur, digest, stateIds); rounds.push(v);
+  for (let r = 0; r < maxRounds && v.decision === "revise"; r++) {
+    const next = await revise(cur, v.requiredChanges);
+    const nv = await judge(next, digest, stateIds); rounds.push(nv);
+    if (nv.weighted < v.weighted + 0.2 && nv.decision !== "pass") { v = nv; break; }
+    cur = next; v = nv;
+  }
+  return { final: cur, verdict: v.decision === "revise" ? { ...v, decision: "reject" as const } : v, rounds };
+}
+
+/** Pairwise ranking of survivors, both orders; a win counts only if consistent across the swap. */
+export async function pairwiseRank(ps: Proposal[], digest: string) {
+  const Pick = z.object({ reasoning: z.string(), better: z.enum(["A", "B", "tie"]) });
+  const ask = async (a: Proposal, b: Proposal) => (await client.messages.parse({
+    model: "claude-sonnet-5", max_tokens: 3000, output_config: { effort: "medium", format: zodOutputFormat(Pick) },
+    messages: [{ role: "user", content: `PRODUCT MODEL:\n${digest}\n\nWhich rewarded-ad proposal should this app's product team ship first? Judge value exchange, fit, business safety and revenue; ignore writing length and polish.\n\nA:\n${JSON.stringify(a)}\n\nB:\n${JSON.stringify(b)}` }],
+  })).parsed_output?.better ?? "tie";
+  const wins = new Map(ps.map((p) => [p.id, 0])); let consistent = 0, total = 0;
+  for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) {
+    const [ab, ba] = await Promise.all([ask(ps[i], ps[j]), ask(ps[j], ps[i])]);
+    total++;
+    const w1 = ab === "A" ? i : ab === "B" ? j : -1, w2 = ba === "A" ? j : ba === "B" ? i : -1;
+    if (w1 === w2 && w1 >= 0) { consistent++; wins.set(ps[w1].id, wins.get(ps[w1].id)! + 1); }
+    else { wins.set(ps[i].id, wins.get(ps[i].id)! + 0.5); wins.set(ps[j].id, wins.get(ps[j].id)! + 0.5); }
+  }
+  return { ranking: [...wins.entries()].sort((a, b) => b[1] - a[1]), swapConsistency: total ? consistent / total : 1 };
+}
+
+// ---------- calibration: is the judge any good? ----------
+export interface CalItem { proposal: Proposal; label: "good" | "bad"; targetCriterion?: Key; paraphraseOf?: string }
+export async function calibrate(items: CalItem[], digest: string, stateIds: Set<string>, reruns = 3) {
+  const runs = await Promise.all(items.map(async (it) => ({ it, vs: await Promise.all(Array.from({ length: reruns }, () => judge(it.proposal, digest, stateIds))) })));
+  const passOf = (vs: Verdict[]) => vs.filter((v) => v.decision === "pass").length > vs.length / 2;
+  const good = runs.filter((r) => r.it.label === "good"), bad = runs.filter((r) => r.it.label === "bad");
+  const meanW = (vs: Verdict[]) => vs.reduce((s, v) => s + v.weighted, 0) / vs.length;
+  // AUC: P(score(good) > score(bad))
+  let auc = 0; for (const g of good) for (const b of bad) auc += meanW(g.vs) > meanW(b.vs) ? 1 : meanW(g.vs) === meanW(b.vs) ? 0.5 : 0;
+  const targeted = bad.filter((r) => r.it.targetCriterion);
+  const byId = new Map(runs.map((r) => [r.it.proposal.id, r]));
+  const paraphrases = runs.filter((r) => r.it.paraphraseOf && byId.has(r.it.paraphraseOf));
+  return {
+    goodPassRate: good.filter((r) => passOf(r.vs)).length / Math.max(1, good.length),
+    badPassRate: bad.filter((r) => passOf(r.vs)).length / Math.max(1, bad.length),             // must be ~0
+    auc: auc / Math.max(1, good.length * bad.length),
+    // perturbation detection (FBI-style): did the TARGETED criterion drop to <= 2?
+    detection: targeted.filter((r) => median(r.vs.map((v) => v.perCriterion[r.it.targetCriterion!].median)) <= 2).length / Math.max(1, targeted.length),
+    // rerun stability: mean absolute deviation of the weighted score across reruns
+    rerunMAD: runs.reduce((s, r) => { const m = meanW(r.vs); return s + r.vs.reduce((a, v) => a + Math.abs(v.weighted - m), 0) / r.vs.length; }, 0) / runs.length,
+    decisionFlipRate: runs.filter((r) => new Set(r.vs.map((v) => v.decision)).size > 1).length / runs.length,
+    // invariance: quality-preserving rewrites (paraphrase / padding / reordering) should not move the score
+    paraphraseShift: paraphrases.reduce((s, r) => s + Math.abs(meanW(r.vs) - meanW(byId.get(r.it.paraphraseOf!)!.vs)), 0) / Math.max(1, paraphrases.length),
+  };
+}

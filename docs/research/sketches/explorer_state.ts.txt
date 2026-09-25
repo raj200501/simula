@@ -1,0 +1,148 @@
+// state.ts - abstract-state identity for exploration.
+// Idea (DroidBot content-free hash + APE/LLM-Explorer abstraction, made chat-app friendly):
+//   1. structural signature per node: class, resource-id, interaction flags, selected/checked,
+//      plus "static copy" (short UI labels) with digits masked. Long / user-generated text is dropped.
+//   2. repeated siblings (feeds, chat bubbles, grids) collapse to ONE representative, so a chat with
+//      3 or 300 messages, or a feed after a refresh, is the same abstract state.
+//   3. primary key = sha1(package + activity + canonical string); secondary near-duplicate test =
+//      Jaccard(bag of node paths) AND dHash(screenshot with dynamic regions masked).
+import { createHash } from "node:crypto";
+import sharp from "sharp";
+import { UiNode, Rect, walkTree } from "./uitree.js";
+
+export interface AbstractTree { sig: string; repeat: number; node: UiNode; children: AbstractTree[] }
+
+const MAX_STATIC_TEXT = 28;                 // longer text is content, not chrome
+const maskDigits = (s: string) => s.replace(/\d+([.,:]\d+)*/g, "#");
+const TIMEY = /\b(\d{1,2}:\d{2}|am|pm|yesterday|today|ago|min|hr|sec)\b/i;
+
+/** Text that is part of the UI "chrome" (tab names, button labels, titles) survives; content does not. */
+export function staticText(n: UiNode, insideList: boolean): string {
+  if (insideList || n.editable) return "";          // list content + user input are dynamic
+  const t = (n.text || n.desc).trim();
+  if (!t || t.length > MAX_STATIC_TEXT || TIMEY.test(t)) return "";
+  return maskDigits(t.toLowerCase());               // "Credits: 450" -> "credits: #"
+}
+
+function nodeSig(n: UiNode, insideList: boolean): string {
+  const flags = [n.clickable && "c", n.longClickable && "l", n.scrollable && "s", n.checkable && "k",
+    n.editable && "e", n.selected && "S", n.checked && "C", !n.enabled && "D"].filter(Boolean).join("");
+  return `${n.cls}#${n.rid}[${flags}]${staticText(n, insideList)}`;
+}
+
+/** Content-free structural sig of a subtree (used to detect repeated siblings). */
+function shapeSig(n: UiNode): string {
+  return `${n.cls}#${n.rid}(${n.children.map(shapeSig).join(",")})`;
+}
+
+/** Build the abstract tree with repeated-sibling collapse (min run length 2). */
+export function abstractTree(n: UiNode, insideList = false): AbstractTree {
+  const groups: { shape: string; nodes: UiNode[] }[] = [];
+  for (const c of n.children) {
+    const s = shapeSig(c);
+    const last = groups[groups.length - 1];
+    if (last && last.shape === s) last.nodes.push(c); else groups.push({ shape: s, nodes: [c] });
+  }
+  const children = groups.map((g) => {
+    const isList = g.nodes.length >= 2 || n.scrollable;   // children of a scroller are list items
+    const rep = abstractTree(g.nodes[0], insideList || isList);
+    // keep WHICH member is selected (tab bars, segmented controls) - otherwise tab 2 == tab 3
+    const sel = g.nodes.map((m, i) => (m.selected || m.checked || m.children.some((c) => c.selected) ? i : -1)).filter((i) => i >= 0);
+    return { ...rep, repeat: g.nodes.length, sig: sel.length ? sha1(rep.sig + "|sel" + sel.join(",")).slice(0, 16) : rep.sig };
+  });
+  // Mixed feeds and chat transcripts alternate shapes (me/bot bubbles, post/ad/post): inside a
+  // scroller or a long child list keep only the first occurrence of each child signature.
+  const listLike = n.scrollable || n.children.length >= 4;
+  const seen = new Set<string>();
+  const collapsed = listLike ? children.filter((c) => (seen.has(c.sig) ? false : (seen.add(c.sig), true))) : children;
+  const canon = `${nodeSig(n, insideList)}{${collapsed.map((c) => c.sig + (c.repeat > 1 ? "*" : "")).join(";")}}`;
+  return { sig: sha1(canon).slice(0, 16), repeat: 1, node: n, children: collapsed };
+}
+
+export const sha1 = (s: string) => createHash("sha1").update(s).digest("hex");
+
+export interface StateKey { hash: string; bag: Set<string>; activity: string; pkg: string }
+
+export function stateKey(root: UiNode, pkg: string, activity = ""): StateKey {
+  const at = abstractTree(root);
+  // bag of root-to-node signature paths, for near-duplicate Jaccard
+  const bag = new Set<string>();
+  const visit = (t: AbstractTree, path: string) => { const p = path + ">" + t.sig.slice(0, 6); bag.add(p); t.children.forEach((c) => visit(c, p)); };
+  visit(at, "");
+  // Activity helps for multi-activity apps; it is ~useless for single-activity Compose/RN apps.
+  return { hash: sha1(`${pkg}|${activity}|${at.sig}`).slice(0, 12), bag, activity, pkg };
+}
+
+export function jaccard(a: Set<string>, b: Set<string>): number {
+  let inter = 0; for (const x of a) if (b.has(x)) inter++;
+  return inter / (a.size + b.size - inter || 1);
+}
+
+/** Regions whose pixels are content (images in lists, avatars, message bodies, video): masked before hashing. */
+export function dynamicRegions(root: UiNode): Rect[] {
+  const out: Rect[] = [];
+  const at = abstractTree(root);
+  const markList = (t: AbstractTree, inList: boolean) => {
+    const listy = inList || t.repeat > 1 || t.node.scrollable;
+    if (listy && t !== at && (t.repeat > 1 || t.node.scrollable)) out.push(t.node.rect);
+    else t.children.forEach((c) => markList(c, listy));
+  };
+  markList(at, false);
+  for (const { node } of walkTree(root)) if (/Video|Surface|Texture|WebView/.test(node.cls)) out.push(node.rect);
+  return out;
+}
+
+/** 64-bit difference hash of a screenshot with dynamic regions painted flat grey.
+ *  `deviceW` = width of the coordinate space of `mask` (device px); rects are scaled + clamped to the image. */
+export async function dHash(png: Buffer | string, mask: Rect[] = [], deviceW?: number): Promise<bigint> {
+  let img = sharp(png);
+  const meta = await img.metadata();
+  const W = meta.width ?? 0, H = meta.height ?? 0, k = deviceW ? W / deviceW : 1;
+  const overlays = mask.map((r) => {
+    const left = Math.max(0, Math.round(r.x * k)), top = Math.max(0, Math.round(r.y * k));
+    const width = Math.min(W - left, Math.round((r.x + r.w) * k) - left), height = Math.min(H - top, Math.round((r.y + r.h) * k) - top);
+    return { left, top, width, height };
+  }).filter((o) => o.width > 0 && o.height > 0)
+    .map((o) => ({ input: { create: { width: o.width, height: o.height, channels: 3 as const, background: "#808080" } }, left: o.left, top: o.top }));
+  if (overlays.length) img = sharp(await img.composite(overlays).png().toBuffer());
+  const { data } = await img.greyscale().resize(9, 8, { fit: "fill" }).raw().toBuffer({ resolveWithObject: true });
+  let h = 0n;
+  for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) h = (h << 1n) | (data[y * 9 + x] > data[y * 9 + x + 1] ? 1n : 0n);
+  return h;
+}
+export const hamming = (a: bigint, b: bigint) => { let x = a ^ b, c = 0; while (x) { c += Number(x & 1n); x >>= 1n; } return c; };
+
+/** Equivalence used by the explorer. Exact structural hash, else near-duplicate on BOTH signals. */
+export function sameState(a: StateKey & { phash: bigint }, b: StateKey & { phash: bigint }): boolean {
+  if (a.hash === b.hash) return true;
+  if (a.pkg !== b.pkg) return false;
+  return jaccard(a.bag, b.bag) >= 0.9 && hamming(a.phash, b.phash) <= 10;
+}
+
+// ---------- "what changed after an action" (edge effects for the product model) ----------
+export interface Effect { kind: "numeric" | "appeared" | "disappeared" | "text"; key: string; before?: string; after?: string; delta?: number }
+
+/** Diff two concrete trees keyed by (rid|cls|static-label) so counters like credits/messages-left are caught. */
+export function diffEffects(before: UiNode, after: UiNode): Effect[] {
+  const index = (root: UiNode) => {
+    const m = new Map<string, string>();
+    for (const { node } of walkTree(root)) {
+      const txt = (node.text || node.desc).trim(); if (!txt) continue;
+      const key = `${node.rid || node.cls}|${maskDigits(txt.toLowerCase()).slice(0, 40)}`;
+      if (!m.has(key)) m.set(key, txt);
+    }
+    return m;
+  };
+  const A = index(before), B = index(after), out: Effect[] = [];
+  const num = (s: string) => { const m = /-?\d[\d,]*(\.\d+)?/.exec(s); return m ? Number(m[0].replace(/,/g, "")) : NaN; };
+  for (const [k, a] of A) {
+    const b = B.get(k);
+    if (b === undefined) out.push({ kind: "disappeared", key: k, before: a });
+    else if (a !== b) {
+      const d = num(b) - num(a);
+      out.push(Number.isFinite(d) ? { kind: "numeric", key: k, before: a, after: b, delta: d } : { kind: "text", key: k, before: a, after: b });
+    }
+  }
+  for (const [k, b] of B) if (!A.has(k)) out.push({ kind: "appeared", key: k, after: b });
+  return out.filter((e) => e.kind !== "appeared" || e.after!.length <= 60).slice(0, 40);
+}

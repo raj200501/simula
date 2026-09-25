@@ -1,0 +1,109 @@
+// compare.ts - original (device) vs mock (Playwright) at the SAME pixel size:
+// viewport = device dp, deviceScaleFactor = density/160  => mock screenshot is 1080x2400 like the device.
+// Scores follow Design2Code (block-match, text, position, colour, + SSIM instead of CLIP), but blocks come
+// from the a11y tree (ground truth) instead of OCR, and matching is by data-node id first, Hungarian second.
+import sharp from "sharp";
+import pixelmatch from "pixelmatch";
+import { ssim } from "ssim.js";
+import type { Page } from "playwright";
+import { Rect } from "../explorer/uitree.js";
+import { nodeColors, deltaE } from "../recreate/tokens.js";
+
+export interface Box { id: string; text: string; rect: Rect }              // rect in device px
+export interface Diff { severity: number; node: string; kind: "missing" | "extra" | "position" | "size" | "text" | "color" | "region"; detail: string }
+
+// ---------- Hungarian (min-cost assignment), rectangular n<=m, O(n^2 m) ----------
+export function hungarian(cost: number[][]): number[] {                   // returns col index per row (-1 if none)
+  const n = cost.length, m = cost[0]?.length ?? 0; if (!n || !m) return new Array(n).fill(-1);
+  const T = n <= m; const C = T ? cost : cost[0].map((_, j) => cost.map((r) => r[j]));
+  const N = C.length, M = C[0].length, INF = 1e18;
+  const u = new Array(N + 1).fill(0), v = new Array(M + 1).fill(0), p = new Array(M + 1).fill(0), way = new Array(M + 1).fill(0);
+  for (let i = 1; i <= N; i++) {
+    p[0] = i; let j0 = 0; const minv = new Array(M + 1).fill(INF), used = new Array(M + 1).fill(false);
+    do {
+      used[j0] = true; const i0 = p[j0]; let delta = INF, j1 = 0;
+      for (let j = 1; j <= M; j++) if (!used[j]) {
+        const cur = C[i0 - 1][j - 1] - u[i0] - v[j];
+        if (cur < minv[j]) { minv[j] = cur; way[j] = j0; }
+        if (minv[j] < delta) { delta = minv[j]; j1 = j; }
+      }
+      for (let j = 0; j <= M; j++) if (used[j]) { u[p[j]] += delta; v[j] -= delta; } else minv[j] -= delta;
+      j0 = j1;
+    } while (p[j0] !== 0);
+    do { const j1 = way[j0]; p[j0] = p[j1]; j0 = j1; } while (j0);
+  }
+  const rowToCol = new Array(N).fill(-1); for (let j = 1; j <= M; j++) if (p[j]) rowToCol[p[j] - 1] = j - 1;
+  if (T) return rowToCol;
+  const out = new Array(n).fill(-1); rowToCol.forEach((row, col) => { if (row >= 0) out[row] = col; }); return out;
+}
+
+export const dice = (a: string, b: string) => {               // character-bigram Sørensen-Dice
+  const bg = (s: string) => { const m = new Map<string, number>(); for (let i = 0; i < s.length - 1; i++) { const k = s.slice(i, i + 2); m.set(k, (m.get(k) ?? 0) + 1); } return m; };
+  if (a === b) return 1; if (a.length < 2 || b.length < 2) return 0;
+  const A = bg(a), B = bg(b); let inter = 0; for (const [k, c] of A) inter += Math.min(c, B.get(k) ?? 0);
+  return (2 * inter) / (a.length - 1 + b.length - 1);
+};
+export const iou = (a: Rect, b: Rect) => {
+  const ix = Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)), iy = Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+  const I = ix * iy; return I / (a.w * a.h + b.w * b.h - I || 1);
+};
+
+/** DOM boxes of every [data-node] element, scaled to device px. */
+export async function domBoxes(page: Page, dpr: number): Promise<Box[]> {
+  const raw = await page.$$eval("[data-node]", (els) => els.map((e) => { const r = e.getBoundingClientRect();
+    return { id: (e as HTMLElement).dataset.node!, text: ((e as HTMLElement).innerText || e.getAttribute("aria-label") || "").trim(), x: r.x, y: r.y, w: r.width, h: r.height }; }));
+  return raw.filter((b) => b.w > 0 && b.h > 0).map((b) => ({ id: b.id, text: b.text, rect: { x: b.x * dpr, y: b.y * dpr, w: b.w * dpr, h: b.h * dpr } }));
+}
+
+export async function compareScreens(origPng: Buffer, mockPng: Buffer, orig: Box[], mock: Box[], screen: { w: number; h: number }, diffOut?: string) {
+  const diffs: Diff[] = [];
+  // 1. match: exact id, then Hungarian on leftovers with cost = 1 - (0.5 text + 0.5 IoU)
+  const byId = new Map(mock.map((m) => [m.id, m]));
+  const pairs: [Box, Box][] = []; const leftO: Box[] = [], usedM = new Set<string>();
+  for (const o of orig) { const m = byId.get(o.id); if (m) { pairs.push([o, m]); usedM.add(m.id); } else leftO.push(o); }
+  const leftM = mock.filter((m) => !usedM.has(m.id));
+  if (leftO.length && leftM.length) {
+    const cost = leftO.map((o) => leftM.map((m) => 1 - (0.5 * (o.text || m.text ? dice(o.text, m.text) : 1) + 0.5 * iou(o.rect, m.rect))));
+    hungarian(cost).forEach((j, i) => { if (j >= 0 && cost[i][j] < 0.7) { pairs.push([leftO[i], leftM[j]]); usedM.add(leftM[j].id); } });
+  }
+  const matchedO = new Set(pairs.map(([o]) => o.id));
+  const area = (r: Rect) => r.w * r.h, screenArea = screen.w * screen.h;
+  for (const o of orig) if (!matchedO.has(o.id)) diffs.push({ severity: area(o.rect) / screenArea * 10 + 1, node: o.id, kind: "missing", detail: `missing "${o.text.slice(0, 40)}" at ${fmt(o.rect)}` });
+  for (const m of mock) if (!usedM.has(m.id)) diffs.push({ severity: area(m.rect) / screenArea * 5 + 0.5, node: m.id, kind: "extra", detail: `extra element "${m.text.slice(0, 40)}" at ${fmt(m.rect)}` });
+
+  // 2. per-pair scores
+  let tx = 0, pos = 0, col = 0, nCol = 0; const px = (v: number) => Math.round(v);
+  for (const [o, m] of pairs) {
+    const t = o.text || m.text ? dice(o.text.toLowerCase(), m.text.toLowerCase()) : 1; tx += t;
+    const dx = (o.rect.x + o.rect.w / 2 - m.rect.x - m.rect.w / 2) / screen.w, dy = (o.rect.y + o.rect.h / 2 - m.rect.y - m.rect.h / 2) / screen.h;
+    pos += 1 - Math.max(Math.abs(dx), Math.abs(dy));
+    if (t < 0.9) diffs.push({ severity: 2 * (1 - t), node: o.id, kind: "text", detail: `text "${m.text.slice(0, 40)}" should be "${o.text.slice(0, 40)}"` });
+    if (Math.abs(dx) * screen.w > 12 || Math.abs(dy) * screen.h > 12) diffs.push({ severity: Math.max(Math.abs(dx), Math.abs(dy)) * 20, node: o.id, kind: "position", detail: `offset by (${px(-dx * screen.w)}, ${px(-dy * screen.h)})px; target ${fmt(o.rect)}, got ${fmt(m.rect)}` });
+    const sw = m.rect.w / o.rect.w, sh = m.rect.h / o.rect.h;
+    if (Math.abs(sw - 1) > 0.1 || Math.abs(sh - 1) > 0.1) diffs.push({ severity: Math.abs(sw - 1) + Math.abs(sh - 1), node: o.id, kind: "size", detail: `size ${px(m.rect.w)}x${px(m.rect.h)} should be ${px(o.rect.w)}x${px(o.rect.h)}` });
+    if (area(o.rect) < 0.3 * screenArea) {
+      const [co, cm] = await Promise.all([nodeColors(origPng, o.rect), nodeColors(mockPng, m.rect)]);
+      const d = deltaE(co.bg, cm.bg) + (co.fg && cm.fg ? deltaE(co.fg, cm.fg) : 0);
+      col += Math.max(0, 1 - d / 100); nCol++;
+      if (d > 10) diffs.push({ severity: d / 20, node: o.id, kind: "color", detail: `colours bg ${cm.bg}/fg ${cm.fg} should be bg ${co.bg}/fg ${co.fg} (dE ${d.toFixed(1)})` });
+    }
+  }
+  const matchedArea = pairs.reduce((s, [o, m]) => s + area(o.rect) + area(m.rect), 0);
+  const totalArea = orig.reduce((s, o) => s + area(o.rect), 0) + mock.reduce((s, m) => s + area(m.rect), 0);
+
+  // 3. pixel-level: pixelmatch mismatch ratio + SSIM on a 360px-wide greyscale-ish downsample
+  const [a, b] = await Promise.all([origPng, mockPng].map((p) => sharp(p).resize(screen.w, screen.h, { fit: "fill" }).ensureAlpha().raw().toBuffer()));
+  const diffBuf = Buffer.alloc(screen.w * screen.h * 4);
+  const mismatch = pixelmatch(a, b, diffBuf, screen.w, screen.h, { threshold: 0.1 });
+  if (diffOut) await sharp(diffBuf, { raw: { width: screen.w, height: screen.h, channels: 4 } }).png().toFile(diffOut);
+  const W = 360, H = Math.round(360 * screen.h / screen.w);
+  const [sa, sb] = await Promise.all([origPng, mockPng].map((p) => sharp(p).resize(W, H, { fit: "fill" }).ensureAlpha().raw().toBuffer()));
+  const { mssim } = ssim({ data: new Uint8ClampedArray(sa), width: W, height: H }, { data: new Uint8ClampedArray(sb), width: W, height: H });
+
+  const n = Math.max(1, pairs.length);
+  const scores = { blockMatch: totalArea ? matchedArea / totalArea : 0, text: tx / n, position: pos / n,
+    color: nCol ? col / nCol : 1, ssim: mssim, pixel: 1 - mismatch / (screen.w * screen.h) };
+  const composite = 0.25 * scores.blockMatch + 0.15 * scores.text + 0.2 * scores.position + 0.15 * scores.color + 0.25 * scores.ssim;
+  return { scores, composite, diffs: diffs.sort((x, y) => y.severity - x.severity), pairs: pairs.length };
+}
+const fmt = (r: Rect) => `[${Math.round(r.x)},${Math.round(r.y)} ${Math.round(r.w)}x${Math.round(r.h)}]`;
