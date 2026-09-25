@@ -133,7 +133,8 @@ Android emulator ⇄ mobile-mcp 1.0.5 (stdio) ⇄ EXPLORE ──► graph.json +
      counters, chat, wall,        QA replays every edge                   │
      rewarded overlay, patches)                                           ▼
                │                                         JUDGE: code gates → LLM rubric → verdict in
-               │                                         code → ≤ 2 blind revisions; eval-judge
+               │                                         code → ≤ 2 blind revisions → portfolio check
+               │                                         (near-duplicate SHIPs); eval-judge
                └────────────────► SLIDES ◄──── SHIP proposals = model patches → patched mock →
                                     │           Playwright captures → deck.html / .pdf / png
                                     ▼
@@ -148,7 +149,7 @@ Agents never message each other: stages share context only through typed, schema
 | Compile: representative observations, dp conversion, colour and type tokens, asset crops, PII blur. Quote and number verification. **All economics** (unit prices, exchange rate, cannibalization, cost to serve). Moments and flows | Brief, economy items with evidence, flow names (one call) |
 | Mock runtime, HTML validation, spec renderer | Design CSS, HTML per screen, QA fixes, variant screens for slides |
 | QA metrics (IoU, SSIM, text, ΔE), keep-best, stop rule, flow replay | — |
-| Set validator, grounding, policy and economics gates, **verdict thresholds**, calibration counts | Ideas and proposals, rubric scores with evidence, required changes, revisions |
+| Set validator, grounding, policy and economics gates, **verdict thresholds**, portfolio check (near-duplicate SHIPs), calibration counts | Ideas and proposals, rubric scores with evidence, required changes, revisions |
 | Slide capture, callout placement, PDF, SDK snippet | — |
 
 ---

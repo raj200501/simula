@@ -241,7 +241,8 @@ Elements with a `data-ad` attribute are reported with `identifier: "web:id/ad_co
 window.__mock = {
   go(screenId), state() -> screenId, get(resourceId) -> number, set(resourceId, value),
   openRewarded(phase: "invite"|"game"|"verified"|"nofill"|"close", proposalId?),
-  applyPatch(pid), history() -> screenId[]
+  applyPatch(pid), history() -> screenId[], select(labels)   // pick a mode chip or option,
+  avoid(nodeIds)   // nodes the "reward received" confirmation must not cover (slides pass the frame's callouts)
 }
 ```
 

@@ -142,21 +142,55 @@ function underColor(r: Rect, ctx: Ctx): string {
   return hits[0]?.color ?? ctx.base;
 }
 
+const LINE_H = 1.2;
+/** The fitter shrinks a text to FIT_FLOOR of its size, never below FIT_MIN px, then line-clamps. */
+const FIT_FLOOR = 0.8;
 /**
- * Font size: the measured size (else an estimate from the box), capped so the text fits: a label is
- * never taller than its padded control, and the estimated line count x line height must fit the box
- * (ink-based measurements over-read icons and dense multi-line text).
+ * A floor never above this: measured sizes are ink-based and over-read multi-line text, so 80% of a
+ * measurement can still be larger than the real text; a text the box holds at a normal body size
+ * must not be ellipsized for that.
  */
-function fitFont(e: UiElement, t: string, availW: number, availH: number): { size: number; multi: boolean } {
+const FIT_FLOOR_MAX = 12;
+const FIT_MIN = 8;
+
+interface Fit { size: number; multi: boolean; clamp: number }
+/**
+ * Font size and line budget for a text in its box. Start from the measured size (else an estimate
+ * from the box), capped so a label is never taller than its padded control. The box holds
+ * floor(height / line height) lines; the font shrinks while the estimated line count (bold text is
+ * estimated wider) exceeds that, down to a floor of FIT_FLOOR of the start size (at most
+ * FIT_FLOOR_MAX px). In a multi-line box, what still does not fit at the floor is line-clamped with
+ * an ellipsis, and every wrapped text is clamped to the lines its box holds, so a long text in a
+ * small box (a sheet's body) never spills onto its neighbours or shows a half-clipped line when the
+ * estimate is off. A one-line box keeps shrinking to fit (the app showed that text on one line),
+ * then ends in an ellipsis.
+ */
+function fitFont(e: UiElement, t: string, availW: number, availH: number, bold = false): Fit {
   const h = e.rectDp.h;
   const padded = ["button", "tab", "input", "toggle"].includes(e.role);
   let f = e.style?.fontDp ?? (!t ? 14 : padded || e.role === "list-item" ? clamp(Math.round(h * 0.36), 12, 18) : clamp(Math.round(h / 1.3), 10, 28));
   f = Math.min(f, e.role === "tab" ? Math.max(11, Math.min(16, h * 0.4)) : padded ? h * 0.55 : h * 0.9);
-  f = Math.round(clamp(f, 8, 48) * 2) / 2;
-  const lines = (sz: number) => Math.max(1, Math.ceil((t.length * 0.56 * sz) / Math.max(1, availW)));
-  while (t && f > 8 && lines(f) * 1.2 * f > availH * 1.05) f -= 0.5;
-  return { size: f, multi: !!t && lines(f) > 1 };
+  f = Math.round(clamp(f, FIT_MIN, 48) * 2) / 2;
+  const em = bold ? 0.6 : 0.56; // average glyph advance in em
+  // Words up to 20 characters never break in the middle; longer runs (URLs, scripts written without
+  // spaces) may wrap anywhere.
+  const words = t.split(/\s+/).filter(Boolean);
+  const longest = Math.max(0, ...words.map(w => w.length).filter(n => n <= 20));
+  const wraps = words.length > 1 || t.length > 20;
+  // Lines the text needs: its length over the width, and never a short word broken in the middle.
+  const lines = (sz: number) => (longest * em * sz > availW ? Infinity : Math.max(1, Math.ceil((t.length * em * sz) / Math.max(1, availW))));
+  const room = (sz: number) => Math.max(1, Math.floor((availH * 1.05) / (LINE_H * sz)));
+  const floor = Math.max(FIT_MIN, Math.min(FIT_FLOOR_MAX, Math.round(f * FIT_FLOOR * 2) / 2));
+  while (t && f > floor && lines(f) > room(f)) f -= 0.5;
+  // A box that holds one line at the floor showed this text on one line in the app: shrink until it fits.
+  if (t && room(f) <= 1) while (f > FIT_MIN && lines(f) > room(f)) f -= 0.5;
+  // Wrapped when more than one line is needed and fits (clamped to what fits); else one line with an ellipsis.
+  const multi = !!t && lines(f) > 1 && room(f) > 1 && wraps;
+  return { size: f, multi, clamp: multi ? room(f) : 0 };
 }
+
+/** CSS that clamps a wrapped text to `n` lines with an ellipsis (the element keeps its own height). */
+const lineClamp = (n: number) => `display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:${n};overflow:hidden;`;
 
 function assetFile(e: UiElement, ctx: Ctx): string | undefined {
   if (!e.asset) return undefined;
@@ -222,9 +256,9 @@ function renderElement(e: UiElement, ctx: Ctx): string {
     const glyph = !e.text ? GLYPHS.find(([re]) => re.test(`${e.label ?? ""} ${e.identifier ?? ""} ${ctx.chat?.send === e.id ? "send" : ""}`))?.[1] : undefined;
     const shown = e.text || (glyph ? "" : e.label || "");
     const radius = paint ? (r.h <= 44 ? r.h / 2 : Math.min(ctx.radius, r.h / 2)) : 0;
-    const f = fitFont(e, shown, r.w - 16, r.h);
+    const f = fitFont(e, shown, r.w - 16, r.h, true);
     const inner = file ? `<img src="${esc(file)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">`
-      : shown ? esc(shown) : glyph ? `<span aria-hidden="true" style="font-size:${n(Math.min(22, r.h * 0.5))}px">${glyph}</span>` : "";
+      : shown ? (f.multi ? `<span style="${lineClamp(f.clamp)}">${esc(shown)}</span>` : esc(shown)) : glyph ? `<span aria-hidden="true" style="font-size:${n(Math.min(22, r.h * 0.5))}px">${glyph}</span>` : "";
     const border = look.border ? `border:1px solid ${look.border};` : "border:0;";
     // Text buttons (a tappable title or row) keep their measured alignment; filled buttons centre.
     const al = paint ? "center" : ctx.align.get(e.id) ?? "center";
@@ -256,12 +290,12 @@ function renderElement(e: UiElement, ctx: Ctx): string {
   const padX = chip ? clamp(r.h * 0.3, 6, 14) : !leaf || edgeToEdge ? 16 : 0;
   const padL = lead ? lead + 12 : padX;
   const padY = chip ? clamp(r.h * 0.15, 3, 10) : 0;
-  const f = fitFont(e, t, r.w - padL - padX, r.h - 2 * padY);
+  const f = fitFont(e, t, r.w - padL - padX, r.h - 2 * padY, e.role === "counter");
   const weight = e.role === "counter" || f.size >= 24 || (f.size >= 18 && r.y < ctx.dev.h * 0.15) ? 600 : 400;
   // Alignment: measured from the screenshot's ink when available, else centred chips and left text.
   const align = ctx.align.get(e.id) ?? (chip && !f.multi && r.w < ctx.dev.w * 0.5 ? "center" : "left");
   const lines = f.multi
-    ? `padding:${n(padY)}px ${n(padX)}px ${n(padY)}px ${n(padL)}px;white-space:normal;line-height:1.2;overflow:hidden;overflow-wrap:anywhere;`
+    ? `padding:${n(padY)}px ${n(padX)}px ${n(padY)}px ${n(padL)}px;white-space:normal;line-height:${LINE_H};overflow-wrap:anywhere;${lineClamp(f.clamp)}`
     : `padding:0 ${n(padX)}px 0 ${n(padL)}px;white-space:nowrap;line-height:${n(r.h)}px;overflow:hidden;text-overflow:ellipsis;`;
   return `<div ${A} style="${box}${shape}color:${fg};font-family:${SYSTEM_FONT};font-size:${f.size}px;font-weight:${weight};text-align:${align};${lines}${dim}">${esc(t)}</div>`;
 }

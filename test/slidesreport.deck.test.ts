@@ -4,9 +4,9 @@ import assert from "node:assert/strict";
 import { proposalEconomics } from "../src/model/economics.ts";
 import type { Frame } from "../src/slides/capture.ts";
 import { phaseSteps } from "../src/slides/capture.ts";
-import { flowPins, renderDeck, type FlowInput } from "../src/slides/deck.ts";
+import { flowPins, renderDeck, zoomInset, type FlowGeo, type FlowInput } from "../src/slides/deck.ts";
 import {
-  accentOf, claimOf, clampWords, declineTarget, econTable, headlineOf, ideaRows, judgeChanges, normalizeStoryboard, recommendationHeadline, shipped, shortCaption, whyBullets, PHASES,
+  accentOf, claimOf, clampWords, clip, declineTarget, econTable, gamesNeeded, headlineOf, ideaRows, judgeChanges, normalizeStoryboard, recommendationHeadline, shipped, shortCaption, whyBullets, wrappedLines, PHASES,
 } from "../src/slides/facts.ts";
 import { integrationSnippet } from "../src/slides/integration.ts";
 import type { CostRollup } from "../src/report/data.ts";
@@ -75,12 +75,29 @@ describe("slide facts", () => {
     assert.deepEqual(recommendationHeadline(m, [p]), { text: "Let users play a short game for credits.", accent: "play a short game for credits" });
   });
 
+  test("copy never contradicts the offer: game count, no \"0 min apart\", no double stop before an ellipsis", () => {
+    const p = sampleCandidates().proposals[1];
+    const two = { ...p, offer: { ...p.offer, title: "Try Deep reasoning", body: "Play two 15-second games to unlock 1 answer." }, reward: { what: "1 Deep reasoning answer (today)", grantOn: "REWARD_VERIFIED" as const } };
+    assert.equal(gamesNeeded(two), 2);
+    assert.equal(gamesNeeded({ ...p, offer: { ...p.offer, title: "Try it free: play 2 × 15 s" } }), 2);
+    assert.equal(gamesNeeded(p), 1);
+    assert.equal(headlineOf(two, m).text, "Try Deep reasoning for two short games");
+    const noCooldown = { ...p, caps: { perDay: 1, cooldownMin: 0 } };
+    const rail = whyBullets(noCooldown, m, proposalEconomics(noCooldown, m)).map(b => `${b.text} ${b.line}`).join(" ");
+    assert.doesNotMatch(rail, /0 min apart/);
+    assert.match(whyBullets(p, m, proposalEconomics(p, m))[2].line, /at least \d+ min apart/);
+    assert.equal(clip("Luzia+ stays the only unlimited path. More words follow here", 40), "Luzia+ stays the only unlimited path…");
+  });
+
   test("flow captions fit two lines: whole, first sentence, first clause, or cut before a qualifier", () => {
     assert.equal(shortCaption("Credits at 20: not enough to send a message."), "Credits at 20: not enough to send a message.");
     assert.equal(shortCaption("Out of credits gains a secondary rewarded option under \"Refill now\"."), "Out of credits gains a secondary rewarded option.");
     assert.equal(shortCaption("+10 credits: credits at 30. Back in The Midnight Library chat."), "+10 credits: credits at 30.");
     assert.equal(shortCaption("\"Play for +10\" or \"No thanks\", which returns to the chat with the draft kept."), "\"Play for +10\" or \"No thanks\".");
     for (const c of normalizeStoryboard(sampleCandidates().proposals[1], m).map(s => shortCaption(s.caption))) assert.ok(c.length <= 60, c);
+    // Short enough is not enough: it must wrap into the two lines the caption box shows.
+    assert.equal(shortCaption("Two 15-second games with Luzia; unlock one Deep reasoning answer."), "Two 15-second games with Luzia.");
+    assert.equal(wrappedLines("Out of credits gains a secondary rewarded option.", 28), 2);
   });
 
   test("pins never cover a control: a pin with no free spot keeps its ring and loses its letter", () => {
@@ -160,6 +177,47 @@ describe("deck.html", () => {
     assert.match(f, /No thanks<\/b> → back to Out of credits, nothing lost/);
     assert.match(f, /class="pin"/);
     assert.match(f, />NEW</);
+  });
+
+  test("What changed carries a zoomed inset of the new element, joined by a thin line", () => {
+    const f = flowSlides[0];
+    const change = f.split('data-phase="change"')[1].split('data-phase="offer"')[0];
+    assert.equal(count(change, /class="zoom"/g), 1);
+    assert.equal(count(change, /class="zoom-link"/g), 1);
+    assert.match(change, /class="zoom" data-scale="(?:1\.[3-9]\d*|2(?:\.\d+)?)"/);
+    assert.match(change, /<img src="img\/P1-2-change\.png"/, "the inset is the frame's own capture");
+    for (const ph of ["today", "offer", "ad", "value"]) {
+      const col = f.split(`data-phase="${ph}"`)[1].split('class="f-col"')[0];
+      assert.doesNotMatch(col, /class="zoom"/, ph);
+    }
+  });
+
+  test("the inset keeps clear of the element, its pins, the neighbours' elbows and the captions", () => {
+    // Five 241 px phones 52 px apart (the flow slide's geometry for a 411 x 914 screen).
+    const g: FlowGeo = { pw: 241, ph: 516, gap: 52, xs: [34, 327, 620, 913, 1206], area: 1448 };
+    const box = { x: 16, y: 700, w: 379, h: 50 };
+    const fr = fakeFrames("P1", normalizeStoryboard(sampleCandidates().proposals[1], m))[1];
+    const frame = { ...fr, newBoxes: [box], callouts: [], texts: [], controls: [] };
+    const pins = flowPins({ ...flowsFor()[0], frames: [frame] }, g.pw - 16)[0];
+    const parse = (html: string) => {
+      const st = /class="zoom" data-scale="([\d.]+)" style="left:([-\d.]+)px;top:([-\d.]+)px;width:([\d.]+)px;height:([\d.]+)px"/.exec(html);
+      assert.ok(st, html.slice(0, 200));
+      const [z, x, y, w, h] = st!.slice(1).map(Number);
+      return { z, x, y, w, h };
+    };
+    // Next frame's elbow high up (its target at 200 px): the inset may not overhang right below it.
+    for (const next of [200, 420]) {
+      const r = parse(zoomInset(frame, pins, g, 400, next));
+      const k = (g.pw - 16) / 411, ey = 8 + box.y * k, eb = 8 + (box.y + box.h) * k;
+      assert.ok(r.z >= 1.3 && r.z <= 2.2, `scale ${r.z}`);
+      assert.ok(r.y + r.h <= ey - 20 || r.y >= eb + 20, "never over the element");
+      assert.ok(r.y >= 8 && r.y + r.h <= g.ph - 8, "inside the phone's height: no caption or trigger is covered");
+      assert.ok(r.x >= -(g.gap - 20) && r.x + r.w <= g.pw + (g.gap - 20), "keeps clear of the neighbouring phones");
+      if (r.y + r.h >= next - 12) assert.ok(r.x + r.w <= g.pw + 18, `no overhang where the next elbow runs (next target ${next})`);
+      if (r.y + r.h >= 400 - 12) assert.ok(r.x >= -18, "no overhang where this frame's own elbow runs");
+    }
+    assert.equal(zoomInset({ ...frame, newBoxes: [] }, pins, g, 400, 420), "", "nothing new: no inset");
+    assert.equal(zoomInset({ ...frame, newBoxes: [{ x: 0, y: 0, w: 411, h: 914 }] }, pins, g, 400, 420), "", "a whole new screen is not magnified");
   });
 
   test("right rail: why this works, SHIP badge, score, prototype link", () => {

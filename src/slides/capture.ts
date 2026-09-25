@@ -37,7 +37,11 @@ export interface Frame {
 
 type Step = "invite" | "game" | "verified" | "nofill" | "close";
 
-/** What each phase does on top of go(screen) (E5: offer = invite, ad = game, value = verified then close). */
+/**
+ * What each phase does on top of go(screen) (E5: offer = invite, ad = game, value = verified then
+ * close; the runtime then confirms the grant in-screen, so the value frame shows it even where the
+ * screen has no balance).
+ */
 export function phaseSteps(phase: PhaseId, sb: Story, p: Proposal): Step[] {
   const offerIsOwnScreen = p.patch.newScreens.some(s => s.id === sb.screen);
   switch (phase) {
@@ -59,6 +63,7 @@ const RUN_PHASE = `async (a) => {
   setAll();
   M.go(a.screen);
   setAll();
+  if (M.avoid) M.avoid(a.avoid); // the reward confirmation never covers what the frame points at
   for (const s of a.steps) {
     M.openRewarded(s, a.pid);
     await new Promise(r => setTimeout(r, 150));
@@ -124,7 +129,8 @@ const MEASURE = `(a) => {
     if (r && onTop(el, r)) texts.push(box(r));
   }
   const controls = [];
-  const CTRL = 'button, a[href], [role="button"], [role="tab"], [role="switch"], input, textarea, select, [data-rw], [data-role="send"], [data-role="composer"], .mock-hotspot, [data-new]';
+  // The reward confirmation is not a control, but a pin must not hide it either.
+  const CTRL = 'button, a[href], [role="button"], [role="tab"], [role="switch"], input, textarea, select, [data-rw], [data-role="send"], [data-role="composer"], .mock-hotspot, [data-new], [data-reward-toast]';
   for (const el of document.querySelectorAll(CTRL)) {
     if (controls.length >= 120) break;
     const r = rectOf(el);
@@ -170,7 +176,7 @@ export async function captureFlow(o: CaptureInput): Promise<Frame[]> {
       page.on("pageerror", e => errors.push(String(e.message ?? e)));
       await page.goto(url, { waitUntil: "load" });
       await page.waitForFunction("!!(window.__mock && window.__mock.go)", null, { timeout: 10_000 });
-      await page.evaluate(`(${RUN_PHASE})(${JSON.stringify({ screen: sb.screen, counters: sb.counters, steps, pid: o.p.id })})`);
+      await page.evaluate(`(${RUN_PHASE})(${JSON.stringify({ screen: sb.screen, counters: sb.counters, steps, pid: o.p.id, avoid: sb.callouts.map(c => c.node) })})`);
       await page.screenshot({ path: file, animations: "disabled" });
       const meas = (await page.evaluate(`(${MEASURE})(${JSON.stringify({
         nodes: sb.callouts.map(c => c.node),

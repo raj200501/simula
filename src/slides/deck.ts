@@ -15,7 +15,7 @@ import { PRODUCTIONIZATION } from "../report/content.ts";
 import type { Box, Frame } from "./capture.ts";
 import {
   PHASE_LABEL, cheapestPack, clip, firstSentenceOf, headlineOf, ideaRows, latestFinals, moneyToday, num, recommendationHeadline, resourceOf, rewardText, screenName,
-  shortCaption, undevelopedIdeas, unitOf,
+  shortCaption, spacing, undevelopedIdeas, unitOf,
   type EconRow, type Final, type Headline, type IdeaRow, type JudgeChange, type PhaseId, type WhyBullet,
 } from "./facts.ts";
 
@@ -183,7 +183,7 @@ ${elbow(Math.round(ph * 0.42), ph)}${marker(i + 1, ph)}<span class="ph" style="t
 <div class="tiles">${tiles.map(([k, v]) => `<div class="tile"><div class="stat-k">${h(k)}</div><p>${h(clip(v, 120))}</p></div>`).join("")}</div>`, m);
 }
 
-interface FlowGeo { pw: number; ph: number; gap: number; xs: number[]; area: number }
+export interface FlowGeo { pw: number; ph: number; gap: number; xs: number[]; area: number }
 
 /** Phone width, height and x positions for the five flow frames (left of the rail). */
 function flowGeometry(ratio: number): FlowGeo {
@@ -194,21 +194,29 @@ function flowGeometry(ratio: number): FlowGeo {
   return { pw, ph: phoneH(pw, ratio, BEZEL), gap, xs: [0, 1, 2, 3, 4].map(k => BR + k * (pw + gap)), area };
 }
 
+/** Where each frame's elbow points (px from the phone top): the Play button on the offer, else the first callout. */
+function elbowTargets(f: FlowInput, g: FlowGeo, pins: PinSpot[][]): number[] {
+  const sh = g.ph - 2 * BEZEL;
+  return f.frames.map((fr, k) => {
+    const focus = (fr.phase === "offer" ? fr.choices.play : null) ?? pins[k].find(p => p.box)?.box ?? fr.newBoxes[0] ?? null;
+    const fy = focus ? focus.y + focus.h / 2 : fr.vh * (fr.phase === "ad" ? 0.45 : 0.5);
+    return Math.round(BEZEL + Math.max(0.1, Math.min(0.86, fy / fr.vh)) * sh);
+  });
+}
+
 function flowSlide(d: DeckInput, f: FlowInput, i: number, g: FlowGeo, pins: PinSpot[][]): string {
   const { m } = d;
   const hl = headlineOf(f.p, m);
   const cols: string[] = [];
+  const targets = elbowTargets(f, g, pins);
   f.frames.forEach((fr, k) => {
-    const sh = g.ph - 2 * BEZEL;
-    // The elbow points at what matters on this frame: the Play button on the offer, else the first callout.
-    const focus = (fr.phase === "offer" ? fr.choices.play : null) ?? pins[k].find(p => p.box)?.box ?? fr.newBoxes[0] ?? null;
-    const fy = focus ? focus.y + focus.h / 2 : fr.vh * (fr.phase === "ad" ? 0.45 : 0.5);
-    const target = Math.round(BEZEL + Math.max(0.1, Math.min(0.86, fy / fr.vh)) * sh);
+    const target = targets[k];
+    const zoom = fr.phase === "change" ? zoomInset(fr, pins[k], g, target, targets[k + 1] ?? null) : "";
     const cap = shortCaption(fr.caption);
     const decline = fr.phase === "offer"
       ? `<div class="decline"><span class="ret" aria-hidden="true">↩</span><span><b>${h(f.p.offer.decline || "No thanks")}</b> → back to ${h(f.declineTo)}, nothing lost</span></div>` : "";
     cols.push(`<div class="f-col" data-phase="${fr.phase}" style="left:${g.xs[k]}px;top:${TRIG_H}px;width:${g.pw}px">
-${phoneHtml(fr.img, `${PHASE_LABEL[fr.phase as PhaseId]}: ${fr.screen}`, g.pw, fr.vh / fr.vw, BEZEL, pinOverlays(fr, pins[k], g.pw - 2 * BEZEL))}
+${phoneHtml(fr.img, `${PHASE_LABEL[fr.phase as PhaseId]}: ${fr.screen}`, g.pw, fr.vh / fr.vw, BEZEL, pinOverlays(fr, pins[k], g.pw - 2 * BEZEL))}${zoom}
 ${elbow(target, g.ph)}${marker(k + 1, g.ph)}<span class="ph" style="top:${g.ph + 2}px">${h(PHASE_LABEL[fr.phase as PhaseId])}</span>
 <div class="cap-block" style="top:${g.ph + 40}px;width:${g.pw + g.gap - 12}px"><div class="cap${cap.length > 50 ? " long" : ""}">${h(cap)}</div>${decline}</div></div>`);
     if (k === 1 && f.frames.length > 2) cols.push(triggerHtml(f, g));
@@ -237,6 +245,84 @@ function triggerHtml(f: FlowInput, g: FlowGeo): string {
 <svg class="trig-arrow" width="${width}" height="${TRIG_H}" viewBox="0 0 ${width} ${TRIG_H}" aria-hidden="true"><path d="M${a} ${end - 2}V${top + r}Q${a} ${top} ${a + r} ${top}H${b - r}Q${b} ${top} ${b} ${top + r}V${end - 7}" stroke="var(--accent)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M${b - 7} ${end - 9}L${b} ${end}L${b + 7} ${end - 9}Z" fill="var(--accent)"/><circle cx="${a}" cy="${end - 2}" r="4.5" fill="var(--accent)"/></svg></div>`;
 }
 
+const ZOOM = { scale: 2.2, minScale: 1.3, pad: 7, margin: 2, gap: 26, clear: 20 };
+
+/**
+ * "What changed" magnifier: the first new element at up to ZOOM.scale x its size on the slide, in a
+ * rounded inset joined to the element by a thin line, so the new UI reads at slide scale. The inset
+ * is the frame's own capture (DPR 2, so it stays sharp), cropped to the element. It sits over the
+ * phone and may overhang its edges into the gaps (keeping ZOOM.clear from the neighbouring phone),
+ * but never where an elbow runs (this frame's below its target on the left, the next frame's below
+ * its target on the right), never over the element, another ring or a pin, and never outside the
+ * phone's height (so no caption or trigger is covered). The largest scale that has such a place
+ * wins, then the place nearest the element. None at ZOOM.minScale or more: no inset.
+ */
+export function zoomInset(fr: Frame, pins: PinSpot[], g: FlowGeo, ownTarget: number, nextTarget: number | null): string {
+  const el = fr.newBoxes.find(b => b.w * b.h < 0.4 * fr.vw * fr.vh && b.w >= 8 && b.h >= 8);
+  if (!el) return "";
+  const sw = g.pw - 2 * BEZEL, sh = g.ph - 2 * BEZEL, k = sw / fr.vw;
+  // The element (inside its dashed slide outline, which may touch a neighbour) in device px, then in phone px.
+  const rx = Math.max(0, el.x - ZOOM.margin), ry = Math.max(0, el.y - ZOOM.margin);
+  const rw = Math.min(fr.vw, el.x + el.w + ZOOM.margin) - rx, rh = Math.min(fr.vh, el.y + el.h + ZOOM.margin) - ry;
+  const E = { x: BEZEL + rx * k, y: BEZEL + ry * k, w: rw * k, h: rh * k };
+  // What the inset must not cover (phone px): the element and its NEW badge, other rings, every pin.
+  const keep: Box[] = [{ x: E.x - 4, y: E.y - PIN - 2, w: E.w + 8, h: E.h + PIN + 6 }];
+  const pinBoxes: Box[] = [];
+  for (const p of pins) {
+    if (p.box) keep.push({ x: BEZEL + p.box.x * k - 3, y: BEZEL + p.box.y * k - 3, w: p.box.w * k + 6, h: p.box.h * k + 6 });
+    if (p.spot) {
+      const hw = (p.isNew ? NEW_W : PIN) / 2 + 3, hh = PIN / 2 + 3, b = { x: BEZEL + p.spot.x * k - hw, y: BEZEL + p.spot.y * k - hh, w: 2 * hw, h: 2 * hh };
+      keep.push(b);
+      pinBoxes.push(b);
+    }
+  }
+  const hit = (a: Box, b: Box) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  const freeGap = Math.max(0, g.gap - ZOOM.clear); // overhang that keeps clear of the neighbouring phone
+  const elbowGap = Math.max(0, BR - 6 - 10);       // overhang that keeps clear of an elbow's vertical line
+  // Words on the frame (phone px): an inset over fewer of them keeps more of the screen's context readable.
+  const words = (fr.texts ?? []).map(t => ({ x: BEZEL + t.x * k, y: BEZEL + t.y * k, w: t.w * k, h: t.h * k }));
+  const cx = E.x + E.w / 2, ey = E.y + E.h / 2;
+  let best: { z: number; x: number; y: number; w: number; h: number; d: number } | null = null;
+  for (let y = BEZEL + 8; y < g.ph - BEZEL - 8; y += 4) {
+    for (const [ovL, ovR] of [[freeGap, freeGap], [freeGap, elbowGap], [elbowGap, freeGap], [elbowGap, elbowGap]]) {
+      const z = Math.min(ZOOM.scale, Math.floor(((g.pw + ovL + ovR - 2 * ZOOM.pad) / (rw * k)) * 20) / 20);
+      if (z < ZOOM.minScale) continue;
+      const iw = rw * k * z + 2 * ZOOM.pad, ih = rh * k * z + 2 * ZOOM.pad;
+      if (y + ih > g.ph - BEZEL - 8) continue;
+      if (y + ih > E.y - ZOOM.gap && y < E.y + E.h + ZOOM.gap) continue; // off the element, with room for the line
+      if (ovL > elbowGap && y + ih >= ownTarget - 12) continue;
+      if (ovR > elbowGap && nextTarget != null && y + ih >= nextTarget - 12) continue;
+      const x = Math.max(-ovL, Math.min(g.pw + ovR - iw, cx - iw / 2));
+      if (x < 0 && y < ownTarget + 10 && y + ih > ownTarget - 10) continue; // this frame's elbow arrow tip
+      const box = { x, y, w: iw, h: ih };
+      if (keep.some(b => hit(box, b))) continue;
+      const d = Math.abs(y + ih / 2 - ey) + 80 * words.filter(t => hit(box, t)).length;
+      if (!best || z > best.z || (z === best.z && d < best.d)) best = { z, x, y, w: iw, h: ih, d };
+    }
+  }
+  if (!best) return "";
+  const { z, x, y, w: iw, h: ih } = best;
+  const above = y + ih <= E.y;
+  const y1 = above ? y + ih : y, y2 = above ? E.y - 2 : E.y + E.h + 2;
+  // The line runs from the inset to a point on the element's edge that crosses no pin and the fewest
+  // words on the way (the centre of a small element; along a wide one, its ends or quarters).
+  const ys = [Math.min(y1, y2), Math.max(y1, y2)];
+  const across = (bs: Box[], px: number) => bs.filter(b => px > b.x - 2 && px < b.x + b.w + 2 && ys[0] < b.y + b.h && ys[1] > b.y).length;
+  const inset = (px: number) => Math.max(x + 16, Math.min(x + iw - 16, px));
+  const spots = E.w > 0.5 * sw ? [E.x + Math.min(18, E.w / 4), E.x + E.w - Math.min(18, E.w / 4), E.x + E.w / 4, E.x + (3 * E.w) / 4, cx] : [cx, E.x + 12, E.x + E.w - 12];
+  const cost = (px: number) => 100 * (across(pinBoxes, px) + across(pinBoxes, inset(px))) + across(words, px) + across(words, inset(px));
+  const lx = spots.reduce((a, b) => (cost(b) < cost(a) ? b : a));
+  const x1 = inset(lx);
+  const line = `M${n1(x1)} ${n1(y1)}L${n1(lx)} ${n1(y2)}`;
+  // The crop is clipped to the element; the pad around it is the inset's own white frame.
+  const img = `<div class="zoom-crop" style="left:${ZOOM.pad}px;top:${ZOOM.pad}px;width:${n1(iw - 2 * ZOOM.pad)}px;height:${n1(ih - 2 * ZOOM.pad)}px">`
+    + `<img src="${h(fr.img)}" alt="" style="width:${n1(sw * z)}px;height:${n1(sh * z)}px;left:${n1(-rx * k * z)}px;top:${n1(-ry * k * z)}px"></div>`;
+  return `<svg class="zoom-link" width="${g.pw}" height="${g.ph}" viewBox="0 0 ${g.pw} ${g.ph}" aria-hidden="true"><path d="${line}" stroke="#fff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity=".9"/><path d="${line}" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="${n1(lx)}" cy="${n1(y2)}" r="3.5" fill="var(--accent)" stroke="#fff" stroke-width="1.5"/></svg>`
+    + `<div class="zoom" data-scale="${z}" style="left:${n1(x)}px;top:${n1(y)}px;width:${n1(iw)}px;height:${n1(ih)}px">${img}</div>`;
+}
+
+const n1 = (v: number) => String(Math.round(v * 10) / 10);
+
 function detailsSlide(d: DeckInput, f: FlowInput, i: number, pins: PinSpot[][], flowNo: number): string {
   const { m } = d;
   const p = f.p, e = f.econ;
@@ -251,7 +337,7 @@ function detailsSlide(d: DeckInput, f: FlowInput, i: number, pins: PinSpot[][], 
     kv("Trigger", h(clip(p.trigger, 200))),
     kv("Eligibility", h(clip(p.eligibility, 180))),
     kv("What the user sees", `<b>${h(clip(p.offer.title, 70))}</b> ${h(clip(p.offer.body, 140))}<br><span class="btn">${h(p.offer.cta)}</span> <span class="btn ghost">${h(p.offer.decline)}</span>`),
-    kv("Reward and caps", `${h(clip(rewardText(p, m), 100))}${p.reward.duration ? `, ${h(p.reward.duration)}` : ""}; granted on REWARD_VERIFIED. At most ${p.caps.perDay} a day, ${p.caps.cooldownMin} min apart.`),
+    kv("Reward and caps", `${h(clip(rewardText(p, m), 100))}${p.reward.duration ? `, ${h(p.reward.duration)}` : ""}; granted on REWARD_VERIFIED. At most ${p.caps.perDay} a day${spacing(p)}.`),
     `<div class="kv"><h4>Frame by frame (slide ${flowNo})</h4><ol class="frames">${frames}</ol></div>`,
   ].join("");
   const flags = e.flags.length ? `<ul class="flags">${e.flags.map(x => `<li>${h(clip(x, 140))}</li>`).join("")}</ul>` : "";
@@ -571,6 +657,10 @@ h1.h2{font-size:40px}
 .phone{background:#0B0D12;box-shadow:inset 0 0 0 1.5px #2B2F38,0 30px 50px -22px rgba(15,23,42,.5),0 12px 22px -12px rgba(15,23,42,.28)}
 .screen{position:relative;overflow:hidden;background:#fff}
 .screen img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.zoom{position:absolute;z-index:3;overflow:hidden;background:#fff;border-radius:14px;box-shadow:0 0 0 2.5px #fff,0 0 0 4px var(--accent),0 18px 34px -14px rgba(15,23,42,.55)}
+.zoom-crop{position:absolute;overflow:hidden;border-radius:8px}
+.zoom img{position:absolute;max-width:none;display:block}
+.zoom-link{position:absolute;left:0;top:0;z-index:3;overflow:visible;pointer-events:none}
 .ring{position:absolute;border:2px solid var(--accent);border-radius:9px;box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 0 6px ${rgba(a.accent, 0.18)}}
 .pin{position:absolute;width:${PIN}px;height:${PIN}px;margin:-${PIN / 2}px 0 0 -${PIN / 2}px;border-radius:50%;background:#fff;color:var(--accent);font-size:11.5px;font-weight:800;line-height:${PIN - 4}px;text-align:center;border:2px solid var(--accent);box-shadow:0 2px 6px rgba(15,23,42,.28)}
 .pin[data-kind="new"]{width:${NEW_W}px;margin-left:-${NEW_W / 2}px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:10px;letter-spacing:.08em;border-color:#fff}

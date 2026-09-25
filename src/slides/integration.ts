@@ -40,7 +40,7 @@ export function integrationSnippet(p: Proposal, o: SnippetOpts = {}): string {
   lines.push(`import { useEffect, useState } from "react";`);
   lines.push("");
   lines.push(`// ${p.id}${o.surfaceName ? ` on "${oneLine(o.surfaceName)}"` : ""}. Trigger: ${clip(oneLine(p.trigger), 90)}`);
-  lines.push(`// Caps ${p.caps.perDay}/day, ${p.caps.cooldownMin} min apart: app remote config (unit cap: dashboard)`);
+  lines.push(`// Caps ${p.caps.perDay}/day${p.caps.cooldownMin > 0 ? `, ${p.caps.cooldownMin} min apart` : ""}: app remote config (unit cap: dashboard)`);
   if (p.simula.unit !== "SIM-RWD") lines.push(`// Proposal names ${p.simula.unit}; only rewarded units emit REWARD_VERIFIED.`);
   lines.push(`const AD_UNIT = ${js(unitId)}; // placeholder: create it in the dashboard`);
   lines.push("");

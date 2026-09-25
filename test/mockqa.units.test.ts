@@ -127,6 +127,36 @@ describe("validator (Playwright)", () => {
       assert.equal(v.coverage, 1);
     }
   });
+  test("spec render fits text to its rect: a long body is shrunk to its floor and line-clamped, a short label shrinks to one line", async () => {
+    const s = structuredClone(screen("s04"));
+    const body = "Premium messages cost 30 credits. Refill to keep the conversation going.";
+    s.elements = [
+      { ...s.elements[0], id: "e1", role: "button", text: body, label: undefined, rectDp: { x: 20, y: 686, w: 371, h: 41.9 }, style: { bg: "#FFFFFF", fg: "#6E6A85", fontDp: 20 } },
+      { ...s.elements[0], id: "e2", role: "text", text: `${body} ${body} ${body}`, label: undefined, rectDp: { x: 20, y: 740, w: 371, h: 40 }, style: { fg: "#111111", fontDp: 16 } },
+      { ...s.elements[0], id: "e3", role: "list-item", text: "Interesting.", label: undefined, rectDp: { x: 12, y: 800, w: 111.6, h: 38.9 }, style: { bg: "#8D8B96", fg: "#120F24", fontDp: 20 } },
+    ];
+    const html = specRender(s, m);
+    const tag = (id: string) => html.split("\n").find(l => l.includes(`data-node="${id}"`))!;
+    assert.match(tag("e1"), /-webkit-line-clamp:2/);
+    assert.match(tag("e2"), /-webkit-line-clamp:2/);
+    assert.match(tag("e2"), /font-size:12px/, "a long paragraph stops at its floor (80% of 16 px, at most 12 px) and is clamped, never shrunk to 8 px");
+    assert.doesNotMatch(tag("e3"), /line-clamp/, "a one-line label shrinks to fit instead");
+    assert.match(tag("e3"), /white-space:nowrap/);
+    await page.setViewportSize({ width: 411, height: 914 });
+    await page.setContent(`<div style="position:relative;width:411px;height:914px">${html}</div>`);
+    const fit = await page.evaluate(`[...document.querySelectorAll('[data-node]')].map(n => {
+      const r = n.getBoundingClientRect(), inner = n.querySelector('span') || n;
+      const cs = getComputedStyle(n), ics = getComputedStyle(inner), clamp = parseInt(ics.webkitLineClamp, 10);
+      // A clamped text shows exactly its clamp's lines; any other text shows all of its content.
+      const pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      const text = clamp > 0 ? clamp * parseFloat(ics.lineHeight) + (inner === n ? pad : 0) : inner === n ? n.scrollHeight : inner.getBoundingClientRect().height;
+      return { id: n.getAttribute('data-node'), boxH: r.height, textH: text, overflowX: n.scrollWidth > n.clientWidth + 1 && cs.textOverflow !== 'ellipsis' };
+    })`) as { id: string; boxH: number; textH: number; overflowX: boolean }[];
+    for (const f of fit) {
+      assert.ok(f.textH <= f.boxH + 0.5, `${f.id}: text ${f.textH.toFixed(1)} px tall in a ${f.boxH.toFixed(1)} px box`);
+      assert.equal(f.overflowX, false, f.id);
+    }
+  });
   test("reports scripts, handlers, missing ids, unbound counters and missing chat parts", async () => {
     const bad = `<div data-screen-root="s03"><script>x()</script><div data-node="e1" onclick="x()">Mara</div><img data-node="e2" src="https://x.io/a.png"></div>`;
     const v = await validateFragment(page, bad, screen("s03"), m);

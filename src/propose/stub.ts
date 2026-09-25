@@ -201,7 +201,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
             newEdges: [{ from: pr.screen.id, el: "ne1", to: "rwd", effects: [{ resource: res.id, delta: amt }] }],
           },
           storyboard: [
-            phase("today", pr.screen, [[res.id, baseBalance]], "none", co(pr.screen, pr.claimEl, `Claim +${srcAmt}`), `The daily ${pr.screen.name} gives +${u(srcAmt)}.`),
+            phase("today", pr.screen, [[res.id, baseBalance]], "none", co(pr.screen, pr.claimEl, `Claim +${srcAmt}`), `${/\bdaily\b/i.test(pr.screen.name) ? pr.screen.name : `The daily ${pr.screen.name}`} gives +${u(srcAmt)}.`),
             phase("change", pr.screen, [[res.id, baseBalance + srcAmt]], "none", [{ node: "ne1", text: `NEW: ${doubles ? "double it" : "bonus"} for one game` }], `After the claim, a rewarded ${doubles ? "doubling" : "bonus"} option appears.`),
             phase("offer", pr.screen, [], "invite", [{ node: "ne1", text: "Opt-in; reward disclosed" }], `"Play for +${amt}" or "No thanks"; the base reward is kept either way.`),
             phase("ad", pr.screen, [], "game", [], `A ${SEC}-second mini-game; grant on REWARD_VERIFIED.`),

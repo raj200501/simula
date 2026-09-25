@@ -11,7 +11,7 @@
  *   - proposals (?proposal=Pn or __mock.applyPatch) add screens / elements / edges, and edges to
  *     "rwd" open the rewarded flow (rewarded.js), whose effects apply only on REWARD_VERIFIED.
  *
- * Test / slide API: window.__mock = { go, state, get, set, openRewarded, applyPatch, history, select }.
+ * Test / slide API: window.__mock = { go, state, get, set, openRewarded, applyPatch, history, select, avoid }.
  * URL params: ?screen=sNN  ?proposal=Pn  ?debug=1  ?slide=1  ?frame=0
  */
 (function () {
@@ -83,6 +83,8 @@
     patchEdges: [],
     proposals: [],
     rewardedFrom: null, // screen saved when the rewarded flow opened
+    granted: null,      // the verified reward, confirmed in-screen once the overlay closes
+    avoid: [],          // data-node ids a transient confirmation must not cover (slides: the frame's callouts)
     scale: 1,
   };
   M.counters.forEach(function (c) { S.counters[c.id] = c.initial; });
@@ -402,6 +404,7 @@
     if (done.length && removed.length) Promise.all(done).then(finish); else finish();
     html.setAttribute("data-mock-screen", current() || "");
     toneStatusBar();
+    placeRewardToast();
     paintDebug();
   }
 
@@ -423,6 +426,7 @@
     if (!meta(id)) throw new Error("Unknown screen " + id);
     closeExternal();
     if (window.__mockRewarded) window.__mockRewarded.close(true);
+    clearRewardToast();
     S.layers.forEach(function (l) { l.el.remove(); });
     S.layers = [];
     S.stack = [id];
@@ -687,7 +691,7 @@
   }
 
   screenEl.addEventListener("click", function (ev) {
-    if (ev.target.closest(".mock-external,.mock-rw,.mock-toast")) return;
+    if (ev.target.closest(".mock-external,.mock-rw,.mock-toast,.mock-reward-toast")) return;
     var top = topLayer();
     if (!top || !top.el.contains(ev.target)) return;
     var ids = candidates(ev, top.el);
@@ -737,6 +741,101 @@
     t.textContent = msg;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { t.remove(); }, 1800);
+  }
+
+  // ------------------------------------------------------------------ reward confirmation
+  // After REWARD_VERIFIED the overlay closes back to where the user was, and many screens show no
+  // balance: a small snackbar in the app's tokens confirms what was granted ("+10 credits added",
+  // "Unlocked: 1 Deep reasoning answer") with the new balance when one is counted. It sits just above
+  // the lowest bottom bar of the visible screen (composer, tab bar, bottom sheet), clear of the
+  // screen's controls and of any node in S.avoid, stays put in ?slide=1 (so a frame can show it) and
+  // fades out otherwise.
+  var TOAST_BARS = '[data-role="composer"],[data-role="send"],[role="tab"],[role="tablist"],.sr-tabbar,.tab-bar,.sr-panel,.mock-ns-sheet,.mock-ns-modal,input,textarea';
+  var rewardTimer = 0;
+  function counterOf(r) { return M.counters.filter(function (c) { return c.id === resId(r); })[0] || null; }
+  function rewardText(cfg) {
+    var by = {}, order = [];
+    (cfg.effects || []).forEach(function (f) {
+      var r = resId(f.resource);
+      if (!(r in by)) { by[r] = 0; order.push(r); }
+      by[r] += Number(f.delta) || 0;
+    });
+    var gains = order.filter(function (r) { return by[r] > 0; });
+    if (gains.length) {
+      var parts = gains.map(function (r) { var c = counterOf(r); return "+" + fmt(by[r], "") + " " + ((c && (c.unit || c.name)) || r); });
+      return { title: parts.join(", ") + " added", resource: gains[0] };
+    }
+    var what = clean(cfg.reward).replace(/[.!]+$/, "");
+    return { title: what && what !== "a reward" ? "Unlocked: " + what : "Reward added", resource: null };
+  }
+  function clearRewardToast() {
+    clearTimeout(rewardTimer);
+    screenEl.querySelectorAll(".mock-reward-toast").forEach(function (t) { t.remove(); });
+  }
+  function showRewardToast(cfg) {
+    clearRewardToast();
+    var info = rewardText(cfg);
+    var t = document.createElement("div");
+    t.className = "mock-reward-toast";
+    t.setAttribute("role", "status");
+    t.setAttribute("data-reward-toast", "");
+    t.appendChild(iconEl("check", "mock-reward-toast-ic"));
+    var body = document.createElement("div");
+    body.className = "mock-reward-toast-text";
+    body.appendChild(textEl("b", "", info.title));
+    var c = info.resource && counterOf(info.resource);
+    if (c && typeof S.counters[c.id] === "number") {
+      var bal = textEl("small", "", "Balance: " + fmt(S.counters[c.id], "") + " " + (c.unit || c.name));
+      bal.setAttribute("data-bind", c.id); // repainted with the counter, like any bound number
+      body.appendChild(bal);
+    }
+    t.appendChild(body);
+    screenEl.appendChild(t);
+    placeRewardToast();
+    if (!P.slide) {
+      anim(t, [{ opacity: 0, transform: "translate(-50%, 12px)" }, { opacity: 1, transform: "translate(-50%, 0)" }], 220);
+      rewardTimer = setTimeout(function () { anim(t, [{ opacity: 1 }, { opacity: 0 }], 200).then(function () { t.remove(); }); }, 2800);
+    }
+  }
+  var TOAST_KEEP = 'button,a[href],[role="button"],[role="tab"],[role="switch"],input,textarea,select,[data-role="send"],[data-role="composer"],[data-new],.mock-hotspot';
+  /**
+   * Where the confirmation goes: centred, just above the lowest bottom bar of the top layer; from
+   * there upwards (at most 40% of the screen) the first place that covers no control of the visible
+   * screen and no node in S.avoid (content such as chat bubbles may sit under it, as under any
+   * snackbar). With no such place: above the bar, moved up past the S.avoid nodes.
+   */
+  function placeRewardToast() {
+    var t = screenEl.querySelector(".mock-reward-toast"), top = topLayer();
+    if (!t || !top) return;
+    var box = screenEl.getBoundingClientRect(), s = S.scale || 1, W = box.width / s, H = box.height / s;
+    var rel = function (el) { var r = el.getBoundingClientRect(); return { top: (r.top - box.top) / s, bottom: (r.bottom - box.top) / s, left: (r.left - box.left) / s, right: (r.right - box.left) / s }; };
+    var visible = function (el) { var cs = getComputedStyle(el); return cs.display !== "none" && cs.visibility !== "hidden" && Number(cs.opacity) > 0 && el.getBoundingClientRect().height > 0; };
+    var floor = H - (M.device.navDp || 0) - 8;
+    top.el.querySelectorAll(TOAST_BARS).forEach(function (el) {
+      if (!visible(el)) return;
+      var r = rel(el);
+      if (r.top > H * 0.45 && r.top < floor) floor = r.top;
+    });
+    var tw = t.offsetWidth || W * 0.7, th = t.offsetHeight || 48, x0 = (W - tw) / 2, x1 = x0 + tw;
+    var minY = (M.device.statusDp || 24) + 12;
+    var inColumn = function (r) { return r && r.right > x0 && r.left < x1 && r.bottom - r.top < H * 0.5; };
+    var keep = (S.avoid || []).map(function (id) { return nodeIn(top.el, id) || top.el.querySelector('[data-new="' + cssq(id) + '"]'); })
+      .filter(function (el) { return el && visible(el); }).map(rel);
+    var controls = [].map.call(top.el.querySelectorAll(TOAST_KEEP), function (el) { return visible(el) ? rel(el) : null; }).filter(inColumn).concat(keep);
+    var y0 = floor - 16 - th, best = null;
+    for (var y = y0; y >= Math.max(minY, y0 - H * 0.4); y -= 6) {
+      var over = function (r) { return r.top < y + th + 4 && r.bottom > y - 4; };
+      if (!controls.some(over)) { best = { y: y }; break; }
+    }
+    var yy = best ? best.y : y0;
+    if (!best) {
+      for (var k = 0; k < 4; k++) {
+        var hit = keep.filter(function (r) { return r.top < yy + th + 6 && r.bottom > yy - 6; })[0];
+        if (!hit) break;
+        yy = hit.top - 16 - th;
+      }
+    }
+    t.style.top = Math.round(Math.max(minY, yy)) + "px";
   }
 
   // ------------------------------------------------------------------ proposals
@@ -874,14 +973,17 @@
     var R = window.__mockRewarded;
     if (!R) throw new Error("rewarded.js is not loaded");
     if (phase === "close") { R.close(); return null; }
-    if (!R.phase()) S.rewardedFrom = current();
-    R.open(phase, rewardedConfig(pid || S.proposals[S.proposals.length - 1], edge), {
+    if (!R.phase()) { S.rewardedFrom = current(); S.granted = null; clearRewardToast(); }
+    var cfg = rewardedConfig(pid || S.proposals[S.proposals.length - 1], edge);
+    R.open(phase, cfg, {
       host: screenEl,
-      onVerified: function (effects) { applyDeltas(effects); },
+      onVerified: function (effects) { applyDeltas(effects); S.granted = cfg; },
       onClose: function () {
         // Back to the saved screen; its layer (and any unsent draft) is still there.
         if (S.rewardedFrom && current() !== S.rewardedFrom && meta(S.rewardedFrom)) navigate(S.rewardedFrom, "back");
         S.rewardedFrom = null;
+        // The grant is confirmed where the user is, once the overlay is gone.
+        if (S.granted) { showRewardToast(S.granted); S.granted = null; }
       },
     });
     return R.phase();
@@ -939,6 +1041,7 @@
     applyPatch: applyPatch,
     history: function () { return S.stack.slice(); },
     select: select, // extra: choose the mode context (e.g. ["Premium · 30"]) that disambiguates consume edges
+    avoid: function (ids) { S.avoid = (ids || []).slice(); placeRewardToast(); }, // extra: nodes the reward confirmation keeps clear
   };
 
   // ------------------------------------------------------------------ boot

@@ -9,6 +9,8 @@
 //   structure       REWARD_VERIFIED, a decline, caps, 5 storyboard phases, no first-value surface  fixable
 //   reward-coherence  an entitlement is granted as a time box or a number of uses, never "+N tier"  fixable
 //   not-for-account-wall  no ad in place of creating an account                   fixable
+// After every proposal is judged, judge.ts adds one portfolio gate (portfolio.ts):
+//   portfolio-distinct  no near-duplicate of a better-scored SHIP                   fixable (1 revision, then REJECT)
 import { GateResult, Proposal, type ProductModel } from "../core/schema.ts";
 import { proposalEconomics } from "../model/economics.ts";
 import { ACCOUNT_LIKE, isAccountResource, isConsumable, isSignupScreen } from "../propose/anchors.ts";

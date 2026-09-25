@@ -4,6 +4,8 @@
 //   blind judge call on the new version. At most 2 revision rounds; stop early when a revision
 //   neither improves the weighted score by 0.2 nor removes a failing gate. A loop that ends in
 //   REVISE is a REJECT: REVISE is never promoted to the slides.
+// Then the portfolio check (portfolio.ts): a SHIP that near-duplicates a better-scored SHIP fails the
+// "portfolio-distinct" code gate, gets the same revision loop once, and is rejected if still a duplicate.
 import path from "node:path";
 import { z } from "zod";
 import { Candidates, Criterion, Judgments, Proposal, type GateResult, type JudgmentRound, type ProductModel } from "../core/schema.ts";
@@ -22,6 +24,7 @@ import { ANCHORS, LLM_GATES, LLM_GATE_IDS } from "./rubric.ts";
 import { requiredChangesFor, stubJudge, type JudgeOut } from "./stub.ts";
 import { THRESHOLDS, WEIGHTS, finalVerdict, stalled, verdictOf } from "./verdict.ts";
 import { judgmentsMd } from "./render.ts";
+import { PORTFOLIO, duplicateChange, parseDuplicate, portfolioGate, portfolioOrder } from "./portfolio.ts";
 
 const STAGE = "judge";
 
@@ -130,26 +133,94 @@ export async function judgeOnce(m: ProductModel, p0: Proposal, round: number, di
 
 export interface ProposalJudgment { rounds: JudgmentRound[]; versions: Proposal[]; final: Proposal; verdict: Judgments["final"][number]["verdict"]; note: string }
 
-async function judgeProposal(c: StageCtx, m: ProductModel, p0: Proposal, dig: string): Promise<ProposalJudgment> {
-  const rounds: JudgmentRound[] = [];
-  const versions: Proposal[] = [p0];
-  let p = p0;
-  for (let round = 0; ; round++) {
-    const r = await judgeOnce(m, p, round, dig, `judge:${p.id}:v${p.version}`);
-    rounds.push(r);
-    trace("judge", { proposal: p.id, version: p.version, round, verdict: r.verdict, weighted: r.weighted, judgedBy: r.judgedBy, failed: r.gates.filter(g => !g.pass).map(g => g.gate) });
+/** An extra code gate checked on every round the loop judges (the portfolio check uses it). */
+type ExtraGate = (p: Proposal) => GateCheck | null;
+interface GateCheck { gate: GateResult; change?: string; forceReject?: string }
+
+/**
+ * A round with one more code gate. The verdict is recomputed in code from the same scores; a failed
+ * gate's change leads the required changes and becomes the top concern; `forceReject` (a failure
+ * that already had its revision) makes the round a REJECT.
+ */
+function withGate(r: JudgmentRound, x: GateCheck): JudgmentRound {
+  const gates = [...r.gates.filter(g => g.gate !== x.gate.gate), x.gate];
+  const v = verdictOf(gates, r.scores, r.round);
+  const out: JudgmentRound = { ...r, gates, verdict: v.verdict, reasons: v.reasons };
+  if (!x.gate.pass && x.change) {
+    out.requiredChanges = [x.change, ...r.requiredChanges.filter(c => c !== x.change)];
+    out.topConcern = x.change;
+  }
+  if (!x.gate.pass && x.forceReject) {
+    out.verdict = "REJECT";
+    out.reasons = [...v.reasons.filter(s => !/^still REVISE after round/.test(s)), x.forceReject];
+  }
+  return out;
+}
+
+/**
+ * The revision loop, from the last round of `j`: while it is REVISE, revise() with the required
+ * changes and top concern (never the scores) and judge the new version blind. Stops on SHIP / REJECT,
+ * after round maxRounds (verdictOf rejects a REVISE there), or when a revision stalls. `fresh` skips
+ * the stall check for the first revision (a new failure, e.g. the portfolio gate, deserves one).
+ */
+async function reviseLoop(c: StageCtx, m: ProductModel, j: ProposalJudgment, dig: string, extra?: ExtraGate, fresh = false): Promise<void> {
+  for (let first = true; ; first = false) {
+    const r = j.rounds[j.rounds.length - 1];
     if (r.verdict !== "REVISE") break;
-    if (round > 0 && stalled(rounds[round - 1], r)) {
-      trace("stop", { proposal: p.id, reason: `revision stalled: weighted ${rounds[round - 1].weighted} -> ${r.weighted}` });
+    const prev = j.rounds[j.rounds.length - 2];
+    if (prev && !(fresh && first) && stalled(prev, r)) {
+      trace("stop", { proposal: r.proposalId, reason: `revision stalled: weighted ${prev.weighted} -> ${r.weighted}` });
       break;
     }
+    const p = j.versions[j.versions.length - 1];
     // "existing" without an observed anchor is relabelled before revision (FINAL_PLAN §9.1).
     const relabel = p.case === "existing" && r.gates.some(g => g.gate === "label" && !g.pass);
-    p = await revise(c, m, relabel ? { ...p, case: "product-change" } : p, r.requiredChanges, r.topConcern, round + 1);
-    versions.push(p);
+    const next = await revise(c, m, relabel ? { ...p, case: "product-change" } : p, r.requiredChanges, r.topConcern, r.round + 1);
+    j.versions.push(next);
+    let r2 = await judgeOnce(m, next, r.round + 1, dig, `judge:${next.id}:v${next.version}`);
+    const x = extra?.(next);
+    if (x) r2 = withGate(r2, x);
+    j.rounds.push(r2);
+    trace("judge", { proposal: next.id, version: next.version, round: r2.round, verdict: r2.verdict, weighted: r2.weighted, judgedBy: r2.judgedBy, failed: r2.gates.filter(g => !g.pass).map(g => g.gate) });
   }
-  const f = finalVerdict(rounds);
-  return { rounds, versions, final: versions[versions.length - 1], verdict: f.verdict, note: f.note };
+  j.final = j.versions[j.versions.length - 1];
+  const f = finalVerdict(j.rounds);
+  j.verdict = f.verdict;
+  j.note = f.note;
+}
+
+async function judgeProposal(c: StageCtx, m: ProductModel, p0: Proposal, dig: string): Promise<ProposalJudgment> {
+  const r = await judgeOnce(m, p0, 0, dig, `judge:${p0.id}:v${p0.version}`);
+  trace("judge", { proposal: p0.id, version: p0.version, round: 0, verdict: r.verdict, weighted: r.weighted, judgedBy: r.judgedBy, failed: r.gates.filter(g => !g.pass).map(g => g.gate) });
+  const j: ProposalJudgment = { rounds: [r], versions: [p0], final: p0, verdict: r.verdict, note: "" };
+  await reviseLoop(c, m, j, dig);
+  return j;
+}
+
+/**
+ * Portfolio check, after every proposal is judged: SHIPs claim their place best score first; a SHIP
+ * that near-duplicates one already kept fails the "portfolio-distinct" code gate in its last round
+ * (so it becomes a REVISE like any other), gets the ordinary revision loop, and is rejected if it is
+ * still a duplicate after that revision. Every kept SHIP records the gate as passed.
+ */
+async function portfolioCheck(c: StageCtx, m: ProductModel, results: ProposalJudgment[], dig: string): Promise<void> {
+  const ships = portfolioOrder(results.filter(r => r.verdict === "SHIP").map(r => ({ id: r.final.id, weighted: r.rounds[r.rounds.length - 1].weighted, r })));
+  const kept: ProposalJudgment[] = [];
+  const keptProposals = () => kept.map(k => k.final);
+  for (const { r: res } of ships) {
+    const last = res.rounds.length - 1;
+    const check = portfolioGate(res.final, keptProposals());
+    res.rounds[last] = withGate(res.rounds[last], { gate: check.gate, change: check.keeper ? duplicateChange(check.keeper) : undefined });
+    if (check.gate.pass) { kept.push(res); continue; }
+    trace("decision", { what: "portfolio duplicate", proposal: res.final.id, keeper: check.keeper, verdict: res.rounds[last].verdict, evidence: check.gate.evidence });
+    await reviseLoop(c, m, res, dig, p => {
+      const again = portfolioGate(p, keptProposals());
+      if (again.gate.pass) return { gate: again.gate };
+      return { gate: again.gate, change: duplicateChange(again.keeper!), forceReject: `still a near-duplicate of ${again.keeper} after its revision` };
+    }, true);
+    // A loop that could not run (no revision rounds left) ends as REJECT like any REVISE.
+    if (res.verdict === "SHIP") kept.push(res);
+  }
 }
 
 function summary(j: ProposalJudgment): string {
@@ -157,6 +228,9 @@ function summary(j: ProposalJudgment): string {
   const revs = j.versions.length - 1;
   const after = revs ? ` after ${revs} revision${revs > 1 ? "s" : ""}` : "";
   if (j.verdict === "SHIP") return `SHIP at ${last.weighted} (v${j.final.version}${after}).`;
+  const dup = last.gates.find(g => g.gate === PORTFOLIO.gate && !g.pass);
+  const d = dup && parseDuplicate(dup.evidence);
+  if (d) return `REJECT${after}: still a near-duplicate of ${d.keeper}, which scored higher and ships; ${d.why}.`;
   if (last.judgedBy === "code-only") return `REJECT by code gate${after}: ${last.reasons[0] ?? ""}.`;
   return `REJECT${after}: ${j.note || last.reasons.join("; ")}. Top concern: ${last.topConcern}`;
 }
@@ -164,6 +238,7 @@ function summary(j: ProposalJudgment): string {
 export async function judgeAll(c: StageCtx, m: ProductModel, cands: Candidates): Promise<Judgments> {
   const dig = digest(m);
   const results = await Promise.all(cands.proposals.map(p => judgeProposal(c, m, p, dig)));
+  await portfolioCheck(c, m, results, dig);
   const j: Judgments = {
     schema: "simula.judgments/1", app: m.app.id,
     rubricWeights: WEIGHTS,

@@ -133,12 +133,21 @@ export function headlineOf(p: Proposal, m: ProductModel, max = 8): Headline {
     if (moment) cands.push({ text: `${moment}: play a game for ${reward}`, accent: reward }, { text: `${moment}: play for ${reward}`, accent: reward });
     cands.push({ text: `Play a ${sec}-second game for ${reward}`, accent: reward }, { text: `Play for ${reward}`, accent: reward });
   }
-  if (title && !/\?$/.test(title)) cands.push({ text: `${title} for one short game`, accent: title });
+  const n = gamesNeeded(p);
+  if (title && !/\?$/.test(title)) cands.push({ text: `${title} for ${n === 1 ? "one short game" : `${["", "one", "two", "three", "four"][n]} short games`}`, accent: title });
   if (title) cands.push({ text: title, accent: title });
   const hit = cands.find(c => wordCount(c.text) <= max);
   if (hit) return hit;
   const short = clampWords(p.title, max).replace(/…$/, "");
   return { text: short, accent: "" };
+}
+
+/** How many games the offer asks for ("two 15-second games", "play 2 × 15 s"); 1 unless it says more. */
+export function gamesNeeded(p: Proposal): number {
+  const t = oneLine(`${p.offer.title} ${p.offer.body} ${p.oneLiner}`).toLowerCase();
+  const x = /\b(two|three|four|[2-4])\s+(?:\d+[- ]?second\s+|short\s+)?games\b/.exec(t) ?? /\bplay\s+([2-4])\s*[×x]/.exec(t);
+  if (!x) return 1;
+  return ({ two: 2, three: 3, four: 4 } as Record<string, number>)[x[1]] ?? Number(x[1]);
 }
 
 /** Where the offer happens, in at most four words: the surface screen, or the new surface's name. */
@@ -166,19 +175,34 @@ export function recommendationHeadline(m: ProductModel, ps: Proposal[]): Headlin
  */
 export function shortCaption(s: string, max = 60): string {
   const t = oneLine(s);
-  if (t.length <= max) return t;
+  // The caption box shows two lines of ~28 characters (19px bold under a phone); a longer caption is
+  // cut by CSS mid-phrase, so every candidate must wrap into two lines, not just be short.
+  const fits = (x: string) => x.length <= max && wrappedLines(x, CAPTION_LINE_CHARS) <= 2;
+  if (fits(t)) return t;
   const stop = (x: string) => `${x.replace(/[.,;:\-–—]+$/, "")}.`;
   const sentence1 = firstSentence(t);
-  if (sentence1 !== t && sentence1.length <= max && wordCount(sentence1) >= 3) return sentence1;
+  if (sentence1 !== t && fits(sentence1) && wordCount(sentence1) >= 3) return sentence1;
   const clause = t.split(/[,;(]\s|\s[–—]\s/)[0].trim();
-  if (clause.length <= max && wordCount(clause) >= 4) return stop(clause);
+  if (fits(stop(clause)) && wordCount(clause) >= 4) return stop(clause);
   // Drop a trailing qualifier ("… option under "Refill now"") so the caption stays a sentence.
   const cuts = [...t.matchAll(/\s(?:under|above|below|next to|with|for|in|on|at|after|before|until|when|while|so|and|which|where|from|beyond|than|without|into|via|through|because)\s/gi)]
-    .map(x => t.slice(0, x.index).trim()).filter(x => x.length <= max && wordCount(x) >= 4);
+    .map(x => t.slice(0, x.index).trim()).filter(x => fits(stop(x)) && wordCount(x) >= 4);
   if (cuts.length) return stop(cuts[cuts.length - 1]);
   let out = "";
-  for (const w of t.split(" ")) { if (`${out} ${w}`.trim().length > max - 1) break; out = `${out} ${w}`.trim(); }
+  for (const w of t.split(" ")) { if (!fits(`${`${out} ${w}`.trim().replace(/[,;:.\-–—]+$/, "")}…`)) break; out = `${out} ${w}`.trim(); }
   return `${out.replace(/[,;:.\-–—]+$/, "")}…`;
+}
+
+const CAPTION_LINE_CHARS = 28;
+
+/** Lines a greedy word wrap needs at `perLine` characters (a long word takes a line of its own). */
+export function wrappedLines(s: string, perLine: number): number {
+  let lines = 0, cur = 0;
+  for (const w of oneLine(s).split(" ").filter(Boolean)) {
+    if (cur && cur + 1 + w.length <= perLine) cur += 1 + w.length;
+    else { lines++; cur = w.length; }
+  }
+  return lines;
 }
 
 /** The first sentence of a text (for one-line labels such as the trigger). */
@@ -204,7 +228,12 @@ export function clampWords(s: string, n = 12): string {
 
 export function clip(s: string, n: number): string {
   const t = oneLine(s);
-  return t.length <= n ? t : t.slice(0, n - 1).replace(/\s+\S*$/, "") + "…";
+  return t.length <= n ? t : t.slice(0, n - 1).replace(/\s+\S*$/, "").replace(/[\s,;:.\-–—]+$/, "") + "…";
+}
+
+/** ", 10 min apart" for a cooldown; nothing for none (never "0 min apart"). */
+export function spacing(p: Proposal, lead = ""): string {
+  return p.caps.cooldownMin > 0 ? `, ${lead}${p.caps.cooldownMin} min apart` : "";
 }
 
 export const oneLine = (s: string | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
@@ -255,14 +284,14 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
     out.push({ stat: `${Math.round(pct)}% of the cheapest pack`, text: `Max earnable per day ≈ $${e.maxDailyEarnUsdAtList.toFixed(2)} at list vs $${e.cheapestPaidUnitUsd.toFixed(2)} for the cheapest pack.`,
       line: `A full day of ads earns ≈ $${e.maxDailyEarnUsdAtList.toFixed(2)} at list, below the cheapest pack.` });
   } else {
-    out.push({ stat: "Paid path untouched", text: clip(p.cannibalizationGuard, 150), line: firstSentence(clip(p.cannibalizationGuard, 120)) });
+    out.push({ stat: "Paid path untouched", text: clip(p.cannibalizationGuard, 150), line: clip(firstSentence(oneLine(p.cannibalizationGuard)), 120) });
   }
 
   // 3. Caps and eligibility: how often, and for whom.
   out.push({
     stat: `≤ ${p.caps.perDay} a day`,
-    text: `Opt-in only, ${p.caps.cooldownMin} min apart. Eligible: ${clip(p.eligibility, 110)}`,
-    line: `Opt-in only, at least ${p.caps.cooldownMin} min apart; nothing plays unless the user taps.`,
+    text: `Opt-in only${spacing(p)}. Eligible: ${clip(p.eligibility, 110)}`,
+    line: `Opt-in only${spacing(p, "at least ")}; nothing plays unless the user taps.`,
   });
   return out;
 }

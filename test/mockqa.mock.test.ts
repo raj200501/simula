@@ -193,6 +193,42 @@ describe("mock: stub generation and runtime", () => {
     assert.equal(await ev("window.__mock.state()"), "s04");
   });
 
+  test("after REWARD_VERIFIED the grant is confirmed in-screen, above the composer, clear of callouts", async () => {
+    await open("?frame=0&screen=s03&proposal=P1&slide=1");
+    await ev("window.__mock.set('r1', 0)");
+    await ev("window.__mock.openRewarded('invite', 'P1')");
+    await ev("window.__mock.openRewarded('verified')");
+    const toast = page.locator(".mock-reward-toast");
+    assert.equal(await toast.count(), 0, "shown once the overlay is gone, not under it");
+    await ev("window.__mock.openRewarded('close')");
+    assert.equal(await ev("window.__mock.state()"), "s03");
+    assert.equal(await toast.count(), 1);
+    assert.equal(await toast.getAttribute("role"), "status");
+    assert.match(await toast.innerText(), /^\+30 credits added\s+Balance: 30 credits$/);
+    const [tb, cb] = [await toast.boundingBox(), await page.locator('[data-screen-layer="s03"] [data-role="composer"]').boundingBox()];
+    assert.ok(tb && cb && tb.y + tb.height <= cb.y - 8, `above the composer: toast ${tb?.y}+${tb?.height}, composer ${cb?.y}`);
+    // Counters repaint it like any bound number (the slides set the storyboard's values after the grant).
+    await ev("window.__mock.set('r1', 90)");
+    assert.match(await toast.innerText(), /Balance: 90 credits/);
+    // A node the caller keeps clear is never covered; ?slide=1 keeps the confirmation on screen.
+    // (the chat line e3 is moved under the confirmation first, as if it were the frame's callout)
+    await ev(`(() => { const t = document.querySelector('.mock-reward-toast').getBoundingClientRect();
+      document.querySelector('[data-screen-layer="s03"] [data-node="e3"]').style.top = (t.top + 4) + "px"; })()`);
+    await ev("window.__mock.avoid(['e3'])");
+    const [t2, kb] = [await toast.boundingBox(), await node("s03", "e3").boundingBox()];
+    assert.ok(t2 && kb && t2.y + t2.height <= kb.y, `the toast moved above e3: toast ${t2?.y}+${t2?.height}, e3 ${kb?.y}`);
+    await page.waitForTimeout(300);
+    assert.equal(await toast.count(), 1, "stays for the slide capture");
+    await ev("window.__mock.go('s01')");
+    assert.equal(await toast.count(), 0, "go() starts clean");
+    // Declining grants nothing and confirms nothing.
+    await ev("window.__mock.go('s03')");
+    await ev("window.__mock.openRewarded('invite', 'P1')");
+    await page.locator('.mock-rw [data-rw="decline"]').click();
+    assert.equal(await toast.count(), 0);
+    assert.equal(errors.length, 0, errors.join("\n"));
+  });
+
   test("No thanks returns to the saved screen and keeps the unsent draft; no-fill path", async () => {
     await open("?frame=0&screen=s03&proposal=P1");
     await page.fill('[data-screen-layer="s03"] [data-role="composer"]', "unsent draft");

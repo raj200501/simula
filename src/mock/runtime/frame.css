@@ -154,6 +154,20 @@ html.mock-noframe .mock-statusbar, html.mock-noframe .mock-badge { display: none
 .mock-callout b { color: var(--mock-accent); text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; margin-right: 4px; }
 html.mock-slide [data-new] { outline: 2px dashed var(--mock-accent); outline-offset: 3px; }
 
+/* Reward confirmation (runtime.js, after REWARD_VERIFIED): an inverse snackbar in the app's tokens. */
+.mock-reward-toast {
+  position: absolute; left: 50%; top: auto; transform: translateX(-50%); z-index: 76; pointer-events: none;
+  display: flex; align-items: center; gap: 10px; box-sizing: border-box; width: max-content; max-width: calc(100% - 32px);
+  padding: 8px 18px 8px 8px; border-radius: 23px; font-family: var(--mk-font);
+  background: var(--mk-text); color: var(--mk-bg);
+  box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+.mock-reward-toast-ic { display: grid; place-items: center; flex: none; width: 30px; height: 30px; padding: 6px; box-sizing: border-box; border-radius: 50%; background: #16A34A; color: #FFFFFF; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.28); }
+.mock-reward-toast-ic svg { display: block; width: 100%; height: 100%; }
+.mock-reward-toast-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.mock-reward-toast-text b { font-size: 14.5px; font-weight: 750; line-height: 1.25; letter-spacing: -0.005em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.mock-reward-toast-text small { font-size: 12px; font-weight: 550; line-height: 1.25; opacity: 0.72; white-space: nowrap; }
+
 /* Debug: outline every data-node and tag it with its id. */
 html.mock-debug [data-node] { outline: 1px dashed rgba(236, 72, 153, 0.85); outline-offset: -1px; }
 html.mock-debug .mock-hotspot { background: rgba(236, 72, 153, 0.08); }
