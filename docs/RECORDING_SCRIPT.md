@@ -32,7 +32,7 @@
 - "This is the output. One slide per recommended rewarded flow."
 - "Left to right: the app today, what we change, the offer, the ad, and what the user gets."
 - "Every screen here is our generated mock of the app, not a drawing."
-- "The numbers on the right are computed in code from prices we saw in the app."
+- "The numbers on the right are computed in code, never by the model. Luzia shows guests no prices, so one ad view is measured against what a free message costs to serve."
 
 **Do:** Click **Open the clickable prototype**. In tab 2, click the new element (it has a dashed outline). Click **Play**, wait two seconds, then close it.
 
@@ -67,7 +67,7 @@
 - "Code keeps the frontier, decides when two screens are the same state, and stops when nothing new appears."
 - "Guard rails: it never logs out, never buys, and never taps an ad. It records ads and moves on."
 - "One special move: the drain probe. On a chat, it keeps sending messages until the app blocks it."
-- "That's how we measure what a message costs, and where the wall is."
+- "That's how we measure what a message costs, and where the wall is. On Luzia it recorded the exact number: <limit after N sends, from trajectory.md or the model viewer>."
 - "Everything it did, every failure and every recovery, is in this trajectory."
 
 ---
@@ -83,6 +83,7 @@
 - "Every quote must really appear on that screen. Every number must appear in a quote or in a measured counter change."
 - "Anything that doesn't verify is marked 'inferred', in orange."
 - "Code also computes the economics: price per unit, and the exchange rate. That's what one ad view is worth in the app's own currency."
+- "Luzia never shows a guest a price. So instead of list price, code measures one ad view against what a free message costs to serve: <say the line from the viewer, like '1 view ≈ 3.5–5.8 messages at cost to serve'>."
 - "And it lists what we did NOT explore, and why."
 
 ---
@@ -115,6 +116,7 @@
 - "Product change: we add a mechanic, like daily tasks, that creates a real value exchange."
 - "Each proposal is a typed patch to the model. So the mock can render it, and the judge can check it."
 - "The model never does the arithmetic. It states assumptions; code computes the economics."
+- "A note on your own Luzia slides: the out-of-free-messages moment you picked is the same one this system lands on. It gets there by measuring the cap, not by being told. To be fair, the knowledge base includes public rewarded patterns, yours among them. What the system adds is grounding them in the real UI, with measured numbers, and going past them: <name one SHIP idea that is not in your slides>."
 
 ---
 
@@ -195,9 +197,10 @@
 | Why not let the LLM drive mobile-mcp directly? | Cost, repeatability and safety. The frontier, state identity and guard rails are code; the model answers one question per new screen. A run can be replayed from cache. |
 | How do you decide two screens are the same state? | A signature of "chrome" tokens (short labels, top/bottom bands, selected tabs) that excludes anything the explorer typed or caused, plus a perceptual hash. Borderline cases ask the model: "same template, different content = same state". |
 | How do you know a price or a cost is real? | Verification in code. Every quote must appear on that observation, and every number must appear in a verified quote or a measured counter change. Anything else is marked "inferred" and shown in orange. |
-| Where does the exchange rate come from? | Unit price from the cheapest to the priciest pack, and US rewarded eCPM ranges with a non-game haircut: "1 view ≈ X–Y credits". The reward is sized to about one cheapest action, far below a pack. |
+| Where does the exchange rate come from? | With prices: unit price from the cheapest to the priciest pack, and US rewarded eCPM ranges with a non-game haircut: "1 view ≈ X–Y credits". The reward is sized to about one cheapest action, far below a pack. Without prices (Luzia's guest cap): one view, net of platform share, divided by what a message costs to serve: "1 view ≈ 3.5–5.8 messages at cost to serve". The reward goes to the break-even midpoint. |
 | What stops the proposer from doing "watch an ad for coins" ten times? | A code validator on the idea set: a case mix, at least 4 archetypes, reactive and proactive ideas, at least half beyond the baseline, and no duplicate (moment, reward). Violations go back once, verbatim. |
 | Can the judge be gamed by the proposer? | The verdict is code: gates plus thresholds on scores. The reviser never sees the scores. The single-fault evaluation checks that each fault type is caught. The remaining risk is the shared model family; the fix is a different judge model. |
+| Luzia has no visible counter. How did you find the free-message cap? | The drain probe keeps sending the same message until a wall appears, counts the sends ("limit after N sends"), and a code pass turns that into a quota resource with a 1-unit cost and a wall. Sign-up walls reached by plain taps don't stop it. |
 | What if an app has no currency at all? | The regime becomes "no-scarcity" and proposals must be product changes: daily tasks, sponsored sessions, cosmetics. The judge checks they don't take away anything free. |
 | How is the mock "generated", not hand-built? | Only the model directory goes in: one HTML call per screen, plus a fixed runtime driven by the model's edges and economy. `--model-dir` runs it from a copied model. |
 | What did you fix by hand? | Everything is in `HUMAN_LOG.md` and `trajectory.md`: sign-ins, the OOC block, and any `overrides.json` edits to the model. |
