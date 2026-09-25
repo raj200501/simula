@@ -259,7 +259,7 @@ test("type-and-send checks that the field took the focus: if the tap opened some
   const d = new TinyDevice(FAKE_PKG, {
     chat: dev => [
       { type: T("TextView"), text: "Assistant", rect: rect(189, 100, 600, 100) },
-      { type: T("TextView"), text: "Hello! Ask me anything you like, I am here to help.", rect: rect(42, 600, 800, 160) },
+      { type: T("TextView"), text: "Hello there! I am here for you whenever you want.", rect: rect(42, 600, 800, 160) },
       // tapping the field opens a profile sheet instead of focusing it
       { type: T("EditText"), text: "Message", rect: rect(42, 2028, 850, 126), tap: () => { dev.screen = "profile"; } },
     ],
