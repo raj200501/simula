@@ -1,0 +1,114 @@
+{"ts":"2026-09-25T06:13:34.946Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"stage","data":{"event":"start","stage":"probe","llm":"record"}}
+{"ts":"2026-09-25T06:13:35.733Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"info","data":{"where":"mcp","event":"server started","spawns":1}}
+{"ts":"2026-09-25T06:13:35.819Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_available_devices","ms":264,"ok":true}}
+{"ts":"2026-09-25T06:13:35.819Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"info","data":{"where":"device.connect","serial":"simula_pixel_8_api35","online":["simula_pixel_8_api35"]}}
+{"ts":"2026-09-25T06:13:35.978Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_get_screen_size","ms":159,"ok":true}}
+{"ts":"2026-09-25T06:13:35.989Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"info","data":{"where":"device.info","widthPx":1080,"heightPx":2400,"density":2.625,"statusBarPx":0,"navBarPx":0,"source":"defaults"}}
+{"ts":"2026-09-25T06:13:36.892Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":902,"ok":true}}
+{"ts":"2026-09-25T06:13:36.992Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":100,"ok":true}}
+{"ts":"2026-09-25T06:13:37.066Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":74,"ok":true}}
+{"ts":"2026-09-25T06:13:37.581Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":515,"ok":true}}
+{"ts":"2026-09-25T06:13:37.692Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":111,"ok":true}}
+{"ts":"2026-09-25T06:13:37.762Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":70,"ok":true}}
+{"ts":"2026-09-25T06:13:38.209Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":447,"ok":true}}
+{"ts":"2026-09-25T06:13:38.234Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"info","data":{"probe":{"go":false,"elements":28,"labelledActionable":12,"counters":[{"name":"sep","text":"Thu, Sep 24"}],"secs":0.66}}}
+{"ts":"2026-09-25T06:13:38.240Z","app":"luzia","run":"pr0925-021334","stage":"probe","type":"stage","data":{"event":"end","stage":"probe","ms":3294,"llm":{"calls":0,"cached":0,"usd":0,"mode":"record"}}}
+{"ts":"2026-09-25T06:14:01.559Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"stage","data":{"event":"start","stage":"probe","llm":"record"}}
+{"ts":"2026-09-25T06:14:01.862Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"info","data":{"where":"mcp","event":"server started","spawns":1}}
+{"ts":"2026-09-25T06:14:01.947Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_available_devices","ms":266,"ok":true}}
+{"ts":"2026-09-25T06:14:01.948Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"info","data":{"where":"device.connect","serial":"simula_pixel_8_api35","online":["simula_pixel_8_api35"]}}
+{"ts":"2026-09-25T06:14:02.051Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_get_screen_size","ms":103,"ok":true}}
+{"ts":"2026-09-25T06:14:02.051Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"info","data":{"where":"device.info","widthPx":1080,"heightPx":2400,"density":2.625,"statusBarPx":0,"navBarPx":0,"source":"config/device.json"}}
+{"ts":"2026-09-25T06:14:02.212Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":161,"ok":true}}
+{"ts":"2026-09-25T06:14:02.812Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":600,"ok":true}}
+{"ts":"2026-09-25T06:14:02.891Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":79,"ok":true}}
+{"ts":"2026-09-25T06:14:02.974Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":82,"ok":true}}
+{"ts":"2026-09-25T06:14:03.071Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":97,"ok":true}}
+{"ts":"2026-09-25T06:14:03.149Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":77,"ok":true}}
+{"ts":"2026-09-25T06:14:03.227Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":78,"ok":true}}
+{"ts":"2026-09-25T06:14:03.245Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"info","data":{"probe":{"go":false,"elements":23,"labelledActionable":8,"counters":[],"secs":0.51}}}
+{"ts":"2026-09-25T06:14:03.248Z","app":"luzia","run":"pr0925-021401","stage":"probe","type":"stage","data":{"event":"end","stage":"probe","ms":1689,"llm":{"calls":0,"cached":0,"usd":0,"mode":"record"}}}
+{"ts":"2026-09-25T06:14:59.972Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"stage","data":{"event":"start","stage":"explore","llm":"record"}}
+{"ts":"2026-09-25T06:15:00.271Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"info","data":{"where":"mcp","event":"server started","spawns":1}}
+{"ts":"2026-09-25T06:15:00.365Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_available_devices","ms":278,"ok":true}}
+{"ts":"2026-09-25T06:15:00.365Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"info","data":{"where":"device.connect","serial":"simula_pixel_8_api35","online":["simula_pixel_8_api35"]}}
+{"ts":"2026-09-25T06:15:00.475Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_screen_size","ms":110,"ok":true}}
+{"ts":"2026-09-25T06:15:00.476Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"info","data":{"where":"device.info","widthPx":1080,"heightPx":2400,"density":2.625,"statusBarPx":0,"navBarPx":0,"source":"config/device.json"}}
+{"ts":"2026-09-25T06:15:00.476Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":0,"type":"info","data":{"phase":"start","resume":false,"annotator":"llm","stepCap":25,"device":{"widthPx":1080,"heightPx":2400,"density":2.625,"statusBarPx":0,"navBarPx":0,"kind":"android"}}}
+{"ts":"2026-09-25T06:15:00.577Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_terminate_app","ms":101,"ok":true}}
+{"ts":"2026-09-25T06:15:00.681Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_launch_app","ms":104,"ok":true}}
+{"ts":"2026-09-25T06:15:02.263Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":1582,"ok":true}}
+{"ts":"2026-09-25T06:15:02.861Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":196,"ok":true}}
+{"ts":"2026-09-25T06:15:02.942Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":81,"ok":true}}
+{"ts":"2026-09-25T06:15:03.028Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":85,"ok":true}}
+{"ts":"2026-09-25T06:15:04.860Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"llm_call","data":{"purpose":"annotate:e74565d64a","key":"88610f5ee0e6e21fc6433fd5","cached":false,"usd":0,"stop":"STOP"}}
+{"ts":"2026-09-25T06:15:04.861Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":0,"type":"observe","data":{"obs":"o0001","state":"s01","isNew":true,"name":"Chat Home","kind":"chat","how":"none","jaccard":0,"counters":[]}}
+{"ts":"2026-09-25T06:15:04.866Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":1,"type":"decision","data":{"state":"s01","action":"a01_1","kind":"type-send","intent":"Type a message to the AI assistant","priority":2,"phase":"crawl","why":"p2 Type a message to the AI assistant","alternatives":["a01_2:p0"]}}
+{"ts":"2026-09-25T06:15:04.970Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":103,"ok":true}}
+{"ts":"2026-09-25T06:15:04.994Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_click_on_screen_at_coordinates","ms":24,"ok":true}}
+{"ts":"2026-09-25T06:15:05.652Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_type_keys","ms":255,"ok":true}}
+{"ts":"2026-09-25T06:15:06.201Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":149,"ok":true}}
+{"ts":"2026-09-25T06:15:06.224Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_click_on_screen_at_coordinates","ms":22,"ok":true}}
+{"ts":"2026-09-25T06:15:06.936Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":712,"ok":true}}
+{"ts":"2026-09-25T06:15:07.085Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":148,"ok":true}}
+{"ts":"2026-09-25T06:15:08.723Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":135,"ok":true}}
+{"ts":"2026-09-25T06:15:08.794Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":71,"ok":true}}
+{"ts":"2026-09-25T06:15:09.013Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":218,"ok":true}}
+{"ts":"2026-09-25T06:15:10.658Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"llm_call","data":{"purpose":"annotate:39fca6980c","key":"0d79423b9ce27e5ead182b84","cached":false,"usd":0,"stop":"STOP"}}
+{"ts":"2026-09-25T06:15:10.659Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":1,"type":"observe","data":{"obs":"o0002","state":"s02","isNew":true,"name":"Character Profile Settings","kind":"modal","how":"none","jaccard":0.31,"counters":[]}}
+{"ts":"2026-09-25T06:15:10.659Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":1,"type":"effect","data":{"edge":"g0001","from":"s01","to":"s02","action":"a01_1","limitHit":false,"effects":[]}}
+{"ts":"2026-09-25T06:15:10.663Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":2,"type":"decision","data":{"state":"s02","action":"a02_1","kind":"tap","intent":"Sign up to adjust response style","priority":3,"phase":"crawl","why":"p3 Sign up to adjust response style","alternatives":["a02_2:p0"]}}
+{"ts":"2026-09-25T06:15:10.770Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":107,"ok":true}}
+{"ts":"2026-09-25T06:15:10.793Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_click_on_screen_at_coordinates","ms":22,"ok":true}}
+{"ts":"2026-09-25T06:15:11.521Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":728,"ok":true}}
+{"ts":"2026-09-25T06:15:12.116Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":194,"ok":true}}
+{"ts":"2026-09-25T06:15:12.190Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":73,"ok":true}}
+{"ts":"2026-09-25T06:15:12.362Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":172,"ok":true}}
+{"ts":"2026-09-25T06:15:15.024Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"llm_call","data":{"purpose":"annotate:040b6af630","key":"8649e77144cd4343cbb9364f","cached":false,"usd":0,"stop":"STOP"}}
+{"ts":"2026-09-25T06:15:15.024Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":2,"type":"observe","data":{"obs":"o0003","state":"s03","isNew":true,"name":"Login Screen","kind":"login","how":"none","jaccard":0.29,"counters":[]}}
+{"ts":"2026-09-25T06:15:15.025Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":2,"type":"human","data":{"note":"\"Login Screen\" (s03) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).","state":"s03","waiting":false}}
+{"ts":"2026-09-25T06:15:15.025Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":2,"type":"info","data":{"human":"nobody answered; state skipped","state":"s03"}}
+{"ts":"2026-09-25T06:15:15.025Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":2,"type":"effect","data":{"edge":"g0002","from":"s02","to":"s03","action":"a02_1","limitHit":false,"effects":[]}}
+{"ts":"2026-09-25T06:15:15.027Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":3,"type":"decision","data":{"state":"s03","action":"a03_2","kind":"back","intent":"press BACK","priority":0,"phase":"crawl","why":"p0 press BACK","alternatives":[]}}
+{"ts":"2026-09-25T06:15:15.058Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_press_button","ms":31,"ok":true}}
+{"ts":"2026-09-25T06:15:15.773Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":715,"ok":true}}
+{"ts":"2026-09-25T06:15:16.358Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":184,"ok":true}}
+{"ts":"2026-09-25T06:15:16.428Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":70,"ok":true}}
+{"ts":"2026-09-25T06:15:16.496Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":68,"ok":true}}
+{"ts":"2026-09-25T06:15:19.368Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"llm_call","data":{"purpose":"annotate:547f14282e","key":"f04b6d7a8e4f82a606e5fb3a","cached":false,"usd":0,"stop":"STOP"}}
+{"ts":"2026-09-25T06:15:19.369Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":3,"type":"observe","data":{"obs":"o0004","state":"s01","isNew":false,"name":"Chat Home","kind":"chat","how":"sameAs","jaccard":0.62,"counters":[]}}
+{"ts":"2026-09-25T06:15:19.369Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":3,"type":"effect","data":{"edge":"g0003","from":"s03","to":"s01","action":"a03_2","limitHit":false,"effects":[]}}
+{"ts":"2026-09-25T06:15:19.373Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"decision","data":{"state":"s01","action":"a01_2","kind":"back","intent":"press BACK","priority":0,"phase":"crawl","why":"p0 press BACK","alternatives":[]}}
+{"ts":"2026-09-25T06:15:19.401Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_press_button","ms":28,"ok":true}}
+{"ts":"2026-09-25T06:15:20.055Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":654,"ok":true}}
+{"ts":"2026-09-25T06:15:20.590Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":133,"ok":true}}
+{"ts":"2026-09-25T06:15:20.663Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":72,"ok":true}}
+{"ts":"2026-09-25T06:15:20.877Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":214,"ok":true}}
+{"ts":"2026-09-25T06:15:20.895Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"effect","data":{"edge":"g0004","from":"s01","to":"ext:other","action":"a01_2","limitHit":false,"effects":[]}}
+{"ts":"2026-09-25T06:15:20.895Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"external","data":{"kind":"other","pkg":"com.aol.mobile.aolapp","from":"s01","action":"a01_2","obs":"o0005","texts":["Sidebar button. Double tap or slide two fingers from the left of the screen to expand.","Home","Access your saved articles","Search","See the latest news","Top Stories","Entertainment","Local"]}}
+{"ts":"2026-09-25T06:15:20.916Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_press_button","ms":21,"ok":true}}
+{"ts":"2026-09-25T06:15:21.407Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":89,"ok":true}}
+{"ts":"2026-09-25T06:15:21.427Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_press_button","ms":20,"ok":true}}
+{"ts":"2026-09-25T06:15:21.895Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":67,"ok":true}}
+{"ts":"2026-09-25T06:15:21.953Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_launch_app","ms":57,"ok":true}}
+{"ts":"2026-09-25T06:15:22.355Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"recovery","data":{"how":"relaunched the app","from":"ext:other"}}
+{"ts":"2026-09-25T06:15:22.670Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":315,"ok":true}}
+{"ts":"2026-09-25T06:15:23.259Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_list_elements_on_screen","ms":187,"ok":true}}
+{"ts":"2026-09-25T06:15:23.332Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_get_foreground_app","ms":72,"ok":true}}
+{"ts":"2026-09-25T06:15:23.406Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"mcp_call","data":{"tool":"mobile_save_screenshot","ms":74,"ok":true}}
+{"ts":"2026-09-25T06:15:23.415Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"observe","data":{"obs":"o0006","state":"s01","isNew":false,"name":"Chat Home","kind":"chat","how":"exact","jaccard":1,"counters":[]}}
+{"ts":"2026-09-25T06:15:23.417Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"info","data":{"phase":"crawl","end":"frontier_empty"}}
+{"ts":"2026-09-25T06:15:30.597Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"failure","data":{"where":"gemini:gap:r1","error":"503 {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNA"}}
+{"ts":"2026-09-25T06:15:30.600Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"recovery","data":{"how":"waited 4s and retried (attempt 1)"}}
+{"ts":"2026-09-25T06:15:38.631Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"recovery","data":{"how":"gemini-3.8-flash overloaded; switching this call to gemini-3.5-flash"}}
+{"ts":"2026-09-25T06:18:16.975Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"failure","data":{"where":"gemini:gap:r1","error":"503 {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNA"}}
+{"ts":"2026-09-25T06:18:16.979Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"recovery","data":{"how":"waited 16s and retried (attempt 3)"}}
+{"ts":"2026-09-25T06:18:34.126Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"failure","data":{"where":"gemini:gap:r1","error":"503 {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNA"}}
+{"ts":"2026-09-25T06:18:34.129Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"recovery","data":{"how":"waited 32s and retried (attempt 4)"}}
+{"ts":"2026-09-25T06:19:06.612Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"failure","data":{"where":"gemini:gap:r1","error":"503 {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNA"}}
+{"ts":"2026-09-25T06:19:06.615Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"recovery","data":{"how":"waited 60s and retried (attempt 5)"}}
+{"ts":"2026-09-25T06:20:09.326Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"failure","data":{"where":"gap-check","error":"{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"}}
+{"ts":"2026-09-25T06:20:09.331Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"recovery","data":{"how":"skipped the gap check"}}
+{"ts":"2026-09-25T06:20:09.332Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"info","data":{"phase":"gap","round":1,"targets":[],"applied":0}}
+{"ts":"2026-09-25T06:20:09.334Z","app":"luzia","run":"ex0925-021459","stage":"explore","step":4,"type":"stop","data":{"reason":"frontier_empty","steps":4,"states":3,"edges":4,"externals":1,"walls":0,"minutes":5.15,"usd":0}}
+{"ts":"2026-09-25T06:20:09.353Z","app":"luzia","run":"ex0925-021459","stage":"explore","type":"stage","data":{"event":"end","stage":"explore","ms":309381,"llm":{"calls":4,"cached":0,"usd":0,"mode":"record"}}}
