@@ -47,7 +47,7 @@ Run these checks and report their output. **Do not run `setup` until all of them
 grep -nE '^API=|^IMG=|^APPS=|sdkmanager --install|avdmanager create avd|market://details' scripts/device.sh
 echo "API override: ${API:-unset}"      # must be unset or 35
 uname -sm                                 # expect: Darwin arm64
-java -version 2>&1 | head -1              # must be 17+ (else: brew install --cask temurin@21)
+java -version 2>&1 | head -1              # must be 17+ (else install the .pkg from https://adoptium.net/temurin/releases/?os=mac&arch=aarch64&package=jdk&version=21 — HAND BACK for the Mac password)
 node -v; npm -v                           # Node 22+
 ```
 
@@ -136,7 +136,7 @@ Then run `bash scripts/device.sh snapshot-save simula_ready`.
 ### 6. Check
 
 1. `npm run doctor` must list the emulator and mobile-mcp's tools.
-2. Set `ANTHROPIC_API_KEY` in `.env`.
+2. Check that `.env` has an LLM key: `GEMINI_API_KEY` (free tier) or `ANTHROPIC_API_KEY`. Never print its value.
 3. Run `npm run probe -- --app ooc` for the go/no-go check.
 
 ---
