@@ -6,7 +6,8 @@
 import { escapeHtml } from "../core/io.ts";
 import type { ProductModel, Rect, Screen, UiElement } from "../core/schema.ts";
 import { accentOf, baseColors, deltaE, lightness, onColor } from "./designCss.ts";
-import { areaOf, chatParts, counterBindings, deviceDp, drawable, isOverlay, textOf, type ChatParts, type DeviceDp } from "./roles.ts";
+import type { RenderHints } from "./measure.ts";
+import { areaOf, chatParts, contains, counterBindings, deviceDp, drawable, isOverlay, textOf, type ChatParts, type DeviceDp } from "./roles.ts";
 
 interface Painted { rect: Rect; color: string }
 interface Ctx {
@@ -24,6 +25,8 @@ const n = (v: number) => Math.round(v * 10) / 10;
 const esc = escapeHtml;
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 const SYSTEM_FONT = "var(--font-body, system-ui, sans-serif)";
+/** ΔE above which a box's measured background differs from what is under it (light-grey cards on white are ~2.5). */
+const PAINT_DE = 1.5;
 
 /** Glyphs for icon-only controls, keyed by generic UI words in their accessibility label. */
 const GLYPHS: [RegExp, string][] = [
@@ -58,12 +61,12 @@ function overlayPanel(s: Screen, dev: DeviceDp): Rect | null {
   return { x, y, w: Math.min(dev.w, x1 + 20) - x, h: Math.min(dev.h, y1 + 20) - y };
 }
 
-function makeCtx(s: Screen, m: ProductModel): Ctx {
+function makeCtx(s: Screen, m: ProductModel, hints: RenderHints = {}): Ctx {
   const dev = deviceDp(m);
   const overlay = isOverlay(s);
   const panel = overlay ? overlayPanel(s, dev) : null;
   const els = drawable(s, dev);
-  const base = overlay && panel ? colorWeights(els.filter(e => areaOf(e.rectDp) < 0.8 * dev.w * dev.h), true) ?? "#FFFFFF" : screenBackground(s, m);
+  const base = overlay && panel ? colorWeights(els.filter(e => areaOf(e.rectDp) < 0.8 * dev.w * dev.h), true) ?? "#FFFFFF" : hints.pageBg ?? screenBackground(s, m);
   const radii = [...m.design.radiiDp].sort((a, b) => a - b);
   return {
     m, s, dev, accent: accentOf(m), base, panel, painted: [],
@@ -81,14 +84,21 @@ function underColor(r: Rect, ctx: Ctx): string {
   return hits[0]?.color ?? ctx.base;
 }
 
-function fontFor(e: UiElement, t: string): number {
-  if (e.style?.fontDp) return clamp(e.style.fontDp, 8, 48);
-  if (!t) return 14;
-  if (["button", "tab", "list-item", "input", "toggle"].includes(e.role)) return clamp(Math.round(e.rectDp.h * 0.36), 12, 18);
-  return clamp(Math.round(e.rectDp.h / 1.3), 10, 28);
-}
-
 const textWidth = (t: string, font: number) => t.length * 0.52 * font;
+
+/**
+ * Font size: the measured size, else an estimate from the box. Either way it must fit the box: a label
+ * cannot be taller than its padded control, and a single-line box shrinks the font rather than
+ * overflow (ink-based measurements over-read icons and dense text).
+ */
+function fontFor(e: UiElement, t: string, availW: number): number {
+  const h = e.rectDp.h;
+  const padded = ["button", "tab", "list-item", "input", "toggle"].includes(e.role);
+  let f = e.style?.fontDp ?? (!t ? 14 : padded ? clamp(Math.round(h * 0.36), 12, 18) : clamp(Math.round(h / 1.3), 10, 28));
+  f = Math.min(f, e.role === "tab" ? Math.max(11, Math.min(16, h * 0.4)) : padded ? h * 0.55 : h * 0.9);
+  if (t && h < f * 2.3) f = Math.min(f, availW / Math.max(1, t.length * 0.6)); // one line: fit the width
+  return Math.round(clamp(f, 8, 48) * 2) / 2;
+}
 
 function assetFile(e: UiElement, ctx: Ctx): string | undefined {
   if (!e.asset) return undefined;
@@ -101,13 +111,17 @@ function renderElement(e: UiElement, ctx: Ctx): string {
   const t = textOf(e);
   const under = underColor(r, ctx);
   const bg = e.style?.bg;
-  const paint = !!bg && deltaE(bg, under) > 3;
+  const paint = !!bg && deltaE(bg, under) > PAINT_DE;
   const fill = paint ? bg! : under;
   const fg = e.style?.fg ?? onColor(fill);
-  const font = fontFor(e, t);
+  const inside = ctx.s.elements.filter(c => c !== e && contains(r, c.rectDp) && areaOf(c.rectDp) < areaOf(r));
+  // Children that show text themselves (a label-only icon does not): then the box does not repeat it.
+  const hasTextChildren = inside.some(c => c.text && c.role !== "image");
+  // Text starts after a leading icon/avatar/button drawn inside the box.
+  const lead = inside.filter(c => !c.text && c.rectDp.x < r.x + r.w * 0.4).reduce((mx, c) => Math.max(mx, c.rectDp.x + c.rectDp.w - r.x), 0);
+  const inset = e.role === "list-item" ? Math.max(16, lead ? lead + 12 : 0) : lead ? lead + 8 : 0;
+  const font = fontFor(e, t, r.w - (e.role === "list-item" ? inset + 16 : e.role === "button" || e.role === "counter" ? 16 : inset));
   const multi = textWidth(t, font) > r.w * 1.02 && r.h > font * 1.9;
-  const hasTextChildren = ctx.s.elements.some(c => c !== e && textOf(c) && c.rectDp.x >= r.x - 0.5 && c.rectDp.y >= r.y - 0.5
-    && c.rectDp.x + c.rectDp.w <= r.x + r.w + 0.5 && c.rectDp.y + c.rectDp.h <= r.y + r.h + 0.5 && areaOf(c.rectDp) < areaOf(r));
 
   const attrs = [`data-node="${esc(e.id)}"`];
   const bind = ctx.binds.get(e.id);
@@ -166,10 +180,11 @@ function renderElement(e: UiElement, ctx: Ctx): string {
   const showText = t && !hasTextChildren;
   if (!showText) return `<div ${A} style="${box}${paint ? `background:${bg};` : ""}${cardStyle}${dim}"></div>`;
 
-  const weight = e.role === "counter" || font >= 20 ? 600 : 400;
+  // Bold for counters and titles (large text in the header band), regular for body text.
+  const weight = e.role === "counter" || font >= 24 || (font >= 18 && r.y < ctx.dev.h * 0.15) ? 600 : 400;
   const centered = e.role !== "list-item" && Math.abs(r.x + r.w / 2 - ctx.dev.w / 2) < 6 && r.w > ctx.dev.w * 0.5 && textWidth(t, font) < r.w * 0.7;
   const chip = e.role === "counter" && paint;
-  const pad = e.role === "list-item" ? "padding:0 16px;" : chip ? `padding:0 ${n(Math.min(12, r.h / 2))}px;border-radius:${n(r.h / 2)}px;` : "";
+  const pad = e.role === "list-item" ? `padding:0 16px 0 ${n(inset)}px;` : chip ? `padding:0 ${n(Math.min(12, r.h / 2))}px;border-radius:${n(r.h / 2)}px;` : inset ? `padding-left:${n(inset)}px;` : "";
   const align = chip || centered ? "center" : "left";
   const lines = multi
     ? `white-space:normal;line-height:1.25;overflow:hidden;display:flex;align-items:${e.role === "list-item" ? "center" : "flex-start"};`
@@ -181,8 +196,8 @@ function bubbleTemplates(ctx: Ctx): string {
   const chat = ctx.chat!;
   const mid = ctx.dev.w / 2;
   const inArea = drawable(ctx.s, ctx.dev).filter(e => e.role === "text" && e.rectDp.y >= chat.messages.y && e.rectDp.y + e.rectDp.h <= chat.messages.y + chat.messages.h);
-  const bot = inArea.find(e => e.rectDp.x + e.rectDp.w / 2 < mid && e.style?.bg && deltaE(e.style.bg, ctx.base) > 3);
-  const user = inArea.find(e => e.rectDp.x + e.rectDp.w / 2 > mid && e.style?.bg && deltaE(e.style.bg, ctx.base) > 3);
+  const bot = inArea.find(e => e.rectDp.x + e.rectDp.w / 2 < mid && e.style?.bg && deltaE(e.style.bg, ctx.base) > PAINT_DE);
+  const user = inArea.find(e => e.rectDp.x + e.rectDp.w / 2 > mid && e.style?.bg && deltaE(e.style.bg, ctx.base) > PAINT_DE);
   const botBg = bot?.style?.bg ?? (lightness(ctx.base) > 0.5 ? "#EEF0F3" : "#2A2D33");
   const userBg = user?.style?.bg ?? ctx.accent;
   const bubble = (bgc: string, fgc: string, self: boolean) =>
@@ -191,9 +206,9 @@ function bubbleTemplates(ctx: Ctx): string {
     + `<template data-template="bot"><div class="sr-bubble sr-bubble-bot" data-slot="text" ${bubble(botBg, bot?.style?.fg ?? onColor(botBg), false)}></div></template>`;
 }
 
-/** The whole screen as an HTML fragment (root: [data-screen-root]). */
-export function specRender(s: Screen, m: ProductModel): string {
-  const ctx = makeCtx(s, m);
+/** The whole screen as an HTML fragment (root: [data-screen-root]). Hints are optional pixel measurements. */
+export function specRender(s: Screen, m: ProductModel, hints: RenderHints = {}): string {
+  const ctx = makeCtx(s, m, hints);
   const dev = ctx.dev;
   const overlay = isOverlay(s) && !!ctx.panel;
   const parts: { area: number; order: number; html: () => string }[] = [];
@@ -229,12 +244,12 @@ export function specRender(s: Screen, m: ProductModel): string {
 }
 
 /** A single element rendered the spec way (used to re-add an element the fragment lost). */
-export function specElementHtml(s: Screen, m: ProductModel, elId: string): string | null {
+export function specElementHtml(s: Screen, m: ProductModel, elId: string, hints: RenderHints = {}): string | null {
   const e = s.elements.find(x => x.id === elId);
   if (!e) return null;
-  const ctx = makeCtx(s, m);
+  const ctx = makeCtx(s, m, hints);
   // Paint everything larger first so the element picks up the right backdrop colour.
-  for (const o of drawable(s, ctx.dev)) if (o !== e && areaOf(o.rectDp) > areaOf(e.rectDp) && o.style?.bg && deltaE(o.style.bg, underColor(o.rectDp, ctx)) > 3) ctx.painted.push({ rect: o.rectDp, color: o.style.bg });
+  for (const o of drawable(s, ctx.dev)) if (o !== e && areaOf(o.rectDp) > areaOf(e.rectDp) && o.style?.bg && deltaE(o.style.bg, underColor(o.rectDp, ctx)) > PAINT_DE) ctx.painted.push({ rect: o.rectDp, color: o.style.bg });
   return renderElement(e, ctx);
 }
 

@@ -70,7 +70,8 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   const T: Template[] = [];
   const res = a.res, s = a.sized;
   const u = (n: number) => `${n} ${res?.unit ?? "units"}`;
-  const partner = a.chat ? "the character from the open chat (Game Partner)" : undefined;
+  const partner = a.chat ? "the character from the open chat" : undefined;
+  const Cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1);
   const cheapest = a.cheapestOffer ? `${a.cheapestOffer.label} for ${a.cheapestOffer.priceText}` : "the cheapest pack";
   const guard = (lead: string) => `${lead} Non-payers only; capped per day; the grant screen repeats the paid option (${cheapest}); a remote-config kill switch rolls it back if paid conversion drops [CANN-4].`;
   const baseBalance = (m.economy.resources.find(r => r.id === res?.id)?.observedValues[0]) ?? 0;
@@ -112,7 +113,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
             newEdges: [{ from: w.screen.id, el: "ne1", to: "rwd", effects: [{ resource: res.id, delta: amt }] }],
           },
           storyboard: [
-            phase("today", origin, [[res.id, before]], "none", co(origin, a.desire?.modeEl, `Needs ${u(w.blockedCost ?? amt)}`), `${res.name} at ${before}: not enough for "${w.blockedIntent}".`),
+            phase("today", origin, [[res.id, before]], "none", co(origin, a.desire?.modeEl, `Next message: ${u(w.blockedCost ?? amt)}`), `${Cap(res.name)} at ${before}: not enough for "${w.blockedIntent}".`),
             phase("change", w.screen, [[res.id, before]], "none", [{ node: "ne1", text: `NEW: play ${SEC} s for +${u(amt)}` }], `${w.screen.name} gains a secondary rewarded option under "${upsell}".`),
             phase("offer", w.screen, [], "invite", [{ node: "ne1", text: "Opt-in tap; reward and length disclosed" }], `"Play for +${amt}" or "No thanks", which returns to ${origin.name} with the draft kept.`),
             phase("ad", w.screen, [], "game", [], `A ${SEC}-second mini-game with the Game Partner; the grant waits for REWARD_VERIFIED.`),
@@ -170,7 +171,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
             phase("change", pr.screen, [[res.id, baseBalance + srcAmt]], "none", [{ node: "ne1", text: `NEW: ${doubles ? "double it" : "bonus"} for one game` }], `After the claim, a rewarded ${doubles ? "doubling" : "bonus"} option appears.`),
             phase("offer", pr.screen, [], "invite", [{ node: "ne1", text: "Opt-in; reward disclosed" }], `"Play for +${amt}" or "No thanks"; the base reward is kept either way.`),
             phase("ad", pr.screen, [], "game", [], `A ${SEC}-second mini-game; grant on REWARD_VERIFIED.`),
-            phase("value", home, [[res.id, baseBalance + srcAmt + amt]], "verified", co(home, a.hub?.balanceEl, `+${amt} more`), `${res.name} at ${baseBalance + srcAmt + amt} on ${home.name}.`),
+            phase("value", home, [[res.id, baseBalance + srcAmt + amt]], "verified", co(home, a.hub?.balanceEl, `+${amt} more`), `${Cap(res.name)} at ${baseBalance + srcAmt + amt} on ${home.name}.`),
           ],
         };
       },
@@ -303,7 +304,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
             newEdges: [{ from: hub.screen.id, el: "ne1", to: "rwd", effects: [{ resource: res.id, delta: amt }], guard: { resource: res.id, lt: threshold } }],
           },
           storyboard: [
-            phase("today", hub.screen, [[res.id, low]], "none", co(hub.screen, bal, `Only ${low} left`), `${res.name} running low on ${hub.screen.name}.`),
+            phase("today", hub.screen, [[res.id, low]], "none", co(hub.screen, bal, `Only ${low} left`), `${Cap(res.name)} running low on ${hub.screen.name}.`),
             phase("change", hub.screen, [[res.id, low]], "none", [{ node: "ne1", text: "NEW: refill station" }], `A refill pill appears next to the balance.`),
             phase("offer", hub.screen, [], "invite", [{ node: "ne1", text: "Tap to open; reward disclosed" }], `"Play for +${amt}" or "Not now".`),
             phase("ad", hub.screen, [], "game", [], `A ${SEC}-second mini-game; grant on REWARD_VERIFIED.`),
@@ -320,10 +321,11 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   if (w && !(res && s && w.moment.resource === res.id)) unlockOn.push({ key: "wall-unlock", archetype: "TAX-2", mo: w.moment, screen: w.screen, what: w.blockedIntent, el: w.upsellEl });
   const plan = m.economy.entitlements[0];
   if (dec && !(res && s) && plan) unlockOn.push({ key: "decline-sample", archetype: "TAX-10", mo: dec.moment, screen: dec.to ?? dec.screen, what: `${plan.plan}: ${plan.benefits[0] ?? "its benefits"}` });
-  if (des && !(res && prem && cheapSink)) {
-    const sig = des.screen.signals.find(x => x.kind === "lock" || x.kind === "upsell" || x.kind === "price");
-    unlockOn.push({ key: "desire-unlock", archetype: "TAX-2", mo: des.moment, screen: des.screen, what: sig?.text ?? des.moment.description, el: des.screen.elements.find(e => e.id === sig?.el) });
-  }
+  // A locked feature is a clean time-unlock anchor; a priced consumable is better served by the refill templates.
+  const lockMo = m.moments.filter(x => x.type === "desire" && !x.noOffer).map(x => ({ x, screen: m.screens.find(sc => sc.id === x.screen)! }))
+    .map(({ x, screen }) => ({ x, screen, sig: screen?.signals.find(g => g.kind === "lock" || (!s && (g.kind === "upsell" || g.kind === "price"))) }))
+    .find(o => o.screen && o.sig);
+  if (lockMo) unlockOn.push({ key: "desire-unlock", archetype: "TAX-2", mo: lockMo.x, screen: lockMo.screen, what: lockMo.sig!.text, el: lockMo.screen.elements.find(e => e.id === lockMo.sig!.el) });
   for (const x of unlockOn) {
     const what = `"${x.what.slice(0, 40)}" unlocked`;
     T.push({
@@ -372,7 +374,14 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   if (hub) {
     const bal = hub.balanceEl ?? hub.anchorEl;
     const dailySource = m.economy.sources.find(x => x.cadence === "daily");
-    const reward = (amt?: number) => (res && s && amt ? resourceReward(amt) : hasAds ? nonRes("30 minutes without in-feed ads", "30 minutes") : nonRes("a collectible profile badge for completing all 3 tasks"));
+    // Without a priced resource: a short taste of the paid plan, else an ad-free window where ads
+    // interrupt, else a collectible.
+    const plan = m.economy.entitlements[0];
+    const interruptive = m.economy.ads.some(x => x.format === "interstitial" || x.format === "banner");
+    const reward = (amt?: number) => (res && s && amt ? resourceReward(amt)
+      : plan ? nonRes(`15 minutes of ${plan.plan}${plan.benefits[0] ? ` (${plan.benefits[0]})` : ""}`, "15 minutes")
+      : interruptive ? nonRes(`30 minutes of ${hub.screen.name} without ads`, "30 minutes")
+      : nonRes("a collectible profile badge for completing all 3 tasks"));
     T.push({
       key: "daily-tasks", why: "A capped, proactive daily habit loop: predictable inventory with no interruption [TAX-9].",
       idea: { title: `Daily tasks on ${hub.screen.name}`, case: "product-change", archetype: "TAX-9", moment: hub.moment.id, reward: `${res && s ? `+${u(s.amount)}` : "a reward"} per sponsored task, 3 a day`, beyondBaseline: true },
@@ -423,57 +432,69 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
     });
   }
 
-  // Sponsored session: the paid mode, time-boxed [TAX-2][TAX-11]; or an ad-light hour when ads exist [AI-17].
-  const sessionOn = des && prem && cheapSink && res ? des : undefined;
-  if (sessionOn || (hub && hasAds)) {
-    const premLabel = prem?.context ?? "the premium mode";
-    const cheapLabel = cheapSink?.context ?? "the standard price";
-    const where = sessionOn ? sessionOn.screen : hub!.screen;
-    const mo = sessionOn ? sessionOn.moment : hub!.moment;
-    const nearEl = sessionOn ? sessionOn.modeEl : hub!.anchorEl;
-    const adFree = !sessionOn;
-    const arche = adFree ? "AI-17" : "TAX-11";
+  // Sponsored session [TAX-11]: the paid mode, time-boxed [TAX-2]; else a taste of the paid plan;
+  // else an ad-light hour [AI-17] (the judge checks whether ads there actually interrupt).
+  const plan0 = m.economy.entitlements[0];
+  const premLabel = prem?.context ?? "the premium mode";
+  const cheapLabel = cheapSink?.context ?? "the standard price";
+  type Session = { where: Screen; mo: Moment; near?: UiElement; minutes: number; cogs: Cogs; units: number; archetype: string; title: string;
+    what: (min: number) => string; today: string; why: string; paid: string; precedents: string[]; risk: string };
+  const session: Session | undefined = des && prem && cheapSink && res
+    ? { where: des.screen, mo: des.moment, near: des.modeEl, minutes: 15, cogs: "text-premium", units: 10, archetype: "TAX-11", title: `Sponsored ${premLabel} session`,
+        what: min => `${premLabel} messages at the ${cheapLabel} price for ${min} minutes`, today: `${premLabel} is paid per message`,
+        why: `${premLabel} is priced per message today; there is no way to feel it for a while without paying.`, paid: "mode",
+        precedents: ["TAX-11", "TAX-2", "EX-MUSIC", "EX-DUO"], risk: `${premLabel} replies cost more to serve; a time box has no per-message cap.` }
+    : plan0 && hub
+      ? { where: hub.screen, mo: hub.moment, near: hub.anchorEl, minutes: 30, cogs: "none", units: 0, archetype: "TAX-11", title: `Sponsored ${plan0.plan} half hour`,
+          what: min => `${min} minutes of ${plan0.plan}${plan0.benefits[0] ? ` (${plan0.benefits[0]})` : ""}`, today: `${plan0.plan} is subscription-only`,
+          why: `${plan0.plan} can only be felt by subscribing; a sponsored time box samples it [CANN-1].`, paid: "plan",
+          precedents: ["TAX-11", "TAX-2", "EX-MUSIC"], risk: `Sampling ${plan0.plan}'s core benefit can substitute for subscribing: keep it short.` }
+      : hub && hasAds
+        ? { where: hub.screen, mo: hub.moment, near: hub.anchorEl, minutes: 60, cogs: "none", units: 0, archetype: "AI-17", title: `Sponsored ad-free hour on ${hub.screen.name}`,
+            what: min => `${min} minutes of ${hub.screen.name} without in-feed ads`, today: "Ads today",
+            why: "The app already shows ads; an ad-light hour is the one thing ads make scarce.", paid: "plan",
+            precedents: ["AI-17", "TAX-11", "EX-MUSIC"], risk: "Ad-free time only has value while other ads keep interrupting." }
+        : undefined;
+  if (session) {
+    const x = session;
     T.push({
       key: "sponsored-session", why: "A sponsor-attributed, time-boxed taste of the paid experience at session start [TAX-11][EX-MUSIC].",
-      idea: { title: adFree ? `Sponsored ad-free hour on ${where.name}` : `Sponsored ${premLabel} session`, case: "product-change", archetype: arche, moment: mo.id,
-        reward: adFree ? "60 minutes without in-feed ads" : `${premLabel} at the ${cheapLabel} price for 15 minutes`, beyondBaseline: true },
-      defaults: { perDay: 1, cooldownMin: 0, cogsUnits: adFree ? 0 : 10, minutes: adFree ? 60 : 15 },
+      idea: { title: x.title, case: "product-change", archetype: x.archetype, moment: x.mo.id, reward: x.what(x.minutes), beyondBaseline: true },
+      defaults: { perDay: 1, cooldownMin: 0, cogsUnits: x.units, minutes: x.minutes },
       build: (pid, p) => {
-        const min = p.minutes ?? (adFree ? 60 : 15);
-        const what = adFree ? `${min} minutes without in-feed ads` : `${premLabel} messages at the ${cheapLabel} price for ${min} minutes`;
+        const min = p.minutes ?? x.minutes;
+        const what = x.what(min);
         return {
-          id: pid, version: 1, case: "product-change", archetype: arche, beyondBaseline: true,
-          title: adFree ? `Sponsored ad-free hour on ${where.name}` : `Sponsored ${premLabel} session`,
-          oneLiner: `A sponsor pays for ${what}: one ${SEC}-second game, once a day, offered at the start of a session on ${where.name}.`,
+          id: pid, version: 1, case: "product-change", archetype: x.archetype, beyondBaseline: true, title: x.title,
+          oneLiner: `A sponsor pays for ${what}: one ${SEC}-second game, once a day, offered at the start of a session on ${x.where.name}.`,
           anchor: {
-            moments: [mo.id], economy: ids(prem?.id, cheapSink?.id, res?.id),
-            newMechanic: { name: adFree ? "Sponsored ad-free hour" : `Sponsored ${premLabel} session`, description: `A daily, sponsor-attributed time box: ${what}.`,
-              whyNeeded: adFree ? "The app shows ads but has no scarce resource; an ad-light hour is the one thing ads make scarce." : `${premLabel} is priced per message today; there is no way to feel it for a while without paying.`, removesFreeValue: false },
+            moments: [x.mo.id], economy: ids(prem?.id, cheapSink?.id, res?.id),
+            newMechanic: { name: x.title, description: `A daily, sponsor-attributed time box: ${what}.`, whyNeeded: x.why, removesFreeValue: false },
           },
-          surface: where.id,
-          trigger: `At the start of the first session of the day on ${where.name}, as a dismissible chip; never mid-reply.`,
+          surface: x.where.id,
+          trigger: `At the start of the first session of the day on ${x.where.name}, as a dismissible chip; never mid-reply.`,
           eligibility: ELIG,
-          offer: { title: adFree ? "Sponsored ad-free hour" : `${premLabel}, sponsored`, body: `Play a ${SEC}-second sponsored game to get ${what}.`, cta: "Play to unlock", decline: "Not today" },
+          offer: { title: x.title, body: `Play a ${SEC}-second sponsored game to get ${what}.`, cta: "Play to unlock", decline: "Not today" },
           simula: { unit: "SIM-RWD", entry: "button", gamePartner: partner, minPlaySec: SEC },
           reward: nonRes(what, `${min} minutes`),
           caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
-          cannibalizationGuard: guard(`Once a day, ${min} minutes, visibly expiring; the paid ${adFree ? "plan" : "mode"} remains the only unlimited option.`),
-          assumptions: { engagedShare: 0.15, viewsPerEngager: 1, cogs: adFree ? "none" : "text-premium", cogsUnitsPerView: p.cogsUnits },
-          kpis: kpis(`Sessions started with the sponsored ${adFree ? "hour" : "session"}, and later paid ${adFree ? "plan" : "mode"} usage against the holdout`),
-          precedents: adFree ? ["AI-17", "TAX-11", "EX-MUSIC"] : ["TAX-11", "TAX-2", "EX-MUSIC", "EX-DUO"],
-          risks: [adFree ? "Ad-free time only has value while other ads keep running." : `${premLabel} replies cost more to serve; a time box has no per-message cap.`],
-          evidence: evidenceFor(m, [mo], [prem?.id, res?.id]),
+          cannibalizationGuard: guard(`Once a day, ${min} minutes, visibly expiring; the paid ${x.paid} remains the only unlimited option.`),
+          assumptions: { engagedShare: 0.15, viewsPerEngager: 1, cogs: x.cogs, cogsUnitsPerView: p.cogsUnits },
+          kpis: kpis(`Sessions started with the sponsored time box, and later paid ${x.paid} usage against the holdout`),
+          precedents: x.precedents,
+          risks: [x.risk],
+          evidence: evidenceFor(m, [x.mo], [prem?.id, res?.id]),
           patch: {
             newScreens: [],
-            newElements: [{ id: "ne1", in: where.id, near: nearEl?.id, place: "after", change: `Dismissible chip "Sponsored: ${what} — play ${SEC} s"` }],
-            newEdges: [{ from: where.id, el: "ne1", to: "rwd", effects: [] }],
+            newElements: [{ id: "ne1", in: x.where.id, near: x.near?.id, place: "after", change: `Dismissible chip "Sponsored: ${what} — play ${SEC} s"` }],
+            newEdges: [{ from: x.where.id, el: "ne1", to: "rwd", effects: [] }],
           },
           storyboard: [
-            phase("today", where, [], "none", co(where, nearEl, adFree ? "Ads today" : `${premLabel} is paid per message`), `First session of the day on ${where.name}.`),
-            phase("change", where, [], "none", [{ node: "ne1", text: "NEW: sponsored session chip" }], `A sponsor offers ${what}.`),
-            phase("offer", where, [], "invite", [{ node: "ne1", text: "Opt-in; duration disclosed" }], `"Play to unlock" or "Not today".`),
-            phase("ad", where, [], "game", [], `A ${SEC}-second sponsored game; unlock on REWARD_VERIFIED.`),
-            phase("value", where, [], "verified", [{ node: "ne1", text: `${min}:00 left` }], `${what}, with a visible countdown.`),
+            phase("today", x.where, [], "none", co(x.where, x.near, x.today), `First session of the day on ${x.where.name}.`),
+            phase("change", x.where, [], "none", [{ node: "ne1", text: "NEW: sponsored session chip" }], `A sponsor offers ${what}.`),
+            phase("offer", x.where, [], "invite", [{ node: "ne1", text: "Opt-in; duration disclosed" }], `"Play to unlock" or "Not today".`),
+            phase("ad", x.where, [], "game", [], `A ${SEC}-second sponsored game; unlock on REWARD_VERIFIED.`),
+            phase("value", x.where, [], "verified", [{ node: "ne1", text: `${min}:00 left` }], `${Cap(what)}, with a visible countdown.`),
           ],
         };
       },
@@ -690,9 +711,8 @@ function fieldFixes(p: Proposal, want: string, m: ProductModel, a: Anchors): Pro
   }
   if (/loss|hostage|lose|dark pattern|confirmshaming|guilt/i.test(want)) q.offer = { ...q.offer, title: q.title, body: disclose() };
   if (/disclos|reward and the action|state the reward/i.test(want)) q.offer.body = disclose();
-  if (/specific|generic|this app's|own nouns/i.test(want) && a.res && !q.offer.body.toLowerCase().includes(a.res.name.toLowerCase())) {
-    q.offer.body = `${disclose()} (${a.res.name})`;
-  }
+  // Specificity comes from the reward itself being named in the app's nouns; never stuff nouns into copy.
+  if (/specific|generic|this app's|own nouns/i.test(want)) q.offer.body = disclose();
   if (/ground|unknown id|does not exist|not declared|missing id/i.test(want)) {
     const known = new Set([...m.screens.map(s => s.id), ...q.patch.newScreens.map(s => s.id)]);
     const home = m.moments.find(x => q.anchor.moments.includes(x.id))?.screen ?? a.hub?.screen.id ?? m.screens[0].id;

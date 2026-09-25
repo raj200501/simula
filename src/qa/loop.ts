@@ -22,6 +22,7 @@ import { BudgetExceeded, text } from "../core/llm.ts";
 import { trace } from "../core/trace.ts";
 import { buildMock, fragmentFile, readFragment } from "../mock/build.ts";
 import { FIX_SYSTEM_PROMPT, fixPrompt, parseFix } from "../mock/prompts.ts";
+import { screenHints, type RenderHints } from "../mock/measure.ts";
 import { isOverlay } from "../mock/roles.ts";
 import { sanitizeFragment } from "../mock/sanitize.ts";
 import { compareScreen, toRGBA, type Comparison, type Metrics, type RGBA } from "./compare.ts";
@@ -99,7 +100,7 @@ function persist(dir: string, s: Screen, x: Measured, rec: RoundRecord): void {
 }
 
 /** One fix round: the LLM fixer (stub: the nudge fixer). Returns the sanitized candidate. */
-async function fixRound(run: Run, s: Screen, k: number, cur: Measured, origPng: Buffer, originalSha: string) {
+async function fixRound(run: Run, s: Screen, k: number, cur: Measured, origPng: Buffer, originalSha: string, hints: RenderHints) {
   const diffs = cur.cmp.worst.map(d => d.phrase), must = cur.cmp.mustFix.map(d => d.phrase);
   const mt = cur.cmp.metrics;
   const metrics = `composite ${mt.composite.toFixed(3)} (IoU ${mt.iou.toFixed(3)}, SSIM ${mt.ssim.toFixed(3)}, text ${mt.text.toFixed(3)}, colour ${mt.color.toFixed(3)}), ${mt.missing} missing element(s)`;
@@ -114,7 +115,7 @@ async function fixRound(run: Run, s: Screen, k: number, cur: Measured, origPng: 
     maxTokens: 32000,
     stub: async () => {
       usedStub = true;
-      const n = await nudgeFix(run.page, cur.html, s, run.m, cur.cmp, cur.boxes);
+      const n = await nudgeFix(run.page, cur.html, s, run.m, cur.cmp, cur.boxes, hints);
       return "```html\n" + n.html + "\n```\nCHANGELOG:\n" + n.changelog.map(l => `- ${l}`).join("\n");
     },
   });
@@ -138,6 +139,7 @@ async function qaScreen(run: Run, s: Screen, cap: number): Promise<ScreenQa> {
   const orig = await toRGBA(origPng, v.widthPx, v.heightPx);
   writeText(path.join(dir, "original.png"), await sharp(origPng).resize(v.widthPx, v.heightPx, { fit: "fill" }).png().toBuffer());
 
+  const hints = await screenHints(run.modelDir, s, m);
   const html0 = readFragment(m, s, run.mockDir);
   const gen = /generatedBy:\s*(\w+)/.exec(html0)?.[1] ?? /data-generated-by="(\w+)"/.exec(html0)?.[1] ?? "unknown";
   let best = await measure(run, s, orig, html0);
@@ -151,7 +153,7 @@ async function qaScreen(run: Run, s: Screen, cap: number): Promise<ScreenQa> {
     if (run.budgetHit) { stop = "budget"; break; }
     let fix: { html: string; changelog: string[]; by: RoundRecord["by"] };
     try {
-      fix = await fixRound(run, s, k, best, origPng, originalSha);
+      fix = await fixRound(run, s, k, best, origPng, originalSha, hints);
     } catch (e) {
       if (e instanceof BudgetExceeded) {
         run.budgetHit = true; stop = "budget";
@@ -160,7 +162,7 @@ async function qaScreen(run: Run, s: Screen, cap: number): Promise<ScreenQa> {
       }
       // A failed fix call must not end QA: the deterministic fixer takes this round.
       trace("failure", { where: `qa-fix:${s.id}:r${k}`, error: String((e as Error).message ?? e).slice(0, 400) });
-      const n = await nudgeFix(run.page, best.html, s, m, best.cmp, best.boxes);
+      const n = await nudgeFix(run.page, best.html, s, m, best.cmp, best.boxes, hints);
       trace("recovery", { where: `qa-fix:${s.id}:r${k}`, how: "nudge fixer" });
       fix = { html: n.html, changelog: n.changelog, by: "nudge-fallback" };
     }

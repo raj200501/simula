@@ -48,6 +48,8 @@ export function appNouns(m: ProductModel): string[] {
     ...m.economy.resources.flatMap(r => [r.name, r.unit]),
     ...m.economy.sinks.flatMap(k => [k.context ?? ""]),
     ...m.economy.offers.map(o => o.label),
+    ...m.economy.entitlements.flatMap(x => [x.plan, ...x.benefits]),
+    ...m.economy.walls.map(w => w.blockedIntent),
     ...m.screens.filter(s => s.inScope).flatMap(s => [s.name, ...s.elements.filter(e => !e.ad).map(e => e.text || e.label || "")]),
   ];
   const out = new Set<string>();
@@ -73,11 +75,11 @@ function gates(p: Proposal, m: ProductModel): JudgeOut["gates"] {
   const res = m.economy.resources.find(r => r.id === p.reward.resource);
   const check = (id: LlmGateId, bad: string | null, okText: string) => ({ gate: id, pass: !bad, evidence: bad ? `"${bad}"` : okText });
 
-  const sfw = unnegated(`${all} ${p.eligibility}`, /\b(nsfw|explicit|adult content|sexual|erotic|18\+|self-harm|suicide|gore)\b/i);
-  const cashy = unnegated(`${p.reward.what} ${offer} ${p.trigger}`, /\b(gift ?cards?|cash|paypal|crypto|vouchers?|\$\s?\d+|click(?:ing)?|tap the ad|install(?:s|ing)?|rate us|review us)\b/i);
+  const sfw = unnegated(`${all}\n${p.eligibility}`, /\b(nsfw|explicit|adult content|sexual|erotic|18\+|self-harm|suicide|gore)\b/i);
+  const cashy = unnegated(`${p.reward.what}\n${offer}\n${p.trigger}`, /\b(gift ?cards?|cash|paypal|crypto|vouchers?|\$\s?\d+|click(?:ing)?|tap the ad|install(?:s|ing)?|rate us|review us)\b/i);
   const confirmshame = /^\s*no,? i (don'?t|do not) (want|like|need)/i.test(p.offer.decline) ? p.offer.decline : null;
-  const loss = unnegated(`${offer} ${p.trigger} ${p.reward.what}`, /\b(lose|lost|losing|deleted?|wiped|disappears?|or else|last chance|before it'?s gone|support us)\b|auto-?plays?|plays automatically|forced|mandatory|must watch/i) ?? confirmshame;
-  const autoplay = unnegated(`${p.trigger} ${offer}`, /auto-?plays?|plays automatically|starts automatically|without a tap/i);
+  const loss = unnegated(`${offer}\n${p.trigger}\n${p.reward.what}`, /\b(lose|lost|losing|deleted?|wiped|disappears?|or else|last chance|before it'?s gone|support us)\b|auto-?plays?|plays automatically|forced|mandatory|must watch/i) ?? confirmshame;
+  const autoplay = unnegated(`${p.trigger}\n${offer}`, /auto-?plays?|plays automatically|starts automatically|without a tap/i);
   const optIn = autoplay ?? (!p.offer.cta.trim() ? "no call-to-action button" : null);
 
   const action = /\b(play|watch|game|video)\b/i.test(offer);
@@ -87,10 +89,10 @@ function gates(p: Proposal, m: ProductModel): JudgeOut["gates"] {
   const whatShown = nounHits(offer, p.reward.what.toLowerCase().split(/\W+/).filter(w => w.length >= 5)).length > 0;
   const disclosed = action && (res ? amountShown && unitShown : p.reward.duration ? durShown : whatShown);
 
-  const penalty = unnegated(`${p.trigger} ${offer} ${p.eligibility}`, /\b(penalt\w*|locked out|can'?t continue|must watch|lose (your|their|the))\b/i);
+  const penalty = unnegated(`${p.trigger}\n${offer}\n${p.eligibility}`, /\b(penalt\w*|locked out|can'?t continue|must watch|lose (your|their|the))\b/i);
   const decline = !p.offer.decline.trim() ? "no decline option" : confirmshame ?? penalty;
-  const stream = unnegated(`${p.trigger} ${all}`, /\bmid-?(?:response|reply|stream|generation|sentence)\b|while (?:the )?(?:reply|response|answer|message) (?:is )?(?:still )?(?:stream|generat|typ)\w*|interrupts? (?:the )?(?:reply|response|generation|stream)/i);
-  const subs = unnegated(`${p.eligibility} ${p.trigger}`, /\b(all users|everyone|every user|subscribers|paying users|payers|every (?:app )?open|each launch|every session)\b/i);
+  const stream = unnegated(`${p.trigger}\n${all}`, /\bmid-?(?:response|reply|stream|generation|sentence)\b|while (?:the )?(?:reply|response|answer|message) (?:is )?(?:still )?(?:stream|generat|typ)\w*|interrupts? (?:the )?(?:reply|response|generation|stream)/i);
+  const subs = unnegated(`${p.eligibility}\n${p.trigger}`, /\b(all users|everyone|every user|subscribers|paying users|payers|every (?:app )?open|each launch|every session)\b/i);
 
   return [
     check("sfw", sfw, "Surfaces are ordinary app screens; no sensitive or adult context is named."),
@@ -135,6 +137,10 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     if (p.reward.amount !== undefined && cheapest && p.reward.amount < cheapest.amount / 2) { v -= 1; why += `; ${p.reward.amount} does not buy even one "${cheapest.action}" (${cheapest.amount}) [ANTI-3]`; }
     if (res && !new RegExp(`\\b(${res.name}|${res.unit})\\b`, "i").test(offer)) { v -= 1; why += `; the offer never names ${res.name}`; }
     if (!sized && !p.reward.resource) { v -= 1; why += "; the reward has no amount or duration"; }
+    // [AI-17]: an ad-free window is only worth something where ads actually interrupt.
+    if (/ad-?free|without (?:the )?(?:in-feed )?ads|no ads/i.test(p.reward.what) && !m.economy.ads.some(x => x.format === "interstitial" || x.format === "banner")) {
+      v -= 2; why += `; the app runs no interstitial or banner ads (${m.economy.ads.map(x => x.format).join(", ") || "none"}), so an ad-free window removes little [AI-17][ANTI-3]`;
+    }
     add("value-moment-fit", v, why);
   }
 
@@ -144,7 +150,7 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     if (p.simula.entry === "interstitial") { v -= 1; why.push("interstitial entry interrupts the flow"); }
     const stream = unnegated(all, /\bmid-?(?:response|reply|stream|generation)\b|auto-?plays?|interrupts?/i);
     if (stream) { v -= 2; why.push(`"${stream}"`); }
-    const loss = unnegated(`${offer} ${p.trigger}`, /\b(lose|lost|deleted?|wiped|or else)\b/i);
+    const loss = unnegated(`${offer}\n${p.trigger}`, /\b(lose|lost|deleted?|wiped|or else)\b/i);
     if (loss) { v -= 2; why.push(`loss framing "${loss}"`); }
     if (p.anchor.newMechanic?.removesFreeValue) { v -= 2; why.push("removes something free users have today"); }
     if (!p.offer.decline.trim()) { v -= 1; why.push("no way to decline"); }
@@ -159,7 +165,14 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     if (!/non-?pay|non-?subscri|free users|declin|no purchase|never purchased/i.test(p.eligibility)) { v -= 1; why.push("no payer gating in eligibility"); }
     if (unnegated(p.eligibility, /\b(all users|everyone|subscribers|payers)\b/i)) { v -= 2; why.push("offered to payers or subscribers"); }
     if (p.cannibalizationGuard.trim().length < 30) { v -= 1; why.push("no real cannibalization guard"); }
-    if (/\bunlimited\b/i.test(p.reward.what)) { v -= 1; why.push("unlimited reward"); }
+    if (/\bunlimited\b/i.test(p.reward.what) && !p.reward.duration) { v -= 1; why.push("unlimited reward with no time box"); }
+    // Sampling the paid plan's core benefit is fine only if short [TAX-2]; long or repeated is [ANTI-4].
+    const benefit = m.economy.entitlements.flatMap(x => x.benefits).find(b => nounHits(p.reward.what, b.toLowerCase().split(/\W+/).filter(w => w.length >= 5)).length > 0);
+    if (benefit) {
+      const min = Number(/(\d+)\s*min/i.exec(p.reward.duration ?? "")?.[1] ?? 0) + 60 * Number(/(\d+)\s*h/i.exec(p.reward.duration ?? "")?.[1] ?? 0);
+      v -= min > 30 || /day|week/i.test(p.reward.duration ?? "") ? 2 : 1;
+      why.push(`samples the paid plan's "${benefit}"${p.reward.duration ? ` for ${p.reward.duration}` : ""}`);
+    }
     add("cannibalization-safety", v, why.length ? why.join("; ") : `Non-payers only, ${p.caps.perDay}/day, reward far below the cheapest pack (${e.maxDailyEarnUsdAtList != null ? `$${e.maxDailyEarnUsdAtList}/day max vs $${e.cheapestPaidUnitUsd}` : "time-boxed"}).`);
   }
 
@@ -168,7 +181,8 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     const net = e.viewValueUsd[0] * (1 - ECON.platformShare);
     const share = net > 0 ? e.cogsPerViewUsd / net : 0;
     const r = e.rewardToViewRatio;
-    const ratioScore = r == null ? 3 : r <= 1 ? 5 : r <= 2 ? 4 : r <= ECON.maxRewardToView ? 3 : r <= 2 * ECON.maxRewardToView ? 2 : 1;
+    // A time box has no list-price value to compare; its anchor is then the cost to serve alone [JUDGE-2].
+    const ratioScore = r == null ? 4 : r <= 1 ? 5 : r <= 2 ? 4 : r <= ECON.maxRewardToView ? 3 : r <= 2 * ECON.maxRewardToView ? 2 : 1;
     const cogsScore = share <= 0.3 ? 5 : share <= 0.6 ? 4 : share <= 0.8 ? 3 : share <= 1 ? 2 : 1;
     add("unit-economics", Math.min(ratioScore, cogsScore),
       `reward/view ${r ?? "n/a (not a priced resource)"}; cost to serve $${e.cogsPerViewUsd} = ${(share * 100).toFixed(0)}% of net revenue per view ($${net.toFixed(4)})`);
@@ -211,7 +225,7 @@ function scores(p: Proposal, m: ProductModel): JudgeOut["scores"] {
     let v = d <= 0 ? 1 : d <= 5 ? 5 : d <= 8 ? 3 : d <= 10 ? 2 : 1;
     const why = [`${d}/day, cooldown ${p.caps.cooldownMin} min`];
     if (p.caps.cooldownMin === 0 && d > 1) { v -= 1; why.push("no cooldown"); }
-    const every = unnegated(`${p.trigger} ${p.eligibility}`, /\bevery (?:app )?open|each launch|every session|every time\b/i);
+    const every = unnegated(`${p.trigger}\n${p.eligibility}`, /\bevery (?:app )?open|each launch|every session|every time\b/i);
     if (every) { v = 1; why.push(`re-prompts: "${every}"`); }
     add("frequency-fatigue", v, why.join("; "));
   }
@@ -233,7 +247,9 @@ const GATE_FIX: Record<string, string> = {
   label: "Relabel as product-change and declare anchor.newMechanic, or cite an observed economy item",
   "already-exists": "Pick a surface or format that is not already an ad today",
   economics: "Resize the reward with the exchange rate (about one cheapest action per view) and keep the daily maximum far below the cheapest pack",
-  structure: "Fix the structure",
+  structure: "Restore the required structure (grant on REWARD_VERIFIED, a decline, caps, the 5 storyboard frames, an allowed surface)",
+  schema: "Return a complete, schema-valid proposal",
+  "policy-lint": "Remove cash-like rewards, incentivized clicks, installs or ratings, and 'support us' copy [POL-2]",
   sfw: "Restrict to SFW surfaces and exclude sensitive conversations [SAFE-1]",
   "no-incentivized-action": "Reward the completed play only, with an in-app, non-transferable item [POL-2]",
   "no-loss-framing": "Remove the loss/hostage framing and any forced play; use gain framing on new value [ANTI-10]",

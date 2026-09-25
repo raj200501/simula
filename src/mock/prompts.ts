@@ -2,6 +2,7 @@
 // the per-screen spec goes in the prompt. Nothing here may contain absolute paths, timestamps or run
 // ids (that breaks replay caching): assets are named by their model-relative path.
 import type { ProductModel, Screen } from "../core/schema.ts";
+import type { RenderHints } from "./measure.ts";
 import { chatParts, counterBindings, deviceDp, drawable, isOverlay, textOf } from "./roles.ts";
 
 const q = (s: string) => JSON.stringify(s.length > 80 ? s.slice(0, 77) + "..." : s);
@@ -91,7 +92,7 @@ Rules:
 13. Elements marked "ad" keep their look and get a data-ad attribute.
 14. Icons without an asset: a simple inline SVG or a unicode glyph with aria-label set to the element's label.`;
 
-export function screenPrompt(s: Screen, m: ProductModel, css: string): string {
+export function screenPrompt(s: Screen, m: ProductModel, css: string, hints: RenderHints = {}): string {
   const dev = deviceDp(m);
   const chat = chatParts(s, m);
   const binds = counterBindings(s, m);
@@ -100,6 +101,7 @@ export function screenPrompt(s: Screen, m: ProductModel, css: string): string {
     `Viewport ${dev.w}x${dev.h} dp; the screenshot is ${m.device.widthPx}x${m.device.heightPx} px (${m.device.density} px per dp).`,
     `Status bar: top ${dev.statusDp} dp. System navigation bar: bottom ${dev.navDp} dp. Do not draw either.`,
     isOverlay(s) ? `This is an overlay (${s.kind}): scrim + panel only.` : "",
+    hints.pageBg ? `Page background (measured where no element is): ${hints.pageBg}.` : "",
     binds.length ? `Counters: ${binds.map(b => `${b.el} -> data-bind="${b.resource}"`).join(", ")}.` : "",
     chat ? `Chat parts: composer ${chat.composer ?? "(none)"}, send ${chat.send ?? "(none)"}, message list area [0,${Math.round(chat.messages.y)} ${chat.messages.w}x${Math.round(chat.messages.h)}] dp. New bubbles are appended to the list after the captured ones.` : "",
     "",

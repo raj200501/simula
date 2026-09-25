@@ -18,6 +18,7 @@ import { trace } from "../core/trace.ts";
 import { buildMock, fragmentFile } from "./build.ts";
 import { fontStack, stubDesignCss } from "./designCss.ts";
 import { DESIGN_SYSTEM_PROMPT, SCREEN_SYSTEM_PROMPT, designPrompt, retryPrompt, screenPrompt } from "./prompts.ts";
+import { screenHints } from "./measure.ts";
 import { deviceDp } from "./roles.ts";
 import { sanitizeCss, sanitizeFragment } from "./sanitize.ts";
 import { specRender } from "./specRender.ts";
@@ -75,9 +76,10 @@ function stamp(html: string, by: string): string {
 async function generateScreen(page: Page, m: ProductModel, modelDir: string, s: Screen, css: string): Promise<{ html: string; rec: ScreenGeneration }> {
   const dev = deviceDp(m);
   let usedStub = false;
-  const stub = () => { usedStub = true; return "```html\n" + specRender(s, m) + "\n```"; };
+  const hints = await screenHints(modelDir, s, m);
+  const stub = () => { usedStub = true; return "```html\n" + specRender(s, m, hints) + "\n```"; };
   const img = shotImage(m, modelDir, s, `Original screenshot of ${s.id} "${s.name}": ${m.device.widthPx}x${m.device.heightPx} px = ${dev.w}x${dev.h} dp`);
-  const base = screenPrompt(s, m, css);
+  const base = screenPrompt(s, m, css, hints);
   const attempt = async (prompt: string, purpose: string) => {
     usedStub = false;
     const raw = await text({ stage: "mock", purpose, model: MODELS.main, effort: "high", system: [SCREEN_SYSTEM_PROMPT], prompt, images: img ? [img] : [], stub, maxTokens: 32000 });
@@ -106,7 +108,7 @@ async function generateScreen(page: Page, m: ProductModel, modelDir: string, s: 
   if (!best || best.coverage < 0.6) {
     // Unusable or no answer: the spec renderer keeps navigation and QA working for this screen.
     trace("recovery", { where: `mock:screen-html:${s.id}`, how: "spec renderer fallback", coverage: best?.coverage ?? 0 });
-    const html = specRender(s, m);
+    const html = specRender(s, m, hints);
     const v = await validateFragment(page, html, s, m);
     return { html: stamp(html, "fallback"), rec: { screen: s.id, generatedBy: "fallback", attempts, coverage: v.coverage, violations: v.violations } };
   }

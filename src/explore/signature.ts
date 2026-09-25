@@ -56,9 +56,10 @@ export function hamming(a: string, b: string): number {
 }
 
 /**
- * "Same template, different content": identical structure (types + resource ids) and at most one
- * label differing on each side, none of them a selected item or wall-like text. This is the
- * heuristic answer to the annotator's sameAs question (story detail A vs story detail B).
+ * "Same template, different content": identical structure (types + resource ids), and the labels that
+ * differ are swaps - one item's words for another's (a title, an avatar's initials: at most 2) - with at
+ * least as many labels unchanged, none of them a selected item or wall-like text. This is the heuristic
+ * answer to the annotator's sameAs question (story A's detail or chat vs story B's).
  */
 export function templateSame(a: string[], b: string[]): boolean {
   const d = labelDiff(a, b);
@@ -67,8 +68,9 @@ export function templateSame(a: string[], b: string[]): boolean {
   if (diff.some(t => t.endsWith("|sel") || isWallText(textOf(t)))) return false;
   // labels only added (or only removed) is not another item on the template: something opened on top
   // (a sheet whose rows are too long to carry identity, a dialog) or a panel expanded
-  if (!d.onlyA.length !== !d.onlyB.length) return false;
-  return d.onlyA.length <= 1 && d.onlyB.length <= 1;
+  if (d.onlyA.length !== d.onlyB.length) return false;
+  const kept = chromeTexts(a).filter(t => !d.onlyA.includes(t)).length;
+  return d.onlyA.length <= 1 || (d.onlyA.length <= 2 && kept >= d.onlyA.length);
 }
 
 /** Same skeleton (types + resource ids) on both sides: the chrome labels only on one side, else null. */

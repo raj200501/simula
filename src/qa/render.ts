@@ -17,7 +17,8 @@ export interface DomBox {
   role: string | null;    // data-role
   parents: string[];      // enclosing data-node ids, closest first
   hidden: boolean;
-  rect: Rect;             // device px
+  rect: Rect;             // device px (matches the resized screenshot)
+  css: Rect;              // CSS px = dp as the fragment positions it (what a fixer edits)
 }
 export interface RenderResult { png: Buffer; boxes: DomBox[] }
 
@@ -118,6 +119,7 @@ export async function renderScreen(page: Page, indexHtml: string, screenId: stri
   const boxes = (await call<RawBox[]>(page, BOXES_JS, screenId)).map(b => ({
     id: b.id, text: b.text, bind: b.bind, bindAuto: b.bindAuto, role: b.role, parents: b.parents, hidden: b.hidden,
     rect: { x: b.x * sx, y: b.y * sy, w: b.w * sx, h: b.h * sy },
+    css: { x: b.x, y: b.y, w: b.w, h: b.h },
   }));
   return { png, boxes };
 }

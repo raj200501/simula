@@ -11,7 +11,7 @@ import { MODELS } from "../core/config.ts";
 import { fileSha, sha256 } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
 import { ScreenKind, SignalKind, type Action, type DeviceInfo, type Observation, type Signal, type State } from "../core/schema.ts";
-import { heuristicAnnotation, DEFAULT_INPUT } from "./heuristic.ts";
+import { heuristicAnnotation, isSendControl, DEFAULT_INPUT } from "./heuristic.ts";
 import { guardReason } from "./guards.ts";
 import { inheritLabels } from "./observe.ts";
 import { labelOf, shortType } from "./signature.ts";
@@ -194,7 +194,10 @@ export function toActions(
       const send = x.sendEl ? byId.get(x.sendEl) : undefined;
       if (send) a.sendElKey = send.key;
     }
-    const skip = guardReason(el, a.intent, a.kind) ?? (x.skip?.trim() || (x.kind !== "scroll" && priority === 0 ? "annotator: destructive or out of scope" : undefined));
+    // a Send control on a text field's row is operated by that field's type-and-send action: tapped on its
+    // own it would send a leftover draft, a spend that --no-consume and the post-wall crawl must not make
+    const send = x.kind === "tap" && el && isSendControl(el, obs.elements) ? "send control: sending is the type-and-send action's job (it may spend)" : undefined;
+    const skip = guardReason(el, a.intent, a.kind) ?? send ?? (x.skip?.trim() || (x.kind !== "scroll" && priority === 0 ? "annotator: destructive or out of scope" : undefined));
     if (skip) { a.status = "skipped"; a.skip = skip; a.priority = 0; }
     out.push({ a, pos: el ? el.rect.y * 100_000 + el.rect.x : Number.MAX_SAFE_INTEGER });
   }

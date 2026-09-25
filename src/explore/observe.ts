@@ -28,6 +28,11 @@ export const DEFAULT_TIMING: Timing = {
   pollMs: 400, settleMaxMs: 4000, contentPollMs: 1500, contentMinMs: 6000, contentMaxMs: 25_000, clearMaxMs: 3000,
 };
 
+/** A local web page (the fixture, our own mock) answers in milliseconds, not over adb: poll faster. */
+export const WEB_TIMING: Timing = {
+  pollMs: 200, settleMaxMs: 3000, contentPollMs: 500, contentMinMs: 3000, contentMaxMs: 15_000, clearMaxMs: 2000,
+};
+
 // ---------------------------------------------------------------------------------------------
 // Exclusions (T2): text the explorer caused is never identity. Everything it typed, and the replies
 // it provoked, would otherwise turn every sent message into a "new" chat state.

@@ -1,21 +1,24 @@
+// scratch: compiled model -> mock -> qa (stub)
+import fs from "node:fs";
 import path from "node:path";
-import { chromium } from "playwright";
-import { sampleModel } from "./sample-model.ts";
-import { buildMock } from "../../src/mock/build.ts";
-const out = "/tmp/claude-0/-home-user-simula/25c848c5-fa91-54b9-9b9c-b7d1ed4ee763/scratchpad/mockqa/mock";
-const m = sampleModel();
-const idx = buildMock(m, "/nonexistent", out);
-const b = await chromium.launch();
-const p = await b.newPage({ viewport: { width: 411, height: 914 }, deviceScaleFactor: 1 });
-p.on("console", m => console.log("console:", m.text()));
-p.on("pageerror", e => console.log("pageerror:", e.message));
-for (const s of ["s01", "s03", "s04", "s05", "s06", "s02"]) {
-  await p.goto("file://" + idx + "?frame=0&screen=" + s);
-  await p.waitForFunction("document.documentElement.dataset.mockReady === '1'");
-  await p.screenshot({ path: path.join(out, "..", s + ".png") });
-}
-const p2 = await b.newPage({ viewport: { width: 520, height: 980 } });
-await p2.goto("file://" + idx + "?debug=1");
-await p2.waitForTimeout(300);
-await p2.screenshot({ path: path.join(out, "..", "framed.png") });
-await b.close();
+import { setLlmContext } from "../../src/core/llm.ts";
+import { loadProfile, paths } from "../../src/core/config.ts";
+import type { StageCtx } from "../../src/core/run.ts";
+import { understand } from "../../src/model/understand.ts";
+import { generateMock } from "../../src/mock/generate.ts";
+import { runQa } from "../../src/qa/loop.ts";
+import { writeSampleGraph } from "./model-sample-graph.ts";
+setLlmContext({ mode: "stub" });
+const tmp = "/tmp/claude-0/-home-user-simula/25c848c5-fa91-54b9-9b9c-b7d1ed4ee763/scratchpad/mockqa/compiled";
+fs.rmSync(tmp, { recursive: true, force: true });
+const { graphFile } = await writeSampleGraph(path.join(tmp, "run"), { adCard: true });
+const c: StageCtx = { app: { id: "sample", package: "web.sample", name: "SampleChat", profile: "fixture", login: "none" }, profile: loadProfile("fixture"), paths: paths("sample", { outRoot: path.join(tmp, "out") }), runId: "t", llm: "stub", opts: {} };
+const { model } = await understand(c, graphFile);
+console.log(model.screens.map(s => `${s.id} ${s.name} ${s.kind} ${s.render} els=${s.elements.length} bind=${JSON.stringify(s.bindings)}`).join("\n"));
+console.log(model.edges.map(e => `${e.id} ${e.from}->${e.to} el=${e.el} ${e.transition} ${JSON.stringify(e.effects.filter(f=>f.kind==="counter").map((f:any)=>f.delta))} ctx=${e.context.selected} lim=${e.limitHit??""}`).join("\n"));
+const t0 = Date.now();
+await generateMock(c, model, c.paths.model);
+console.log("mock", Date.now() - t0);
+const sum = await runQa(c, model, c.paths.model, {});
+console.log(JSON.stringify(sum, null, 1));
+console.log("qa", Date.now() - t0);

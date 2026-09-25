@@ -82,8 +82,12 @@ test("chat bubbles of varying width group by shared left or right edge, and 3 vs
 test("guard rails: destructive, out of scope, credentials and ads are vetoed", () => {
   assert.match(guardReason({ text: "Log out" }, 'tap "Log out"', "tap")!, /destructive/);
   assert.match(guardReason({ identifier: "app:id/btn_logout" }, "tap", "tap")!, /destructive/);
-  assert.match(guardReason({ text: "Rate us" }, "tap", "tap")!, /out of scope/);
+  assert.match(guardReason({ text: "Share" }, "tap", "tap")!, /out of scope/);
   assert.match(guardReason({ label: "Voice message" }, "tap", "tap")!, /out of scope/);
+  assert.match(guardReason({ label: "Audio Button: Tap twice or hold to record." }, "tap", "tap")!, /out of scope/);
+  // "Rate us" only opens the store or a browser: tapped, recorded as an external surface, and left
+  assert.equal(guardReason({ text: "Rate us" }, 'tap "Rate us"', "tap"), undefined);
+  assert.equal(guardReason({ text: "Edit a photo" }, 'tap "Edit a photo"', "tap"), undefined);
   assert.match(guardReason({ text: "Password" }, "type", "type-send")!, /credential/);
   assert.match(guardReason({ text: "Sponsored", ad: true }, "tap", "tap")!, /ad/);
   assert.equal(guardReason({ text: "Store" }, 'tap "Store"', "tap"), undefined);

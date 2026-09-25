@@ -314,7 +314,10 @@ export class FakeCreditChat implements Device {
       bottom = y - 24;
     }
     out.push(...bubbles);
-    out.push({ type: T("EditText"), text: this.input || "Message", identifier: "app:id/input", rect: rect(42, COMPOSER_Y, 800, 150), tap: () => { this.focused = true; } });
+    out.push({
+      type: T("EditText"), text: this.input || "Message", identifier: "app:id/input", rect: rect(42, COMPOSER_Y, 800, 150),
+      ...(this.focused && !this.wall ? { focused: true } : {}), tap: () => { this.focused = true; },
+    });
     if (this.input) out.push({ type: T("ImageButton"), label: "Send", identifier: "app:id/send", rect: rect(870, COMPOSER_Y, 168, 150), tap: () => this.send() });
     else out.push({ type: T("ImageButton"), label: "Voice message", identifier: "app:id/mic", rect: rect(870, COMPOSER_Y, 168, 150), tap: () => { this.micTaps++; } });
     return out;

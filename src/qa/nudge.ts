@@ -5,6 +5,7 @@
 // is re-measured next round). Deterministic, so stub-mode demos show a real improving loop.
 import type { Page } from "playwright";
 import type { ProductModel, Screen } from "../core/schema.ts";
+import type { RenderHints } from "../mock/measure.ts";
 import { specElementHtml } from "../mock/specRender.ts";
 import type { Comparison } from "./compare.ts";
 import { call, type DomBox } from "./render.ts";
@@ -86,7 +87,7 @@ const APPLY_JS = String.raw`(html, fixes) => {
 }`;
 
 /** Fixes for the worst differences, parents before children. */
-export function planFixes(s: Screen, m: ProductModel, cmp: Comparison, boxes: DomBox[]): Fix[] {
+export function planFixes(s: Screen, m: ProductModel, cmp: Comparison, boxes: DomBox[], hints: RenderHints = {}): Fix[] {
   const parents = new Map(boxes.map(b => [b.id, b.parents]));
   const byId = new Map(cmp.elements.map(e => [e.id, e]));
   const fixes: Fix[] = [];
@@ -98,7 +99,7 @@ export function planFixes(s: Screen, m: ProductModel, cmp: Comparison, boxes: Do
     const e = byId.get(id);
     if (!e) continue;
     if (e.missing) {
-      const add = specElementHtml(s, m, id);
+      const add = specElementHtml(s, m, id, hints);
       if (add) fixes.push({ id, add });
       continue;
     }
@@ -114,8 +115,8 @@ export function planFixes(s: Screen, m: ProductModel, cmp: Comparison, boxes: Do
   return fixes;
 }
 
-export async function nudgeFix(page: Page, html: string, s: Screen, m: ProductModel, cmp: Comparison, boxes: DomBox[]): Promise<{ html: string; changelog: string[] }> {
-  const fixes = planFixes(s, m, cmp, boxes);
+export async function nudgeFix(page: Page, html: string, s: Screen, m: ProductModel, cmp: Comparison, boxes: DomBox[], hints: RenderHints = {}): Promise<{ html: string; changelog: string[] }> {
+  const fixes = planFixes(s, m, cmp, boxes, hints);
   if (!fixes.length) return { html, changelog: ["nudge: nothing to change"] };
   const r = await call<{ html: string; log: string[] }>(page, APPLY_JS, html, fixes);
   const log = r.log.length > 8 ? [...r.log.slice(0, 7), `+${r.log.length - 7} more element fixes`] : r.log;

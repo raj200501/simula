@@ -1,14 +1,20 @@
 // The explorer (FINAL_PLAN §4.4 with BUILD_SPEC T1/T2/T3/T7/T8). It drives the app through the Device
 // interface only, so the same code crawls an emulator, a web page, or our own generated mock.
 //
-//   PHASE 1  CRAWL      on the current state, do the best untried action (the annotator advises
-//                       priorities; code decides). When the state is done, travel over known edges to
-//                       the most valuable reachable state that still has untried actions.
+//   PHASE 1  CRAWL      on the current state, do the best untried action (code builds the candidates, the
+//                       annotator advises priorities; code decides). When the state is done, travel over
+//                       known edges to the most valuable reachable state that still has untried actions.
 //   PHASE 2  GAP CHECK  one strong-model call compares coverage with a monetization checklist and
 //                       names <= 5 things to retry; a short bounded crawl retries them.
-//   PHASE 3  DRAIN      repeat the costliest consume action (send a message) until a wall. Spending
-//                       cannot be undone, so it runs last. When the balance is not visible where the
-//                       action happens, it travels to a screen that shows it every 3 sends (T1).
+//   PHASE 3  DRAIN      measure what each spending action costs under each selection (mode) it was seen
+//                       with, then repeat the costliest until a wall. Spending cannot be undone, so it runs
+//                       last. When the balance is not visible where the action happens, it travels to a
+//                       screen that shows it every 3 sends and back-fills the per-send cost (T1).
+//
+// State identity (T2): a sheet or dialog opened on top of a screen is its own state even when the screen
+// underneath is still listed (anchors), and a control that shows the current choice (a mode chip) is
+// selection context, not identity: the same chat in Basic or Premium mode is one state, and the mode is
+// recorded on every edge (context.selected).
 //
 // Every step is checkpointed to graph.json (atomic write), so a crashed run continues with --resume.
 import fs from "node:fs";
@@ -18,20 +24,24 @@ import type { Paths } from "../core/config.ts";
 import type { StageCtx } from "../core/run.ts";
 import {
   ExploreGraph, type Action, type DeviceInfo, type Effect, type ExternalKind, type GraphEdge, type NormElement,
-  type Observation, type State, type StopReason,
+  type Observation, type Signal, type State, type StopReason,
 } from "../core/schema.ts";
 import { ensureDir, load, nowIso, save, sleep, writeText } from "../core/io.ts";
 import { summarize, trace, traceContext } from "../core/trace.ts";
 import { llmStats } from "../core/llm.ts";
 import {
-  DEFAULT_TIMING, excludeText, excludeTyped, isExcluded, keyPrefix, newExclusions, normalize, observe, readCounters,
-  replyLike, settleContent, settleUi, snapshot, type Counter, type Exclusions, type ObserveOpts, type Snapshot, type Timing,
+  DEFAULT_TIMING, SHORT_LABEL, WEB_TIMING, excludeText, excludeTyped, findByKey, isExcluded, isIndicator, isInputType, keyPrefix,
+  newExclusions, normalize, observe, readCounters, replyLike, settleContent, settleUi, snapshot,
+  type Exclusions, type ObserveOpts, type Snapshot, type Timing,
 } from "./observe.ts";
-import { counterEffects, diffEffects, labelCounts, labelOf, matchState } from "./signature.ts";
+import {
+  counterEffects, diffEffects, labelCounts, labelOf, matchState, overlapRatio, overlayOf, overlayTokens, relabelOnly,
+  shortType, signatureOf, skeletonOf,
+} from "./signature.ts";
 import { annotate, toActions, toSignals, type Annotation, type AnnotateOut } from "./annotate.ts";
-import { isInput } from "./heuristic.ts";
+import { heuristicAnnotation, isInput } from "./heuristic.ts";
 import { perform, type ActResult } from "./act.ts";
-import { classifyForeground, escapeExternal, isInApp } from "./externals.ts";
+import { classifyForeground, escapeExternal, isInApp, isLauncherPackage } from "./externals.ts";
 import { WALL_KINDS } from "./signals.ts";
 import { applyGapTargets, gapCheck } from "./gap.ts";
 
@@ -54,7 +64,11 @@ const MAX_IDLE_MOVES = 8;          // travels in a row without an action: the fr
 const HUMAN_WAIT_MS = 10 * 60_000;
 const MAX_FX = 60;
 const MAX_VARIANTS = 8;
+const MEASURE_SENDS = 3;           // T1: sends per selection to measure its cost before draining
+const READ_EVERY = 3;              // T1: read a balance shown on another screen every 3 sends
+const MAX_CONTEXTS = 4;            // selections (modes) measured per spending action
 const OVERLAY_KINDS = new Set(["modal", "sheet", "dialog", "paywall"]);
+const NO_CONSUME = "no-consume: sending anything may spend a quota (--no-consume)";
 
 /** out/<app>/explore/latest holds the runId of the newest exploration. */
 export function latestGraphFile(p: Paths): string {
@@ -75,10 +89,14 @@ interface Run {
   info: DeviceInfo;
   timing: Timing;
   annotator: "llm" | "heuristic";
-  ex: Exclusions;             // typed text and provoked replies: never identity (T2)
-  variants: Map<string, string[][]>; // extra signatures per state: scrolled views, sameAs pages
+  ex: Exclusions;             // typed text, provoked replies, selection indicators: never identity (T2)
+  variants: Map<string, string[][]>; // extra signatures per state: scrolled views, sameAs pages, other looks
+  anchors: Map<string, string[]>;    // overlay state -> tokens of what is on top (a screen without them is not it)
+  parents: Map<string, string>;      // overlay state -> observation of the screen it opened over
+  obsIndex: Map<string, Observation>;
   cur: State;                 // where we are
   last: Observation;          // what we last saw there (baseline for the next diff)
+  home: string;               // where a cold launch lands (updated on every relaunch)
   t0: number;
   usd0: number;
   stepCap: number;
@@ -96,6 +114,7 @@ interface StepOut { next: State; edge?: GraphEdge; fx: Effect[]; external?: Exte
 const pad = (n: number, w: number) => String(n).padStart(w, "0");
 const msg = (e: unknown) => String((e as Error)?.message ?? e).slice(0, 300);
 const round = (n: number, d = 2) => Math.round(n * 10 ** d) / 10 ** d;
+const sameList = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((x, i) => x === b[i]);
 
 // =============================================================================================
 // Entry point
@@ -119,10 +138,14 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
   writeText(path.join(c.paths.explore, "latest"), g.runId);
   const r = {
     c, dev, o, g, runDir, graphFile, info,
-    timing: { ...DEFAULT_TIMING, ...o.timing },
+    timing: { ...(dev.kind === "web" ? WEB_TIMING : DEFAULT_TIMING), ...o.timing },
     annotator: o.annotator ?? (dev.kind === "web" ? "heuristic" : "llm"),
     ex: exclusionsFrom(g),
     variants: variantsFrom(g),
+    anchors: new Map<string, string[]>(),
+    parents: new Map<string, string>(),
+    obsIndex: new Map(g.observations.map(x => [x.id, x])),
+    home: "",
     t0: Date.now(),
     usd0: g.usd,
     // --resume --steps N means N more steps; otherwise the profile's crawl budget
@@ -133,6 +156,7 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
     stop: null,
     usdHit: false,
   } as Run;
+  if (o.resume) rebuild(r);
 
   const onSigint = () => { r.stop = "interrupted"; trace("info", { note: "SIGINT: stopping after the current step" }); };
   process.once("SIGINT", onSigint);
@@ -140,9 +164,13 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
   let error: unknown = null;
   try {
     trace("info", { phase: "start", resume: !!o.resume, annotator: r.annotator, stepCap: r.stepCap, device: info }, g.steps);
-    await guardedDevice(r, "launch", () => dev.launch({ cold: !o.resume }));
+    // A web page was just loaded fresh by WebDevice.open() (the CLI resets its state first): reloading it
+    // again would only throw away what a first open shows once (a daily bonus, onboarding). On a device,
+    // a fresh run force-stops the app so that it starts from its launch screen.
+    await guardedDevice(r, "launch", () => dev.launch({ cold: !o.resume && dev.kind !== "web" }));
     await arriveInApp(r, "launch");
     g.launchState ??= r.cur.id;
+    r.home = r.cur.id;
     checkpoint(r);
 
     reason = await crawl(r, { stepCap: r.stepCap });
@@ -183,7 +211,7 @@ function exclusionsFrom(g: ExploreGraph): Exclusions {
   for (const t of g.typed) excludeTyped(ex, t);
   for (const e of g.edges) {
     const a = actionOf(g, e);
-    if (a?.kind !== "consume") continue;
+    if (a?.kind !== "consume" || e.to !== e.from) continue;
     for (const f of e.effects) if (f.kind === "appeared" && replyLike(f.text)) excludeText(ex, f.text);
   }
   return ex;
@@ -199,6 +227,34 @@ function variantsFrom(g: ExploreGraph): Map<string, string[][]> {
   return v;
 }
 
+/**
+ * On resume, re-learn from the recorded edges what the graph cannot store: which states are overlays (and
+ * what is on top), and which controls show the current choice.
+ */
+function rebuild(r: Run): void {
+  const g = r.g;
+  for (const s of g.states.filter(x => OVERLAY_KINDS.has(x.kind))) {
+    const into = g.edges.find(e => e.to === s.id && e.from !== s.id);
+    const before = into && r.obsIndex.get(into.obsBefore);
+    const after = into && r.obsIndex.get(into.obsAfter);
+    const opened = before && after ? overlayOf(after, before, r.info) : null;
+    if (opened) { r.anchors.set(s.id, overlayTokens(opened)); r.parents.set(s.id, before!.id); continue; }
+    const out = g.edges.find(e => e.from === s.id && e.to !== s.id && !e.to.startsWith("ext:"));
+    const top = out && r.obsIndex.get(out.obsBefore);
+    const base = out && r.obsIndex.get(out.obsAfter);
+    const closed = top && base ? overlayOf(top, base, r.info) : null;
+    if (closed) r.anchors.set(s.id, overlayTokens(closed));
+  }
+  for (const e of g.edges) {
+    const from = g.states.find(s => s.id === e.from);
+    const to = g.states.find(s => s.id === e.to);
+    const a = actionOf(g, e);
+    const before = r.obsIndex.get(e.obsBefore);
+    const after = r.obsIndex.get(e.obsAfter);
+    if (from && to && a && before && after) learnPicker(r, from, a, before, after, to, false);
+  }
+}
+
 function addVariant(r: Run, st: State, sig: string[]): void {
   const list = r.variants.get(st.id) ?? [];
   const key = sig.join("\n");
@@ -211,9 +267,10 @@ function finalize(r: Run, reason: StopReason): void {
   const g = r.g;
   if (r.o.noConsume) {
     for (const s of g.states) for (const a of s.actions) {
-      if (a.kind === "consume" && a.status === "untried") { a.status = "skipped"; a.skip = "consume disabled (--no-consume)"; }
+      if ((a.kind === "consume" || a.kind === "type-send") && a.status === "untried") { a.status = "skipped"; a.skip = NO_CONSUME; }
     }
   }
+  refreshContexts(r);
   g.stopReason = reason;
   g.finishedAt = nowIso();
   g.usd = usd(r);
@@ -248,14 +305,27 @@ function shouldStop(r: Run, co: CrawlOpts): StopReason | null {
   return null;
 }
 
-/** Untried, not skipped; a consume action only once during the crawl (the drain probe repeats it). */
+/**
+ * Untried, not skipped. Anything that types and sends may spend (a message, a free quota), so both
+ * consume and type-send need spending allowed (never under --no-consume), and a consume action runs only
+ * once during the crawl (the drain probe repeats it).
+ */
 function eligible(a: Action, allowConsume: boolean): boolean {
-  return a.status === "untried" && (a.kind !== "consume" || (allowConsume && a.tries === 0));
+  if (a.status !== "untried") return false;
+  if (a.kind === "consume") return allowConsume && a.tries === 0;
+  if (a.kind === "type-send") return allowConsume;
+  return true;
 }
 
-/** Highest priority first; actions are stored in reading order, so ties go top to bottom. */
+const CONTROL = /button|switch|check|radio|tab|chip|toggle|spinner/i;
+const onControl = (a: Action) => !!a.elKey && CONTROL.test(a.elKey.split("|")[0]);
+
+/**
+ * Highest priority first; then explicit controls (buttons, switches, tabs) before plain text; actions are
+ * stored in reading order, so remaining ties go top to bottom.
+ */
 function nextAction(s: State, allowConsume: boolean): Action | undefined {
-  return s.actions.filter(a => eligible(a, allowConsume)).sort((x, y) => y.priority - x.priority)[0];
+  return s.actions.filter(a => eligible(a, allowConsume)).sort((x, y) => y.priority - x.priority || Number(onControl(y)) - Number(onControl(x)))[0];
 }
 
 async function crawl(r: Run, co: CrawlOpts): Promise<StopReason> {
@@ -310,10 +380,12 @@ async function step(r: Run, from: State, a: Action, phase: string): Promise<Step
     checkpoint(r);
     return { next: r.cur, fx: [], external: kind };
   }
+  learnFromChoice(r, from, obs); // an option picked on an overlay relabelled a control below it: a mode indicator
   const next = await arrive(r, obs, { prev: before, prevState: from, scrollOf: a.kind === "scroll" ? from : undefined });
+  learnPicker(r, from, a, before, obs, next); // the control that opened a picker shows the current choice
   const fx = diffEffects(before, obs, boundKeys(r));
   // T2: only a consume that lands on a wall-like screen is a limit; a different state id is not enough
-  const wall = consume && isWall(from, next);
+  const wall = consume && isWall(from, next, { fromObs: repObs(r, from), nextObs: repObs(r, next) });
   const edge = recordEdge(r, from, a, next.id, before, obs, fx, wall);
   // an action that ever did something stays "done" (a later repeat may change nothing)
   a.status = a.status === "done" || next.id !== from.id || fx.length > 0 ? "done" : "no-effect";
@@ -341,8 +413,7 @@ function actCtx(r: Run) {
 function hintRect(r: Run, owner: State, a: Action) {
   if (!a.elKey) return undefined;
   for (const id of owner.obs) {
-    const o = r.g.observations.find(x => x.id === id);
-    const el = o?.elements.find(e => e.key === a.elKey);
+    const el = r.obsIndex.get(id)?.elements.find(e => e.key === a.elKey);
     if (el) return el.rect;
   }
   return undefined;
@@ -354,17 +425,36 @@ function noteTyped(r: Run, s: string): void {
 }
 
 const boundKeys = (r: Run) => new Set(r.g.resources.flatMap(x => x.bindings.map(b => b.elKey)));
+const repObs = (r: Run, s: State) => r.obsIndex.get(s.obs[0]);
 
 /**
- * T2 wall test for an action that spends: the next state differs AND it is an overlay (modal, sheet,
- * dialog, paywall), or a screen of a different kind (not another chat), or it carries a new
- * limit/price/upsell signal.
+ * T2 wall test for an action that spends. A wall is: an overlay (modal, sheet, dialog, paywall); a new
+ * limit signal ("out of credits", "limit reached") however the screen is drawn; a new screen that is not
+ * a chat; or another chat carrying price/upsell evidence it did not have before. Never a wall: the same
+ * state, or the same template with controls relabelled (a mode switch, another item), even when the new
+ * label is monetization vocabulary ("Premium · 30"). A signal on an element the from-state already had
+ * (the same mode chip) is not new evidence.
  */
-export function isWall(from: State, next: State): boolean {
+export function isWall(from: State, next: State, o: { fromObs?: Observation; nextObs?: Observation } = {}): boolean {
   if (next.id === from.id) return false;
   if (OVERLAY_KINDS.has(next.kind)) return true;
-  if (next.kind !== "chat" && next.kind !== from.kind) return true;
-  return next.signals.some(s => WALL_KINDS.has(s.kind) && !from.signals.some(f => f.kind === s.kind && f.text === s.text));
+  const fresh = newWallSignals(from, next, o);
+  if (fresh.some(s => s.kind === "limit")) return true;
+  if (relabelOnly(from.signature, next.signature)) return false;
+  if (next.kind !== "chat") return true;
+  return fresh.length > 0;
+}
+
+function newWallSignals(from: State, next: State, o: { fromObs?: Observation; nextObs?: Observation }): Signal[] {
+  const existed = (s: Signal) => {
+    const el = s.el ? o.nextObs?.elements.find(e => e.id === s.el) : undefined;
+    if (!el) return false;
+    if (el.identifier) return from.signature.some(t => skeletonOf(t) === `${shortType(el.type)}|${el.identifier}`);
+    return !!o.fromObs?.elements.some(e => shortType(e.type) === shortType(el.type) && overlapRatio(e.rect, el.rect) >= 0.5);
+  };
+  return next.signals.filter(s => WALL_KINDS.has(s.kind)
+    && !from.signals.some(f => f.kind === s.kind && f.text === s.text)
+    && !(s.kind !== "limit" && existed(s)));
 }
 
 // =============================================================================================
@@ -405,13 +495,37 @@ async function arriveInApp(r: Run, why: string): Promise<State> {
 }
 
 /**
+ * States this screen cannot be, whatever the overlap: an overlay state whose overlay is not on screen,
+ * and (when something just opened on top) any state that does not show what opened.
+ */
+function vetoFor(r: Run, sig: readonly string[], require: readonly string[]): (s: State) => boolean {
+  const have = new Set(sig);
+  return s => {
+    if (r.anchors.get(s.id)?.some(t => !have.has(t))) return true;
+    if (!require.length) return false;
+    return ![s.signature, ...(r.variants.get(s.id) ?? [])].some(v => require.every(t => v.includes(t)));
+  };
+}
+
+/**
  * Attach an observation to a state: match it (exact -> Jaccard -> dHash -> annotator sameAs) or create
- * a new state, annotated once. A scrolled view is merged into the state it was scrolled from.
+ * a new state, annotated once. A scrolled view is merged into the state it was scrolled from. Overlays
+ * are told apart from the screen under them by comparing with the previous observation: what opened on
+ * top must be part of the matched state, and when something that was on top closes, the state we were on
+ * was an overlay (learned after the fact, e.g. a dialog shown at launch).
  */
 async function arrive(r: Run, obs: Observation, ctx: { prev?: Observation | null; prevState?: State; scrollOf?: State }): Promise<State> {
   const g = r.g;
   g.observations.push(obs);
-  const m = matchState(g.states, obs, r.variants);
+  r.obsIndex.set(obs.id, obs);
+  const scrolled = !!ctx.scrollOf;
+  const opened = ctx.prev && !scrolled ? overlayOf(obs, ctx.prev, r.info) : null;
+  if (ctx.prev && ctx.prevState && !scrolled && !r.anchors.has(ctx.prevState.id)) {
+    const closed = overlayOf(ctx.prev, obs, r.info);
+    if (closed) markOverlay(r, ctx.prevState, ctx.prev, obs, closed);
+  }
+  const require = opened ? overlayTokens(opened) : [];
+  const m = matchState(g.states, obs, r.variants, vetoFor(r, obs.signature, require));
   let st = m.state;
   let how: string = m.how;
   let isNew = false;
@@ -437,17 +551,46 @@ async function arrive(r: Run, obs: Observation, ctx: { prev?: Observation | null
     st = createState(r, obs, out);
     isNew = true;
     g.stepsSinceNew = 0;
+    if (require.length && ctx.prev) { r.anchors.set(st.id, require); r.parents.set(st.id, ctx.prev.id); }
+  } else if (how === "jaccard" || how === "dhash") {
+    addVariant(r, st, obs.signature);
   }
   st.obs.push(obs.id);
   st.visits++;
   obs.counters = readCounters(obs.elements, g.resources);
   r.cur = st;
   r.last = obs;
-  trace("observe", { obs: obs.id, state: st.id, isNew, name: st.name, kind: st.kind, how, jaccard: round(m.score), counters: obs.counters }, g.steps);
+  trace("observe", { obs: obs.id, state: st.id, isNew, name: st.name, kind: st.kind, how, jaccard: round(m.score), counters: obs.counters, overlay: require.length ? require : undefined }, g.steps);
   if (isNew && st.loginWall && (await humanHook(r, st)) === "resumed") {
     return arrive(r, await observeNow(r, { mode: "ui" }), { prev: obs, prevState: st });
   }
   return st;
+}
+
+/**
+ * What we were looking at had something on top that has now closed (a dialog shown at launch, before any
+ * previous screen to compare with): the state is that overlay. Its identity now requires the overlay; a
+ * heuristic annotation is redone with the screen underneath as reference (kind, name), and its untried
+ * actions on the covered screen are skipped (they are the screen's own, reachable without the overlay).
+ */
+function markOverlay(r: Run, st: State, top: Observation, base: Observation, els: NormElement[]): void {
+  const tokens = overlayTokens(els);
+  if (!tokens.length) return;
+  r.anchors.set(st.id, tokens);
+  if (!OVERLAY_KINDS.has(st.kind) && st.annotatedBy !== "llm") {
+    const ann = heuristicAnnotation(top, { info: r.info, prev: base });
+    st.kind = ann.kind;
+    st.name = ann.name.trim() || st.name;
+    st.purpose = ann.purpose;
+    const keys = new Set(els.map(e => e.key));
+    for (const x of st.actions) {
+      if (x.status === "untried" && x.kind !== "back" && !(x.elKey && keys.has(x.elKey))) {
+        x.status = "skipped";
+        x.skip = "under an overlay: the screen below is explored without it";
+      }
+    }
+  }
+  trace("info", { overlay: st.id, kind: st.kind, name: st.name, how: "it closed: what we were on was an overlay", tokens }, r.g.steps);
 }
 
 async function annotateObs(r: Run, obs: Observation, prev: Observation | null, candidates: State[]): Promise<AnnotateOut> {
@@ -467,6 +610,9 @@ function createState(r: Run, obs: Observation, out: AnnotateOut): State {
     actions: toActions(ann.actions, obs, num, { tapScale: out.tapScale, scrollable: ann.scrollable }),
     signals: toSignals(ann, obs), visits: 0, firstStep: g.steps,
   };
+  if (r.o.noConsume) {
+    for (const a of st.actions) if ((a.kind === "consume" || a.kind === "type-send") && a.status === "untried") { a.status = "skipped"; a.skip = NO_CONSUME; }
+  }
   g.states.push(st);
   registerCounters(r, st, ann, obs);
   return st;
@@ -508,21 +654,112 @@ function addRevealedActions(r: Run, st: State, obs: Observation): void {
 }
 
 // =============================================================================================
+// Selection context: what is selected, ticked, or shown by a mode indicator when an action runs
+// =============================================================================================
+/** Labels of selected / checked elements and of known indicators (a mode chip), in reading order. */
+function contextOf(r: Run, o: Pick<Observation, "elements">): string[] {
+  return [...new Set(o.elements.filter(e => (e.selected || e.checked || isIndicator(e, r.ex.indicators)) && labelOf(e)).map(labelOf))];
+}
+
+const sameSpot = (a: NormElement, b: NormElement) =>
+  shortType(a.type) === shortType(b.type) && (a.identifier ?? "") === (b.identifier ?? "") && overlapRatio(a.rect, b.rect) >= 0.5;
+
+/**
+ * A control that opened a picker (an overlay whose options show which one is chosen: checked or selected)
+ * shows the current choice itself, like a mode chip reading "Basic · 10". Its label becomes selection
+ * context and stops being identity, so the same chat in another mode is the same state.
+ */
+function learnPicker(r: Run, from: State, a: Action, before: Observation, after: Observation, next: State, now = true): void {
+  if (a.kind !== "tap" || !a.elKey || next.id === from.id || OVERLAY_KINDS.has(from.kind) || r.anchors.has(from.id)) return;
+  if (!r.anchors.has(next.id) && !OVERLAY_KINDS.has(next.kind)) return;
+  const opened = overlayOf(after, before, r.info);
+  if (!opened?.some(e => e.selected || e.checked)) return;
+  const el = findByKey(before.elements, a.elKey);
+  const lab = el ? labelOf(el) : "";
+  if (!el || !lab || lab.length > SHORT_LABEL || isInputType(el.type) || el.ad) return;
+  addIndicator(r, el, `it opens a picker ("${next.name}")`, now ? [] : null);
+}
+
+/**
+ * Fallback for pickers whose options carry no checked state: picking an option on an overlay came back to
+ * the screen it opened over with one or two of its controls relabelled ("Basic · 10" -> "Premium · 30").
+ */
+function learnFromChoice(r: Run, from: State, obs: Observation): void {
+  const parent = r.parents.get(from.id);
+  const base = parent ? r.obsIndex.get(parent) : undefined;
+  const anchors = r.anchors.get(from.id);
+  if (!base || !anchors || anchors.every(t => obs.signature.includes(t))) return; // still on the overlay
+  if (!relabelOnly(base.signature, obs.signature)) return;
+  const changed = obs.elements.filter(e => e.chrome && labelOf(e) && !e.ad && !isInputType(e.type)
+    && base.elements.some(b => b.chrome && sameSpot(b, e) && labelOf(b) !== labelOf(e)));
+  if (!changed.length || changed.length > 2) return;
+  for (const e of changed) addIndicator(r, e, `an option picked on "${from.name}" relabelled it`, [obs]);
+}
+
+/** Remember an indicator and re-derive every signature without its label (a mode is context, not identity). */
+function addIndicator(r: Run, el: NormElement, why: string, extra: Observation[] | null): void {
+  if (isIndicator(el, r.ex.indicators)) return;
+  r.ex.indicators.push({ type: shortType(el.type), identifier: el.identifier ?? "", rect: el.rect });
+  trace("info", { indicator: labelOf(el), el: el.key, why }, r.g.steps);
+  if (extra) renormalize(r, extra);
+}
+
+function renormalize(r: Run, extra: Observation[]): void {
+  const fix = (o: Observation) => {
+    let changed = false;
+    for (const e of o.elements) if (e.chrome && isIndicator(e, r.ex.indicators)) { e.chrome = false; changed = true; }
+    if (changed) o.signature = signatureOf(o.elements);
+  };
+  for (const o of r.g.observations) fix(o);
+  for (const o of extra) fix(o);
+  for (const s of r.g.states) {
+    const rep = repObs(r, s);
+    if (rep) s.signature = rep.signature;
+    const looks = s.obs.map(id => r.obsIndex.get(id)?.signature).filter((v): v is string[] => !!v && v.join("\n") !== s.signature.join("\n"));
+    const uniq = [...new Map(looks.map(v => [v.join("\n"), v])).values()].slice(0, MAX_VARIANTS);
+    if (uniq.length) r.variants.set(s.id, uniq); else r.variants.delete(s.id);
+  }
+}
+
+/**
+ * Re-derive every edge's context from its observation (indicators may have been learned after the edge
+ * was recorded), then merge edges that became identical.
+ */
+function refreshContexts(r: Run): void {
+  const g = r.g;
+  for (const e of g.edges) {
+    const o = r.obsIndex.get(e.obsBefore);
+    if (o) e.context.selected = contextOf(r, o);
+  }
+  const keep: GraphEdge[] = [];
+  for (const e of g.edges) {
+    const twin = keep.find(x => x.from === e.from && x.action === e.action && x.to === e.to && !!x.limitHit === !!e.limitHit
+      && sameList(x.context.selected, e.context.selected));
+    if (!twin) { keep.push(e); continue; }
+    twin.seen += e.seen;
+    twin.failures += e.failures;
+    twin.firstStep = Math.min(twin.firstStep, e.firstStep);
+    for (const f of e.effects) if (twin.effects.length < MAX_FX) twin.effects.push(f);
+  }
+  g.edges = keep;
+}
+
+// =============================================================================================
 // Edges and effects
 // =============================================================================================
-function selectedLabels(o: Observation): string[] {
-  return [...new Set(o.elements.filter(e => (e.selected || e.checked) && labelOf(e)).map(labelOf))];
+function nextEdgeId(g: ExploreGraph): string {
+  return `g${pad(Math.max(0, ...g.edges.map(e => Number(e.id.slice(1)) || 0)) + 1, 4)}`;
 }
 
 /**
  * One edge per (from, action, to, context, limitHit); repeats bump `seen` and add new effects, so the
- * drain's many sends stay one edge with all their counter readings and replies (the transcript).
+ * drain's many sends stay one edge per selection with all their counter readings and replies (the transcript).
  */
 function recordEdge(r: Run, from: State, a: Action, to: string, before: Observation, after: Observation, fx: Effect[], limitHit = false): GraphEdge {
   const g = r.g;
-  const selected = selectedLabels(before);
+  const selected = contextOf(r, before);
   let e = g.edges.find(x => x.from === from.id && x.action === a.id && x.to === to && !!x.limitHit === limitHit
-    && x.context.selected.join("\n") === selected.join("\n"));
+    && sameList(x.context.selected, selected));
   if (e) {
     e.seen++;
     for (const f of fx) {
@@ -532,7 +769,7 @@ function recordEdge(r: Run, from: State, a: Action, to: string, before: Observat
     }
   } else {
     e = {
-      id: `g${pad(g.edges.length + 1, 4)}`, from: from.id, to, action: a.id, obsBefore: before.id, obsAfter: after.id,
+      id: nextEdgeId(g), from: from.id, to, action: a.id, obsBefore: before.id, obsAfter: after.id,
       effects: fx.slice(0, MAX_FX), context: { selected }, seen: 1, failures: 0, firstStep: g.steps,
     };
     if (limitHit) e.limitHit = true;
@@ -543,27 +780,34 @@ function recordEdge(r: Run, from: State, a: Action, to: string, before: Observat
     a.kind = "consume";
     a.note = "spends: a counter dropped after this action";
   }
-  // T2: replies provoked by spending are conversation, never identity
-  if (a.kind === "consume") for (const f of fx) if (f.kind === "appeared" && replyLike(f.text)) excludeText(r.ex, f.text);
+  // T2: replies provoked by spending on the same screen are conversation, never identity (a wall's own
+  // words, on another state, must stay identity)
+  if (a.kind === "consume" && to === from.id) for (const f of fx) if (f.kind === "appeared" && replyLike(f.text)) excludeText(r.ex, f.text);
   trace("effect", {
-    edge: e.id, from: from.id, to, action: a.id, limitHit,
+    edge: e.id, from: from.id, to, action: a.id, limitHit, context: selected.length ? selected : undefined,
     effects: fx.slice(0, 8).map(f => (f.kind === "counter" ? `${f.resource} ${f.before}->${f.after}` : `${f.kind}: ${f.text.slice(0, 60)}`)),
   }, g.steps);
   return e;
 }
 
-/** Record the external surface, then escape back into the app (FINAL_PLAN §4.4 handleExternal). */
+/**
+ * Record the external surface, then escape back into the app (FINAL_PLAN §4.4 handleExternal). BACK on a
+ * root screen leaves the app (to the launcher, or to whichever app was used last): that is how Android
+ * works, recorded once as ext:launcher, and the app is relaunched; the explorer never presses BACK inside
+ * another app. A tap that lands on the home screen is a failure (the gesture bar, a crash); a tap that
+ * opens another app did something.
+ */
 async function handleExternal(r: Run, from: State, a: Action, before: Observation, obs: Observation): Promise<ExternalKind> {
   const g = r.g;
   const kind = classifyForeground(obs.fg, g.app.package) as ExternalKind;
   g.observations.push(obs);
+  r.obsIndex.set(obs.id, obs);
   g.externals.push({ kind, package: obs.fg, from: from.id, action: a.id, obs: obs.id, texts: obs.texts.slice(0, 60) });
   recordEdge(r, from, a, `ext:${kind}`, before, obs, []);
   trace("external", { kind, pkg: obs.fg, from: from.id, action: a.id, obs: obs.id, texts: obs.texts.slice(0, 8) }, g.steps);
-  // BACK on a root screen leaving to the launcher is how Android works (recorded once per state);
-  // a tap that lands on the launcher or a crash is a failure
-  const expectedExit = a.kind === "back" && kind === "launcher";
-  a.status = (kind === "launcher" || kind === "crash") && !expectedExit ? "failed" : "done";
+  const leftByBack = a.kind === "back" && kind === "launcher";
+  a.status = kind === "crash" || (kind === "launcher" && !leftByBack && isLauncherPackage(obs.fg)) ? "failed" : "done";
+  if (leftByBack) a.note = `BACK here leaves the app (${obs.fg})`;
   if (a.status === "failed") trace("failure", { where: `external:${kind}`, error: `${a.id} left the app (${obs.fg})` }, g.steps);
   const how = await soft(guardedDevice(r, "escape", () => escapeExternal(r.dev, kind, g.app.package, r.timing.pollMs)), "escape failed");
   trace("recovery", { how, from: `ext:${kind}` }, g.steps);
@@ -604,8 +848,9 @@ function reachable(r: Run, from: string, want: (s: State) => boolean): Reach[] {
       for (let e = via.get(id); e; e = via.get(e.from)) path.unshift(e);
       out.push({ state: s, path });
     }
-    for (const e of g.edges) {
-      if (e.from !== id || via.has(e.to) || !travelable(g, e)) continue;
+    // fewer failures first: an edge that sometimes lands elsewhere is the last resort
+    for (const e of g.edges.filter(x => x.from === id).sort((x, y) => x.failures - y.failures)) {
+      if (via.has(e.to) || !travelable(g, e)) continue;
       via.set(e.to, e);
       queue.push(e.to);
     }
@@ -621,13 +866,17 @@ function markUnreachable(r: Run, which: (s: State) => boolean, allowConsume: boo
   }
 }
 
-/** Travel to the reachable state with the highest-priority untried action (nearest on ties). */
+/**
+ * Travel to the reachable state with the highest-priority untried action; on ties, the least visited
+ * one (breadth: a screen seen once before one seen twenty times), then the nearest.
+ */
 async function toFrontier(r: Run, allowConsume: boolean): Promise<"moved" | "retry" | "empty"> {
   const want = (s: State) => s.actions.some(a => eligible(a, allowConsume));
   const pick = () => reachable(r, r.cur.id, want)
-    .sort((x, y) => topPriority(y.state, allowConsume) - topPriority(x.state, allowConsume) || x.path.length - y.path.length)[0];
+    .sort((x, y) => topPriority(y.state, allowConsume) - topPriority(x.state, allowConsume)
+      || x.state.visits - y.state.visits || x.path.length - y.path.length)[0];
   let target = pick();
-  if (!target && r.cur.id !== r.g.launchState) {
+  if (!target && r.cur.id !== r.home) {
     await relaunch(r, "no known path to untried actions from here");
     target = pick();
   }
@@ -644,13 +893,13 @@ async function toFrontier(r: Run, allowConsume: boolean): Promise<"moved" | "ret
   return "retry";
 }
 
-/** Travel to any state matching `want`, relaunching when there is no known path from here. */
+/** Travel to any state matching `want`, re-planning from wherever a hop lands, relaunching when lost. */
 async function travelTo(r: Run, want: (s: State) => boolean): Promise<boolean> {
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 4; attempt++) {
     if (want(r.cur)) return true;
     const target = reachable(r, r.cur.id, want).sort((x, y) => x.path.length - y.path.length)[0];
     if (!target) {
-      if (attempt > 0 && r.cur.id === r.g.launchState) return false;
+      if (attempt > 0 && r.cur.id === r.home) return false;
       await relaunch(r, "no known path to the target");
       continue;
     }
@@ -659,7 +908,11 @@ async function travelTo(r: Run, want: (s: State) => boolean): Promise<boolean> {
   return want(r.cur);
 }
 
-/** Replay edges hop by hop, checking at each hop that we landed where the edge says. */
+/**
+ * Replay edges hop by hop, checking at each hop that we landed where the edge says. Landing on another
+ * known state is not being lost (the same button can lead to different places depending on app state):
+ * we stop there and the caller re-plans. An unknown screen or leaving the app means a relaunch.
+ */
 async function travel(r: Run, path: GraphEdge[]): Promise<boolean> {
   const g = r.g;
   let prevEls = r.last.elements;
@@ -672,9 +925,12 @@ async function travel(r: Run, path: GraphEdge[]): Promise<boolean> {
     const seen = await lightObserve(r, a.kind === "consume" ? "content" : "ui", prevEls);
     if (!seen) return hopFailed(r, e, "device error while observing");
     if (!isInApp(seen.fg, g.app.package)) return hopFailed(r, e, `left the app (${seen.fg})`);
-    const m = matchState(g.states, { signature: seen.snap.sig, dhash: "", elements: seen.snap.els }, r.variants);
+    const m = matchState(g.states, { signature: seen.snap.sig, dhash: "", elements: seen.snap.els }, r.variants, vetoFor(r, seen.snap.sig, []));
     const ok = m.state?.id === e.to || (m.how === "none" && m.borderline[0]?.id === e.to);
-    if (!ok) return hopFailed(r, e, `expected ${e.to}, saw ${m.state?.id ?? "an unknown screen"}`);
+    if (!ok) {
+      if (m.state) return hopElsewhere(r, e, m.state);
+      return hopFailed(r, e, `expected ${e.to}, saw an unknown screen`);
+    }
     e.seen++;
     prevEls = seen.snap.els;
   }
@@ -686,6 +942,13 @@ async function hopFailed(r: Run, e: GraphEdge, why: string): Promise<false> {
   e.failures++;
   trace("failure", { where: `travel:${e.id}`, error: why }, r.g.steps);
   await relaunch(r, `travel hop ${e.id} failed`);
+  return false;
+}
+
+async function hopElsewhere(r: Run, e: GraphEdge, at: State): Promise<false> {
+  e.failures++;
+  trace("failure", { where: `travel:${e.id}`, error: `expected ${e.to}, landed on ${at.id}: re-planning from there` }, r.g.steps);
+  await arrive(r, await observeNow(r, { mode: "ui" }), {});
   return false;
 }
 
@@ -710,6 +973,7 @@ async function relaunch(r: Run, why: string): Promise<void> {
   trace("recovery", { how: `cold relaunch: ${why}` }, r.g.steps);
   await soft(guardedDevice(r, "launch", () => r.dev.launch({ cold: true })), undefined);
   await arriveInApp(r, "relaunch");
+  r.home = r.cur.id;
 }
 
 // =============================================================================================
@@ -801,76 +1065,122 @@ async function gapPhase(r: Run): Promise<void> {
 // =============================================================================================
 // Phase 3: drain probe (T1)
 // =============================================================================================
-function pickDrainEdge(r: Run): { edge: GraphEdge; action: Action; cost: number } | null {
-  const cost = (e: GraphEdge) => Math.min(0, ...counterEffects(e.effects).filter(f => !f.resource.startsWith("auto:")).map(f => f.delta));
-  const cands = r.g.edges
-    .filter(e => !e.to.startsWith("ext:") && !e.limitHit)
-    .map(e => ({ edge: e, action: actionOf(r.g, e), cost: cost(e) }))
-    .filter((x): x is { edge: GraphEdge; action: Action; cost: number } => x.action?.kind === "consume")
-    .sort((x, y) => x.cost - y.cost || x.edge.firstStep - y.edge.firstStep);
-  return cands[0] ?? null;
+/** One spending action under one selection (the mode it runs in), with its measured per-action cost. */
+interface DrainTarget { state: string; action: string; context: string[]; cost: number | null }
+/** Balance readings, valid as the base for the next sends while no action ran since (`steps`). */
+interface Reading { values: Map<string, number>; steps: number }
+
+const ctxText = (c: readonly string[]) => (c.length ? c.join(" / ") : "(no selection)");
+const hintOf = (c: readonly string[]) => Math.max(0, ...c.flatMap(t => (t.match(/\d+/g) ?? []).map(Number)));
+const TERMINAL = /^(wall|external|time|interrupted|device_unhealthy)/;
+
+/** Per-action cost measured on this action's edges under this selection: the most negative delta, or null. */
+function costOf(r: Run, state: string, action: string, context: readonly string[]): number | null {
+  const deltas = r.g.edges
+    .filter(e => e.from === state && e.action === action && !e.limitHit && !e.to.startsWith("ext:") && sameList(e.context.selected, context))
+    .flatMap(e => counterEffects(e.effects))
+    .filter(f => !f.resource.startsWith("auto:") && f.delta < 0)
+    .map(f => f.delta);
+  return deltas.length ? Math.min(...deltas) : null;
 }
 
-const showsCounter = (r: Run) => (s: State) => r.g.resources.some(x => x.bindings.some(b => b.state === s.id));
+/**
+ * What the drain can repeat: every consume action that worked during the crawl, under every selection its
+ * screen was seen with (a mode chip reading "Basic · 10" or "Premium · 30"), because each may cost differently.
+ */
+function drainTargets(r: Run): DrainTarget[] {
+  const g = r.g;
+  const out: DrainTarget[] = [];
+  for (const s of g.states) {
+    const acts = s.actions.filter(a => a.kind === "consume" && a.status !== "skipped"
+      && g.edges.some(e => e.from === s.id && e.action === a.id && !e.to.startsWith("ext:")));
+    if (!acts.length) continue;
+    const ctxs = new Map<string, string[]>();
+    for (const id of s.obs) {
+      const o = r.obsIndex.get(id);
+      if (o) { const c = contextOf(r, o); ctxs.set(c.join("\n"), c); }
+    }
+    for (const a of acts) {
+      for (const c of [...ctxs.values()].slice(0, MAX_CONTEXTS)) out.push({ state: s.id, action: a.id, context: c, cost: costOf(r, s.id, a.id, c) });
+    }
+  }
+  return out;
+}
+
+const showsCounter = (r: Run) => (s: State) => r.g.resources.some(x => x.bindings.some(b => b.state === s.id)) && !r.anchors.has(s.id);
 
 /** Travel to the nearest state that shows a counter and read it. */
-async function readCounter(r: Run): Promise<Map<string, number> | null> {
+async function readCounter(r: Run): Promise<Reading | null> {
   if (!r.g.resources.length || !(await travelTo(r, showsCounter(r)))) return null;
-  const m = new Map(r.last.counters.map((k: Counter) => [k.resource, k.value]));
+  const values = new Map(r.last.counters.map(k => [k.resource, k.value]));
   trace("info", { phase: "drain", read: r.last.counters, at: r.cur.id }, r.g.steps);
-  return m.size ? m : null;
+  return values.size ? { values, steps: r.g.steps } : null;
 }
 
 /** Per-send cost from two balance readings n sends apart: {kind:"counter", ..., inferred:true}. */
-function backfill(r: Run, edge: GraphEdge, base: Map<string, number>, now: Map<string, number>, n: number): void {
-  for (const [res, b] of base) {
-    const v = now.get(res);
+function backfill(r: Run, edge: GraphEdge, base: Reading, now: Reading, n: number): void {
+  for (const [res, b] of base.values) {
+    const v = now.values.get(res);
     if (v === undefined || v === b || n <= 0) continue;
     const delta = round((v - b) / n);
     edge.effects.push({ kind: "counter", resource: res, before: b, after: v, delta, inferred: true });
-    trace("effect", { edge: edge.id, inferred: true, resource: res, before: b, after: v, sends: n, perSend: delta }, r.g.steps);
+    trace("effect", { edge: edge.id, inferred: true, resource: res, before: b, after: v, sends: n, perSend: delta, context: edge.context.selected }, r.g.steps);
   }
   checkpoint(r);
 }
 
-/**
- * Repeat the costliest consume action. Stop only on a wall, an external app, drainMax, or 3 sends in a
- * row with no reply and no counter change (T1). If the balance is not shown where we send, read it on
- * another screen every 3 sends and back-fill the inferred per-send delta.
- */
-async function drainProbe(r: Run): Promise<string> {
-  const g = r.g;
-  if (r.o.noConsume) return "skipped: --no-consume";
-  if (g.edges.some(e => e.limitHit)) return "skipped: a wall was already observed";
-  const pick = pickDrainEdge(r);
-  if (!pick) { trace("info", { phase: "drain", end: "no consume action observed" }, g.steps); return "none"; }
-  const { edge: e0, action: a } = pick;
-  trace("info", {
-    phase: "drain", edge: e0.id, action: a.id, from: e0.from, context: e0.context.selected,
-    why: pick.cost < 0 ? `largest observed cost (${pick.cost} per action)` : "the first consume action (no cost measured yet)",
-  }, g.steps);
-  const atFrom = (s: State) => s.id === e0.from;
-  if (!(await travelTo(r, atFrom))) return "unreachable";
-  const counterHere = showsCounter(r)(r.cur);
-  let base = counterHere ? null : await readCounter(r);
-  if (base && !(await travelTo(r, atFrom))) return "unreachable";
+/** A known choice that led to the target screen showing the wanted selection (an option on a picker first). */
+function setterFor(r: Run, t: DrainTarget): GraphEdge | undefined {
+  return r.g.edges
+    .filter(e => e.to === t.state && e.from !== t.state && travelable(r.g, e))
+    .filter(e => { const o = r.obsIndex.get(e.obsAfter); return !!o && sameList(contextOf(r, o), t.context); })
+    .sort((x, y) => Number(r.anchors.has(y.from)) - Number(r.anchors.has(x.from)) || y.seen - x.seen)[0];
+}
 
+/** Be on the target's screen with the target's selection; switch the selection by replaying a choice. */
+async function reachTarget(r: Run, t: DrainTarget): Promise<boolean> {
+  const at = (s: State) => s.id === t.state;
+  for (let i = 0; i < 3; i++) {
+    if (!(await travelTo(r, at))) return false;
+    if (sameList(contextOf(r, r.last), t.context)) return true;
+    const setter = setterFor(r, t);
+    if (!setter) {
+      trace("failure", { where: "drain", error: `no known way to select ${ctxText(t.context)} on ${t.state}` }, r.g.steps);
+      return false;
+    }
+    trace("info", { phase: "drain", select: ctxText(t.context), via: setter.id, from: setter.from }, r.g.steps);
+    if (!(await travelTo(r, s => s.id === setter.from))) return false;
+    await travel(r, [setter]);
+  }
+  return at(r.cur) && sameList(contextOf(r, r.last), t.context);
+}
+
+/**
+ * Repeat one spending action under one selection. Stop only on a wall, an external app, `max` sends, or 3
+ * sends in a row with no reply and no counter change (T1). If the balance is not shown where we send, read
+ * it on another screen every 3 sends and back-fill the inferred per-send delta.
+ */
+async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prior: Reading | null): Promise<{ end: string; sends: number; reading: Reading | null }> {
+  const g = r.g;
+  if (!(await reachTarget(r, t))) return { end: "unreachable", sends: 0, reading: prior };
+  const needsRead = g.resources.length > 0 && !showsCounter(r)(r.cur);
+  let base = needsRead ? (prior && prior.steps === g.steps ? prior : await readCounter(r)) : null;
+  if (base && !(await reachTarget(r, t))) return { end: "unreachable", sends: 0, reading: base };
   let n = 0;          // sends since the last balance reading
   let flat = 0;       // sends in a row with no reply and no counter change
   let sends = 0;
   let last: GraphEdge | null = null;
-  let end = "drainMax";
+  let end = "max";
   const grace = r.c.profile.minutes * 1.5;
-  while (sends < r.c.profile.drainMax) {
+  while (sends < max) {
     if (r.stop) { end = r.stop; break; }
     if (minutes(r) > grace) { end = "time"; break; }
-    const from = r.cur;
-    const act = from.id === e0.from ? a : from.actions.find(x => x.kind === "consume" && x.elKey === a.elKey);
-    if (!act) {
-      if (!(await travelTo(r, atFrom))) { end = "unreachable"; break; }
-      continue;
+    if (r.cur.id !== t.state || !sameList(contextOf(r, r.last), t.context)) {
+      if (!(await reachTarget(r, t))) { end = "unreachable"; break; }
     }
-    const out = await step(r, from, act, "drain");
+    const act = r.cur.actions.find(x => x.id === t.action);
+    if (!act) { end = "unreachable"; break; }
+    const out = await step(r, r.cur, act, phase);
     if (out.failed) { end = "the action failed"; break; }
     if (out.external) { end = `external:${out.external}`; break; }
     if (out.wall) { end = "wall"; break; }
@@ -880,17 +1190,54 @@ async function drainProbe(r: Run): Promise<string> {
     const replied = out.fx.some(f => f.kind === "appeared" && !isExcludedTyped(r, f.text));
     flat = counterEffects(out.fx).length || replied ? 0 : flat + 1;
     if (flat >= 3) { end = "3 sends with no reply and no counter change"; break; }
-    if (base && n >= 3 && last) {
+    if (base && n >= READ_EVERY && last && sends < max) {
       const now = await readCounter(r);
       if (now) { backfill(r, last, base, now, n); base = now; n = 0; }
-      if (!(await travelTo(r, atFrom))) { end = "unreachable"; break; }
+      if (!(await reachTarget(r, t))) { end = "unreachable"; break; }
     }
   }
   if (base && n > 0 && last) {
     const now = await readCounter(r);
-    if (now) backfill(r, last, base, now, n);
+    if (now) { backfill(r, last, base, now, n); base = now; }
   }
-  trace("info", { phase: "drain", end, sends, walls: g.edges.filter(e => e.limitHit).map(e => e.id) }, g.steps);
+  trace("info", { phase, end, sends, context: ctxText(t.context) }, g.steps);
+  return { end, sends, reading: base };
+}
+
+/**
+ * T1: first measure what each selection costs (3 sends each, cheapest-looking first, so the last one
+ * measured is usually the one the drain continues on), then repeat the costliest until a wall.
+ */
+async function drainProbe(r: Run): Promise<string> {
+  const g = r.g;
+  if (r.o.noConsume) return "skipped: --no-consume";
+  if (g.edges.some(e => e.limitHit)) {
+    trace("info", { phase: "drain", end: "a wall was already observed during the crawl" }, g.steps);
+    return "skipped: a wall was already observed";
+  }
+  refreshContexts(r);
+  const targets = drainTargets(r);
+  if (!targets.length) { trace("info", { phase: "drain", end: "no consume action observed" }, g.steps); return "none"; }
+  let reading: Reading | null = null;
+  const todo = targets.filter(t => t.cost === null).sort((x, y) => hintOf(x.context) - hintOf(y.context));
+  for (const t of todo) {
+    trace("info", { phase: "drain", measure: ctxText(t.context), state: t.state, action: t.action, sends: MEASURE_SENDS }, g.steps);
+    const res = await sendLoop(r, t, MEASURE_SENDS, "measure", reading);
+    reading = res.reading;
+    if (TERMINAL.test(res.end)) return drainEnd(r, res.end);
+  }
+  const ranked = drainTargets(r).sort((x, y) => (x.cost ?? 0) - (y.cost ?? 0) || hintOf(y.context) - hintOf(x.context));
+  const pick = ranked[0];
+  trace("info", {
+    phase: "drain", drain: ctxText(pick.context), state: pick.state, action: pick.action, cost: pick.cost,
+    why: pick.cost !== null ? `largest cost per action (${pick.cost}) among ${ranked.length} selection(s): ${ranked.map(x => `${ctxText(x.context)}=${x.cost}`).join(", ")}` : "no cost could be measured",
+  }, g.steps);
+  const res = await sendLoop(r, pick, r.c.profile.drainMax, "drain", reading);
+  return drainEnd(r, res.end);
+}
+
+function drainEnd(r: Run, end: string): string {
+  trace("info", { phase: "drain", end, walls: r.g.edges.filter(e => e.limitHit).map(e => e.id) }, r.g.steps);
   return end;
 }
 

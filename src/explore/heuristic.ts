@@ -22,6 +22,13 @@ export function isInput(e: NormElement): boolean {
   return isInputType(e.type);
 }
 
+/** A control named send/submit/arrow on the row of a text field: it sends what the field holds. */
+export function isSendControl(e: NormElement, els: readonly NormElement[]): boolean {
+  if (isInput(e)) return false;
+  const words = `${e.label ?? ""} ${idWords(e)} ${(e.text ?? "").length <= 12 ? e.text ?? "" : ""}`;
+  return SEND_RE.test(words) && els.some(f => f !== e && isInput(f) && sameRow(e, f));
+}
+
 /** "app:id/btn_logout" -> "btn logout", "buttonAddComposer" -> "button Add Composer". */
 const idWords = (e: NormElement) => ((e.identifier ?? "").split("/").pop() ?? "").replace(/[_\-.]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2");
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);

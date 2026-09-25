@@ -84,7 +84,8 @@ const withEconomics = (p: Proposal, m: ProductModel): Proposal => ({ ...p, econo
 
 /** Judge ONE version of ONE proposal: code gates, then (unless policy-rejected) one blind judge call. */
 export async function judgeOnce(m: ProductModel, p0: Proposal, round: number, dig: string, purpose: string): Promise<JudgmentRound> {
-  const p = withEconomics(p0, m);
+  // Economics only for a schema-valid proposal; an invalid one is stopped by the schema gate.
+  const p = Proposal.safeParse(p0).success ? withEconomics(p0, m) : p0;
   const code = codeGates(p, m);
   const base = { proposalId: p.id, version: p.version, round };
   if (code.some(g => !g.pass && g.severity === "policy")) {

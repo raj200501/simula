@@ -134,7 +134,7 @@ function phrase(e: ElementScore): string {
 }
 
 export async function compareScreen(orig: RGBA, mock: RGBA, boxes: DomBox[], s: Screen, m: ProductModel): Promise<Comparison> {
-  const W = orig.width, H = orig.height, d = m.device.density || 1;
+  const W = orig.width, H = orig.height;
   const y0 = Math.min(H - 8, Math.max(0, Math.round(m.device.statusBarPx || 0)));
   const y1 = Math.max(y0 + 8, H - Math.max(0, Math.round(m.device.navBarPx || 0)));
   const binds = new Map(counterBindings(s, m).map(b => [b.el, b.resource]));
@@ -158,9 +158,10 @@ export async function compareScreen(orig: RGBA, mock: RGBA, boxes: DomBox[], s: 
       iou: box ? iou(target, box.rect) : 0,
       want, got, textScore: want ? (box ? dice(want.toLowerCase(), got.toLowerCase()) : 0) : null,
       bgOrig, bgMock, dE, colorScore: dE === null ? null : Math.max(0, 1 - dE / 20),
-      dxDp: box ? r1((box.rect.x - target.x) / d) : 0, dyDp: box ? r1((box.rect.y - target.y) / d) : 0,
-      dwDp: box ? r1((box.rect.w - target.w) / d) : 0, dhDp: box ? r1((box.rect.h - target.h) / d) : 0,
-      target: e.rectDp, got_rect: box ? { x: r1(box.rect.x / d), y: r1(box.rect.y / d), w: r1(box.rect.w / d), h: r1(box.rect.h / d) } : null,
+      // Geometry deltas in dp = CSS px, against the spec rect the fragment was asked to match.
+      dxDp: box ? r1(box.css.x - e.rectDp.x) : 0, dyDp: box ? r1(box.css.y - e.rectDp.y) : 0,
+      dwDp: box ? r1(box.css.w - e.rectDp.w) : 0, dhDp: box ? r1(box.css.h - e.rectDp.h) : 0,
+      target: e.rectDp, got_rect: box ? { x: r1(box.css.x), y: r1(box.css.y), w: r1(box.css.w), h: r1(box.css.h) } : null,
       unbound,
     };
   });

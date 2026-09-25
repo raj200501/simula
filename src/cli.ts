@@ -131,7 +131,7 @@ async function runStage(name: StageName, b: Base): Promise<void> {
         const count = (v: string) => j.final.filter((f: { verdict: string }) => f.verdict === v).length;
         console.log(`judge: SHIP ${count("SHIP")}, REVISE ${count("REVISE")}, REJECT ${count("REJECT")} (${j.rounds.length} judgment rounds)`);
         console.log(`  -> ${path.join(p.proposals, "judgments.md")}`);
-        return { outputs: [path.join(p.proposals, "judgments.json"), path.join(p.proposals, "judgments.md")] };
+        return { outputs: [path.join(p.proposals, "judgments.json"), path.join(p.proposals, "judgments.md"), candFile, path.join(p.proposals, "revisions.json")] };
       });
       return;
     }

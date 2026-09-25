@@ -7,7 +7,7 @@ import type { Timing } from "./observe.ts";
 import { findByKey } from "./observe.ts";
 import { OUT_OF_SCOPE } from "./guards.ts";
 import { DEFAULT_INPUT, SEND_RE, isInput } from "./heuristic.ts";
-import { labelOf, shortType } from "./signature.ts";
+import { labelOf, overlapRatio, shortType } from "./signature.ts";
 
 export interface ActCtx {
   dev: Device;
@@ -114,24 +114,37 @@ export async function perform(c: ActCtx, a: Action, hint?: Rect): Promise<ActRes
   }
 }
 
+/** The field took the focus: an input at the tapped field's place reports focused (nothing else does). */
+function focusedField(els: NormElement[], field: NormElement): NormElement | undefined {
+  return els.find(e => e.focused && isInput(e) && overlapRatio(e.rect, field.rect) >= 0.5);
+}
+
 /**
- * T7: tap the field, type (never ENTER: it is a newline in chat apps), then look again, because many
- * composers only show Send once there is text. Send = a control named send/submit/arrow, else the
- * rightmost control on the field's row, else ENTER. Finally check that the field cleared.
+ * T7: tap the field and check that it took the focus (a tap that opened something else must not type into
+ * whatever has the focus now), type (never ENTER: it is a newline in chat apps), then look again, because
+ * many composers only show Send once there is text. Send = a control on the field's row named
+ * send/submit/arrow, else the rightmost control on that row that appeared with the typing, else ENTER.
+ * Finally check that the field cleared.
  */
 async function typeAndSend(c: ActCtx, a: Action, hint?: Rect): Promise<ActResult> {
   const text = a.input?.trim() || DEFAULT_INPUT;
   const field = a.elKey ? await locate(c, a.elKey, hint) : undefined;
   if (!field) return { ok: false, reason: "input field not found" };
-  const focus = await tapElement(c, field);
-  if (!focus.ok) return focus;
-  await sleep(c.timing.pollMs);
+  let focused: NormElement | undefined;
+  for (let i = 0; i < 2 && !focused; i++) {
+    const focus = await tapElement(c, i === 0 ? field : refindField(await look(c), field) ?? field);
+    if (!focus.ok) return focus;
+    await sleep(c.timing.pollMs);
+    focused = focusedField(await look(c), field);
+  }
+  if (!focused) return { ok: false, reason: "the text field did not take the focus after tapping it (nothing typed)" };
+  const before = await look(c);
   await c.dev.typeText(text);
   await sleep(c.timing.pollMs);
   const els = await look(c);
   const typedField = refindField(els, field) ?? field;
   const pre = a.sendElKey ? findByKey(els, a.sendElKey) : undefined;
-  const send = (pre && sendable(pre, typedField, text) ? pre : undefined) ?? findSend(els, typedField, text);
+  const send = (pre && sendable(pre, typedField, text) && onRowOf(typedField)(pre) ? pre : undefined) ?? findSend(els, typedField, text, before);
   let how = "ENTER";
   if (send) {
     const s = await tapElement(c, send);
@@ -150,17 +163,30 @@ function sendable(e: NormElement, field: NormElement, typed: string): boolean {
     && !(e.text ?? "").toLowerCase().includes(typed.toLowerCase());
 }
 
-/** Send control for a typed field (exported for tests). */
-export function findSend(els: NormElement[], field: NormElement, typed: string): NormElement | undefined {
+/** On the field's row: centres at most one field height (or 48 px) apart vertically. */
+function onRowOf(field: NormElement): (e: NormElement) => boolean {
   const cy = field.rect.y + field.rect.h / 2;
-  const onRow = (e: NormElement) => Math.abs(e.rect.y + e.rect.h / 2 - cy) <= Math.max(field.rect.h, 48);
+  return e => Math.abs(e.rect.y + e.rect.h / 2 - cy) <= Math.max(field.rect.h, 48);
+}
+
+/**
+ * Send control for a typed field (exported for tests). Only on the field's row, never elsewhere (an avatar
+ * or a "+" in the header opens other things). A control named send/submit/arrow first; else, the
+ * rightmost control on the right half of the row that was not there before typing (the mic turned into
+ * Send); undefined means: press ENTER.
+ */
+export function findSend(els: NormElement[], field: NormElement, typed: string, before?: NormElement[]): NormElement | undefined {
+  const onRow = onRowOf(field);
   const dist = (e: NormElement) => Math.hypot(e.rect.x - field.rect.x, e.rect.y - field.rect.y);
-  const named = els.filter(e => sendable(e, field, typed)
+  const named = els.filter(e => sendable(e, field, typed) && onRow(e)
     && (SEND_RE.test(e.label ?? "") || SEND_RE.test(e.identifier ?? "") || (!!e.text && e.text.length <= 12 && SEND_RE.test(e.text))));
-  if (named.length) return named.sort((a, b) => Number(onRow(b)) - Number(onRow(a)) || dist(a) - dist(b))[0];
+  if (named.length) return named.sort((a, b) => dist(a) - dist(b))[0];
+  if (!before) return undefined;
   const fieldArea = field.rect.w * field.rect.h;
+  const existed = (e: NormElement) => before.some(b => shortType(b.type) === shortType(e.type) && (b.identifier ?? "") === (e.identifier ?? "")
+    && labelOf(b) === labelOf(e) && overlapRatio(b.rect, e.rect) >= 0.5);
   return els
-    .filter(e => sendable(e, field, typed) && onRow(e) && e.rect.x >= field.rect.x + field.rect.w / 2 && e.rect.w * e.rect.h < fieldArea)
+    .filter(e => sendable(e, field, typed) && onRow(e) && !existed(e) && e.rect.x >= field.rect.x + field.rect.w / 2 && e.rect.w * e.rect.h < fieldArea)
     .sort((a, b) => b.rect.x + b.rect.w - (a.rect.x + a.rect.w))[0];
 }
 

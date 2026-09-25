@@ -19,7 +19,12 @@ const TABLE: ReadonlyArray<[RegExp, ExternalKind]> = [
   [/^android$/, "crash"],
 ];
 
-/** "in-app" for the app itself (or a WebDevice page, "web"); otherwise the kind of external surface. */
+/**
+ * "in-app" for the app itself (or a WebDevice page, "web"); otherwise the kind of external surface. Any
+ * other app in front (BACK on the root screen brings back the last-used app, not always the launcher)
+ * means we left the app: "launcher". The explorer records that once and relaunches; it never presses
+ * BACK inside someone else's app.
+ */
 export function classifyForeground(fg: string, appPackage: string): Surface {
   if (fg === appPackage || fg === "web") return "in-app";
   // WebDevice reports external cards as "ext:<kind>"
@@ -28,7 +33,12 @@ export function classifyForeground(fg: string, appPackage: string): Surface {
     return k.success ? k.data : "other";
   }
   for (const [re, kind] of TABLE) if (re.test(fg)) return kind;
-  return "other";
+  return "launcher";
+}
+
+/** The home screen itself (as opposed to another app that came to the front). */
+export function isLauncherPackage(fg: string): boolean {
+  return /launcher/i.test(fg);
 }
 
 export function isInApp(fg: string, appPackage: string): boolean {
