@@ -1,5 +1,7 @@
 # Simula App Monetization Agent
 
+[![ci](https://github.com/raj200501/simula/actions/workflows/ci.yml/badge.svg?branch=claude/serene-brahmagupta-owzz1n)](https://github.com/raj200501/simula/actions/workflows/ci.yml) Every push runs the typecheck, 267 tests (including the whole pipeline end to end on a bundled fixture app) and the no-key demo.
+
 **Thesis: understand the app as an economy.** The explorer drives a real Android app through mobile-mcp and measures what users do, what each action costs, where free users hit a wall and what the app sells. It writes that into **one evidence-backed product model**: every price, cost and wall is quoted from the screen or measured as a counter change, then verified in code. **Everything else is compiled from that model:**
 - the 1:1 interactive mock and its QA loop;
 - rewarded-ad proposals, as typed patches to the model;
