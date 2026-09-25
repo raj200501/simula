@@ -252,3 +252,15 @@ describe("the real mobile-mcp 1.0.5 server (no emulator needed)", () => {
 after(() => {
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test("insetsFromElements measures system bars from systemui elements (API 35 fallback)", async () => {
+  const { insetsFromElements } = await import("../src/device/mcp.ts");
+  const el = (id: string, y: number, h: number) => ({ type: "android.view.View", identifier: `com.android.systemui:id/${id}`, rect: { x: 0, y, w: 1080, h } });
+  const app = { type: "android.widget.TextView", text: "Hello", rect: { x: 40, y: 300, w: 400, h: 60 } };
+  const r = insetsFromElements([el("status_bar", 0, 132), el("clock", 40, 60), app, el("navigation_bar_frame", 2274, 126)], 2400);
+  assert.equal(r.statusBarPx, 132);
+  assert.equal(r.navBarPx, 126);
+  const none = insetsFromElements([app], 2400);
+  assert.equal(none.statusBarPx, null);
+  assert.equal(none.navBarPx, null);
+});

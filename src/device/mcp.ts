@@ -142,6 +142,20 @@ export function parseInsets(text: string): { statusBarPx: number | null; navBarP
 }
 
 /**
+ * Fallback inset measurement from the UI dump itself: the status bar and navigation bar windows show up as
+ * com.android.systemui elements. Needed because `dumpsys window` formats change between Android releases
+ * (the API 35 image reports no parsable frames). Returns null for a bar with no systemui elements.
+ */
+export function insetsFromElements(els: RawElement[], heightPx: number): { statusBarPx: number | null; navBarPx: number | null } {
+  const sys = els.filter(e => (e.identifier ?? "").startsWith("com.android.systemui:") && e.rect.w > 0 && e.rect.h > 0);
+  const top = sys.filter(e => e.rect.y < heightPx * 0.1);
+  const bottom = sys.filter(e => e.rect.y + e.rect.h > heightPx * 0.9 && e.rect.y > heightPx * 0.5);
+  const statusBarPx = top.length ? Math.max(...top.map(e => e.rect.y + e.rect.h)) : null;
+  const navBarPx = bottom.length ? heightPx - Math.min(...bottom.map(e => e.rect.y)) : null;
+  return { statusBarPx, navBarPx };
+}
+
+/**
  * Vertical swipe with start and end kept inside 15-85% of the height (and x inside 10-90% of the width), away
  * from the gesture-navigation edges where a swipe would go Home or Back. mobile-mcp does not clamp the end point.
  * "up" = the finger moves up = content scrolls toward what is below.
@@ -390,7 +404,8 @@ export function readDeviceConfig(file = path.join(ROOT, "config", "device.json")
 async function screenMetrics(serial: string, size: { width: number; height: number }): Promise<{ density: number; statusBarPx: number; navBarPx: number; source: string }> {
   const cfg = readDeviceConfig();
   const sameScreen = cfg && (cfg.widthPx === undefined || cfg.widthPx === size.width) && (cfg.heightPx === undefined || cfg.heightPx === size.height);
-  if (cfg && sameScreen && cfg.density) {
+  // A saved config only short-circuits when it has real insets; zeros mean "unknown" (older probes wrote them).
+  if (cfg && sameScreen && cfg.density && (cfg.statusBarPx ?? 0) > 0) {
     return { density: cfg.density, statusBarPx: cfg.statusBarPx ?? 0, navBarPx: cfg.navBarPx ?? 0, source: "config/device.json" };
   }
   const adb = adbBinary();
@@ -452,6 +467,14 @@ export class McpDevice implements Device {
     if (this.cachedInfo) return this.cachedInfo;
     const size = parseScreenSize(await this.call("mobile_get_screen_size"));
     const m = await screenMetrics(this.serial, size);
+    if (m.statusBarPx <= 0 || m.navBarPx <= 0) {
+      // dumpsys gave nothing usable: measure the system bars from the element dump instead.
+      const fromUi = insetsFromElements(await this.elements().catch(() => []), size.height);
+      if (m.statusBarPx <= 0 && fromUi.statusBarPx) { m.statusBarPx = fromUi.statusBarPx; m.source += "+ui-dump"; }
+      if (m.navBarPx <= 0 && fromUi.navBarPx) { m.navBarPx = fromUi.navBarPx; m.source += "+ui-dump"; }
+      // Gesture navigation often exposes no element; keep taps out of the 24 dp gesture strip anyway.
+      if (m.navBarPx <= 0) { m.navBarPx = Math.round(24 * m.density); m.source += "+gesture-default"; }
+    }
     trace("info", { where: "device.info", widthPx: size.width, heightPx: size.height, density: m.density, statusBarPx: m.statusBarPx, navBarPx: m.navBarPx, source: m.source });
     this.cachedInfo = DeviceInfo.parse({ widthPx: size.width, heightPx: size.height, density: m.density, statusBarPx: m.statusBarPx, navBarPx: m.navBarPx, kind: "android" });
     return this.cachedInfo;
