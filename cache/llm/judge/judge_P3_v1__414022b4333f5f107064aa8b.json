@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Play a 15-second game with Starship Galley to try Premium mode free."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Watch a quick game partner ad to unlock 15 minutes of Premium mode without spending extra credits."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play Now / No Thanks"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User views chat model settings on Choose Chat Mode and taps the Premium mode trial option... Play Now"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game with Starship Galley to try Premium mode free."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "No Thanks"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger: User views chat model settings on Choose Chat Mode and taps the Premium mode trial option."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-paying guest users on Basic mode with available daily ad quota."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets s04 (Choose Chat Mode) where users view rates ('Premium 30 credits per message · Longer, smarter replies'), offering a timed trial right at the moment of evaluating mode differences.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Adds a timed pass via a Game Partner mini-game without taking away existing free credits or interrupting streaming responses (removesFreeValue: false).",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricts eligibility to non-paying guest users on Basic mode, time-boxes the trial to 15 minutes, and caps it at 2 per day.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code flags that the cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end when using text-premium.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on s04 (Choose Chat Mode), which is a model settings sheet with relatively infrequent reach compared to the main chat loop.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD unit, entry=button, standard SSV (REWARD_VERIFIED), and adds a trial button to s04.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses screen s04, element e10 ('Premium 30 credits per message · Longer, smarter replies'), and character/game partner 'Starship Galley'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps at 2 per day with a 30-minute cooldown, preventing user fatigue.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies primary KPIs, guardrails (-3% non-inferiority, retention, message volume), and a user-level 10% holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Switch the reward model tier from premium text to a cheaper model or reduce token count to ensure COGS stays below net revenue per view.",
+   "Consider expanding the trigger surface to include moment-of-need triggers (such as hitting zero credits in chat) to improve reach."
+  ],
+  "topConcern": "The cost to serve the premium text trial ($0.0090) exceeds net revenue per view ($0.0063) at the low end, resulting in negative margins per view."
+ },
+ "usage": {
+  "input": 31695,
+  "output": 1055,
+  "cacheRead": 16093,
+  "cacheWrite": 0,
+  "thoughts": 1691
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:51:54.042Z"
+}

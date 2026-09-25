@@ -122,36 +122,42 @@ export async function perform(c: ActCtx, a: Action, hint?: Rect): Promise<ActRes
   }
 }
 
-/** The field took the focus: an input at the tapped field's place reports focused (nothing else does). */
-function focusedField(els: NormElement[], field: NormElement): NormElement | undefined {
-  return els.find(e => e.focused && isInput(e) && overlapRatio(e.rect, field.rect) >= 0.5);
+/** The typed text is in the field: its own text, or a text drawn inside its rect (Compose draws it apart). */
+function landedIn(els: NormElement[], field: NormElement, text: string): boolean {
+  const want = mask(text, 200);
+  const box = (refindField(els, field) ?? field).rect;
+  return els.some(e => mask(labelOf(e), 200).includes(want) && overlapRatio(e.rect, box) >= 0.5);
 }
 
 /**
- * T7: tap the field and check that it took the focus (a tap that opened something else must not type into
- * whatever has the focus now), type (never ENTER: it is a newline in chat apps), then look again, because
- * many composers only show Send once there is text. Send = a control on the field's row named
- * send/submit/arrow, else the rightmost control on that row that appeared with the typing, else ENTER.
- * Finally check that the field cleared.
+ * T7: tap the field, type (never ENTER: it is a newline in chat apps), then check that the text landed in
+ * that field - many devices (Compose apps under mobile-mcp) never report which field has the focus, so the
+ * check is on the result. If the text went elsewhere or nowhere, press BACK (hides the keyboard) and fail:
+ * never send what did not land in the field. If the tap visibly gave the focus to another field (it opened
+ * a profile sheet), nothing is typed at all. Then look again, because many composers only show Send once
+ * there is text: Send = a control on the field's row named send/submit/arrow, else the rightmost control on
+ * that row that appeared with the typing, else ENTER. Finally check that the field cleared.
  */
 async function typeAndSend(c: ActCtx, a: Action, hint?: Rect): Promise<ActResult> {
   const text = a.input?.trim() || DEFAULT_INPUT;
   const field = a.elKey ? await locate(c, a.elKey, hint) : undefined;
   if (!field) return { ok: false, reason: "input field not found" };
-  let focused: NormElement | undefined;
-  for (let i = 0; i < 2 && !focused; i++) {
-    const focus = await tapElement(c, i === 0 ? field : refindField(await look(c), field) ?? field);
-    if (!focus.ok) return focus;
-    await sleep(c.timing.pollMs);
-    focused = focusedField(await look(c), field);
-  }
-  if (!focused) return { ok: false, reason: "the text field did not take the focus after tapping it (nothing typed)" };
+  const tapped = await tapElement(c, field);
+  if (!tapped.ok) return tapped;
+  await sleep(c.timing.pollMs);
   const before = await look(c);
+  const focused = before.filter(e => e.focused && isInput(e));
+  if (focused.length && !focused.some(e => overlapRatio(e.rect, field.rect) >= 0.5)) {
+    return { ok: false, reason: "tapping the field gave the focus to another text field (nothing typed)" };
+  }
   // a draft left in the field (a wall keeps it) already holds our text: send it rather than typing it twice
-  const draft = mask(labelOf(focused), 200).includes(mask(text, 200));
-  if (!draft) {
+  if (!landedIn(before, field, text)) {
     await c.dev.typeText(text);
     await sleep(c.timing.pollMs);
+  }
+  if (!landedIn(await look(c), field, text)) {
+    await c.dev.back();
+    return { ok: false, reason: "the typed text did not land in the field (pressed BACK to hide the keyboard; nothing sent)" };
   }
   const els = await look(c);
   const typedField = refindField(els, field) ?? field;

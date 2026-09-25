@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal surface is s01 (Daily Checkin Dialog) with game partner 'The Midnight Library', which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal rewards in-app credits (r1) for completing a rewarded mini-game; no clicks or installs are incentivized."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses gain framing ('Earn Bonus Credits') with a clear decline option ('No thanks') and no dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Proposal features an explicit CTA button 'Play Now' on the offer card."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Proposal clearly states the exact reward (+10 credits) and required action (15-second game) prior to the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Proposal includes an equally legible decline option ('No thanks') that leaves the user on s01 with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger is set immediately after claiming the daily check-in reward on s01, entirely separate from chat streaming."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly restricted to non-paying guests who have completed their daily check-in."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Triggers precisely at moment m4 (post-reward on Daily Checkin Dialog s01), offering bonus credits right when the user is engaged with check-in rewards.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Feels completely native as an extension of the daily check-in flow, taking nothing away and preserving the user state.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying guests, capped at 1 per day, with a reward value (+10 credits / $0.0139) far below the cheapest pack ($1.39).",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0018) is well below net revenue per view, and reward value aligns closely with single-view ad revenue.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Leverages the daily check-in touchpoint, which is a frequent and habitual engagement loop for users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses Simula SIM-RWD unit with button entry, REWARD_VERIFIED grant, and standard server-side verification.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Directly uses the app's nouns and IDs: r1 credits, src1 daily check-in, s01 Daily Checkin Dialog, and game partner 'The Midnight Library'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps the offer strictly at 1 per day with a 1440-minute cooldown and clear decline path.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines rewarded ARPDAU as primary metric, lists key guardrails, and specifies a 5% user-level randomized holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None. The proposal is exceptionally well-scoped, economically sound, and strictly adheres to all policy and product guidelines."
+ },
+ "usage": {
+  "input": 31741,
+  "output": 1018,
+  "cacheRead": 16093,
+  "cacheWrite": 0,
+  "thoughts": 1060
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:52:21.492Z"
+}

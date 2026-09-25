@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Starship Galley (Sci-fi comedy roleplay chat)"
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Watch a quick game partner ad to unlock 15 minutes of Premium mode without spending extra credits."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Unlocks 15 minutes of Premium mode via rewarded ad view"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: \"Play Now\""
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game with Starship Galley to try Premium mode free."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: \"No Thanks\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "User hits credit limits or opens chat mode on Starship Galley Chat and selects Premium trial."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility: \"Non-paying guest users on Basic mode with available daily ad quota.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal trigger: 'User hits credit limits or opens chat mode on Starship Galley Chat and selects Premium trial.' matches digest Starship Galley Chat.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal simula unit 'SIM-RWD' with gamePartner 'Starship Galley' integrates natively into digest Starship Galley Chat without removing free value.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Proposal caps: { perDay: 2, cooldownMin: 30 } and restriction to non-paying guest users on Basic mode protect subscription conversion.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view is $0.0018 (text-cheap), which is well below US net revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Proposal targets surface 's03' (Starship Galley Chat) which is part of the core loop.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Proposal maps directly to SIM-RWD with button entry and REWARD_VERIFIED grant condition.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal uses exact app nouns and IDs from the digest, including Starship Galley, s03, r1, k1, k2.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Proposal explicitly sets perDay: 2 and cooldownMin: 30 caps.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposal defines primary KPIs, guardrails, and a user-level 10% randomized holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None. The proposal is exceptionally well-grounded, features robust unit economics, proper frequency caps, and strict non-payer eligibility."
+ },
+ "usage": {
+  "input": 31721,
+  "output": 943,
+  "cacheRead": 16093,
+  "cacheWrite": 0,
+  "thoughts": 2729
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:55:42.098Z"
+}

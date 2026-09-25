@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-subscribers",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The Store Screen and 15-second game are SFW surfaces with no sensitive topics."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards +10 credits (in-app resource r1), no clicks, installs, or cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Gain framing ('Play a 15-second game to get +10 credits'), no dark patterns or loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps the pill and explicitly chooses 'Play for +10'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer clearly states 'Play a 15-second game to get +10 credits. 3 per day.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option 'Not now' is available and leaves the user on s05 with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Placed on Store Screen (s05), completely away from active chat generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": false,
+    "evidence": "Eligibility states: 'All users, including subscribers, on every app open', violating subscriber/payer exclusion guidelines."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Triggered on Store Screen when balance is low (<30 credits), offering +10 credits. Fits the moment when users are in the store looking at credit balances.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Native placement on Store Screen, preserves app flow, and is strictly additive.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Capped at 3 per day (+30 credits), far below pack sizes, but eligibility explicitly includes subscribers, creating potential cannibalization risk.",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view ($0.0018) is well below net revenue per view ($0.009-0.015); reward value is appropriate.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Reaches users visiting the Store Screen with a low balance (<30 credits), which is a moderate sub-segment of DAU.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD with button entry, SSV, and simple resource delta patch on s05.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References r1 (Credits), k1, s05 (Store Screen), and store elements correctly.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at 3 per day with a 30-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric (Refills per DAU and total revenue per user), guardrails, and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Restrict eligibility to non-paying users and exclude subscribers/payers to prevent cannibalization and comply with payer suppression guidelines.",
+   "Consider expanding the trigger or adding an in-chat depletion trigger to capture higher intent when users hit the zero-credit wall."
+  ],
+  "topConcern": "The proposal explicitly includes subscribers in its eligibility criteria ('All users, including subscribers'), violating payer/subscriber exclusion guardrails."
+ },
+ "usage": {
+  "input": 31507,
+  "output": 722,
+  "cacheRead": 16091,
+  "cacheWrite": 0,
+  "thoughts": 3294
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:57:00.219Z"
+}

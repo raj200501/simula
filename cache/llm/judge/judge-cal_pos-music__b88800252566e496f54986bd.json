@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-music",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Starship Galley Chat / Sci-fi comedy"
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "your next 2 Basic mode messages in the next 10 minutes cost no Credits"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play to unlock / Not now"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Play to unlock / The user taps the mode selector"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game: your next 2 Basic mode messages in the next 10 minutes cost no Credits."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Not now"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "after the reply has finished (the intent signal, as with a song search)."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-payers only, returning users from their second session on; never shown to subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "When the user reaches for more on Starship Galley Chat with too few Credits, one 15-second game opens a 10-minute session of up to 2 Basic mode messages at no Credits cost.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "after the reply has finished (the intent signal, as with a song search).",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Once a day, 10 minutes, at most 2 messages, visibly expiring; packs remain the only way to keep going longer.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view: $0.0036 (text-cheap x 2). One completed US view earns $0.0090–$0.0150.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Starship Galley Chat (s03), reach=core-loop",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "\"unit\": \"SIM-RWD\", \"entry\": \"button\", \"minPlaySec\": 15",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Starship Galley Chat, Basic mode, Credits, s03",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "\"perDay\": 1, \"cooldownMin\": 0",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "10% user-level holdout for 4 weeks",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None; the proposal is exceptionally well-structured, tightly bounded in economics and frequency, and preserves core purchase intent."
+ },
+ "usage": {
+  "input": 31513,
+  "output": 888,
+  "cacheRead": 16091,
+  "cacheWrite": 0,
+  "thoughts": 3639
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:56:23.906Z"
+}

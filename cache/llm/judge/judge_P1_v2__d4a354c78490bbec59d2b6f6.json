@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Targeting SFW Starship Galley Chat sci-fi cooking theme."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards 15 free credits for playing a 15-second mini-game with no ad clicks or installs incentivized."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Gain-framed offer with clear decline option and no dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Requires an explicit tap on the Play Now button."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Clearly states the 15-second mini-game action and 15 credits reward before launch."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Provides an equally legible No thanks decline button that returns the user to the chat."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered when message credits are exhausted, avoiding mid-stream interruptions."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Restricted explicitly to non-paying users with insufficient balance."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Triggered precisely when message credits run out during chat, offering an immediate credit refill.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Uses Starship Galley as the game partner and preserves chat flow and input state.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying users with a strict daily cap of 3 grants, protecting credit pack purchases.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.0027, well below the net revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Engages users directly on the core messaging loop when balances hit zero.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD with button entry, REWARD_VERIFIED, and standard patch components.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the app's actual currency r1, s03 Starship Galley Chat, and Starship Galley character.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Implements an explicit per-day cap of 3 grants and a 30-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary ARPDAU metrics, guardrails, and a 28-day user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None"
+ },
+ "usage": {
+  "input": 31721,
+  "output": 848,
+  "cacheRead": 16093,
+  "cacheWrite": 0,
+  "thoughts": 2169
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:55:45.514Z"
+}

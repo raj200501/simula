@@ -259,9 +259,10 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
   let maxOut = Math.min(req.maxTokens ?? (req.schema ? 16000 : 32000), 65536);
   let feedback = "";
   let served = model;
+  let thinking = THINKING[effort];
   for (let attempt = 0; attempt < 3; attempt++) {
     const config: GenerateContentConfig = { systemInstruction: req.system.join("\n\n"), maxOutputTokens: maxOut };
-    if (!noThinking.has(model)) config.thinkingConfig = { thinkingLevel: THINKING[effort] };
+    if (!noThinking.has(model)) config.thinkingConfig = { thinkingLevel: thinking };
     if (req.schema) { config.responseMimeType = "application/json"; config.responseJsonSchema = geminiSchema(req.schema as z.ZodType<unknown>); }
     const turn: Content[] = feedback ? [...contents, { role: "user", parts: [{ text: feedback }] }] : contents;
     const params = { model, contents: turn, config };
@@ -274,8 +275,16 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
     const finish = res.candidates?.[0]?.finishReason ?? null;
     if (block || finish === "SAFETY" || finish === "PROHIBITED_CONTENT" || finish === "BLOCKLIST") throw new RefusalError(`${req.purpose}: blocked by Gemini (${block ?? finish})`);
     const text = res.text ?? "";
+    // Thinking tokens count against maxOutputTokens: a long think can leave a truncated answer. Retry
+    // with more room and one thinking level less (text and JSON alike); the last attempt returns what it has.
+    if (finish === "MAX_TOKENS" && attempt < 2) {
+      const thought = um?.thoughtsTokenCount ?? 0;
+      maxOut = Math.min(maxOut * 2, 65536);
+      if (thought > (um?.candidatesTokenCount ?? 0)) thinking = thinking === ThinkingLevel.HIGH ? ThinkingLevel.MEDIUM : ThinkingLevel.LOW;
+      trace("failure", { where: `llm:${req.purpose}`, error: `MAX_TOKENS after ${thought} thinking tokens; retrying with maxOutputTokens=${maxOut}, thinking ${thinking}` });
+      continue;
+    }
     if (!req.schema) return { text, usage, stop: finish, model: served };
-    if (finish === "MAX_TOKENS") { maxOut = Math.min(maxOut * 2, 65536); trace("failure", { where: `llm:${req.purpose}`, error: `MAX_TOKENS; retrying with ${maxOut}` }); continue; }
     let raw: unknown;
     try { raw = JSON.parse(text); } catch { feedback = "Your previous reply was not valid JSON. Reply with JSON only, matching the schema."; continue; }
     const ok = req.schema.safeParse(raw);
@@ -292,8 +301,16 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
 function fallbackChain(model: string): string[] {
   const extra = (process.env.SIMULA_MODEL_FALLBACKS ?? "gemini-3.5-flash,gemini-3.7-flash,gemini-3.6-flash")
     .split(",").map(x => x.trim()).filter(Boolean);
-  return [model, ...extra.filter(m => m !== model)];
+  // Flash-Lite is the last resort for Flash calls: a weaker answer beats a deterministic stub.
+  return [...new Set([model, ...extra, MODELS.fast].filter(Boolean))];
 }
+
+// The free tier allows about 20 requests per DAY per Flash model (quota "GenerateRequestsPerDayPerProjectPerModel").
+// A model that reports its daily quota is skipped for the rest of this process; only when every model in
+// the chain is exhausted does the call fail with BudgetExceeded (the stage then degrades or stops, and a
+// re-run tomorrow resumes from the cache).
+const exhaustedToday = new Set<string>();
+const DAILY = /per ?day|PerDay|daily/i;
 
 // Three laps of the fallback chain (with 10 s / 20 s / 40 s pauses between laps): free-tier 503 storms
 // usually clear within a minute; after that the caller's deterministic fallback takes over.
@@ -303,7 +320,12 @@ async function geminiWithRetry(purpose: string, model: string, params: { model: 
   const chain = fallbackChain(model);
   let hop = 0;       // index into chain
   let backoffs = 0;  // how many times we slept after trying every model
+  const live = () => chain.filter(m => !exhaustedToday.has(m));
   for (let attempt = 1; ; attempt++) {
+    // Next model that still has quota today, starting from the current hop.
+    let k = 0;
+    while (k < chain.length && exhaustedToday.has(chain[hop % chain.length])) { hop++; k++; }
+    if (!live().length) throw new BudgetExceeded(`Gemini free-tier DAILY quota reached on every model (${chain.join(", ")}). Resume after midnight Pacific (finished calls are cached), or set SIMULA_MODEL / SIMULA_MODEL_FALLBACKS.`);
     params.model = chain[hop % chain.length];
     await pace(params.model);
     try {
@@ -317,15 +339,20 @@ async function geminiWithRetry(purpose: string, model: string, params: { model: 
       }
       const transient = status === 429 || status === 500 || status === 503;
       if (!transient) throw e;
-      if (status === 429 && /per ?day|PerDay|daily/i.test(msg) && hop + 1 >= chain.length)
-        throw new BudgetExceeded(`Gemini free-tier DAILY quota reached on every fallback model. Resume tomorrow (finished calls are cached), or set SIMULA_MODEL / SIMULA_MODEL_FALLBACKS.`);
+      if (status === 429 && DAILY.test(msg)) {
+        exhaustedToday.add(params.model);
+        trace("budget", { kind: "gemini-daily", model: params.model, left: live() });
+        attempt--; // a daily-quota refusal is not a retry of a busy model
+        hop++;
+        continue;
+      }
       trace("failure", { where: `gemini:${purpose}`, error: `${status} on ${params.model} (attempt ${attempt}/${MAX_GEMINI_ATTEMPTS}): ${msg.slice(0, 140)}` });
       if (attempt >= MAX_GEMINI_ATTEMPTS) {
-        trace("failure", { where: `gemini:${purpose}`, error: `gave up after ${attempt} attempts across ${[...new Set(chain)].join(", ")}` });
+        trace("failure", { where: `gemini:${purpose}`, error: `gave up after ${attempt} attempts across ${live().join(", ")}` });
         throw e;
       }
       hop++;
-      if (hop % chain.length !== 0) {
+      if (hop % chain.length !== 0 && live().length > 1) {
         trace("recovery", { how: `retrying on ${chain[hop % chain.length]} (next fallback model)` });
         continue;
       }

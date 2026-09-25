@@ -110,12 +110,13 @@ out/index.html
   - A **repeated group** is 3 or more elements of the same short type that share a left edge OR a right edge (±8 px) within a vertical run. This handles chat bubbles.
   - The chrome rule: the top/bottom 15% band, or selected/checked, or a short label (≤ 24 chars) that is not in a repeated group.
   - The annotator's `sameAs` prompt says: "same template, different content = same state".
-- **Wall detection.** An edge is a wall only if one of these holds:
-  - the next state is a new screen whose kind is not `chat`;
-  - it carries a `limit`/`price`/`upsell` signal;
-  - it is a modal, sheet or dialog.
+- **Wall detection** (tightened after the first real-device runs). An edge after a consume action is a wall only when there is evidence that the send was blocked:
+  - a new limit, price or upsell signal that the from-state did not already have;
+  - sign-up, log-in or create-account wording;
+  - a login-wall screen;
+  - a limit message inside the chat itself, matched by strict phrases ("free messages", "messages left", "limit reached", "sign up to keep chatting", "come back tomorrow").
 
-  A different state id alone is not enough.
+  A sheet or new page with no such evidence (for example an attach-a-photo prompt) is **not** a wall, and a same-template relabel (a mode chip) never is. The wall edge records `limit after N sends`.
 - **Drain probe.** For consume edges, stop only on:
   - a wall;
   - an external app;

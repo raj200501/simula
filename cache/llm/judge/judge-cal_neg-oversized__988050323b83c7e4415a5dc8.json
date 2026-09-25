@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-oversized",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Starship Galley Chat opens because Credits are too low; context is safe sci-fi cooking roleplay."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a 15-second game to unlock +10 credits now. 3 per day."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a 15-second game to unlock +10 credits now."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Primary CTA button: Play for +10."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game to unlock +10 credits now. 3 per day."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option: No thanks."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "...appears only after the previous reply has finished."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-payers only, returning users from their second session on; never shown to subscribers..."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets the out-of-credits moment at s03, but the JSON reward amount specifies 1,000 credits creating a major mismatch with the text (+10 credits).",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Appears after the previous reply has finished on s03, maintaining conversational flow.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Fails severely because JSON reward amount is set to 1,000 credits (matching the $1.39 store pack), completely destroying the IAP economy.",
+    "score": 1
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Failed economic check: reward is worth 92.7x one view's revenue at list price ($4.17 daily max vs $1.39 cheapest pack).",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggers directly in the core messaging loop on Starship Galley Chat when credits run out.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD with button entry, SSV (REWARD_VERIFIED), and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References s03, r1, k1, and Starship Galley Chat from the product model digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 per day with a 10-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines wall unlocks per DAU and total revenue per user with a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix the reward amount in the proposal JSON: change reward.amount from 1000 to 10 to match the text (+10 credits).",
+   "Re-evaluate economic viability so that daily earnable value stays well below the cheapest paid pack ($1.39) and aligns with single-view revenue."
+  ],
+  "topConcern": "The proposal JSON requests an economic-breaking reward amount of 1,000 credits (matching the $1.39 store pack) despite the text claiming +10 credits, completely cannibalizing the IAP economy."
+ },
+ "usage": {
+  "input": 31576,
+  "output": 1018,
+  "cacheRead": 16091,
+  "cacheWrite": 0,
+  "thoughts": 1908
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:56:50.104Z"
+}

@@ -1,0 +1,142 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Watch a video ad for free credits on the Store screen.",
+   "Watch an ad to double daily check-in credits on the Daily Checkin Dialog.",
+   "Watch an ad when running out of messages to get a small credit refill."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Watch an ad to refill message credits when running low during chat",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "Watch an ad to unlock premium mode or get discount on bot start",
+    "viable": true
+   },
+   {
+    "moment": "m3",
+    "exchange": "Watch an ad to try Premium mode for free for a limited time",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Watch an ad to double the daily check-in credit claim",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "Watch an ad in the store to earn bonus credits without buying packs",
+    "viable": true
+   },
+   {
+    "moment": "m6",
+    "exchange": "No offer allowed during first value core screen per policy",
+    "viable": false
+   },
+   {
+    "moment": "m7",
+    "exchange": "Watch an ad to unlock a trial of Premium message replies",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "In-Chat Message Refill",
+    "case": "existing",
+    "archetype": "TAX-1",
+    "moment": "m1",
+    "reward": "+50 credits",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Daily Check-in Doubler",
+    "case": "existing",
+    "archetype": "TAX-5",
+    "moment": "m4",
+    "reward": "+300 bonus credits",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Store Free Credit Tap",
+    "case": "existing",
+    "archetype": "TAX-9",
+    "moment": "m5",
+    "reward": "+100 credits",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Premium Mode Trial Pass",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m3",
+    "reward": "15 minutes of Premium mode",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Character Companion Mini-Game Quests",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m7",
+    "reward": "+150 credits and character bond boost",
+    "beyondBaseline": true
+   },
+   {
+    "title": "AI Model Speed & Priority Boost",
+    "case": "product-change",
+    "archetype": "TAX-4",
+    "moment": "m1",
+    "reward": "1 hour of priority generation",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Paywall Decline Fallback Credit Pack",
+    "case": "product-change",
+    "archetype": "TAX-10",
+    "moment": "m2",
+    "reward": "+200 credits fallback",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Exclusive Character Outfit Unlock",
+    "case": "product-change",
+    "archetype": "TAX-13",
+    "moment": "m5",
+    "reward": "1 special character outfit",
+    "beyondBaseline": true
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "High-intent reactive moment when credits deplete during chat, capturing immediate engagement safely."
+   },
+   {
+    "index": 1,
+    "why": "Proactive post-reward multiplier leveraging the existing daily check-in habit loop with zero interruption."
+   },
+   {
+    "index": 3,
+    "why": "Product change introducing a time-boxed Premium mode sample, driving high upgrade intent without cannibalizing core monetization."
+   },
+   {
+    "index": 4,
+    "why": "In-world character mini-game quest creating proactive daily engagement and bonding using Simula vocabulary."
+   }
+  ]
+ },
+ "usage": {
+  "input": 36503,
+  "output": 1064,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3683
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:50:08.133Z"
+}

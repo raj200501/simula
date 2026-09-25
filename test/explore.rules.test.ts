@@ -17,7 +17,7 @@ import { mergeAnnotations, toActions, type Annotation } from "../src/explore/ann
 import { findSend } from "../src/explore/act.ts";
 import { explore, isWall, probe } from "../src/explore/explorer.ts";
 import { FakeCreditChat, FAKE_PKG, FAST_TIMING, H, NAV, STATUS, W, testCtx, tmpDir } from "./helpers/explore-fake-device.ts";
-import { T, TinyDevice, rect } from "./helpers/explore-tiny-device.ts";
+import { T, TinyDevice, rect, type TinyEl } from "./helpers/explore-tiny-device.ts";
 
 setLlmContext({ mode: "stub" });
 const tmp = tmpDir("simula-explore-rules-");
@@ -144,9 +144,10 @@ test("wall test (T2): a mode switch is never a wall, even when the new label say
   const basic = bare("s05", "chat", ob.signature, [], ["o1"]);
   const premium = bare("s06", "chat", op.signature, [{ kind: "upsell", text: "Premium · 30", el: "e1" }], ["o2"]);
   assert.equal(isWall(basic, premium, { fromObs: ob, nextObs: op }), false, "the upsell sits on the chip the chat already had");
-  assert.equal(isWall(basic, bare("s07", "sheet", [...ob.signature, "TextView||out of credits"])), true);
+  assert.equal(isWall(basic, bare("s07", "sheet", [...ob.signature, "TextView||out of credits"], [{ kind: "limit", text: "Out of credits" }])), true);
   assert.equal(isWall(basic, bare("s08", "chat", ["x"], [{ kind: "limit", text: "Daily limit reached" }])), true);
-  assert.equal(isWall(basic, bare("s09", "page", ["TextView||plans"])), true, "a new screen that is not a chat");
+  assert.equal(isWall(basic, bare("s09", "page", ["TextView||plans"], [{ kind: "price", text: "$4.99 / month" }])), true, "a new screen with prices");
+  assert.equal(isWall(basic, bare("s10", "page", ["TextView||your image"])), false, "a result page with no limit, price or gate is not a wall");
 });
 
 test("one ad signal per ad unit (the Sponsored marker), however many texts it holds", async () => {
@@ -275,5 +276,134 @@ test("type-and-send checks that the field took the focus: if the tap opened some
   assert.deepEqual(d.typed, [], "never typed into the sheet's field");
   const send = graph.states.flatMap(s => s.actions).find(a => a.kind === "consume")!;
   assert.equal(send.status, "failed");
-  assert.match(send.note ?? "", /did not take the focus/);
+  assert.match(send.note ?? "", /gave the focus to another text field/);
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// A guest AI chat: no balance anywhere, a free-message cap shown in the conversation after CAP sends, a
+// sign-up sheet behind a "Deep reasoning" chip (a non-consume tap), and an image tool whose send meets a
+// sign-up gate (a wall on ANOTHER spending action). The drain must still repeat the chat's send and find the cap.
+// ---------------------------------------------------------------------------------------------------------
+const CAP = 4;
+function guestChat(): TinyDevice & { sends: number; msgs: { me: boolean; text: string }[] } {
+  const st = { draft: "", focused: false, overlay: "" as "" | "reasoning" | "imagegate", sends: 0, msgs: [{ me: false, text: "Hi there, I am your assistant for anything at all." }] as { me: boolean; text: string }[] };
+  const REPLIES = ["That sounds like a plan, tell me a little more about it.", "Here is an idea: start with the smallest useful piece first.", "Good question, it mostly depends on your goal for today.", "I would begin by writing down the three most important steps."];
+  const sheet = (lines: TinyEl[]): TinyEl[] => [{ type: "android.view.View", rect: rect(0, 1400, 1080, 874) }, ...lines];
+  const composer = (dev: TinyDevice, hint: string, onSend: () => void): TinyEl[] => [
+    { type: T("EditText"), text: st.draft || hint, rect: rect(42, 2028, 850, 126), ...(st.focused ? { focused: true } : {}), tap: () => { st.focused = true; } },
+    st.draft
+      ? { type: T("ImageButton"), label: "Send", rect: rect(900, 2028, 140, 126), tap: () => { onSend(); st.draft = ""; } }
+      : { type: T("ImageButton"), label: "Voice message", rect: rect(900, 2028, 140, 126) },
+  ];
+  const d = new TinyDevice(FAKE_PKG, {
+    chat: dev => {
+      const bubbles: TinyEl[] = st.msgs.slice(-6).map((m, i) => ({ type: T("TextView"), text: m.text, rect: rect(m.me ? 1038 - 600 : 42, 520 + i * 200, 600, 160) }));
+      const els: TinyEl[] = [
+        { type: T("TextView"), text: "Assistant", rect: rect(189, 100, 400, 100) },
+        { type: T("Button"), text: "Deep reasoning", rect: rect(700, 105, 340, 90), tap: () => { st.overlay = "reasoning"; } },
+        { type: T("Button"), text: "Create image", rect: rect(42, 300, 400, 110), tap: () => { dev.screen = "image"; st.focused = false; } },
+        ...bubbles,
+        ...composer(dev, "Message", () => {
+          st.sends++;
+          st.msgs.push({ me: true, text: st.draft });
+          st.msgs.push({ me: false, text: st.sends <= CAP ? REPLIES[(st.sends - 1) % REPLIES.length] : "You've used your free messages. Sign up to keep chatting." });
+        }),
+      ];
+      if (st.overlay === "reasoning") els.push(...sheet([
+        { type: T("TextView"), text: "Sign up to use deep reasoning", rect: rect(60, 1500, 960, 100) },
+        { type: T("Button"), text: "Create your account", rect: rect(60, 1650, 960, 140) },
+        { type: T("Button"), text: "Maybe later", rect: rect(60, 1820, 960, 120), tap: () => { st.overlay = ""; } },
+      ]));
+      return els;
+    },
+    image: dev => {
+      const els: TinyEl[] = [
+        { type: T("ImageButton"), label: "Navigate up", rect: rect(0, 70, 147, 147), tap: () => { dev.screen = "chat"; st.overlay = ""; st.focused = false; } },
+        { type: T("TextView"), text: "Image studio", rect: rect(189, 100, 600, 100) },
+        { type: T("TextView"), text: "Popular styles this week", rect: rect(42, 900, 700, 90) },
+        ...composer(dev, "Describe your image", () => { st.overlay = "imagegate"; }),
+      ];
+      if (st.overlay === "imagegate") els.push(...sheet([
+        { type: T("TextView"), text: "Sign up to create images", rect: rect(60, 1500, 960, 100) },
+        { type: T("Button"), text: "Create your account", rect: rect(60, 1650, 960, 140) },
+        { type: T("Button"), text: "Not now", rect: rect(60, 1820, 960, 120), tap: () => { st.overlay = ""; } },
+      ]));
+      return els;
+    },
+  }, "chat") as TinyDevice & { sends: number; msgs: typeof st.msgs };
+  d.onBack = dev => { if (st.overlay) st.overlay = ""; else if (dev.screen === "image") dev.screen = "chat"; st.focused = false; };
+  const type = d.typeText.bind(d);
+  d.typeText = async (text: string) => { await type(text); if (st.focused) st.draft += text; };
+  Object.defineProperty(d, "sends", { get: () => st.sends });
+  Object.defineProperty(d, "msgs", { get: () => st.msgs });
+  return d;
+}
+
+test("guest chat: walls on other actions do not stop the drain, which sends until the free-message cap and records after how many sends", async () => {
+  const d = guestChat();
+  const { graph: g } = await explore(testCtx(tmpDir(), "ex-rules-cap", { crawlSteps: 30 }), d, { annotator: "heuristic", timing: FAST_TIMING });
+  const actionOf = (e: { from: string; action: string }) => g.states.find(s => s.id === e.from)!.actions.find(a => a.id === e.action)!;
+  const stateOf = (id: string) => g.states.find(s => s.id === id)!;
+  assert.equal(g.resources.length, 0, "no balance anywhere");
+  // the image tool's send met a sign-up gate: a wall on that action
+  const imageWall = g.edges.find(e => e.limitHit && stateOf(e.from).name === "Image studio");
+  assert.ok(imageWall, "the image tool's gate is a wall");
+  // the deep-reasoning chip opened a sign-up sheet by a plain tap: not a limit
+  assert.ok(g.edges.some(e => actionOf(e).kind === "tap" && /deep reasoning/i.test(actionOf(e).intent) && !e.limitHit
+    && ["sheet", "dialog", "login"].includes(stateOf(e.to)?.kind)), "the sign-up sheet behind the chip");
+  // ...and the chat's own send was still drained until the cap showed in the conversation
+  const chat = g.states.find(s => s.name === "Assistant")!;
+  const cap = g.edges.find(e => e.limitHit && e.from === chat.id);
+  assert.ok(cap, JSON.stringify(g.edges.filter(e => e.limitHit)));
+  assert.equal(actionOf(cap).kind, "consume");
+  assert.equal(cap.to, chat.id, "the cap is a message in the chat itself");
+  assert.ok(cap.effects.some(f => f.kind === "appeared" && f.text === `limit after ${CAP} sends`), JSON.stringify(cap.effects));
+  assert.match(actionOf(cap).note ?? "", new RegExp(`limit after ${CAP} sends`));
+  assert.equal(d.sends, CAP + 1, "stopped at the first blocked send");
+});
+
+test("typing: text that does not land in the field is never sent (BACK hides the keyboard, the action fails)", async () => {
+  const st = { search: "" };
+  const d = new TinyDevice(FAKE_PKG, {
+    chat: () => [
+      { type: T("TextView"), text: `Recent: ${st.search || "none"}`, rect: rect(42, 250, 996, 110) },
+      { type: T("TextView"), text: "Assistant", rect: rect(189, 100, 400, 100) },
+      { type: T("TextView"), text: "Hello there! I am here for you whenever you want.", rect: rect(42, 600, 800, 160) },
+      // the composer never reports focus and never receives the keys: they show up at the top instead
+      { type: T("EditText"), text: "Message", rect: rect(42, 2028, 850, 126) },
+      { type: T("ImageButton"), label: "Send", rect: rect(900, 2028, 140, 126) },
+    ],
+  }, "chat");
+  const type = d.typeText.bind(d);
+  d.typeText = async (text: string) => { await type(text); st.search += text; };
+  const { graph } = await explore(testCtx(tmpDir(), "ex-rules-land"), d, { annotator: "heuristic", steps: 1, timing: FAST_TIMING });
+  const send = graph.states.flatMap(s => s.actions).find(a => a.kind === "consume" && /message/i.test(a.elKey ?? ""))!;
+  assert.equal(send.status, "failed");
+  assert.match(send.note ?? "", /did not land in the field/);
+  assert.equal(d.backs, 1, "BACK once, to hide the keyboard");
+  assert.equal(d.enters, 0);
+  assert.ok(!d.taps.some(t => t.label === "Send"), "never sent");
+});
+
+test("trajectory: a failure pairs with the later recovery of the same `where`, per run; others read 'no recovery (continued)'", async () => {
+  const { summarize } = await import("../src/core/trace.ts");
+  const dir = tmpDir();
+  const file = path.join(dir, "trace.jsonl");
+  const ev = (run: string, type: string, data: Record<string, unknown>, s: number) =>
+    JSON.stringify({ ts: `2026-09-25T10:00:${String(s).padStart(2, "0")}.000Z`, app: "x", run, stage: "explore", step: s, type, data });
+  fs.writeFileSync(file, [
+    ev("r1", "failure", { where: "travel:g0007", error: "expected s03, landed on s05" }, 1),
+    ev("r1", "decision", { state: "s05", action: "a05_1", priority: 1 }, 2),
+    ev("r1", "recovery", { where: "travel:g0007", how: "re-planned from s05 (no relaunch)" }, 3),
+    ev("r1", "failure", { where: "act:a02_3", error: "element not found on screen" }, 4),
+    ev("r1", "recovery", { where: "observe", how: "cold relaunch after repeated observe failures" }, 5),
+    ev("r2", "failure", { where: "annotate", error: "refusal" }, 6),
+    ev("r2", "recovery", { how: "heuristic annotator" }, 7),
+  ].join("\n") + "\n");
+  const md = summarize(file, path.join(dir, "trajectory.md"));
+  assert.match(md, /### explore · run r1/);
+  assert.match(md, /### explore · run r2/);
+  assert.match(md, /travel:g0007\*\*: expected s03, landed on s05\n {2}- recovered: re-planned from s05/);
+  assert.match(md, /act:a02_3\*\*: element not found on screen\n {2}- no recovery \(continued\)/, "an unrelated recovery is not paired");
+  assert.match(md, /annotate\*\*: refusal\n {2}- recovered: heuristic annotator/, "the very next event, a recovery without a where of its own");
 });

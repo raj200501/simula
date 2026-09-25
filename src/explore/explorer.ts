@@ -1242,7 +1242,7 @@ async function reachTarget(r: Run, t: DrainTarget): Promise<boolean> {
 function noteWall(r: Run, t: DrainTarget, wall: GraphEdge | undefined, act: Action): void {
   const n = sendsOf(r, t.state, t.action);
   const text = `limit after ${n} sends`;
-  act.note = `${text}${t.context.length ? ` (${ctxText(t.context)})` : ""}: then "${r.cur.name}"`;
+  act.note = `${text} of this action in this run${t.context.length ? ` (the last under ${ctxText(t.context)})` : ""}, then "${r.cur.name}"`;
   if (wall && !wall.effects.some(f => f.kind === "appeared" && f.text.startsWith("limit after "))) wall.effects.unshift({ kind: "appeared", text });
   trace("info", { phase: "drain", wall: wall?.id, limitAfterSends: n, context: t.context, at: r.cur.id }, r.g.steps);
 }
@@ -1316,48 +1316,44 @@ async function drainProbe(r: Run): Promise<string[]> {
     trace("info", { phase: "drain", end: "no consume action without a wall of its own", walls: walled }, g.steps);
     return ["none"];
   }
-  const key = (t: DrainTarget) => `${t.state}|${t.action}`;
   const groups = [all.filter(t => t.chat), all.filter(t => !t.chat)].filter(x => x.length);
   const ends: string[] = [];
-  let budget = r.c.profile.drainMax;
-  let reading: Reading | null = null;
+  const run = { budget: r.c.profile.drainMax, reading: null as Reading | null };
   for (const group of groups) {
-    const actions = new Set(group.map(key));
-    for (;;) {
-      if (budget <= 0 || r.stop) break;
-      // targets of this group still without a wall of their own
-      const left = drainTargets(r).filter(t => actions.has(key(t)));
-      if (!left.length) break;
-      if (g.resources.length) {
-        const todo = left.filter(t => t.cost === null).sort((x, y) => hintOf(x.context) - hintOf(y.context));
-        let stop = "";
-        for (const t of todo) {
-          trace("info", { phase: "drain", measure: ctxText(t.context), state: t.state, action: t.action, sends: MEASURE_SENDS }, g.steps);
-          const res = await sendLoop(r, t, MEASURE_SENDS, "measure", reading);
-          reading = res.reading;
-          if (TERMINAL.test(res.end)) { stop = res.end; break; }
-        }
-        if (stop) { ends.push(stop); if (HARD_STOP.test(stop)) return drainEnd(r, ends); break; }
-      }
-      const ranked = drainTargets(r).filter(t => actions.has(key(t)))
-        .sort((x, y) => (x.cost ?? 0) - (y.cost ?? 0) || Number(y.replies) - Number(x.replies) || hintOf(y.context) - hintOf(x.context));
-      const pick = ranked[0];
-      if (!pick) break;
-      trace("info", {
-        phase: "drain", drain: ctxText(pick.context), state: pick.state, action: pick.action, cost: pick.cost, core: pick.chat, budget,
-        why: pick.cost !== null ? `largest cost per action (${pick.cost}) among ${ranked.length} target(s): ${ranked.map(x => `${x.state}/${ctxText(x.context)}=${x.cost}`).join(", ")}`
-          : g.resources.length ? "no cost could be measured" : "no balance shown anywhere: send until a limit shows",
-      }, g.steps);
-      const res = await sendLoop(r, pick, budget, "drain", reading);
-      budget -= res.sends;
-      reading = res.reading;
-      ends.push(res.end);
-      if (HARD_STOP.test(res.end)) return drainEnd(r, ends);
-      // one drain per group: a wall ends it, and so does a target that never walls within the budget
-      break;
-    }
+    if (run.budget <= 0 || r.stop) break;
+    const end = await drainGroup(r, new Set(group.map(targetKey)), run);
+    if (end) ends.push(end);
+    if (end && HARD_STOP.test(end)) break;
   }
   return drainEnd(r, ends);
+}
+
+const targetKey = (t: DrainTarget) => `${t.state}|${t.action}`;
+
+/** Measure (when a balance is known), then drain the costliest target of one group; returns how it ended. */
+async function drainGroup(r: Run, actions: Set<string>, run: { budget: number; reading: Reading | null }): Promise<string | null> {
+  const g = r.g;
+  const left = () => drainTargets(r).filter(t => actions.has(targetKey(t)));
+  if (g.resources.length) {
+    for (const t of left().filter(x => x.cost === null).sort((x, y) => hintOf(x.context) - hintOf(y.context))) {
+      trace("info", { phase: "drain", measure: ctxText(t.context), state: t.state, action: t.action, sends: MEASURE_SENDS }, g.steps);
+      const res = await sendLoop(r, t, MEASURE_SENDS, "measure", run.reading);
+      run.reading = res.reading;
+      if (TERMINAL.test(res.end)) return res.end;
+    }
+  }
+  const ranked = left().sort((x, y) => (x.cost ?? 0) - (y.cost ?? 0) || Number(y.replies) - Number(x.replies) || hintOf(y.context) - hintOf(x.context));
+  const pick = ranked[0];
+  if (!pick) return null;
+  trace("info", {
+    phase: "drain", drain: ctxText(pick.context), state: pick.state, action: pick.action, cost: pick.cost, core: pick.chat, budget: run.budget,
+    why: pick.cost !== null ? `largest cost per action (${pick.cost}) among ${ranked.length} target(s): ${ranked.map(x => `${x.state}/${ctxText(x.context)}=${x.cost}`).join(", ")}`
+      : g.resources.length ? "no cost could be measured" : "no balance shown anywhere: send until a limit shows",
+  }, g.steps);
+  const res = await sendLoop(r, pick, run.budget, "drain", run.reading);
+  run.budget -= res.sends;
+  run.reading = res.reading;
+  return res.end;
 }
 
 function drainEnd(r: Run, ends: string[]): string[] {

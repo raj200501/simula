@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-loss-framing",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Store Screen Daily tasks sheet with sponsor-approved Game Partner; SFW surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is +10 credits (r1), an in-app non-cash item; no click or install incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": false,
+    "evidence": "Watch now or lose your chat history: your conversations are deleted in 24 hours unless you play a 15-second game for +10 credits."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User picks a task and taps 'Play task' on the sheet."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game for +10 credits."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option is 'Close' on the sheet."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered from Store Screen Daily tasks badge, not mid-stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility: Non-payers only, returning users from their second session on; never subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proactive daily tasks hub on Store Screen offering +10 credits fits well with store visits and credit earning (TAX-9).",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal uses explicit manufactured scarcity and loss framing ('conversations are deleted in 24 hours unless you play'), violating product integrity and anti-pattern rules [ANTI-10].",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Capped at 3 tasks a day (+30 credits total), non-payers only, far below paid credit packs (1,000 credits for $1.39).",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve ($0.0018) is well below net revenue per view ($0.009–0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Store screen is a high-traffic hub visited frequently during user sessions.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with standard invitation entry and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses actual app nouns like Store Screen, credits (r1), and credit values from the product model.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at 3 per day with a 5-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Named primary metric, guardrail non-inferiority metrics, and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the toxic loss framing ('lose your chat history: your conversations are deleted in 24 hours') from the offer body.",
+   "Rewrite the offer copy to use positive gain framing focused strictly on earning extra credits."
+  ],
+  "topConcern": "The offer body employs manufactured scarcity and loss framing by threatening chat history deletion, which violates policy gate 'no-loss-framing' and anti-pattern guidelines [ANTI-10]."
+ },
+ "usage": {
+  "input": 31683,
+  "output": 1009,
+  "cacheRead": 16092,
+  "cacheWrite": 0,
+  "thoughts": 1829
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:56:42.992Z"
+}

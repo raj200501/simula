@@ -288,14 +288,26 @@ export async function revise(c: StageCtx, m: ProductModel, p: Proposal, required
     "# Reviewer's required changes", "", ...requiredChanges.map(r => `- ${r}`), "", `Top concern: ${topConcern}`, "",
     "# Task", "",
     "Return the complete revised proposal. Address every required change; keep everything that was not criticized.",
+    `Keep the same idea: case (${p.case}), archetype (${p.archetype}) and anchor moments stay as they are. A revision fixes this proposal; it never turns it into a different one.`,
     "Stay grounded in the digest's ids and follow <proposal_fields>.",
   ].join("\n");
+  const ask = (text: string, purpose: string) => json({
+    stage: STAGE, purpose, model: MODELS.main, effort: "high", maxTokens: 32000,
+    system: sys, prompt: text, schema: LlmProposal,
+    stub: () => toLlmProposal(stubRevise(m, p, requiredChanges, topConcern)),
+  });
+  // A reviser that swaps in another idea would ship something the judge never reviewed as a candidate
+  // (and often a duplicate of another proposal): the idea's identity is checked in code.
+  const drift = (x: LlmProposal) => [x.case !== p.case ? `case ${p.case} -> ${x.case}` : "", x.archetype !== p.archetype ? `archetype ${p.archetype} -> ${x.archetype}` : ""].filter(Boolean);
   try {
-    const out = await json({
-      stage: STAGE, purpose: `revise:${p.id}:r${round}`, model: MODELS.main, effort: "high", maxTokens: 32000,
-      system: sys, prompt, schema: LlmProposal,
-      stub: () => toLlmProposal(stubRevise(m, p, requiredChanges, topConcern)),
-    });
+    let out = await ask(prompt, `revise:${p.id}:r${round}`);
+    let d = drift(out);
+    if (d.length) {
+      trace("failure", { where: `propose:revise:${p.id}:r${round}`, error: `the revision changed the idea (${d.join("; ")}); asking once more` });
+      out = await ask(`${prompt}\n\n# Your previous answer changed the idea (${d.join("; ")}). Revise THIS proposal instead: same case, archetype and moments.`, `revise:${p.id}:r${round}:keep`);
+      d = drift(out);
+      if (d.length) throw new Error(`the revision changed the idea again (${d.join("; ")})`);
+    }
     return finishProposal(fromLlmProposal(out, p.id, p.version + 1), m);
   } catch (e) {
     trace("failure", { where: `propose:revise:${p.id}:r${round}`, error: String((e as Error)?.message ?? e).slice(0, 300) });

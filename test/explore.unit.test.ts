@@ -221,16 +221,20 @@ test("effects: a repeated reply still counts as appeared; bound counters give de
     [{ kind: "counter", resource: "r1", before: 120, after: 90, delta: -30 }]);
 });
 
-test("wall test (T2): a different chat state is not a wall; a sheet or a new limit signal is", () => {
+test("wall test (T2): a different chat state is not a wall; a sheet or a screen showing a limit, price or gate is", () => {
   const base = { signature: [], dhash: "", obs: [], name: "", purpose: "", inScope: true, scrollable: false, loginWall: false, annotatedBy: "heuristic" as const, actions: [], visits: 1, firstStep: 0 };
   const chat: State = { ...base, id: "s05", kind: "chat", signals: [{ kind: "upsell", text: "Premium · 30" }] };
   const chat2: State = { ...base, id: "s07", kind: "chat", signals: [{ kind: "upsell", text: "Premium · 30" }] };
-  const sheet: State = { ...base, id: "s08", kind: "sheet", signals: [] };
+  const sheet: State = { ...base, id: "s08", kind: "sheet", signature: ["TextView||out of credits"], signals: [{ kind: "limit", text: "Out of credits" }] };
   const limited: State = { ...base, id: "s09", kind: "chat", signals: [{ kind: "limit", text: "Daily limit reached" }] };
+  const gate: State = { ...base, id: "s10", kind: "sheet", name: "Create your account to keep chatting", signature: ["TextView||create your account"], signals: [] };
+  const photo: State = { ...base, id: "s11", kind: "sheet", name: "Add a photo", signature: ["TextView||add a photo", "Button||take photo"], signals: [] };
   assert.equal(isWall(chat, chat), false);
   assert.equal(isWall(chat, chat2), false);
   assert.equal(isWall(chat, sheet), true);
   assert.equal(isWall(chat, limited), true);
+  assert.equal(isWall(chat, gate), true, "an account gate after a send is a wall");
+  assert.equal(isWall(chat, photo), false, "a sheet asking for a photo is where the action leads, not a wall");
 });
 
 test("gap check: the stub asks for nothing, and targets never un-skip a guard rail", async () => {

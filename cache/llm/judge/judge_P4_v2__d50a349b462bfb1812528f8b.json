@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets character roleplay (Starship Galley) in a sci-fi comedy setting, avoiding any sensitive or NSFW themes."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is in-app message credits (r1), with no rewards for clicks, installs, or cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses clean gain framing ('Play a quick 15-second game... to earn free credits') with no dark patterns or loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the CTA button ('Play Now') on the offer overlay to initiate the ad."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states the required action ('quick 15-second game') and reward ('+40 credits') before the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a clear decline option ('No Thanks') that leaves the user at the pre-offer state with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is placed on the chat mode selection sheet (`ns1`), completely separate from any active chat streaming."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly restricted to 'Non-paying guest users with remaining daily quest capacity'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal introduces daily mini-game quests on the mode selection sheet (`ns1`), aligning well with TAX-9 proactive engagement hubs, though slightly removed from the immediate out-of-credits moment.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The mini-game features the character Starship Galley playing along, maintaining narrative immersion and preserving free value.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying users with a strict daily cap (3 per day) and credit reward sized well below the cheapest credit pack ($1.39 for 1,000 credits).",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code flags note that the reward is worth 3.7x one view's revenue at list price and the cost to serve ($0.0072) exceeds net revenue per view ($0.0063) at the low end.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Placed on the mode selection sheet (`ns1`), reaching users exploring chat modes, though not every DAU hits mode selection daily.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to `SIM-RWD` with `button` entry, `Starship Galley` partner, and 15s play threshold, but code flags grounding errors regarding element `ne1` and storyboard callout `e3`.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like currency `r1` (credits), character `Starship Galley`, and references screen `s04` for the mode selection sheet patch.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit caps of 3 per day and a 60-minute cooldown, with no re-offer after decline.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary KPI (Rewarded ARPDAU and D7 retention), guardrails (non-inferiority within -3%), and a 90/10 user-level holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Size down the credit reward from +40 credits to a sustainable amount (e.g., 10-15 credits) to fix the unit economics violation where reward value and cost to serve exceed net revenue per view.",
+   "Fix patch and storyboard grounding issues by ensuring element `ne1` references valid existing elements and storyboard callouts correctly map to defined screen elements."
+  ],
+  "topConcern": "Unit economics failure: the reward value and cost to serve ($0.0072) exceed net revenue per view at the low end ($0.0063), resulting in negative margins per completed view."
+ },
+ "usage": {
+  "input": 31846,
+  "output": 1194,
+  "cacheRead": 16094,
+  "cacheWrite": 0,
+  "thoughts": 1941
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:53:13.858Z"
+}

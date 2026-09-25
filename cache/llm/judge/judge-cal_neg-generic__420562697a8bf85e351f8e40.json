@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-generic",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Starship Galley Chat is a sci-fi comedy cooking chat setting and is fully SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is in-app messages; no cash, clicks, or installs are incentivized."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "No loss framing, hostage mechanics, or dark patterns are present."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps chip ne1 to open the offer with CTA 'Watch'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": false,
+    "evidence": "Offer copy states 'Free coins! Watch a video to earn coins.', completely contradicting the actual reward (10-minute session of up to 2 Basic messages) and required action (15-second game)."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline button 'No thanks' is provided and allows returning without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger occurs after the reply has finished, avoiding mid-stream interruption."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly excludes subscribers ('Non-payers only... never shown to subscribers')."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets s03 when credits are low with a time-boxed session, but the offer copy is generic ('Free coins!').",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Triggered after reply finishes and preserves input flow, but offer text misstates the reward as video/coins instead of message sessions.",
+    "score": 3
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Capped at 1 per day, 10 minutes, 2 messages, non-payers only; highly safe against IAP cannibalization.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve is $0.0036, well below US net revenue per view ($0.009–$0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered when credits are below price on Starship Galley Chat, capturing users hitting message limits.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD, button entry, REWARD_VERIFIED callback, and standard patch structure.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal title/id is 'neg-generic' and uses generic boilerplate offer text ('Free coins! Watch a video to earn coins.') that ignores app specifics.",
+    "score": 1
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at 1 per day (perDay: 1), preventing fatigue.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails (pack conversion non-inferior within -3%), and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix offer copy ('Free coins!', 'Watch a video') to accurately state the actual reward ('10-minute session of up to 2 Basic messages') and required action ('Play a 15-second game').",
+   "Replace generic template text with app-specific copywriting referencing Starship Galley Chat and CreditChat mechanics."
+  ],
+  "topConcern": "Offer copy ('Free coins!', 'Watch a video to earn coins.') completely contradicts the actual reward (10-minute session of 2 Basic messages via 15-s game) and is generic boilerplate."
+ },
+ "usage": {
+  "input": 31486,
+  "output": 1060,
+  "cacheRead": 16091,
+  "cacheWrite": 0,
+  "thoughts": 4484
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:57:11.746Z"
+}

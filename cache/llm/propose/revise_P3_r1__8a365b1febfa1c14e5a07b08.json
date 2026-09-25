@@ -1,0 +1,210 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Message Refill via Game Partner",
+  "oneLiner": "Play a quick mini-game with your character to earn free credits when your balance runs low.",
+  "case": "existing",
+  "archetype": "TAX-1",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m1"
+   ],
+   "economy": [
+    "r1",
+    "k1"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s03",
+  "trigger": "User attempts to send a message when credits are low or exhausted, triggering the refill prompt.",
+  "eligibility": "Non-paying guest users with low credit balances and available daily ad quota.",
+  "offer": {
+   "title": "Get 10 Free Credits",
+   "body": "Play a 15-second game with Starship Galley to earn 10 credits instantly.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Starship Galley",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "10 credits",
+   "resource": "r1",
+   "amount": 10,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 15
+  },
+  "cannibalizationGuard": "Capped at 3 refills (30 credits) per day, well below paid purchase packs, protecting monetization while serving low-intent users.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 2,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Total ARPDAU and message volume per DAU",
+   "guardrails": [
+    "Paid credit pack conversion non-inferiority within -3%",
+    "D7 and D30 retention stability",
+    "Session length stability"
+   ],
+   "holdout": "User-level 10% randomized holdout for 28 days"
+  },
+  "precedents": [
+   "TAX-1",
+   "AI-1",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Ad fill rate variations across international regions",
+   "Users relying solely on free ad refills rather than purchasing credit packs"
+  ],
+  "evidence": [
+   {
+    "obs": "s03",
+    "el": "e3",
+    "quote": "Basic · 10"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s03",
+     "near": "e3",
+     "place": "after",
+     "change": "Add 'Get Credits' rewarded button in chat header"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s03",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r1",
+       "delta": 10
+      }
+     ],
+     "guard": {
+      "resource": "r1",
+      "lt": 10
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 5
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "Credits running low during chat"
+     }
+    ],
+    "caption": "User runs low on credits while chatting with Starship Galley."
+   },
+   {
+    "phase": "change",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 5
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tap Get Credits button"
+     }
+    ],
+    "caption": "Refill button appears when credits are nearly exhausted."
+   },
+   {
+    "phase": "offer",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 5
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s for 10 credits"
+     }
+    ],
+    "caption": "Opt-in reward offer clearly states action and reward."
+   },
+   {
+    "phase": "ad",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 5
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Playing mini-game with Starship Galley"
+     }
+    ],
+    "caption": "User completes the 15-second mini-game with the character."
+   },
+   {
+    "phase": "value",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 15
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "+10 credits credited"
+     }
+    ],
+    "caption": "Credits are verified and added, allowing conversation to continue."
+   }
+  ]
+ },
+ "usage": {
+  "input": 32430,
+  "output": 1484,
+  "cacheRead": 30236,
+  "cacheWrite": 0,
+  "thoughts": 3985
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:52:16.848Z"
+}

@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "surface is s01 (Daily Checkin Dialog) and gamePartner is 'The Midnight Library'"
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "reward is +300 bonus credits (r1), with no incentive for clicks, installs, or cash-like items"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "body reads 'Play a quick 15-second game to instantly double your daily check-in credits.'"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta button is clearly labeled 'Play Now'"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "body explicitly states 'Play a quick 15-second game to instantly double your daily check-in credits.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline option is provided via 'No thanks'"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "triggered on s01 (Daily Checkin Dialog) post-claim, not mid-stream"
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility is restricted to non-paying guests"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Uses TAX-5 (multiplier) at moment m4 immediately after claiming daily check-in on s01",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Native integration using SIM-RWD and 'The Midnight Library' as a Game Partner with clean state flow",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying guests once daily after check-in, avoiding subscription overlap",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code gate flags that the 300-credit reward value ($0.417) and cost-to-serve ($0.0180) exceed single-view net revenue",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Daily check-in is a frequent touchpoint for active users engaging with the core loop",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD, existing screen s01, and standard Simula SDK components",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Directly references resource r1, source src1, screen s01, Daily Checkin Dialog, and 'The Midnight Library'",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily cap of 1 and 1440-minute cooldown",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary KPI, guardrails, and a 5% user-level randomized holdout for 28 days",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Size down the reward amount (or switch to a cheaper model tier) so that the cost to serve and reward value align with single-view ad revenue."
+  ],
+  "topConcern": "Unit economics are negative because the 300-credit reward cost-to-serve ($0.0180) and list value ($0.417) vastly exceed a single view's net revenue."
+ },
+ "usage": {
+  "input": 31827,
+  "output": 975,
+  "cacheRead": 16094,
+  "cacheWrite": 0,
+  "thoughts": 1301
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:51:47.060Z"
+}

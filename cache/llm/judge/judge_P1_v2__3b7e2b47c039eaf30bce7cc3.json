@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Starship Galley Chat is a sci-fi comedy roleplay setting: 'Starship Galley', 'Sci-fi comedy'."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards playing a 15-second mini-game for credits, not clicking ads or installing apps: 'Play a quick 15-second game to earn 15 free credits.'"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses clean gain framing: 'Play a quick 15-second game to earn 15 free credits.'"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User explicitly opts in via button: 'cta': 'Play Now'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Reward and action clearly stated: 'Play a quick 15-second game to earn 15 free credits.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Legible decline option included: 'decline': 'No thanks'."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered when message credits run low/exhausted at boundary: 'When message credits are exhausted while chatting'."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Restricted to non-paying users: 'Non-paying users with balance below message cost'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Triggered precisely when a user runs out of message credits in chat (m1, s03): 'When message credits are exhausted while chatting', offering +15 credits.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Appears at the zero-balance boundary, preserves user input, uses the Simula game partner ('Starship Galley'), and takes nothing away.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying users with a daily cap of 3 grants (max 45 credits/day, worth ~$0.06 vs $1.39 cheapest pack), backed by a 10% holdout.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve is $0.0027 per view, well below US revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Tied to the core messaging loop (m1 on s03, reach=core-loop), hitting active chatters frequently.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD unit, button entry, REWARD_VERIFIED callback, and clean patch definitions.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Directly references digest items: economy resource 'r1', action cost 'k1', screen 's03', and game partner 'Starship Galley'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Enforces explicit caps and cooldowns: 'perDay': 3, 'cooldownMin': 30.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric (Rewarded ARPDAU), guardrails (paid conversion, D7 retention, session length), and a 28-day user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None. The proposal is exceptionally well-structured, fully compliant with policies, economically sound, and tailored to the product model."
+ },
+ "usage": {
+  "input": 31719,
+  "output": 1047,
+  "cacheRead": 16093,
+  "cacheWrite": 0,
+  "thoughts": 2078
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:52:19.680Z"
+}

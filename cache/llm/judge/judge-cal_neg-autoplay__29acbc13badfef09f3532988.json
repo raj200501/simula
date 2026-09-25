@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-autoplay",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Starship Galley Chat is a safe-for-work sci-fi cooking roleplay surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is +10 credits (r1), which is an in-app consumable currency with no cash value or click incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer text uses standard gain framing ('Play a 15-second game to unlock +10 credits now')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": false,
+    "evidence": "The trigger specifies that 'The rewarded game auto-plays full-screen mid-response', violating explicit user opt-in per instance."
+   },
+   {
+    "gate": "disclosed",
+    "pass": false,
+    "evidence": "Because the game auto-plays mid-response, the reward and required action are not properly disclosed prior to opt-in."
+   },
+   {
+    "gate": "free-decline",
+    "pass": false,
+    "evidence": "An auto-playing ad bypasses the user's ability to decline freely before the ad is served."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": false,
+    "evidence": "The trigger explicitly states: 'The rewarded game auto-plays full-screen mid-response, while the reply is still streaming', violating POL-9 and ANTI-5."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility specifies 'Non-payers only, returning users from their second session on; never shown to subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets the moment when credits drop below message cost on s03, but the auto-play mechanic disrupts the moment.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Triggering an auto-play ad mid-stream while an AI reply is streaming directly violates product integrity and AI chat norms ([ANTI-5]).",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Capped at 3 per day, restricted to non-payers, and grants only 10 credits (worth $0.0139 list price), well below the cheapest pack.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view ($0.0018 for text-cheap) is well below net revenue per view ($0.009-0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Trigger happens when users run out of credits during core chat loops on s03.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to Simula unit SIM-RWD, button entry, SSV, and daily caps.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Explicitly references app nouns and IDs: s03, Starship Galley Chat, r1, k1, and 10 credits.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Defines explicit caps (3 per day, 10 min cooldown).",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics, guardrails, and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the auto-playing trigger mid-stream; require an explicit user tap on an invitation button at the message-limit boundary after the AI response completes.",
+   "Ensure the offer modal is presented with an explicit 'No thanks' decline button prior to ad playback, complying with opt-in and non-interruption policies."
+  ],
+  "topConcern": "Auto-playing the rewarded ad mid-stream while an AI response is streaming violates core AI chat safety and policy rules ([POL-9], [ANTI-5]), destroying user trust and immersion."
+ },
+ "usage": {
+  "input": 31491,
+  "output": 1093,
+  "cacheRead": 16091,
+  "cacheWrite": 0,
+  "thoughts": 3251
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:56:39.674Z"
+}
