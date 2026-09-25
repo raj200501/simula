@@ -488,17 +488,23 @@ test("wall test: a spending tap that opens a chat showing its mode chip (Premium
 // Typing on a real keyboard (found on a Pixel emulator, API 35): the first tap after a screen change can be
 // swallowed, the keyboard moves a bottom composer up, and the element list lags the keys by a dump or two.
 // ---------------------------------------------------------------------------------------------------------
-function keyboardChat(opts: { tapsToFocus: number; reportsFocus: boolean; lagDumps: number }) {
-  const st = { taps: 0, focused: false, draft: "", pending: "", lag: 0, sent: [] as string[] };
+function keyboardChat(opts: { tapsToFocus: number; reportsFocus: boolean; lagDumps: number; hidesText?: boolean; tapOpensRename?: boolean }) {
+  const st = { taps: 0, focused: false, draft: "", pending: "", lag: 0, sent: [] as string[], rename: false, title: "Our new chat" };
   const y = () => (st.focused ? 1300 : 2028); // the keyboard pushes the composer up
   const d = new TinyDevice(FAKE_PKG, {
     chat: () => {
       if (st.pending && st.lag-- <= 0) { st.draft += st.pending; st.pending = ""; }
+      // a dialog is its own window: the dump shows only the rename box, prefilled with the chat's title
+      if (st.rename) return [
+        { type: T("TextView"), text: "Rename chat", rect: rect(100, 900, 880, 100) },
+        { type: T("EditText"), text: st.title, rect: rect(100, 1050, 880, 126), tap: () => undefined },
+        { type: T("Button"), text: "Save", rect: rect(600, 1250, 380, 120) },
+      ];
       return [
         { type: T("TextView"), text: "Assistant", rect: rect(189, 100, 400, 100) },
         { type: T("TextView"), text: "Hello there! I am here for you whenever you want.", rect: rect(42, 600, 800, 160) },
-        { type: T("EditText"), text: st.draft || "Message", rect: rect(42, y(), 850, 126), ...(st.focused && opts.reportsFocus ? { focused: true } : {}),
-          tap: () => { if (++st.taps >= opts.tapsToFocus) st.focused = true; } },
+        { type: T("EditText"), identifier: "inputBar", ...(opts.hidesText ? {} : { text: st.draft || "Message" }), rect: rect(42, y(), 850, 126), ...(st.focused && opts.reportsFocus ? { focused: true } : {}),
+          tap: () => { if (opts.tapOpensRename && st.taps === 0) { st.taps++; st.rename = true; return; } if (++st.taps >= opts.tapsToFocus) st.focused = true; } },
         st.draft
           ? { type: T("ImageButton"), label: "Send", rect: rect(900, y(), 140, 126), tap: () => { st.sent.push(st.draft); st.draft = ""; } }
           : { type: T("ImageButton"), label: "Voice message", rect: rect(900, y(), 140, 126) },
@@ -507,7 +513,8 @@ function keyboardChat(opts: { tapsToFocus: number; reportsFocus: boolean; lagDum
   }, "chat");
   const type = d.typeText.bind(d);
   // keys typed before the field has the focus go nowhere
-  d.typeText = async (text: string) => { await type(text); if (st.focused) { st.pending += text; st.lag = opts.lagDumps; } };
+  d.typeText = async (text: string) => { await type(text); if (st.rename) st.title = (st.title + text).slice(0, 30); else if (st.focused) { st.pending += text; st.lag = opts.lagDumps; } };
+  d.onBack = () => { if (st.rename) st.rename = false; st.focused = false; };
   return { d, st };
 }
 
@@ -537,4 +544,31 @@ test("typing: a failure says what the field shows, so the trajectory explains it
   assert.equal(res.ok, false);
   assert.match(!res.ok ? res.reason : "", /did not land in the field.*the field shows "message", the text appeared nowhere, no field reported focus/);
   assert.equal(d.backs, 1);
+});
+
+test("typing: a composer that never exposes what it holds (Luzia's inputBar) but has the focus is sent once", async () => {
+  const { d, st } = keyboardChat({ tapsToFocus: 1, reportsFocus: true, lagDumps: 0, hidesText: true });
+  const obs = await tinyObs(d);
+  const field = obs.elements.find(e => e.identifier === "inputBar")!;
+  const ann: Annotation["actions"] = [{ el: field.id, intent: "Send a message", kind: "consume", priority: 3 }];
+  const a = toActions(ann, obs, 1, { withBack: false })[0];
+  const res = await perform(actCtxOf(d), a);
+  assert.ok(res.ok, JSON.stringify(res));
+  assert.deepEqual(st.sent, [DEFAULT_INPUT]);
+  assert.equal(d.typed.length, 1);
+  assert.equal(d.backs, 0);
+});
+
+test("typing: a tap that opens a rename box never types into it (the chat's title is left alone)", async () => {
+  const { d, st } = keyboardChat({ tapsToFocus: 1, reportsFocus: true, lagDumps: 0, hidesText: true, tapOpensRename: true });
+  const obs = await tinyObs(d);
+  const field = obs.elements.find(e => e.identifier === "inputBar")!;
+  const ann: Annotation["actions"] = [{ el: field.id, intent: "Send a message", kind: "consume", priority: 3 }];
+  const a = toActions(ann, obs, 1, { withBack: false })[0];
+  const res = await perform(actCtxOf(d), a);
+  assert.equal(res.ok, false);
+  assert.match(!res.ok ? res.reason : "", /opened something else/);
+  assert.deepEqual(d.typed, [], "nothing typed anywhere");
+  assert.equal(st.title, "Our new chat");
+  assert.deepEqual(st.sent, []);
 });

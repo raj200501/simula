@@ -170,7 +170,7 @@ export function companionField(els: NormElement[], control: NormElement): NormEl
 /** The typed text is in the field: its own text, or a text drawn inside its rect (Compose draws it apart). */
 function landedIn(els: NormElement[], field: NormElement, text: string): boolean {
   const want = mask(text, 200);
-  const box = (refindField(els, field) ?? field).rect;
+  const box = (refindField(els, field, text) ?? field).rect;
   return els.some(e => mask(labelOf(e), 200).includes(want) && overlapRatio(e.rect, box) >= 0.5);
 }
 
@@ -194,7 +194,10 @@ async function fillField(c: ActCtx, field: NormElement, text: string): Promise<{
   const same = sameFieldAs(field);
   let before: NormElement[] = [];
   for (let i = 0; i < 2; i++) {
-    const tapped = await tapElement(c, i === 0 ? field : refindField(before, field) ?? field);
+    const target = i === 0 ? field : refindField(before, field);
+    // the first tap opened something else (a dialog, another screen): never tap or type there
+    if (!target) return { ok: false, reason: "tapping the field opened something else; the field is gone from the screen (nothing typed)" };
+    const tapped = await tapElement(c, target);
     if (!tapped.ok) return tapped;
     await sleep(c.timing.pollMs);
     before = await look(c);
@@ -205,32 +208,50 @@ async function fillField(c: ActCtx, field: NormElement, text: string): Promise<{
   if (landedIn(before, field, text)) return { ok: true, before };
   await c.dev.typeText(text);
   let now = await landedSoon(c, field, text);
-  if (!now.landed && !now.els.some(e => mask(labelOf(e), 200).includes(want))) {
-    // the keys went nowhere: the field was not focused yet
-    const again = await tapElement(c, refindField(now.els, field) ?? field);
-    if (again.ok) {
-      await sleep(c.timing.pollMs);
-      await c.dev.typeText(text);
-      now = await landedSoon(c, field, text);
+  const elsewhere = () => now.els.some(e => mask(labelOf(e), 200).includes(want));
+  // Some composers never expose what they hold (a custom input bar): the text shows nowhere, yet the same
+  // field has the focus. That is the field holding our text, as a tap on Send confirms (the earlier
+  // focus-verified typing sent fine on the same device).
+  const holdsUnseen = () => !elsewhere() && !!refindField(now.els, field, text)?.focused;
+  if (!now.landed && !elsewhere() && !holdsUnseen()) {
+    // the keys went nowhere: the field was not focused yet. Tap THE SAME field again (never another one:
+    // a rename box that opened meanwhile is not the composer) and type once more.
+    const f = refindField(now.els, field, text);
+    if (f) {
+      const again = await tapElement(c, f);
+      if (again.ok) {
+        await sleep(c.timing.pollMs);
+        await c.dev.typeText(text);
+        now = await landedSoon(c, field, text);
+      }
     }
   }
-  if (!now.landed) {
-    const f = refindField(now.els, field);
-    const shows = f ? mask(labelOf(f), 60) : "";
-    const elsewhere = now.els.some(e => mask(labelOf(e), 200).includes(want));
-    await c.dev.back();
-    return {
-      ok: false,
-      reason: `the typed text did not land in the field (pressed BACK to hide the keyboard; nothing sent): the field shows "${shows}"${elsewhere ? ", the text appeared elsewhere" : ", the text appeared nowhere"}${now.els.some(e => e.focused && isInput(e)) ? "" : ", no field reported focus"}`,
-    };
-  }
-  return { ok: true, before };
+  if (now.landed || holdsUnseen()) return { ok: true, before };
+  const f = refindField(now.els, field, text);
+  const shows = f ? mask(labelOf(f), 60) : "";
+  await c.dev.back();
+  return {
+    ok: false,
+    reason: `the typed text did not land in the field (pressed BACK to hide the keyboard; nothing sent): ${f ? `the field shows "${shows}"` : "the field is gone from the screen"}${elsewhere() ? ", the text appeared elsewhere" : ", the text appeared nowhere"}${now.els.some(e => e.focused && isInput(e)) ? "" : ", no field reported focus"}`,
+  };
 }
 
-/** The same text field after the keyboard moved it: same type and id, and the same place or the same column. */
-function sameFieldAs(field: NormElement): (e: NormElement) => boolean {
-  return e => isInput(e) && shortType(e.type) === shortType(field.type) && (e.identifier ?? "") === (field.identifier ?? "")
-    && (overlapRatio(e.rect, field.rect) >= 0.5 || (Math.abs(e.rect.x - field.rect.x) <= 24 && Math.abs(e.rect.w - field.rect.w) <= 48));
+/**
+ * The same text field after the keyboard moved it: same type and id, and the same place, or the same column.
+ * Without an id to go by, a field in the same column must also show the same words (its hint) or our own
+ * text: a "Nickname" box on a sheet that opened is not the "Message" composer.
+ */
+function sameFieldAs(field: NormElement, typed?: string): (e: NormElement) => boolean {
+  const words = mask(labelOf(field), 200);
+  const ours = typed ? mask(typed, 200) : "";
+  return e => {
+    if (!isInput(e) || shortType(e.type) !== shortType(field.type) || (e.identifier ?? "") !== (field.identifier ?? "")) return false;
+    if (overlapRatio(e.rect, field.rect) >= 0.5) return true;
+    if (Math.abs(e.rect.x - field.rect.x) > 24) return false;
+    if (field.identifier) return true;
+    const w = mask(labelOf(e), 200);
+    return !w || !words || w === words || (!!ours && w.includes(ours));
+  };
 }
 
 /** Poll until the typed text shows in the field (the element list can lag the keys by a dump or two). */
@@ -255,7 +276,7 @@ async function typeAndSend(c: ActCtx, a: Action, field: NormElement): Promise<Ac
   if (!filled.ok) return filled;
   const before = filled.before;
   const els = await look(c);
-  const typedField = refindField(els, field) ?? field;
+  const typedField = refindField(els, field, text) ?? field;
   const pre = a.sendElKey ? findByKey(els, a.sendElKey) : undefined;
   const send = (pre && sendable(pre, typedField, text) && onRowOf(typedField)(pre) ? pre : undefined) ?? findSend(els, typedField, text, before);
   let how = "ENTER";
@@ -303,18 +324,21 @@ export function findSend(els: NormElement[], field: NormElement, typed: string, 
     .sort((a, b) => b.rect.x + b.rect.w - (a.rect.x + a.rect.w))[0];
 }
 
-/** The field's key changes as its text changes, so re-find it by type + resource id + position. */
-function refindField(els: NormElement[], field: NormElement): NormElement | undefined {
+/**
+ * The field's key changes as its text changes, so re-find it by type + resource id + place or column (the
+ * keyboard moves it up; a Send button may narrow it). Never another field: a dialog that opened meanwhile
+ * (a rename box prefilled with the chat's title) is not the field we typed into.
+ */
+function refindField(els: NormElement[], field: NormElement, typed?: string): NormElement | undefined {
   const d = (e: NormElement) => Math.hypot(e.rect.x - field.rect.x, e.rect.y - field.rect.y);
-  const same = els.filter(e => shortType(e.type) === shortType(field.type) && (e.identifier ?? "") === (field.identifier ?? ""));
-  return (same.length ? same : els.filter(isInput)).sort((a, b) => d(a) - d(b))[0];
+  return els.filter(sameFieldAs(field, typed)).sort((a, b) => d(a) - d(b))[0];
 }
 
 async function waitCleared(c: ActCtx, field: NormElement, text: string): Promise<boolean> {
   const typed = mask(text, 200);
   const t0 = Date.now();
   for (;;) {
-    const f = refindField(await look(c), field);
+    const f = refindField(await look(c), field, text);
     if (!f || !mask(labelOf(f), 200).includes(typed)) return true;
     if (Date.now() - t0 >= c.timing.clearMaxMs) return false;
     await sleep(c.timing.pollMs);
