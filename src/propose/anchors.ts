@@ -67,6 +67,10 @@ export function sizeReward(m: ProductModel, resource: string): Sized | undefined
   const cheap = sinks[0];
   const cogs = cheap ? cogsOf(m, cheap, sinks) : "none";
   const unitName = m.economy.resources.find(r => r.id === resource)?.unit ?? resource;
+  if (cheap && !unit && upv?.basis === "cost-to-serve") {
+    const amount = Math.max(cheap.amount, Math.floor((upv.min + upv.max) / 2));
+    return { amount, buys: sinkUse(cheap.action, amount, cheap.context), cogs, cogsUnits: amount / cheap.amount };
+  }
   if (cheap && (!unit || cheap.amount * unit.min <= ECON.maxRewardToView * d.viewValueUsd.US[1]))
     return { amount: cheap.amount, buys: sinkUse(cheap.action, 1, cheap.context), cogs, cogsUnits: 1 };
   if (upv) {

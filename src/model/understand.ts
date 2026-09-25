@@ -11,6 +11,7 @@ import type { StageCtx } from "../core/run.ts";
 import { compile, finalizeScreens } from "./compile.ts";
 import { digest } from "./digest.ts";
 import { deriveEconomy, regimeOf } from "./economics.ts";
+import { quotaFromLimits } from "./quota.ts";
 import { buildFlows, flowKey, type FlowGraph } from "./flows.ts";
 import { detectMoments } from "./moments.ts";
 import { redactText } from "./redact.ts";
@@ -35,7 +36,9 @@ export async function understand(c: StageCtx, graphFile: string): Promise<{ mode
     edges: new Set(cm.edges.map(e => e.id)),
     externals: new Map(cm.externals.filter(x => x.from.length).map(x => [x.id, x.from[0].screen])),
   });
-  const economy = { ...v.economy, derived: deriveEconomy(v.economy) };
+  // A cap measured by the drain probe but never shown as a counter becomes an explicit quota.
+  const withQuota = quotaFromLimits(v.economy, cm.edges, cm.screens);
+  const economy = { ...withQuota, derived: deriveEconomy(withQuota) };
 
   // Final flows also target walls the synthesis found; names are carried over by flow key (ids may shift).
   const flows = buildFlows({ ...fg, resourceName: id => economy.resources.find(r => r.id === id)?.name ?? id },

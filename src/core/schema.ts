@@ -289,7 +289,9 @@ export const Derived = z.object({
   actionCostUsd: z.array(z.object({ sink: z.string(), min: z.number(), max: z.number() })),
   freeDailyUnits: z.array(z.object({ resource: z.string(), units: z.number(), buys: z.string() })),
   viewValueUsd: z.object({ US: z.tuple([z.number(), z.number()]), EU: z.tuple([z.number(), z.number()]), LATAM: z.tuple([z.number(), z.number()]) }),
-  unitsPerView: z.array(z.object({ resource: z.string(), min: z.number(), max: z.number() })),
+  // basis: list-price = from the app's own packs; cost-to-serve = no prices visible, so one view is
+  // measured against what the unit costs to serve (net of platform share).
+  unitsPerView: z.array(z.object({ resource: z.string(), min: z.number(), max: z.number(), basis: z.enum(["list-price", "cost-to-serve"]).default("list-price"), cogsKind: z.string().optional() })),
   cheapestPaidUnitUsd: z.number().nullable(),
   notes: z.array(z.string()).default([]),
 });

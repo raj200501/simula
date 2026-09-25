@@ -41,10 +41,24 @@ export function deriveEconomy(e: Economy): Derived {
       return { resource, units, buys };
     });
   const vv = viewValueUsd();
-  const unitsPerView = unitPriceUsd.map(u => ({ resource: u.resource, min: r2(vv.US[0] / u.max), max: r2(vv.US[1] / u.min) }));
+  const unitsPerView: Derived["unitsPerView"] = unitPriceUsd.map(u => ({ resource: u.resource, min: r2(vv.US[0] / u.max), max: r2(vv.US[1] / u.min), basis: "list-price" as const }));
+  // No price anywhere for a spendable resource (e.g. a guest message allowance): measure one view
+  // against the cost of serving the unit instead, net of the network/platform share.
+  for (const r of e.resources) {
+    if (unitsPerView.some(u => u.resource === r.id)) continue;
+    if (!(r.kind === "quota" || r.kind === "currency")) continue;
+    if (!e.sinks.some(s => s.resource === r.id) && !e.walls.some(w => w.resource === r.id)) continue;
+    const kind = cogsKindOf(r);
+    const perUnit = kind ? ECON.cogsPerUnitUsd[kind] : 0;
+    if (!kind || !perUnit) continue;
+    const net = (x: number) => x * (1 - ECON.platformShare);
+    unitsPerView.push({ resource: r.id, min: r2(net(vv.US[0]) / perUnit), max: r2(net(vv.US[1]) / perUnit), basis: "cost-to-serve", cogsKind: kind });
+  }
   const packPrices = e.offers.filter(o => o.kind === "pack" && o.priceUsd != null).map(o => o.priceUsd as number);
   const notes: string[] = [];
-  if (!unitPriceUsd.length) notes.push("No priced packs observed: unit prices, action costs and exchange rate are unavailable.");
+  if (!unitPriceUsd.length) notes.push(unitsPerView.length
+    ? "No priced packs observed: the exchange rate is measured at cost to serve (what the app pays per unit), not list price."
+    : "No priced packs observed: unit prices, action costs and exchange rate are unavailable.");
   if (!e.sources.some(s => s.cadence === "daily")) notes.push("No daily free source observed.");
   return {
     unitPriceUsd, actionCostUsd, freeDailyUnits, viewValueUsd: vv, unitsPerView,
@@ -54,6 +68,16 @@ export function deriveEconomy(e: Economy): Derived {
 }
 
 /** Unit price range per resource from packs that grant it: priceUsd / amount. */
+/** Which cost-to-serve bucket a resource's unit falls in, from its own name/unit words. */
+export function cogsKindOf(r: { name: string; unit: string }): string | null {
+  const s = `${r.name} ${r.unit}`.toLowerCase();
+  if (/image|photo|picture|art\b|avatar|video|animat|edit/.test(s)) return "image";
+  if (/voice|audio|minute|call|speech/.test(s)) return "voice";
+  if (/premium|reasoning|deep|advanced|pro model/.test(s)) return "text-premium";
+  if (/message|chat|reply|replies|question|prompt|answer|text|conversation|response|turn|use/.test(s)) return "text-cheap";
+  return null;
+}
+
 export function unitPrices(e: Economy): Derived["unitPriceUsd"] {
   const by = new Map<string, number[]>();
   for (const o of e.offers) {
@@ -98,6 +122,9 @@ export function proposalEconomics(p: Proposal, m: ProductModel): ProposalEconomi
   if (maxDaily != null && derived.cheapestPaidUnitUsd != null && maxDaily >= derived.cheapestPaidUnitUsd)
     flags.push(`Max daily earnable value ($${maxDaily.toFixed(2)} at list) >= cheapest pack ($${derived.cheapestPaidUnitUsd.toFixed(2)}): cannibalization risk.`);
   const netPerView = vv[0] * (1 - ECON.platformShare);
+  const costBasis = !u && p.reward.resource ? derived.unitsPerView.find(x => x.resource === p.reward.resource && x.basis === "cost-to-serve") : undefined;
+  if (costBasis && p.reward.amount && p.reward.amount > costBasis.max)
+    flags.push(`Reward of ${p.reward.amount} costs more to serve than one view nets (break-even ≈ ${fmt(costBasis.min)}–${fmt(costBasis.max)} per view).`);
   if (cogs > netPerView) flags.push(`Cost to serve the reward ($${cogs.toFixed(4)}) exceeds net revenue per view ($${netPerView.toFixed(4)}) at the low end.`);
   return {
     viewValueUsd: vv,
@@ -121,7 +148,8 @@ export function exchangeRateLine(m: ProductModel, resource: string): string | nu
   const u = d.unitsPerView.find(x => x.resource === resource);
   const res = m.economy.resources.find(r => r.id === resource);
   if (!u) return null;
-  return `1 completed US view ≈ ${fmt(u.min)}–${fmt(u.max)} ${res?.unit ?? res?.name ?? resource} at list price`;
+  const basis = u.basis === "cost-to-serve" ? "at cost to serve (no prices shown in the app)" : "at list price";
+  return `1 completed US view ≈ ${fmt(u.min)}–${fmt(u.max)} ${res?.unit ?? res?.name ?? resource} ${basis}`;
 }
 
 function fmt(n: number): string {

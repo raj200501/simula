@@ -150,7 +150,7 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
     const equiv = sinkEquivalent(m, res!.id, amount);
     out.push({
       stat: `1 view ≈ ${num(upv.min)}–${num(upv.max)} ${unit}`,
-      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} at list price. The reward is ${amount} ${unit}${e.rewardToViewRatio != null ? ` (${e.rewardToViewRatio}× one view)` : ""}${equiv ? `, enough for ${equiv}` : ""}.`,
+      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} ${upv.basis === "cost-to-serve" ? "at cost to serve (the app shows no prices)" : "at list price"}. The reward is ${amount} ${unit}${e.rewardToViewRatio != null ? ` (${e.rewardToViewRatio}× one view)` : ""}${equiv ? `, enough for ${equiv}` : ""}.`,
     });
   } else {
     out.push({
