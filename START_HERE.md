@@ -166,6 +166,18 @@ Simula says they care about this most. `docs/RECORDING_SCRIPT.md` is a script to
 
 ---
 
+## Part H: next morning, re-run what the free quota cut short (about 30 min)
+
+Gemini's free quota resets at **midnight Pacific time** (07:00 UTC). If yesterday's run ran out, some stages used simple built-in fallbacks ("stubs") instead of the AI. Finished AI answers are saved, so a re-run only asks the AI for what's missing.
+
+Open Terminal, paste `cd ~/simula && claude`, then paste this prompt:
+
+```
+git pull. Run `npm run report`, then read out/<app>/NUMBERS.md for every app. For each app whose card starts with a "⚠ Produced by deterministic stubs" line, re-run from the earliest stubbed stage (model → understand, proposals → propose, judge → judge) with `npm run all -- --app <app> --from <stage>`; do luzia first. Never re-run explore. If every model reports a DAILY quota, stop and tell me. Then check out/README.md shows each app's flow slides and QA screenshots, run the key check from Part F step 6, commit out/ as Raj Kashikar <65059626+raj200501@users.noreply.github.com> with no Co-Authored-By line, and push to claude/serene-brahmagupta-owzz1n.
+```
+
+---
+
 ## If something goes wrong
 
 | Problem | Fix |
