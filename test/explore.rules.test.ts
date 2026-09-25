@@ -10,11 +10,11 @@ import { fileURLToPath } from "node:url";
 import { setLlmContext } from "../src/core/llm.ts";
 import { setTraceContext } from "../src/core/trace.ts";
 import type { DeviceInfo, NormElement, Observation, RawElement, State } from "../src/core/schema.ts";
-import { newExclusions, normalize, textsOf } from "../src/explore/observe.ts";
-import { overlayOf, relabelOnly, signatureOf, templateSame } from "../src/explore/signature.ts";
-import { adUnits, heuristicAnnotation } from "../src/explore/heuristic.ts";
+import { newExclusions, normalize, textsOf, type Timing } from "../src/explore/observe.ts";
+import { labelOf, overlayOf, relabelOnly, signatureOf, templateSame } from "../src/explore/signature.ts";
+import { adUnits, counterOf, heuristicAnnotation, isBalanceText } from "../src/explore/heuristic.ts";
 import { mergeAnnotations, toActions, type Annotation } from "../src/explore/annotate.ts";
-import { findSend } from "../src/explore/act.ts";
+import { companionField, findSend, perform } from "../src/explore/act.ts";
 import { explore, isWall, probe } from "../src/explore/explorer.ts";
 import { FakeCreditChat, FAKE_PKG, FAST_TIMING, H, NAV, STATUS, W, testCtx, tmpDir } from "./helpers/explore-fake-device.ts";
 import { T, TinyDevice, rect, type TinyEl } from "./helpers/explore-tiny-device.ts";
@@ -406,4 +406,80 @@ test("trajectory: a failure pairs with the later recovery of the same `where`, p
   assert.match(md, /travel:g0007\*\*: expected s03, landed on s05\n {2}- recovered: re-planned from s05/);
   assert.match(md, /act:a02_3\*\*: element not found on screen\n {2}- no recovery \(continued\)/, "an unrelated recovery is not paired");
   assert.match(md, /annotate\*\*: refusal\n {2}- recovered: heuristic annotator/, "the very next event, a recovery without a where of its own");
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// Spending buttons: an annotator may call a button "consume" (Claim, Start chat, Generate). It is tapped,
+// not typed into; a Generate button under an empty prompt field gets the field filled first.
+// ---------------------------------------------------------------------------------------------------------
+const TINY_INFO: DeviceInfo = { widthPx: 1080, heightPx: 2400, density: 2.625, statusBarPx: 63, navBarPx: 126, kind: "android" };
+const actCtxOf = (dev: TinyDevice) => ({ dev, info: TINY_INFO, timing: { ...FAST_TIMING, pollMs: 1 } as Timing, normalize: (raw: RawElement[]) => normalize(raw, TINY_INFO, newExclusions()) });
+async function tinyObs(dev: TinyDevice): Promise<Observation> {
+  return obsFrom(await dev.elements(), TINY_INFO);
+}
+const consumeOn = (obs: Observation, label: string, input?: string) => {
+  const el = obs.elements.find(e => labelOf(e) === label)!;
+  const ann: Annotation["actions"] = [{ el: el.id, intent: `tap "${label}"`, kind: "consume", priority: 3, ...(input ? { input } : {}) }];
+  return toActions(ann, obs, 1, { withBack: false })[0];
+};
+
+test("a button the annotator marked consume (Claim) is tapped, never typed into", async () => {
+  const st = { claimed: false };
+  const d = new TinyDevice(FAKE_PKG, {
+    home: () => [
+      { type: T("TextView"), text: "Daily check-in", rect: rect(147, 1064, 785, 74) },
+      { type: T("TextView"), text: "+300 credits", rect: rect(147, 1154, 785, 110) },
+      { type: T("Button"), text: "Claim", rect: rect(147, 1377, 785, 137), tap: () => { st.claimed = true; } },
+    ],
+  }, "home");
+  const a = consumeOn(await tinyObs(d), "Claim");
+  assert.equal(a.kind, "consume");
+  const res = await perform(actCtxOf(d), a);
+  assert.ok(res.ok, JSON.stringify(res));
+  assert.equal(st.claimed, true);
+  assert.deepEqual(d.typed, []);
+  assert.equal(d.enters, 0);
+});
+
+test("a Generate button under a prompt field: the empty field gets the action's text first, then the button is tapped", async () => {
+  const st = { prompt: "", focused: false, generated: [] as string[] };
+  const d = new TinyDevice(FAKE_PKG, {
+    studio: () => [
+      { type: T("TextView"), text: "Image studio", rect: rect(189, 100, 600, 100) },
+      { type: T("EditText"), text: st.prompt, rect: rect(42, 1500, 996, 200), ...(st.focused ? { focused: true } : {}), tap: () => { st.focused = true; } },
+      { type: T("Button"), text: "Generate", rect: rect(42, 1760, 996, 140), tap: () => { st.generated.push(st.prompt); } },
+    ],
+  }, "studio");
+  const type = d.typeText.bind(d);
+  d.typeText = async (text: string) => { await type(text); if (st.focused) st.prompt += text; };
+  const a = consumeOn(await tinyObs(d), "Generate", "a red fox in the snow");
+  const res = await perform(actCtxOf(d), a);
+  assert.ok(res.ok, JSON.stringify(res));
+  assert.deepEqual(st.generated, ["a red fox in the snow"], "tapped after the text landed");
+  assert.equal(res.ok && res.typed, "a red fox in the snow");
+  // a field that already holds text is left alone: just tap
+  const again = await perform(actCtxOf(d), a);
+  assert.ok(again.ok);
+  assert.deepEqual(d.typed, ["a red fox in the snow"], "typed once");
+  assert.deepEqual(st.generated, ["a red fox in the snow", "a red fox in the snow"]);
+  // and the field is found for a button just below it, not for one far away or without a field
+  const obs = await tinyObs(d);
+  const gen = obs.elements.find(e => labelOf(e) === "Generate")!;
+  assert.equal(companionField(obs.elements, gen)?.type, "android.widget.EditText");
+  assert.equal(companionField(obs.elements, obs.elements.find(e => labelOf(e) === "Image studio")!), undefined);
+});
+
+test("a balance is a standalone amount: mode names with prices and rates are never counters", () => {
+  for (const t of ["450 credits", "450", "Coins 120", "Balance: 1,250", "120 💎"]) assert.ok(isBalanceText(t), t);
+  for (const t of ["Basic · 10", "Premium 30", "10 credits/msg", "30 credits per message", "Premium · 30", "$4.99", "2 of 5", "x3 boost"]) assert.ok(!isBalanceText(t), t);
+  const chip = (text: string): NormElement => ({ type: T("Button"), text, rect: rect(700, 105, 340, 90), id: "e1", key: "k", chrome: true });
+  assert.equal(counterOf(chip("Premium 30"), INFO), null, "a mode chip in the top bar is not a balance");
+  assert.deepEqual(counterOf(chip("450 credits"), INFO), { name: "credits", unit: "credits" });
+});
+
+test("wall test: a spending tap that opens a chat showing its mode chip (Premium · 30) is not a wall", () => {
+  const detail = bare("s05", "page", ["TextView||the midnight library", "Button||start chat"], [{ kind: "upsell", text: "Messages cost credits: Basic 10, Premium 30" }]);
+  const chat = bare("s06", "chat", ["Button||back", "Button|web:id/mode_chip", "EditText|web:id/chat_input"], [{ kind: "upsell", text: "Premium · 30" }]);
+  assert.equal(isWall(detail, chat), false);
+  assert.equal(isWall(detail, bare("s07", "sheet", ["TextView||go premium"], [{ kind: "upsell", text: "Go Premium" }, { kind: "price", text: "$4.99" }])), true, "a paywall sheet");
 });
