@@ -39,7 +39,7 @@ import {
   shortType, signatureOf, skeletonOf, type CounterEffect,
 } from "./signature.ts";
 import { annotate, toActions, toSignals, type Annotation, type AnnotateOut } from "./annotate.ts";
-import { heuristicAnnotation, isBalanceText, isInput } from "./heuristic.ts";
+import { DEFAULT_INPUT, heuristicAnnotation, isBalanceText, isInput } from "./heuristic.ts";
 import { perform, type ActResult } from "./act.ts";
 import { classifyForeground, escapeExternal, isInApp, isLauncherPackage } from "./externals.ts";
 import { GATE_RE, LIMIT_MESSAGE_RE, WALL_KINDS } from "./signals.ts";
@@ -1307,9 +1307,11 @@ async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prio
     }
     const act = r.cur.actions.find(x => x.id === t.action);
     if (!act) { end = "unreachable"; break; }
+    // In a chat the drain repeats one short message: long prompts are what a real keyboard scrambles.
+    if (t.chat) act.input = DEFAULT_INPUT;
     const out = await step(r, r.cur, act, phase);
-    // One failed send (a swallowed tap, a slow keyboard) is retried from the target screen; two in a row end it.
-    if (out.failed) { if (++fails >= 2) { end = "the action failed twice in a row"; break; } continue; }
+    // A failed send (a swallowed tap, a slow keyboard) is retried from the target screen; three in a row end it.
+    if (out.failed) { if (++fails >= 3) { end = "the action failed 3 times in a row"; break; } continue; }
     fails = 0;
     if (out.external) { end = `external:${out.external}`; break; }
     if (out.wall) { noteWall(r, t, out.edge, act); end = "wall"; break; }
@@ -1330,7 +1332,7 @@ async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prio
     if (now) { backfill(r, last, base, now, n); base = now; }
   }
   trace("info", { phase, end, sends, context: ctxText(t.context), state: t.state, action: t.action }, g.steps);
-  return { end, sends, reading: base };
+  return { end: end === "wall" ? end : `${end} after ${sends} send${sends === 1 ? "" : "s"}`, sends, reading: base };
 }
 
 /**

@@ -281,6 +281,12 @@ export function findByKey(els: NormElement[], key: string, hint?: Rect): NormEle
     return kin.length === 1 || hint ? nearest(kin) : undefined;
   }
   if (!hint) return undefined;
+  // A text field's words are the user's (a hint, a draft, a garbled leftover): an id-less field is the field
+  // of the same type in that place or column (the keyboard moves it up), whatever it shows now.
+  if (INPUT_TYPE.test(type)) {
+    const fields = els.filter(e => shortType(e.type) === type && !e.identifier && (overlapRatio(e.rect, hint) >= 0.5 || Math.abs(e.rect.x - hint.x) <= 24));
+    return fields.length ? nearest(fields) : undefined;
+  }
   return nearest(els.filter(e => shortType(e.type) === type && !e.identifier && !isInputType(e.type) && overlapRatio(e.rect, hint) >= 0.6));
 }
 

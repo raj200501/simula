@@ -362,7 +362,7 @@ test("guest chat: walls on other actions do not stop the drain, which sends unti
   assert.equal(d.sends, CAP + 1, "stopped at the first blocked send");
 });
 
-test("typing: text that does not land in the field is never sent (BACK hides the keyboard, the action fails)", async () => {
+test("typing: text that does not land in the field is never sent (the action fails; no BACK when no field has the focus, it would navigate away)", async () => {
   const st = { search: "" };
   const d = new TinyDevice(FAKE_PKG, {
     chat: () => [
@@ -380,7 +380,7 @@ test("typing: text that does not land in the field is never sent (BACK hides the
   const send = graph.states.flatMap(s => s.actions).find(a => a.kind === "consume" && /message/i.test(a.elKey ?? ""))!;
   assert.equal(send.status, "failed");
   assert.match(send.note ?? "", /did not land in the field/);
-  assert.equal(d.backs, 1, "BACK once, to hide the keyboard");
+  assert.equal(d.backs, 0, "no field reported focus: no keyboard to hide, and BACK would leave the screen");
   assert.equal(d.enters, 0);
   assert.ok(!d.taps.some(t => t.label === "Send"), "never sent");
 });
@@ -543,7 +543,7 @@ test("typing: a failure says what the field shows, so the trajectory explains it
   const res = await perform(actCtxOf(d), a);
   assert.equal(res.ok, false);
   assert.match(!res.ok ? res.reason : "", /did not land in the field.*the field shows "message", the text appeared nowhere, no field reported focus/);
-  assert.equal(d.backs, 1);
+  assert.equal(d.backs, 0);
 });
 
 test("typing: a composer that never exposes what it holds (Luzia's inputBar) but has the focus is sent once", async () => {
@@ -571,4 +571,29 @@ test("typing: a tap that opens a rename box never types into it (the chat's titl
   assert.deepEqual(d.typed, [], "nothing typed anywhere");
   assert.equal(st.title, "Our new chat");
   assert.deepEqual(st.sent, []);
+});
+
+test("typing: our own keys scrambled in the focused field are sent; a long prompt is typed in word chunks", async () => {
+  const st = { focused: false, draft: "", sent: [] as string[] };
+  const d = new TinyDevice(FAKE_PKG, {
+    chat: () => [
+      { type: T("TextView"), text: "Assistant", rect: rect(189, 100, 400, 100) },
+      { type: T("EditText"), text: st.draft || "Message", rect: rect(42, 2028, 850, 126), ...(st.focused ? { focused: true } : {}), tap: () => { st.focused = true; } },
+      st.draft ? { type: T("ImageButton"), label: "Send", rect: rect(900, 2028, 140, 126), tap: () => { st.sent.push(st.draft); st.draft = ""; } }
+        : { type: T("ImageButton"), label: "Voice message", rect: rect(900, 2028, 140, 126) },
+    ],
+  }, "chat");
+  const type = d.typeText.bind(d);
+  // the keyboard scrambles the first chunk: its first letter lands at the end
+  d.typeText = async (text: string) => { await type(text); if (st.focused) st.draft = st.draft ? st.draft + text : text.slice(1) + text[0]; };
+  const obs = await tinyObs(d);
+  const field = obs.elements.find(e => labelOf(e) === "Message")!;
+  const ann: Annotation["actions"] = [{ el: field.id, intent: "Send a message", kind: "consume", priority: 3, input: "What are the benefits of the plan and how much does it cost?" }];
+  const a = toActions(ann, obs, 1, { withBack: false })[0];
+  const res = await perform(actCtxOf(d), a);
+  assert.ok(res.ok, JSON.stringify(res));
+  assert.ok(d.typed.length >= 3, `typed in chunks: ${JSON.stringify(d.typed)}`);
+  assert.ok(d.typed.every(t => t.length <= 24));
+  assert.equal(st.sent.length, 1, "the scrambled copy is sent once");
+  assert.equal(d.backs, 0);
 });

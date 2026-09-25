@@ -206,7 +206,7 @@ async function fillField(c: ActCtx, field: NormElement, text: string): Promise<{
     if (focused.length) return { ok: false, reason: "tapping the field gave the focus to another text field (nothing typed)" };
   }
   if (landedIn(before, field, text)) return { ok: true, before };
-  await c.dev.typeText(text);
+  await typeChunks(c, text);
   let now = await landedSoon(c, field, text);
   const elsewhere = () => now.els.some(e => mask(labelOf(e), 200).includes(want));
   // Some composers never expose what they hold (a custom input bar): the text shows nowhere, yet the same
@@ -221,7 +221,7 @@ async function fillField(c: ActCtx, field: NormElement, text: string): Promise<{
       const again = await tapElement(c, f);
       if (again.ok) {
         await sleep(c.timing.pollMs);
-        await c.dev.typeText(text);
+        await typeChunks(c, text);
         now = await landedSoon(c, field, text);
       }
     }
@@ -229,11 +229,40 @@ async function fillField(c: ActCtx, field: NormElement, text: string): Promise<{
   if (now.landed || holdsUnseen()) return { ok: true, before };
   const f = refindField(now.els, field, text);
   const shows = f ? mask(labelOf(f), 60) : "";
-  await c.dev.back();
+  // Our keys, scrambled, in the same focused field: still our own words in the right place. Sending them
+  // spends exactly like a clean copy (all a drain needs); nothing else could have put them there.
+  if (f?.focused && garbledCopy(mask(labelOf(f), 400), want)) return { ok: true, before };
+  // BACK hides the keyboard; with no keyboard up it would navigate away instead
+  if (now.els.some(e => e.focused && isInput(e))) await c.dev.back();
   return {
     ok: false,
-    reason: `the typed text did not land in the field (pressed BACK to hide the keyboard; nothing sent): ${f ? `the field shows "${shows}"` : "the field is gone from the screen"}${elsewhere() ? ", the text appeared elsewhere" : ", the text appeared nowhere"}${now.els.some(e => e.focused && isInput(e)) ? "" : ", no field reported focus"}`,
+    reason: `the typed text did not land in the field (nothing sent): ${f ? `the field shows "${shows}"` : "the field is gone from the screen"}${elsewhere() ? ", the text appeared elsewhere" : ", the text appeared nowhere"}${now.els.some(e => e.focused && isInput(e)) ? "" : ", no field reported focus"}`,
   };
+}
+
+/**
+ * Type in word-sized chunks: a long string injected in one go can come out scrambled on a real keyboard
+ * (keys reordered while the field re-renders). Short text goes in one call.
+ */
+async function typeChunks(c: ActCtx, text: string): Promise<void> {
+  if (text.length <= 24) { await c.dev.typeText(text); return; }
+  const parts = text.match(/\S+\s*/g) ?? [text];
+  let chunk = "";
+  for (const w of parts) {
+    if (chunk && (chunk + w).length > 16) { await c.dev.typeText(chunk); await sleep(Math.min(120, c.timing.pollMs)); chunk = ""; }
+    chunk += w;
+  }
+  if (chunk) await c.dev.typeText(chunk);
+}
+
+/** Our own keys, scrambled, in the field (letters reordered or a few dropped): at least 70% of our characters. */
+function garbledCopy(shown: string, want: string): boolean {
+  if (!shown || shown.length < want.length * 0.6) return false;
+  const pool = new Map<string, number>();
+  for (const ch of shown) pool.set(ch, (pool.get(ch) ?? 0) + 1);
+  let hit = 0;
+  for (const ch of want) { const n = pool.get(ch) ?? 0; if (n > 0) { hit++; pool.set(ch, n - 1); } }
+  return hit / want.length >= 0.7;
 }
 
 /**

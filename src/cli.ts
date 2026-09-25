@@ -69,8 +69,12 @@ async function runStage(name: StageName, b: Base): Promise<void> {
           console.log(`explore: ${g.states.length} states, ${g.edges.length} edges, ${g.externals.length} external visits, ${g.steps} steps, ${walls} wall${walls === 1 ? "" : "s"}, stop=${g.stopReason}`);
           console.log(`  drain: ${r.drain.join(", ") || "not run"}`);
           // A drain that could not send measured nothing: say so loudly instead of finishing "ok" with no walls.
-          if (!walls && r.drain.some(x => /failed|unreachable/.test(x)))
-            console.log(`  ⚠ the drain could not send, so no limit was measured. The reason is under "Failures and recoveries" in ${path.join(p.out, "trajectory.md")}; fix it, then re-run explore.`);
+          if (!walls && r.drain.some(x => /failed|unreachable/.test(x))) {
+            const sent = r.drain.reduce((n, x) => n + Number(/after (\d+) sends?/.exec(x)?.[1] ?? 0), 0);
+            console.log(sent
+              ? `  ⚠ the drain sent ${sent} message${sent === 1 ? "" : "s"} but stopped before any limit showed. The reason is under "Failures and recoveries" in ${path.join(p.out, "trajectory.md")}.`
+              : `  ⚠ the drain could not send, so no limit was measured. The reason is under "Failures and recoveries" in ${path.join(p.out, "trajectory.md")}.`);
+          }
           console.log(`  -> ${r.graphFile}`);
           return { outputs: [r.graphFile], stopReason: g.stopReason };
         } finally {
