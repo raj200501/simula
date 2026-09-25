@@ -11,7 +11,7 @@ import {
 } from "../core/schema.ts";
 import { ensureDir, sha256 } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
-import { blurRects, hasPii, redactText } from "./redact.ts";
+import { blurRects, hasPii, redactAction, redactKey, redactText } from "./redact.ts";
 import { crop, dHash, decode, hamming, hex, inkFg, inkFontDp, palette, ringBg, samplePixels, tightFontDp, typeScale, type RawImage, type RGB } from "./tokens.ts";
 
 type UiRole = UiElement["role"];
@@ -208,7 +208,7 @@ export async function compile(graph: ExploreGraph, runDir: string, modelDir: str
         if (fontDp && e.text) fonts.push(fontDp);
       }
       const ui: UiElement = {
-        id: e.id, key: e.key, role, type: e.type,
+        id: e.id, key: redactKey(e.key), role, type: e.type,
         text: redactText(e.text), label: redactText(e.label), identifier: e.identifier,
         rectPx: e.rect,
         rectDp: { x: r1(e.rect.x / density), y: r1(e.rect.y / density), w: r1(e.rect.w / density), h: r1(e.rect.h / density) },
@@ -237,9 +237,9 @@ export async function compile(graph: ExploreGraph, runDir: string, modelDir: str
       .filter((b): b is { resource: string; el: string } => !!b.el));
 
     screens.push({
-      id, name: st.name, purpose: st.purpose, kind: st.kind, inScope: st.inScope,
-      signature: st.signature.map(t => redactText(t)), observations: st.obs, representative: rep?.id ?? "", screenshot: file, scrolledScreenshot,
-      scrollable: st.scrollable, visits: st.visits, elements, actions: st.actions, bindings, signals, render: "image", variants: [],
+      id, name: redactText(st.name), purpose: redactText(st.purpose), kind: st.kind, inScope: st.inScope,
+      signature: st.signature.map(t => redactKey(t)), observations: st.obs, representative: rep?.id ?? "", screenshot: file, scrolledScreenshot,
+      scrollable: st.scrollable, visits: st.visits, elements, actions: st.actions.map(redactAction), bindings, signals, render: "image", variants: [],
     });
   }
 
@@ -251,13 +251,16 @@ export async function compile(graph: ExploreGraph, runDir: string, modelDir: str
     const from = screenOf.get(g.from);
     const to = g.to.startsWith("ext:") ? g.to : screenOf.get(g.to);
     if (!from || !to) { trace("failure", { where: "understand:compile", error: `edge ${g.id} references unknown state ${from ? g.to : g.from}; dropped` }); continue; }
-    const action = stateById.get(g.from)?.actions.find(a => a.id === g.action);
+    // Element resolution needs the raw re-find key; the model keeps the redacted copy of the action.
+    const raw = stateById.get(g.from)?.actions.find(a => a.id === g.action);
+    const action = byId.get(from)!.actions.find(a => a.id === g.action);
     if (action) actionOf.set(g.id, action);
-    const el = resolveEl(action?.elKey, reps.get(from), obs.get(g.obsBefore));
+    const el = resolveEl(raw?.elKey, reps.get(from), obs.get(g.obsBefore));
     edges.push({
       id: g.id, from, to, action: g.action, el,
       transition: classify(g.from === g.to, to, action, byId.get(from)!, byId.get(to), el, reps.get(from), reps.get(to), dev),
-      effects: g.effects, context: g.context, limitHit: g.limitHit, seen: g.seen, failures: g.failures,
+      effects: g.effects.map(f => (f.kind === "counter" ? f : { ...f, text: redactText(f.text) })),
+      context: { selected: g.context.selected.map(t => redactText(t)) }, limitHit: g.limitHit, seen: g.seen, failures: g.failures,
     });
   }
   assignParents(screens, edges, graph);
@@ -413,7 +416,7 @@ function buildCoverage(graph: ExploreGraph, screenOf: Map<string, string>, edges
     stopReason: graph.stopReason ?? "done",
     humanInterventions: graph.human.length,
     notExplored: acts.filter(({ a }) => a.status === "skipped" || a.status === "unreachable" || a.status === "failed")
-      .map(({ s, a }) => ({ screen: screenOf.get(s.id) ?? s.id, action: a.id, intent: a.intent, why: a.skip || a.note || a.status })),
+      .map(({ s, a }) => ({ screen: screenOf.get(s.id) ?? s.id, action: a.id, intent: redactText(a.intent), why: redactText(a.skip || a.note || a.status) })),
   };
 }
 

@@ -6,6 +6,7 @@
 // It also drops or repairs references to ids that do not exist (screens, edges, offers).
 import type { Economy, Evidence, ExploreGraph } from "../core/schema.ts";
 import { trace } from "../core/trace.ts";
+import { redactText } from "./redact.ts";
 
 export interface Corpus {
   texts: Map<string, string[]>;          // observation id | screen id | ext id -> visible texts
@@ -14,10 +15,12 @@ export interface Corpus {
 }
 export interface Ids { screens: Set<string>; edges: Set<string>; externals: Map<string, string> } // ext id -> a screen it is reached from
 
+/** Texts are redacted exactly like the model's texts (and the synthesis prompt), so a quote that
+ *  names "[email]" is found where the screen showed an address, and a raw address never verifies. */
 export function buildCorpus(g: ExploreGraph, obsScreen: Map<string, string>): Corpus {
   const texts = new Map<string, string[]>();
   const elements = new Map<string, Set<string>>();
-  const push = (k: string, xs: string[]) => texts.set(k, [...(texts.get(k) ?? []), ...xs.filter(Boolean)]);
+  const push = (k: string, xs: string[]) => texts.set(k, [...(texts.get(k) ?? []), ...xs.filter(Boolean).map(t => redactText(t))]);
   for (const o of g.observations) {
     const xs = [...o.texts, ...o.elements.flatMap(e => [e.text ?? "", e.label ?? ""])];
     push(o.id, xs);

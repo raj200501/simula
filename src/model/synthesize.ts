@@ -575,6 +575,33 @@ function toLlm(d: Draft): LlmOut {
   };
 }
 
+/** Everything the draft says in words goes through the same PII redaction as the model's texts (the
+ *  stub quotes raw observation texts; an LLM may read an address off a screenshot). */
+function redactDraft(d: Draft): Draft {
+  const r = redactText;
+  const evs = (xs: Evidence[]) => xs.map(k => ({ ...k, quote: r(k.quote) }));
+  const b = d.brief, e = d.economy;
+  return {
+    ...d,
+    brief: { oneLiner: r(b.oneLiner), audience: r(b.audience), coreLoop: b.coreLoop.map(r), howItMakesMoney: r(b.howItMakesMoney),
+      whatIsScarce: b.whatIsScarce.map(r), adsToday: r(b.adsToday), openQuestions: b.openQuestions.map(r) },
+    economy: {
+      resources: e.resources.map(k => ({ ...k, name: r(k.name), unit: r(k.unit), resets: r(k.resets), evidence: evs(k.evidence) })),
+      sinks: e.sinks.map(k => ({ ...k, action: r(k.action), context: r(k.context), evidence: evs(k.evidence) })),
+      sources: e.sources.map(k => ({ ...k, how: r(k.how), evidence: evs(k.evidence) })),
+      offers: e.offers.map(k => ({ ...k, label: r(k.label), evidence: evs(k.evidence) })),
+      walls: e.walls.map(k => ({ ...k, blockedIntent: r(k.blockedIntent), evidence: evs(k.evidence) })),
+      entitlements: e.entitlements.map(k => ({ ...k, plan: r(k.plan), benefits: k.benefits.map(r), evidence: evs(k.evidence) })),
+      ads: e.ads.map(k => ({ ...k, evidence: evs(k.evidence) })),
+    },
+    flowNames: d.flowNames.map(f => ({ ...f, name: r(f.name), goal: r(f.goal) })),
+    extraMoments: d.extraMoments.map(m => ({ ...m, description: r(m.description), evidence: evs(m.evidence) })),
+  };
+}
+
+// The output schema is part of the cache identity: a cached answer to an older schema is a miss, not a parse error.
+const SCHEMA_SHA = sha256(canonical(z.toJSONSchema(LlmOut, { unrepresentable: "any" }))).slice(0, 16);
+
 export async function synthesize(cm: Compiled, flows: Flow[]): Promise<Draft> {
   const prompt = graphText(cm, flows);
   const { imgs, shas } = await keyImages(cm);
@@ -585,14 +612,14 @@ export async function synthesize(cm: Compiled, flows: Flow[]): Promise<Draft> {
       system: SYSTEM, prompt, images: imgs, schema: LlmOut,
       // Images are downscaled locally (bytes may differ across machines), so the key uses the
       // prompt hash and the ORIGINAL screenshot shas instead.
-      cacheKey: { prompt: sha256(canonical({ SYSTEM, prompt })), images: shas },
+      cacheKey: { prompt: sha256(canonical({ SYSTEM, prompt })), images: shas, schema: SCHEMA_SHA },
       stub: () => { stubbed = true; return toLlm(stubDraft(cm, flows)); },
     });
-    return { ...fromLlm(out), by: stubbed ? "stub" : "llm" };
+    return redactDraft({ ...fromLlm(out), by: stubbed ? "stub" : "llm" });
   } catch (e) {
     trace("failure", { where: "understand:synthesize", error: String((e as Error).message ?? e).slice(0, 300) });
     trace("recovery", { how: "heuristic (stub) synthesis of the economy from counters, effects and on-screen texts" });
   }
-  return stubDraft(cm, flows);
+  return redactDraft(stubDraft(cm, flows));
 }
 

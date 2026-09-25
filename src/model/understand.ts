@@ -13,6 +13,7 @@ import { digest } from "./digest.ts";
 import { deriveEconomy, regimeOf } from "./economics.ts";
 import { buildFlows, flowKey, type FlowGraph } from "./flows.ts";
 import { detectMoments } from "./moments.ts";
+import { redactText } from "./redact.ts";
 import { synthesize } from "./synthesize.ts";
 import { buildCorpus, verifyEconomy } from "./verify.ts";
 import { renderViewer } from "./viewer.ts";
@@ -66,7 +67,7 @@ export async function understand(c: StageCtx, graphFile: string): Promise<{ mode
     design: cm.design,
     transcripts: cm.transcripts,
     coverage: cm.coverage,
-    human: graph.human,
+    human: graph.human.map(x => ({ ...x, note: redactText(x.note) })),
     provenance: { synthesizedBy: draft.by, inferredClaims: v.inferred, verifiedClaims: v.verified },
   };
   model = applyOverrides(model, modelDir);
