@@ -18,6 +18,7 @@ import { buildMock } from "../mock/build.ts";
 import { proposalEconomics } from "../model/economics.ts";
 import { readQa, rollupCost } from "../report/data.ts";
 import { captureFlow } from "./capture.ts";
+import { flowGif } from "./gif.ts";
 import { renderDeck, type FlowInput } from "./deck.ts";
 import { exportDeck } from "./export.ts";
 import {
@@ -75,6 +76,18 @@ export async function buildSlides(c: StageCtx, m: ProductModel, modelDir: string
         precedents: p.precedents.map(id => ({ id: id.replace(/[[\]]/g, ""), title: kbTitles().get(id.replace(/[[\]]/g, "")) ?? "" })),
       });
       trace("info", { stage: "slides", proposal: p.id, frames: frames.map(x => `${x.phase}:${x.source}`), pins: frames.reduce((a, x) => a + x.callouts.filter(k => k.box).length, 0) });
+    }
+
+    // 2b. The lead flow as a GIF (slides/flow-<Pn>.gif) for readers on GitHub. Best effort.
+    for (const f of fs.readdirSync(outDir)) if (/^flow-.+\.gif$/.test(f)) fs.rmSync(path.join(outDir, f)); // no stale lead
+    if (indexHtml && ships.length) {
+      const lead = ships[0].p;
+      try {
+        const gif = await flowGif({ browser, indexHtml, p: lead, story: normalizeStoryboard(lead, m), m, file: path.join(outDir, `flow-${lead.id}.gif`), accent: accentOf(m).accent });
+        trace("info", { stage: "slides", gif });
+      } catch (e) {
+        trace("failure", { where: `slides:gif:${lead.id}`, error: String((e as Error)?.message ?? e).split("\n")[0] });
+      }
     }
 
     // 3. The deck: real screenshots for "how it makes money today", captures for the flows.

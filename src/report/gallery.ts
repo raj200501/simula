@@ -62,6 +62,13 @@ export function galleryMd(all: GalleryRow[], root: string): string {
     const pngDir = path.join(dir, "slides", "png");
     const pngs = fs.existsSync(pngDir) ? fs.readdirSync(pngDir).filter(f => f.endsWith(".png")).sort() : [];
     const flows = pngs.filter(f => /flow-P\d+\.png$/.test(f));
+    const gifs = fs.existsSync(path.join(dir, "slides")) ? fs.readdirSync(path.join(dir, "slides")).filter(f => /^flow-P\d+\.gif$/.test(f)) : [];
+    for (const g of gifs) {
+      const pid = /flow-(P\d+)\.gif$/.exec(g)![1];
+      const title = r.ships.find(s => s.id === pid)?.title ?? pid;
+      L.push(`### ${pid} in motion`, "", `<img src="${rel("slides", g)}" width="300" alt="${pid}: ${title.replace(/"/g, "&quot;")}, played in the generated mock">`, "",
+        `_The lead flow played in the generated mock: today → what changed → the offer → the game → the reward confirmed in-app._`, "");
+    }
     if (flows.length) {
       L.push("### Shipped flows", "");
       for (const f of flows.slice(0, MAX_FLOWS)) {

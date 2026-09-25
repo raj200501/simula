@@ -156,6 +156,13 @@ test("slides + report: deck.pdf, the flow PNGs and out/index.html exist", () => 
   const gallery = fs.readFileSync(path.join(outRoot, "README.md"), "utf8");
   assert.match(gallery, /### Shipped flows[\s\S]*!\[P\d+: [^\]]+\]\(fixture\/slides\/png\/\d+-flow-P\d+\.png\)/);
   assert.match(gallery, /<img src="fixture\/qa\/s\d+\/original\.png"/);
+  // The lead flow as an animated GIF, embedded in the gallery.
+  const gifs = fs.readdirSync(base.paths.slides).filter(f => /^flow-P\d+\.gif$/.test(f));
+  assert.equal(gifs.length, 1, gifs.join(", "));
+  const gifBytes = fs.readFileSync(path.join(base.paths.slides, gifs[0]));
+  assert.equal(gifBytes.subarray(0, 6).toString("latin1"), "GIF89a");
+  assert.ok(gifBytes.length > 50_000 && gifBytes.length < 3_000_000, String(gifBytes.length));
+  assert.match(gallery, new RegExp(`<img src="fixture/slides/${gifs[0]}"`));
   const html = fs.readFileSync(deck.deckHtml, "utf8");
   assert.doesNotMatch(html, /may spend|type a short message/i, "no explorer wording on the slides");
 });
