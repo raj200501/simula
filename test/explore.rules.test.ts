@@ -12,7 +12,7 @@ import { setTraceContext } from "../src/core/trace.ts";
 import type { DeviceInfo, NormElement, Observation, RawElement, State } from "../src/core/schema.ts";
 import { newExclusions, normalize, textsOf, type Timing } from "../src/explore/observe.ts";
 import { labelOf, overlayOf, relabelOnly, signatureOf, templateSame } from "../src/explore/signature.ts";
-import { adUnits, counterOf, heuristicAnnotation, isBalanceText } from "../src/explore/heuristic.ts";
+import { DEFAULT_INPUT, adUnits, counterOf, heuristicAnnotation, isBalanceText } from "../src/explore/heuristic.ts";
 import { mergeAnnotations, toActions, type Annotation } from "../src/explore/annotate.ts";
 import { companionField, findSend, perform } from "../src/explore/act.ts";
 import { explore, isWall, probe } from "../src/explore/explorer.ts";
@@ -482,4 +482,59 @@ test("wall test: a spending tap that opens a chat showing its mode chip (Premium
   const chat = bare("s06", "chat", ["Button||back", "Button|web:id/mode_chip", "EditText|web:id/chat_input"], [{ kind: "upsell", text: "Premium · 30" }]);
   assert.equal(isWall(detail, chat), false);
   assert.equal(isWall(detail, bare("s07", "sheet", ["TextView||go premium"], [{ kind: "upsell", text: "Go Premium" }, { kind: "price", text: "$4.99" }])), true, "a paywall sheet");
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// Typing on a real keyboard (found on a Pixel emulator, API 35): the first tap after a screen change can be
+// swallowed, the keyboard moves a bottom composer up, and the element list lags the keys by a dump or two.
+// ---------------------------------------------------------------------------------------------------------
+function keyboardChat(opts: { tapsToFocus: number; reportsFocus: boolean; lagDumps: number }) {
+  const st = { taps: 0, focused: false, draft: "", pending: "", lag: 0, sent: [] as string[] };
+  const y = () => (st.focused ? 1300 : 2028); // the keyboard pushes the composer up
+  const d = new TinyDevice(FAKE_PKG, {
+    chat: () => {
+      if (st.pending && st.lag-- <= 0) { st.draft += st.pending; st.pending = ""; }
+      return [
+        { type: T("TextView"), text: "Assistant", rect: rect(189, 100, 400, 100) },
+        { type: T("TextView"), text: "Hello there! I am here for you whenever you want.", rect: rect(42, 600, 800, 160) },
+        { type: T("EditText"), text: st.draft || "Message", rect: rect(42, y(), 850, 126), ...(st.focused && opts.reportsFocus ? { focused: true } : {}),
+          tap: () => { if (++st.taps >= opts.tapsToFocus) st.focused = true; } },
+        st.draft
+          ? { type: T("ImageButton"), label: "Send", rect: rect(900, y(), 140, 126), tap: () => { st.sent.push(st.draft); st.draft = ""; } }
+          : { type: T("ImageButton"), label: "Voice message", rect: rect(900, y(), 140, 126) },
+      ];
+    },
+  }, "chat");
+  const type = d.typeText.bind(d);
+  // keys typed before the field has the focus go nowhere
+  d.typeText = async (text: string) => { await type(text); if (st.focused) { st.pending += text; st.lag = opts.lagDumps; } };
+  return { d, st };
+}
+
+test("typing: a swallowed first tap, a keyboard that moves the composer and a lagging element list still send exactly once", async () => {
+  const { d, st } = keyboardChat({ tapsToFocus: 2, reportsFocus: true, lagDumps: 1 });
+  const a = consumeOn(await tinyObs(d), "Message");
+  const res = await perform(actCtxOf(d), a);
+  assert.ok(res.ok, JSON.stringify(res));
+  assert.deepEqual(st.sent, [DEFAULT_INPUT]);
+  assert.equal(d.typed.length, 1, "typed once");
+  assert.equal(d.backs, 0);
+});
+
+test("typing: keys that went nowhere (the field took the focus late, and never says so) are typed once more, then sent once", async () => {
+  const { d, st } = keyboardChat({ tapsToFocus: 3, reportsFocus: false, lagDumps: 0 });
+  const a = consumeOn(await tinyObs(d), "Message");
+  const res = await perform(actCtxOf(d), a);
+  assert.ok(res.ok, JSON.stringify(res));
+  assert.deepEqual(st.sent, [DEFAULT_INPUT], "the lost keys are not doubled in what is sent");
+  assert.equal(d.typed.length, 2);
+});
+
+test("typing: a failure says what the field shows, so the trajectory explains itself", async () => {
+  const { d } = keyboardChat({ tapsToFocus: 99, reportsFocus: false, lagDumps: 0 });
+  const a = consumeOn(await tinyObs(d), "Message");
+  const res = await perform(actCtxOf(d), a);
+  assert.equal(res.ok, false);
+  assert.match(!res.ok ? res.reason : "", /did not land in the field.*the field shows "message", the text appeared nowhere, no field reported focus/);
+  assert.equal(d.backs, 1);
 });

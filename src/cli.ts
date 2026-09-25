@@ -65,7 +65,12 @@ async function runStage(name: StageName, b: Base): Promise<void> {
           });
           summarize(p.trace, path.join(p.out, "trajectory.md"));
           const g = r.graph;
-          console.log(`explore: ${g.states.length} states, ${g.edges.length} edges, ${g.externals.length} external visits, ${g.steps} steps, stop=${g.stopReason}`);
+          const walls = g.edges.filter(e => e.limitHit).length;
+          console.log(`explore: ${g.states.length} states, ${g.edges.length} edges, ${g.externals.length} external visits, ${g.steps} steps, ${walls} wall${walls === 1 ? "" : "s"}, stop=${g.stopReason}`);
+          console.log(`  drain: ${r.drain.join(", ") || "not run"}`);
+          // A drain that could not send measured nothing: say so loudly instead of finishing "ok" with no walls.
+          if (!walls && r.drain.some(x => /failed|unreachable/.test(x)))
+            console.log(`  ⚠ the drain could not send, so no limit was measured. The reason is under "Failures and recoveries" in ${path.join(p.out, "trajectory.md")}; fix it, then re-run explore.`);
           console.log(`  -> ${r.graphFile}`);
           return { outputs: [r.graphFile], stopReason: g.stopReason };
         } finally {

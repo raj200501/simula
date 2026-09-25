@@ -122,7 +122,7 @@ const sameList = (a: readonly string[], b: readonly string[]) => a.length === b.
 // =============================================================================================
 // Entry point
 // =============================================================================================
-export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Promise<{ graphFile: string; graph: ExploreGraph }> {
+export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Promise<{ graphFile: string; graph: ExploreGraph; drain: string[] }> {
   const info = await dev.info();
   let g: ExploreGraph;
   let graphFile: string;
@@ -166,6 +166,7 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
   const onSigint = () => { r.stop = "interrupted"; trace("info", { note: "SIGINT: stopping after the current step" }); };
   process.once("SIGINT", onSigint);
   let reason: StopReason = "done";
+  let drained: string[] = [];
   let error: unknown = null;
   try {
     trace("info", { phase: "start", resume: !!o.resume, annotator: r.annotator, stepCap: r.stepCap, device: info }, g.steps);
@@ -183,6 +184,7 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
     if (!r.stop && reason !== "budget_usd" && reason !== "budget_time") await gapPhase(r);
     if (!r.stop) {
       const ends = await drainProbe(r);
+      drained = ends;
       if (ends.includes("wall") && !r.stop) {
         const after = await crawl(r, { stepCap: g.steps + AFTER_WALL_STEPS, noConsume: true, saturation: false, grace: true });
         trace("info", { phase: "after-wall", end: after }, g.steps);
@@ -197,7 +199,7 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
   }
   finalize(r, r.stop ?? reason);
   if (error) throw error;
-  return { graphFile, graph: g };
+  return { graphFile, graph: g, drain: drained };
 }
 
 function newGraph(c: StageCtx, info: DeviceInfo): ExploreGraph {
@@ -1292,6 +1294,7 @@ async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prio
   if (base && !(await reachTarget(r, t))) return { end: "unreachable", sends: 0, reading: base };
   let n = 0;          // sends since the last balance reading
   let flat = 0;       // sends in a row with no reply and no counter change
+  let fails = 0;      // failed sends in a row
   let sends = 0;
   let last: GraphEdge | null = null;
   let end = "max";
@@ -1305,7 +1308,9 @@ async function sendLoop(r: Run, t: DrainTarget, max: number, phase: string, prio
     const act = r.cur.actions.find(x => x.id === t.action);
     if (!act) { end = "unreachable"; break; }
     const out = await step(r, r.cur, act, phase);
-    if (out.failed) { end = "the action failed"; break; }
+    // One failed send (a swallowed tap, a slow keyboard) is retried from the target screen; two in a row end it.
+    if (out.failed) { if (++fails >= 2) { end = "the action failed twice in a row"; break; } continue; }
+    fails = 0;
     if (out.external) { end = `external:${out.external}`; break; }
     if (out.wall) { noteWall(r, t, out.edge, act); end = "wall"; break; }
     sends++;

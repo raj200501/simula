@@ -177,29 +177,71 @@ function landedIn(els: NormElement[], field: NormElement, text: string): boolean
 /**
  * Tap the field, type (never ENTER: it is a newline in chat apps), then check that the text landed in that
  * field - many devices (Compose apps under mobile-mcp) never report which field has the focus, so the check
- * is on the result. If the text went elsewhere or nowhere, press BACK (hides the keyboard) and fail: never
- * send what did not land in the field. If the tap visibly gave the focus to another field (it opened a
- * profile sheet), nothing is typed at all. A draft already holding the text is not typed twice.
+ * is on the result. Real devices add three wrinkles the checks allow for:
+ * - a first tap right after a screen change is often swallowed: tap again while no field reports focus;
+ * - the keyboard moves a bottom composer up: a focused field of the same type, id and column is the same
+ *   field, not "another" one;
+ * - the element list lags the keys: poll a few times before deciding.
+ * If the keys went nowhere (the text shows nowhere on screen: the field was not focused yet), tap once more
+ * and type again. If the text went somewhere else (it shows outside the field), press BACK (hides the
+ * keyboard) and fail: never send what did not land in the field. If the tap visibly gave the focus to a
+ * different field (it opened a profile sheet), nothing is typed at all. A draft already holding the text is
+ * not typed twice. The failure reason says what the field shows, so a trajectory explains itself.
  * On success, `before` is the screen just before typing (to see what the typing made appear).
  */
 async function fillField(c: ActCtx, field: NormElement, text: string): Promise<{ ok: true; before: NormElement[] } | { ok: false; reason: string }> {
-  const tapped = await tapElement(c, field);
-  if (!tapped.ok) return tapped;
-  await sleep(c.timing.pollMs);
-  const before = await look(c);
-  const focused = before.filter(e => e.focused && isInput(e));
-  if (focused.length && !focused.some(e => overlapRatio(e.rect, field.rect) >= 0.5)) {
-    return { ok: false, reason: "tapping the field gave the focus to another text field (nothing typed)" };
-  }
-  if (!landedIn(before, field, text)) {
-    await c.dev.typeText(text);
+  const want = mask(text, 200);
+  const same = sameFieldAs(field);
+  let before: NormElement[] = [];
+  for (let i = 0; i < 2; i++) {
+    const tapped = await tapElement(c, i === 0 ? field : refindField(before, field) ?? field);
+    if (!tapped.ok) return tapped;
     await sleep(c.timing.pollMs);
+    before = await look(c);
+    const focused = before.filter(e => e.focused && isInput(e));
+    if (focused.some(same)) break;
+    if (focused.length) return { ok: false, reason: "tapping the field gave the focus to another text field (nothing typed)" };
   }
-  if (!landedIn(await look(c), field, text)) {
+  if (landedIn(before, field, text)) return { ok: true, before };
+  await c.dev.typeText(text);
+  let now = await landedSoon(c, field, text);
+  if (!now.landed && !now.els.some(e => mask(labelOf(e), 200).includes(want))) {
+    // the keys went nowhere: the field was not focused yet
+    const again = await tapElement(c, refindField(now.els, field) ?? field);
+    if (again.ok) {
+      await sleep(c.timing.pollMs);
+      await c.dev.typeText(text);
+      now = await landedSoon(c, field, text);
+    }
+  }
+  if (!now.landed) {
+    const f = refindField(now.els, field);
+    const shows = f ? mask(labelOf(f), 60) : "";
+    const elsewhere = now.els.some(e => mask(labelOf(e), 200).includes(want));
     await c.dev.back();
-    return { ok: false, reason: "the typed text did not land in the field (pressed BACK to hide the keyboard; nothing sent)" };
+    return {
+      ok: false,
+      reason: `the typed text did not land in the field (pressed BACK to hide the keyboard; nothing sent): the field shows "${shows}"${elsewhere ? ", the text appeared elsewhere" : ", the text appeared nowhere"}${now.els.some(e => e.focused && isInput(e)) ? "" : ", no field reported focus"}`,
+    };
   }
   return { ok: true, before };
+}
+
+/** The same text field after the keyboard moved it: same type and id, and the same place or the same column. */
+function sameFieldAs(field: NormElement): (e: NormElement) => boolean {
+  return e => isInput(e) && shortType(e.type) === shortType(field.type) && (e.identifier ?? "") === (field.identifier ?? "")
+    && (overlapRatio(e.rect, field.rect) >= 0.5 || (Math.abs(e.rect.x - field.rect.x) <= 24 && Math.abs(e.rect.w - field.rect.w) <= 48));
+}
+
+/** Poll until the typed text shows in the field (the element list can lag the keys by a dump or two). */
+async function landedSoon(c: ActCtx, field: NormElement, text: string): Promise<{ landed: boolean; els: NormElement[] }> {
+  let els: NormElement[] = [];
+  for (let i = 0; i < 3; i++) {
+    await sleep(c.timing.pollMs);
+    els = await look(c);
+    if (landedIn(els, field, text)) return { landed: true, els };
+  }
+  return { landed: false, els };
 }
 
 /**
