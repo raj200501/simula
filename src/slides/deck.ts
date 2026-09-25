@@ -111,7 +111,8 @@ function recommendation(d: DeckInput, rows: IdeaRow[]): string {
           .map(fr => phoneHtml(fr.img, `${PHASE_LABEL[fr.phase as PhaseId]}: ${fr.screen}`, pw, fr.vh / fr.vw, 6)).join(`<div class="mini-arrow">${chevron()}</div>`);
         return `<a class="card" href="#flow-${h(f.p.id)}"><div class="strip">${strip}</div><div class="card-body">
 <div class="card-k"><span class="mk sm">${i + 1}</span>Flow ${i + 1} · slide ${3 + i * 2}</div><h3>${headlineHtml(headlineOf(f.p, m))}</h3><p>${h(clip(f.p.oneLiner, n >= 3 ? 130 : 170))}</p>
-<div class="badges">${badge("SHIP", "ship")}${score(f.f.weighted, d.j)}${badge(f.p.case === "product-change" ? "Product change" : "Existing mechanic")}</div></div></a>`;
+<div class="badges">${badge("SHIP", "ship")}${score(f.f.weighted, d.j)}${badge(f.p.case === "product-change" ? "Product change" : "Existing mechanic")}</div>
+${n === 1 ? `<ul class="card-why">${f.why.map(b => `<li><div class="stat">${h(b.stat)}</div><p>${h(b.line || b.text)}</p></li>`).join("")}</ul>` : ""}</div></a>`;
       }).join("")}</div>`
     : `<div class="none"><p>${h(reviewed)}</p><p>No idea cleared the judge's bar (weighted score ≥ ${d.j.thresholds.ship} with every criterion ≥ ${d.j.thresholds.minCriterion} and every gate passed), so there is no flow to show. “Ideas we rejected, and why” lists what each one would need.</p></div>`;
   return slide("recommendation", `
@@ -151,17 +152,18 @@ function moneySlide(d: DeckInput): string {
   const ratio = deviceRatio(m);
   // Five phones across the full width, each with its numbered circle and elbow (as on the flow slides).
   const area = W - 2 * PAD_X;
-  let pw = 224;
-  if (phoneH(pw, ratio, BEZEL) > 500) pw = Math.floor((500 - 2 * BEZEL) / ratio + 2 * BEZEL);
+  let pw = 212;
+  if (phoneH(pw, ratio, BEZEL) > 460) pw = Math.floor((460 - 2 * BEZEL) / ratio + 2 * BEZEL);
   const ph = phoneH(pw, ratio, BEZEL);
-  const gap = Math.floor((area - BR - 5 * pw) / 4);
+  // Every caption is pw + gap - 12 wide, the last one included, so the row ends inside the margin.
+  const gap = Math.floor((area - BR - 5 * pw + 20) / 5);
   const cols = stages.map((s, i) => {
     const img = s.screen ? d.shots.get(s.screen) : undefined;
     const phone = img ? phoneHtml(img, screenName(m, s.screen), pw, ratio, BEZEL) : `<div class="noshot" style="width:${pw}px;height:${ph}px">No screen</div>`;
     const facts = s.facts.slice(0, 3).map(x => `<li>${h(clip(x, 84))}</li>`).join("") + (s.facts.length > 3 ? `<li class="more">+${s.facts.length - 3} more</li>` : "");
     return `<div class="m-col" style="left:${BR + i * (pw + gap)}px;width:${pw}px">${phone}
 ${elbow(Math.round(ph * 0.42), ph)}${marker(i + 1, ph)}<span class="ph" style="top:${ph + 2}px">${h(s.title)}</span>
-<div class="cap-block" style="top:${ph + 40}px;width:${i < stages.length - 1 ? pw + gap - 12 : W - 2 * PAD_X - (BR + i * (pw + gap)) + MK / 2 - 6}px">${s.screen ? `<div class="scr">${h(screenName(m, s.screen))}</div>` : ""}<ul class="facts">${facts}</ul></div></div>`;
+<div class="cap-block" style="top:${ph + 40}px;width:${pw + gap - 12}px">${s.screen ? `<div class="scr">${h(screenName(m, s.screen))}</div>` : ""}<ul class="facts">${facts}</ul></div></div>`;
   }).join("");
   const uname = (id: string) => unitOf(resourceOf(m, id) ?? { unit: id, name: id });
   const unit = derived.unitPriceUsd.map(u => `$${u.min.toPrecision(3)}–$${u.max.toPrecision(3)} per ${singular(uname(u.resource))}`).join("; ");
@@ -458,7 +460,7 @@ export function placePins(boxes: Box[], vw: number, vh: number, r: number, texts
       v += 60 * controls.filter(t => !sameBox(t, b) && covers(c.x, c.y, t)).length;
       // Words on screen: another element's words cost more than the edge of the pin's own element.
       const inside = (t: Box) => t.x >= b.x - 1 && t.y >= b.y - 1 && t.x + t.w <= b.x + b.w + 1 && t.y + t.h <= b.y + b.h + 1;
-      v += texts.filter(t => covers(c.x, c.y, t)).reduce((a, t) => a + (inside(t) ? 2 : 1.5), 0);
+      v += texts.filter(t => covers(c.x, c.y, t)).reduce((a, t) => a + (inside(t) ? 2 : 4), 0);
       if (v < cost) { cost = v; best = c; }
     });
     placed.push(best);
@@ -472,8 +474,8 @@ function coversRect(x: number, y: number, rx: number, ry: number, b: Box): boole
 
 const sameBox = (a: Box, b: Box) => Math.abs(a.x - b.x) < 2 && Math.abs(a.y - b.y) < 2 && Math.abs(a.w - b.w) < 2 && Math.abs(a.h - b.h) < 2;
 
-/** Headline size that keeps a flow headline on one line across the slide (display font ≈ 0.6 em per character). */
-const headSize = (text: string) => Math.max(40, Math.min(60, Math.floor((W - 2 * PAD_X) / (Math.max(1, text.length) * 0.6))));
+/** Headline size that keeps a flow headline on one line across the slide (display font ≈ 0.64 em per character). */
+const headSize = (text: string) => Math.max(40, Math.min(60, Math.floor((W - 2 * PAD_X) / (Math.max(1, text.length) * 0.64))));
 
 const phoneH = (width: number, ratio: number, bezel: number) => Math.round((width - 2 * bezel) * ratio) + 2 * bezel;
 
@@ -592,6 +594,10 @@ h1.h2{font-size:40px}
 .card h3{font-family:var(--display);font-size:28px;line-height:1.18;margin:14px 0 10px;font-weight:800;letter-spacing:-.015em}
 .card h3 em{font-style:normal;color:var(--accent)}
 .cards.n3 .card h3,.cards.n4 .card h3{font-size:25px}
+.cards.n1 .card h3{font-size:40px}
+.card-why{list-style:none;margin:26px 0 0;padding:22px 0 0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.card-why .stat{font-family:var(--display);font-size:24px;font-weight:800;color:var(--accent);letter-spacing:-.015em;white-space:nowrap}
+.card-why p{font-size:15.5px;line-height:1.45;color:var(--body);margin:6px 0 0}
 .card p{font-size:17px;line-height:1.45;color:var(--body);margin:0 0 16px}
 .none{margin-top:40px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px 36px;font-size:24px;line-height:1.45;max-width:1500px}
 .none p{margin:0 0 14px}
