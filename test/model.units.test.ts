@@ -3,10 +3,11 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import sharp from "sharp";
-import type { Economy, Edge } from "../src/core/schema.ts";
+import type { DeviceInfo, Economy, Edge, NormElement } from "../src/core/schema.ts";
 import { numbersIn, quoteFound, verifyEconomy, type Corpus } from "../src/model/verify.ts";
 import { pricesIn } from "../src/model/synthesize.ts";
-import { blurRects, hasPii, redactText } from "../src/model/redact.ts";
+import { blurRects, hasPii, redactAction, redactKey, redactText } from "../src/model/redact.ts";
+import { tabIds } from "../src/model/compile.ts";
 import { contrast, decode, dHash, hamming, inkFg, kmeans, palette, ringBg, typeScale, type RGB } from "../src/model/tokens.ts";
 import { shortestPath } from "../src/model/flows.ts";
 
@@ -75,6 +76,18 @@ describe("prices and PII", () => {
     assert.ok(!hasPii("2026-09-25 09:41"));
     assert.equal(redactText("Signed in as jane.doe@example.com"), "Signed in as [email]");
     assert.equal(redactText("+1 415 555 0100"), "[phone]");
+    for (const s of ["25.09.2026 14:30", "09/25/2026 9:41 AM", "2026-09-25T10:04:30Z", "12:30 - 13:45", "Rp 1.000.000.000", "1 000 000 credits"]) assert.ok(!hasPii(s), s);
+    for (const s of ["415.555.0100", "06.12.34.56.78", "612 345 678"]) assert.ok(hasPii(s), s);
+    assert.equal(redactText("jane.123456789@x.com"), "[email]");
+  });
+
+  test("element keys and actions are redacted consistently (keys embed the masked, truncated label)", () => {
+    assert.equal(redactKey("textview||jane.doe@example.com|0"), "textview||[email]|0");
+    assert.equal(redactKey("textview||signed in as jane.doe@exampl|0"), "textview||signed in as [email]|0");
+    assert.equal(redactKey("button|web:id/balance_chip|# credits|0"), "button|web:id/balance_chip|# credits|0");
+    const a = redactAction({ id: "a1", kind: "tap", intent: "Copy jane.doe@example.com", elKey: "textview||jane.doe@example.com|0", priority: 1, status: "skipped", tries: 0, skip: "guard" });
+    assert.equal(a.intent, "Copy [email]");
+    assert.equal(a.elKey, redactKey("textview||jane.doe@example.com|0"));
   });
 
   test("blurRects changes pixels inside the rect only", async () => {
@@ -107,6 +120,20 @@ describe("tokens", () => {
   });
 });
 
+describe("tab bars", () => {
+  const dev: DeviceInfo = { widthPx: 1080, heightPx: 2400, density: 2.625, statusBarPx: 0, navBarPx: 0, kind: "android" };
+  const el = (id: string, text: string, x: number, y: number, w: number, h: number, type = "android.widget.Button"): NormElement =>
+    ({ id, key: `${id}|`, type, text, rect: { x, y, w, h }, chrome: true });
+  test("an evenly split bottom row is a tab bar; a toolbar with Back, avatar, title and chip is not", () => {
+    const bottom = [el("e1", "Home", 0, 2240, 360, 160), el("e2", "Store", 360, 2240, 360, 160), el("e3", "Profile", 720, 2240, 360, 160)];
+    assert.deepEqual([...tabIds(bottom, dev)].sort(), ["e1", "e2", "e3"]);
+    const header = [el("h1", "Back", 11, 80, 116, 116), el("h2", "ML", 147, 89, 95, 95, "android.widget.TextView"),
+      el("h3", "The Midnight Library", 268, 107, 463, 59, "android.widget.TextView"), el("h4", "Premium · 30", 681, 95, 367, 84)];
+    assert.equal(tabIds(header, dev).size, 0);
+    assert.deepEqual([...tabIds([el("t1", "x", 0, 0, 10, 10, "com.google.android.material.bottomnavigation.BottomNavigationItemView")], dev)], ["t1"]);
+  });
+});
+
 describe("paths", () => {
   const e = (id: string, from: string, to: string, transition: Edge["transition"] = "push", seen = 1): Edge =>
     ({ id, from, to, action: "a", transition, effects: [], context: { selected: [] }, seen, failures: 0 });
@@ -116,5 +143,9 @@ describe("paths", () => {
     assert.deepEqual(shortestPath([e("g3", "a", "c", "back")], "a", "c")!.map(x => x.id), ["g3"]);
     assert.equal(shortestPath(edges, "c", "a"), null);
     assert.deepEqual(shortestPath(edges, "a", "a"), []);
+    // An edge that failed more often than it worked is used only when nothing else connects.
+    const flaky = { ...e("g6", "b", "d"), failures: 2 };
+    assert.deepEqual(shortestPath([...edges, flaky], "a", "d")!.map(x => x.id), ["g4", "g6"]);
+    assert.deepEqual(shortestPath([...edges, flaky, e("g7", "c", "d")], "a", "d")!.map(x => x.id), ["g4", "g2", "g7"]);
   });
 });

@@ -28,9 +28,12 @@ export interface ProbeReport {
   secsPerObserve: number;
   screenshot: string;
   deviceFile: string;
-  checks: { name: string; pass: boolean; detail: string }[];
+  checks: ProbeCheck[];
   go: boolean;
 }
+
+/** gate: the check decides GO; otherwise it is a warning (printed, never blocking). */
+export interface ProbeCheck { name: string; pass: boolean; detail: string; gate: boolean }
 
 export async function probe(c: StageCtx, dev: Device, o: { deviceFile?: string } = {}): Promise<ProbeReport> {
   const info = await dev.info();
@@ -61,16 +64,18 @@ export async function probe(c: StageCtx, dev: Device, o: { deviceFile?: string }
   const numbers = els.map(labelOf).filter(t => /\d/.test(t)).slice(0, 12);
   const secs = Number((times.reduce((a, b) => a + b, 0) / times.length).toFixed(2));
   const inApp = isInApp(fg, c.app.package);
-  const checks = [
-    { name: "the app is in the foreground", pass: inApp, detail: fg },
-    { name: "at least 3 elements after normalizing", pass: els.length >= 3, detail: `${els.length} elements` },
-    { name: "at least 10 labelled actionable elements", pass: actionable.length >= 10, detail: `${actionable.length} labelled actionables` },
-    { name: "a balance or other number is readable as text", pass: counters.length > 0 || numbers.length > 0, detail: counters.map(k => `${k.name}: "${k.text}"`).join(", ") || numbers.slice(0, 3).join(", ") || "none" },
-    { name: "insets known", pass: info.kind === "web" || (info.statusBarPx > 0 && info.navBarPx > 0), detail: `status ${info.statusBarPx}px, nav ${info.navBarPx}px` },
-    { name: "one observation under 10 s", pass: secs < 10, detail: `${secs}s` },
+  // gate checks decide GO (can the explorer see and act on this app at all?); warnings are printed but a
+  // sparse first screen (a guest chat home: a greeting, a few suggestion chips and an input) is still explorable
+  const checks: ProbeCheck[] = [
+    { name: "the app is in the foreground", pass: inApp, detail: fg, gate: true },
+    { name: "at least 3 elements after normalizing", pass: els.length >= 3, detail: `${els.length} elements`, gate: true },
+    { name: "at least 3 labelled actionable elements", pass: actionable.length >= 3, detail: `${actionable.length} labelled actionables`, gate: true },
+    { name: "at least 10 labelled actionable elements", pass: actionable.length >= 10, detail: `${actionable.length} labelled actionables`, gate: false },
+    { name: "a balance or other number is readable as text", pass: counters.length > 0 || numbers.length > 0, detail: counters.map(k => `${k.name}: "${k.text}"`).join(", ") || numbers.slice(0, 3).join(", ") || "none", gate: false },
+    { name: "insets known", pass: info.kind === "web" || (info.statusBarPx > 0 && info.navBarPx > 0), detail: `status ${info.statusBarPx}px, nav ${info.navBarPx}px`, gate: false },
+    { name: "one observation under 10 s", pass: secs < 10, detail: `${secs}s`, gate: false },
   ];
-  // go = the explorer can see and act on this app; the rest are warnings worth reading
-  const go = checks[0].pass && checks[1].pass && checks[2].pass;
+  const go = checks.filter(k => k.gate).every(k => k.pass);
   const deviceFile = o.deviceFile ?? path.join(ROOT, "config", "device.json");
   writeText(deviceFile, JSON.stringify({ widthPx: info.widthPx, heightPx: info.heightPx, density: info.density, statusBarPx: info.statusBarPx, navBarPx: info.navBarPx }, null, 2) + "\n");
   const report: ProbeReport = {
@@ -81,7 +86,7 @@ export async function probe(c: StageCtx, dev: Device, o: { deviceFile?: string }
   trace("info", { probe: { go, elements: report.elements, labelledActionable: report.labelledActionable, counters, secs } });
   const lines = [
     `probe ${c.app.id}: ${go ? "GO" : "NO-GO"}  (screen "${ann.name}", ${ann.kind})`,
-    ...checks.map(k => `  [${k.pass ? "x" : " "}] ${k.name}: ${k.detail}`),
+    ...checks.map(k => `  [${k.pass ? "x" : k.gate ? " " : "!"}] ${k.name}: ${k.detail}${!k.pass && !k.gate ? "  (warning)" : ""}`),
     `  device ${info.widthPx}x${info.heightPx} @${info.density} -> ${deviceFile}`,
   ];
   process.stdout.write(lines.join("\n") + "\n");

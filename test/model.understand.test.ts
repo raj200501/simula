@@ -137,7 +137,8 @@ describe("understand (stub synthesis)", () => {
   test("PII: the email is masked in text and blurred in the copied screenshot", async () => {
     const profile = m.screens.find(s => s.name === "Profile")!;
     assert.ok(profile.elements.some(e => e.text === "[email]"));
-    assert.ok(!JSON.stringify(m).includes("jane.doe@example.com"));
+    for (const f of ["product-model.json", "digest.md", "viewer.html"]) assert.ok(!fs.readFileSync(path.join(modelDir, f), "utf8").includes("jane.doe@example.com"), f);
+    assert.ok(profile.elements.every(e => !e.key.includes("@")), "element keys embed the label and are redacted too");
     const r = { left: EMAIL_RECT_DP.x * D, top: EMAIL_RECT_DP.y * D, width: EMAIL_RECT_DP.w * D, height: EMAIL_RECT_DP.h * D };
     const orig = await sharp(path.join(tmp, "run", "obs", "o0009.png")).extract(r).removeAlpha().raw().toBuffer();
     const copy = await sharp(path.join(modelDir, profile.screenshot)).extract(r).removeAlpha().raw().toBuffer();

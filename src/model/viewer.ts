@@ -110,7 +110,7 @@ ${derived}
 <h2>Moments</h2>${moments}
 <h2>Flows</h2>${flows || "<p>None.</p>"}
 <h2>Navigation</h2>${edges}
-${m.externals.length ? `<h3>Leaves the app</h3><ul>${m.externals.map(x => `<li>${h(x.id)} ${h(x.package)} from ${x.from.map(f => h(name(f.screen))).join(", ")}${x.texts.length ? `: ${x.texts.slice(0, 6).map(h).join(" | ")}` : ""}${x.screenshot ? ` <a href="${h(x.screenshot)}">screenshot</a>` : ""}</li>`).join("")}</ul>` : ""}
+${m.externals.length ? `<h3>Leaves the app</h3><ul>${m.externals.map(x => `<li>${h(x.id)} ${h(x.package)} from ${[...new Set(x.from.map(f => h(name(f.screen))))].join(", ")}${x.texts.length ? `: ${x.texts.slice(0, 6).map(h).join(" | ")}` : ""}${x.screenshot ? ` <a href="${h(x.screenshot)}">screenshot</a>` : ""}</li>`).join("")}</ul>` : ""}
 ${transcripts ? `<h2>Transcripts</h2>${transcripts}` : ""}
 <h2>Design tokens</h2>${design}
 <h2>Coverage</h2><p>${c.states} states, ${c.edges} edges, ${c.externals} external surfaces, ${c.steps} steps in ${c.minutes} min ($${c.usd.toFixed(2)}). Stop: <b>${h(c.stopReason)}</b>. Frontier left: ${c.frontierLeft}. Unreachable: ${c.unreachable}. Human interventions: ${c.humanInterventions}.</p>

@@ -85,7 +85,7 @@ function uniqueIds<T extends { id: string }>(xs: T[]): T[] {
 export function verifyEconomy(e: Economy, c: Corpus, ids: Ids): { economy: Economy; verified: number; inferred: number } {
   const drop = (what: string, why: string) => trace("failure", { where: "understand:verify", error: `dropped ${what}: ${why}` });
   const screenOr = (s: string) => (ids.screens.has(s) ? s : ids.externals.get(s));
-  const resources = uniqueIds(e.resources).map(r => ({ ...r, ...check(r.evidence, [], c) }));
+  const resources = uniqueIds(e.resources).map(r => ({ ...r, shownOn: r.shownOn.filter(x => ids.screens.has(x.screen)), ...check(r.evidence, [], c) }));
   const resIds = new Set(resources.map(r => r.id));
   const sinks = uniqueIds(e.sinks).map(k => {
     const v = check(k.evidence, [{ value: k.amount, sign: -1, resource: k.resource }], c);

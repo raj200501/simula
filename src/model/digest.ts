@@ -62,8 +62,11 @@ export function digest(m: ProductModel): string {
   }
   if (m.externals.length) {
     L.push("", "## Leaves the app (recorded, not explored)", "");
-    for (const x of m.externals) L.push(`- ${x.id} (${x.package}) from ${x.from.map(f => scr(f.screen)).join(", ")}${x.texts.length ? `: ${x.texts.slice(0, 6).join(" | ")}` : ""}`);
+    for (const x of m.externals) L.push(`- ${x.id} (${x.package}) from ${[...new Set(x.from.map(f => scr(f.screen)))].join(", ")}${x.texts.length ? `: ${x.texts.slice(0, 6).join(" | ")}` : ""}`);
   }
   L.push("", `## Coverage`, "", `${m.coverage.states} states, ${m.coverage.edges} edges, ${m.coverage.steps} steps, stop: ${m.coverage.stopReason}. Not explored: ${m.coverage.notExplored.length} actions.`);
+  // What was deliberately or unavoidably left alone: nothing may be claimed about what is behind these.
+  for (const n of m.coverage.notExplored.slice(0, 15)) L.push(`- not explored on ${scr(n.screen)}: ${n.intent} (${n.why})`);
+  if (m.coverage.notExplored.length > 15) L.push(`- ... and ${m.coverage.notExplored.length - 15} more (see viewer.html)`);
   return L.join("\n") + "\n";
 }

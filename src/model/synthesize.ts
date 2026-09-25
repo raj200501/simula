@@ -51,6 +51,7 @@ const TASK = /challenge|mission|quest|task|invite/i;
 const DECLINE = /not now|no,? thanks|maybe later|later|cancel|close|dismiss|skip|×|✕/i;
 const BENEFIT = /unlimited|no ads|ad.?free|remove ads|faster|priority|exclusive|early access|all (features|models|characters|content)|premium (features|models)|^[•✓✔\-–]\s/i;
 const PLAN = /premium|\bpro\b|\bplus\b|\bvip\b|gold|unlimited|membership|subscription/i;
+const PRICED_CHIP = /^[^\d]{2,24}\s*[·•:|\-–]\s*\d[\d.,]*\s*$/;
 
 interface Price { text: string; value: number; usd: number; index: number; end: number }
 export function pricesIn(s: string): Price[] {
@@ -150,7 +151,7 @@ function resources(x: Ctx): Res[] {
  * selection context, resource); amount = most common |delta|. Groups that describe the same spend from
  * two graph states (same intent, context, resource and amount) are merged. A spend action whose cost
  * was never measured still yields a sink when its selection context quotes one ("Premium · 30",
- * "Basic 10 credits per message"): verify then grounds the number in that on-screen quote.
+ * "Basic 10 coins per message"): verify then grounds the number in that on-screen quote.
  */
 function sinks(x: Ctx): SinkT[] {
   type G = { e: Edge[]; deltas: number[]; resource: string; quoted?: boolean };
@@ -173,7 +174,9 @@ function sinks(x: Ctx): SinkT[] {
   for (const e of x.cm.edges) {
     const a = x.action(e);
     if (e.to.startsWith("ext:") || (a?.kind !== "consume" && a?.kind !== "type-send") || measured.has(`${a.intent}|${ctxOf(e)}`)) continue;
-    const quote = e.context.selected.find(t => numbersIn(t).length && !pricesIn(t).length);
+    // A cost quote names the resource ("10 coins per message") or is a priced chip ("Premium · 30");
+    // a selected "Top 10" tab is neither.
+    const quote = e.context.selected.find(t => numbersIn(t).length && !pricesIn(t).length && (x.resFor(t) || PRICED_CHIP.test(t)));
     const amount = quote ? amountIn(quote, x.allWords()) : undefined;
     const resource = quote && (x.resFor(quote) ?? x.resFor(x.screenTexts(e.from).join(" ")) ?? (x.words.length === 1 ? x.words[0].id : undefined));
     if (!quote || amount == null || !resource) continue;
@@ -481,7 +484,7 @@ export function stubDraft(cm: Compiled, flows: Flow[]): Draft {
 // ------------------------------------------------------------------------------------------------
 // Structured-output schema: no z.record, no recursion, no regex; optional fields are nullable.
 const LEv = z.object({ obs: z.string(), el: z.string().nullable(), quote: z.string() });
-const LlmOut = z.object({
+export const LlmOut = z.object({
   brief: Brief,
   economy: z.object({
     resources: z.array(z.object({ id: z.string(), name: z.string(), unit: z.string(), kind: EconomyResource.shape.kind,

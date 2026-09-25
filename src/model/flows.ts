@@ -82,7 +82,24 @@ function coreFlow(g: FlowGraph, name: (id: string) => string): Flow | null {
     if (sends.length < 2 && !sends.some(s => s.context.selected.join("|") === e.context.selected.join("|"))) sends.push(e);
   }
   const wall = hubEdges.find(e => e.limitHit) ?? g.edges.find(e => e.from === hub && e.limitHit && !isExt(e.to));
-  const path = [...(lead ?? []), ...sends];
+  // "Pick a mode" before a send whose selection differs from the one before it: the recorded edge that
+  // made the new selection appear, either in place or through an overlay (hub -> mode sheet -> hub).
+  const bySeen = (a: Edge, b: Edge) => b.seen - a.seen || a.id.localeCompare(b.id);
+  const plain = (e: Edge) => !isExt(e.to) && e.transition !== "back" && !isConsume(e, g.actionOf.get(e.id));
+  const pickFor = (sel: string[], prev: string[]): Edge[] => {
+    const want = sel.filter(t => !prev.includes(t));
+    const shows = (e: Edge) => e.effects.some(f => f.kind === "appeared" && want.includes(f.text));
+    if (!want.length) return [];
+    const inPlace = g.edges.filter(e => e.from === hub && e.to === hub && plain(e) && shows(e)).sort(bySeen)[0];
+    if (inPlace) return [inPlace];
+    for (const back of g.edges.filter(e => e.to === hub && e.from !== hub && !isConsume(e, g.actionOf.get(e.id)) && shows(e)).sort(bySeen)) {
+      const open = g.edges.filter(e => e.from === hub && e.to === back.from && plain(e)).sort(bySeen)[0];
+      if (open) return [open, back];
+    }
+    return [];
+  };
+  const path = [...(lead ?? [])];
+  sends.forEach((e, i) => path.push(...pickFor(e.context.selected, i ? sends[i - 1].context.selected : []), e));
   if (!sends.length && !wall) path.push(hubEdges[0]);
   if (wall) {
     path.push(wall);

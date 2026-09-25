@@ -72,7 +72,7 @@ export function summarize(file: string, outMd: string): string {
   if (!fails.length) lines.push("None recorded.");
   for (const f of fails) {
     const r = recov.find(x => x.ts >= f.ts && x.stage === f.stage);
-    lines.push(`- [${f.stage}] ${f.ts.slice(11, 19)} **${String(f.data.where ?? "")}**: ${String(f.data.error ?? "").slice(0, 200)}${r ? `\n  - recovered by: ${String(r.data.how ?? "")}` : ""}`);
+    lines.push(`- [${f.stage}] ${f.ts.slice(11, 19)} **${String(f.data.where ?? "")}**: ${String(f.data.error ?? "").slice(0, 200)}${r ? `\n  - next step: ${String(r.data.how ?? "")}` : ""}`);
   }
   lines.push("", "## Human interventions", "");
   if (!human.length) lines.push("None recorded.");

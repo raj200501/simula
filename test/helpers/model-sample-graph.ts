@@ -220,6 +220,9 @@ export async function writeSampleGraph(dir: string, o: SampleOpts = {}): Promise
       edge("g0012", "st-home", "st-profile", "a_home_4", "o0010", "o0009", 14),
       edge("g0013", "st-profile", "ext:browser", "a_prof_1", "o0009", "o0021", 15),
       edge("g0014", "st-chat", "st-story", "a_chat_3", "o0004", "o0003", 16),
+      // Recorded mode switch (only in the unmeasured variant, so the default core flow stays as asserted).
+      ...(o.unmeasured ? [edge("g0015", "st-chat", "st-chat", "a_chat_2", "o0005", "o0006", 5, { context: { selected: ["Premium · 30"] },
+        effects: [{ kind: "appeared" as const, text: "Basic · 10" }, { kind: "disappeared" as const, text: "Premium · 30" }] })] : []),
     ],
     resources: [{ id: "r1", name: "credits", unit: "credits", bindings: [{ state: "st-home", elKey: keyOf(find(home(750), "750 credits")) }] }],
     externals: [

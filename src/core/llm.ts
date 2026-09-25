@@ -282,8 +282,22 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
   throw new Error(`${req.purpose}: Gemini returned no valid output after 3 attempts`);
 }
 
+// Free-tier Flash models get overloaded (503) at busy times; each model has its own capacity and quota,
+// so the fastest recovery is to move the call to the next Flash model rather than wait on the same one.
+function fallbackChain(model: string): string[] {
+  const extra = (process.env.SIMULA_MODEL_FALLBACKS ?? "gemini-3.5-flash,gemini-3.7-flash,gemini-3.6-flash")
+    .split(",").map(x => x.trim()).filter(Boolean);
+  return [model, ...extra.filter(m => m !== model)];
+}
+
+const MAX_GEMINI_ATTEMPTS = 8;
+
 async function geminiWithRetry(purpose: string, model: string, params: { model: string; contents: Content[]; config: GenerateContentConfig }): Promise<GenerateContentResponse> {
-  for (let attempt = 0; ; attempt++) {
+  const chain = fallbackChain(model);
+  let hop = 0;       // index into chain
+  let backoffs = 0;  // how many times we slept after trying every model
+  for (let attempt = 1; ; attempt++) {
+    params.model = chain[hop % chain.length];
     await pace(params.model);
     try {
       return await gemini().models.generateContent(params);
@@ -291,26 +305,28 @@ async function geminiWithRetry(purpose: string, model: string, params: { model: 
       const status = e instanceof ApiError ? e.status : 0;
       const msg = String((e as Error)?.message ?? e);
       if (status === 400 && params.config.thinkingConfig && /think/i.test(msg)) {
-        noThinking.add(model); delete params.config.thinkingConfig;       // model has no thinking controls
+        noThinking.add(params.model); delete params.config.thinkingConfig;   // model has no thinking controls
         continue;
       }
-      // A model that stays overloaded (503) gets swapped for the fallback Flash model for this call.
-      const fallback = process.env.SIMULA_MODEL_FALLBACK ?? "gemini-3.5-flash";
-      if (status === 503 && attempt >= 1 && fallback && params.model !== fallback) {
-        trace("recovery", { how: `${params.model} overloaded; switching this call to ${fallback}` });
-        params.model = fallback;
+      const transient = status === 429 || status === 500 || status === 503;
+      if (!transient) throw e;
+      if (status === 429 && /per ?day|PerDay|daily/i.test(msg) && hop + 1 >= chain.length)
+        throw new BudgetExceeded(`Gemini free-tier DAILY quota reached on every fallback model. Resume tomorrow (finished calls are cached), or set SIMULA_MODEL / SIMULA_MODEL_FALLBACKS.`);
+      trace("failure", { where: `gemini:${purpose}`, error: `${status} on ${params.model} (attempt ${attempt}/${MAX_GEMINI_ATTEMPTS}): ${msg.slice(0, 140)}` });
+      if (attempt >= MAX_GEMINI_ATTEMPTS) {
+        trace("failure", { where: `gemini:${purpose}`, error: `gave up after ${attempt} attempts across ${[...new Set(chain)].join(", ")}` });
+        throw e;
+      }
+      hop++;
+      if (hop % chain.length !== 0) {
+        trace("recovery", { how: `retrying on ${chain[hop % chain.length]} (next fallback model)` });
         continue;
       }
-      if ((status === 429 || status === 503 || status === 500) && attempt < 5) {
-        if (status === 429 && /per ?day|PerDay|daily/i.test(msg)) throw new BudgetExceeded(`Gemini free-tier DAILY quota reached for ${model}. Resume tomorrow (cached calls replay free), or set SIMULA_MODEL / SIMULA_MODEL_FAST to another Flash model.`);
-        const m = /retry(?:Delay"?:?\s*"?| in )(\d+(?:\.\d+)?)s/i.exec(msg);
-        const wait = m ? Math.ceil(Number(m[1]) * 1000) + 500 : Math.min(60_000, 4000 * 2 ** attempt);
-        trace("failure", { where: `gemini:${purpose}`, error: `${status} ${msg.slice(0, 160)}` });
-        trace("recovery", { how: `waited ${Math.round(wait / 1000)}s and retried (attempt ${attempt + 1})` });
-        await sleep(wait);
-        continue;
-      }
-      throw e;
+      // Every model in the chain failed once: back off before the next lap (honour a server retry hint).
+      const hint = /retry(?:Delay"?:?\s*"?| in )(\d+(?:\.\d+)?)s/i.exec(msg);
+      const wait = hint ? Math.ceil(Number(hint[1]) * 1000) + 500 : Math.min(40_000, 10_000 * 2 ** backoffs++);
+      trace("recovery", { how: `all fallback models busy; waiting ${Math.round(wait / 1000)}s before another lap` });
+      await sleep(wait);
     }
   }
 }
