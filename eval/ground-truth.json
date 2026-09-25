@@ -1,0 +1,544 @@
+{
+ "generated": "2026-09-25",
+ "usage": "EVAL-ONLY ground truth for explorer recall; never include in agent prompts. Items tagged verify must be confirmed on-device before scoring.",
+ "weights": {
+  "P0": 3,
+  "P1": 2,
+  "P2": 1
+ },
+ "apps": {
+  "com.newai.ooc": [
+   {
+    "id": "OOC-01",
+    "priority": "P0",
+    "type": "flow",
+    "item": "Sign-in: Continue with Google / Apple (goes out to system UI: record it, don't drive it)",
+    "verify": false
+   },
+   {
+    "id": "OOC-02",
+    "priority": "P1",
+    "type": "state",
+    "item": "Signup bonus credits granted (about 500)",
+    "verify": false
+   },
+   {
+    "id": "OOC-03",
+    "priority": "P1",
+    "type": "modal",
+    "item": "Age or profile info; adult titles gated behind 18+ verification",
+    "verify": false
+   },
+   {
+    "id": "OOC-04",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Home: credit balance icon at top; genre tabs (Main, Rankings, genres); Story and Character cards",
+    "verify": false
+   },
+   {
+    "id": "OOC-05",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Bottom navigation, including My Titles and MY (profile) [verify exact tabs]",
+    "verify": true
+   },
+   {
+    "id": "OOC-06",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Title detail page (synopsis, creator, start or continue, menu \u2192 Report)",
+    "verify": false
+   },
+   {
+    "id": "OOC-07",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Session (story or chat) screen: message list, input, Suggested Replies, edit or delete message",
+    "verify": false
+   },
+   {
+    "id": "OOC-08",
+    "priority": "P0",
+    "type": "mechanic",
+    "item": "Mode selector with costs: Superb 90, Skillful 60, Extensive 60, Basic 30 (Story); Premium Mode 20 (Character); Basic Character chat free",
+    "verify": false
+   },
+   {
+    "id": "OOC-09",
+    "priority": "P0",
+    "type": "state",
+    "item": "Credit balance decreases after each message, by an amount that depends on the mode (action \u2192 resource delta)",
+    "verify": false
+   },
+   {
+    "id": "OOC-10",
+    "priority": "P0",
+    "type": "state",
+    "item": "Insufficient-credits state in a session and whatever upsell or paywall it triggers",
+    "verify": false
+   },
+   {
+    "id": "OOC-11",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Credit store: \"Refill Credits Now!\" tab, packs with prices, \"Refill Now\"",
+    "verify": false
+   },
+   {
+    "id": "OOC-12",
+    "priority": "P1",
+    "type": "external",
+    "item": "Google Play billing sheet opens (record it, do not confirm)",
+    "verify": false
+   },
+   {
+    "id": "OOC-13",
+    "priority": "P0",
+    "type": "mechanic",
+    "item": "Daily Check-in reward (about 300 credits) as a modal or card",
+    "verify": false
+   },
+   {
+    "id": "OOC-14",
+    "priority": "P0",
+    "type": "mechanic",
+    "item": "Challenges list; completing one grants credits and an Achievement Badge",
+    "verify": false
+   },
+   {
+    "id": "OOC-15",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Credit History: Purchase and Usage (Usage, Acquisition, Sponsorship)",
+    "verify": false
+   },
+   {
+    "id": "OOC-16",
+    "priority": "P2",
+    "type": "mechanic",
+    "item": "Free-credit expiry after 30 days; spend order by expiry",
+    "verify": false
+   },
+   {
+    "id": "OOC-17",
+    "priority": "P1",
+    "type": "mechanic",
+    "item": "Real-time scene image button under messages, and an image gallery [verify whether it costs credits]",
+    "verify": true
+   },
+   {
+    "id": "OOC-18",
+    "priority": "P1",
+    "type": "mechanic",
+    "item": "Session Branching (branch icon; branching free, messages cost credits)",
+    "verify": false
+   },
+   {
+    "id": "OOC-19",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Session Settings: Memories (Long-term, Temporary, Relationships, Goals), User Note, Avatars",
+    "verify": false
+   },
+   {
+    "id": "OOC-20",
+    "priority": "P1",
+    "type": "mechanic",
+    "item": "Output Length setting with a surcharge per 100 tokens over 800",
+    "verify": false
+   },
+   {
+    "id": "OOC-21",
+    "priority": "P1",
+    "type": "screen",
+    "item": "MY: Achievement Badges and Featured Badge; Settings (My Information, Notifications)",
+    "verify": false
+   },
+   {
+    "id": "OOC-22",
+    "priority": "P2",
+    "type": "screen",
+    "item": "Personalization: genre filter, tab order, adult toggle (after verification)",
+    "verify": false
+   },
+   {
+    "id": "OOC-23",
+    "priority": "P2",
+    "type": "flow",
+    "item": "Create Story, 8 steps (Profile \u2192 Basic Settings \u2192 Intro \u2192 Stat \u2192 Media \u2192 Keyword Book \u2192 Endings \u2192 Publish) and Create Character",
+    "verify": false
+   },
+   {
+    "id": "OOC-24",
+    "priority": "P2",
+    "type": "screen",
+    "item": "Creator program surfaces (Certified Creator, OOC Originals)",
+    "verify": false
+   },
+   {
+    "id": "OOC-25",
+    "priority": "P1",
+    "type": "state",
+    "item": "No third-party ads anywhere (the product model should say so explicitly)",
+    "verify": false
+   },
+   {
+    "id": "OOC-26",
+    "priority": "P2",
+    "type": "modal",
+    "item": "Push-notification permission prompt",
+    "verify": false
+   },
+   {
+    "id": "OOC-27",
+    "priority": "P2",
+    "type": "state",
+    "item": "Error states: \"Credits are already in use\", \"A temporary error occurred\", model-safety block message",
+    "verify": false
+   }
+  ],
+  "co.thewordlab.luzia": [
+   {
+    "id": "LUZ-01",
+    "priority": "P0",
+    "type": "flow",
+    "item": "Onboarding without an account (straight to chat) [verify the redesigned onboarding]",
+    "verify": true
+   },
+   {
+    "id": "LUZ-02",
+    "priority": "P1",
+    "type": "modal",
+    "item": "First-run Luzia+ trial or paywall, if shown [verify]",
+    "verify": true
+   },
+   {
+    "id": "LUZ-03",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Home (new Sep 2026 design): entry to chat, tools, characters or friends [verify layout]",
+    "verify": true
+   },
+   {
+    "id": "LUZ-04",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Chat screen: text input, send, streaming answer, message actions",
+    "verify": false
+   },
+   {
+    "id": "LUZ-05",
+    "priority": "P1",
+    "type": "mechanic",
+    "item": "Voice input (mic permission, which is external) and voice responses",
+    "verify": false
+   },
+   {
+    "id": "LUZ-06",
+    "priority": "P0",
+    "type": "mechanic",
+    "item": "Image generation (\"Create image\"/\"Imagina\") and the image result view",
+    "verify": false
+   },
+   {
+    "id": "LUZ-07",
+    "priority": "P1",
+    "type": "mechanic",
+    "item": "Upload image or PDF (photo picker or file picker is external: record it, move on); web search toggle",
+    "verify": false
+   },
+   {
+    "id": "LUZ-08",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Characters or \"Friends\": Luzia, Professor, Bestie, Chef, Trainer; create character (gated by Luzia+)",
+    "verify": false
+   },
+   {
+    "id": "LUZ-09",
+    "priority": "P0",
+    "type": "state",
+    "item": "Daily message limit reached state and its upsell",
+    "verify": false
+   },
+   {
+    "id": "LUZ-10",
+    "priority": "P0",
+    "type": "state",
+    "item": "Daily image limit reached state and its upsell",
+    "verify": false
+   },
+   {
+    "id": "LUZ-11",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Luzia+ paywall: weekly $1.99, monthly $4.99, annual about $39.99, 3-day trial; entitlements (ad-free, 2\u00d7 limits, advanced reasoning, HQ images and editing, multiple AI friends)",
+    "verify": false
+   },
+   {
+    "id": "LUZ-12",
+    "priority": "P0",
+    "type": "ad",
+    "item": "Ads in the free tier: format and placement (interstitial, banner, native)",
+    "verify": false
+   },
+   {
+    "id": "LUZ-13",
+    "priority": "P1",
+    "type": "ad",
+    "item": "Contextual sponsored recommendation or answer inside the chat (Koah native) [verify frequency]",
+    "verify": true
+   },
+   {
+    "id": "LUZ-14",
+    "priority": "P1",
+    "type": "mechanic",
+    "item": "Advanced reasoning mode toggle (locked for free users) [verify]",
+    "verify": true
+   },
+   {
+    "id": "LUZ-15",
+    "priority": "P2",
+    "type": "screen",
+    "item": "Feed or discovery surface [verify it survives the redesign]",
+    "verify": true
+   },
+   {
+    "id": "LUZ-16",
+    "priority": "P2",
+    "type": "mechanic",
+    "item": "Reminders, weather and news utilities",
+    "verify": false
+   },
+   {
+    "id": "LUZ-17",
+    "priority": "P2",
+    "type": "screen",
+    "item": "Account and settings, including Delete account and optional sign-in",
+    "verify": false
+   },
+   {
+    "id": "LUZ-18",
+    "priority": "P2",
+    "type": "modal",
+    "item": "Notification permission prompt",
+    "verify": false
+   }
+  ],
+  "com.janitor.ai": [
+   {
+    "id": "JAN-01",
+    "priority": "P0",
+    "type": "flow",
+    "item": "Login or register (email, Google, Discord); 18+ confirmation",
+    "verify": false
+   },
+   {
+    "id": "JAN-02",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Home or discover feed of character cards with tags; trending",
+    "verify": false
+   },
+   {
+    "id": "JAN-03",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Search, and \"similar characters\"",
+    "verify": false
+   },
+   {
+    "id": "JAN-04",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Character page: description, tags, creator, comments, Start chat",
+    "verify": false
+   },
+   {
+    "id": "JAN-05",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Chat: streaming reply, swipe or regenerate, edit message",
+    "verify": false
+   },
+   {
+    "id": "JAN-06",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Chat memory; generation settings (response length, \"shorter responses\")",
+    "verify": false
+   },
+   {
+    "id": "JAN-07",
+    "priority": "P1",
+    "type": "screen",
+    "item": "API or model settings: JLLM vs janitor+ vs proxy (Router web-only)",
+    "verify": false
+   },
+   {
+    "id": "JAN-08",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Personas: create, edit, swap",
+    "verify": false
+   },
+   {
+    "id": "JAN-09",
+    "priority": "P0",
+    "type": "screen",
+    "item": "janitor+ paywall: $12.99/mo; 5\u00d7 context, priority messages, premium-model swipes, badge",
+    "verify": false
+   },
+   {
+    "id": "JAN-10",
+    "priority": "P1",
+    "type": "state",
+    "item": "Free-tier queue or \"high traffic\" wait (the priority entitlement's counterpart) [verify]",
+    "verify": true
+   },
+   {
+    "id": "JAN-11",
+    "priority": "P1",
+    "type": "state",
+    "item": "Restricted mode on by default: filtered content; setting points to the website",
+    "verify": false
+   },
+   {
+    "id": "JAN-12",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Recent chats list",
+    "verify": false
+   },
+   {
+    "id": "JAN-13",
+    "priority": "P2",
+    "type": "flow",
+    "item": "Create character; Scripts and lorebooks",
+    "verify": false
+   },
+   {
+    "id": "JAN-14",
+    "priority": "P2",
+    "type": "screen",
+    "item": "Profile with badges (golden mop, janitor+)",
+    "verify": false
+   },
+   {
+    "id": "JAN-15",
+    "priority": "P1",
+    "type": "state",
+    "item": "No ads in the app",
+    "verify": false
+   },
+   {
+    "id": "JAN-16",
+    "priority": "P2",
+    "type": "modal",
+    "item": "Push-notification permission",
+    "verify": false
+   }
+  ],
+  "com.aol.mobile.aolapp": [
+   {
+    "id": "AOL-01",
+    "priority": "P1",
+    "type": "modal",
+    "item": "Consent or privacy screen on first run",
+    "verify": false
+   },
+   {
+    "id": "AOL-02",
+    "priority": "P0",
+    "type": "flow",
+    "item": "Sign-in (AOL ID); whether news is usable signed out [verify]",
+    "verify": true
+   },
+   {
+    "id": "AOL-03",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Home or news stream (default launch tab) with category sections",
+    "verify": false
+   },
+   {
+    "id": "AOL-04",
+    "priority": "P0",
+    "type": "ad",
+    "item": "Sponsored or native ad cards in the news stream",
+    "verify": false
+   },
+   {
+    "id": "AOL-05",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Article page with display ads; save for later; share",
+    "verify": false
+   },
+   {
+    "id": "AOL-06",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Mail inbox, including native ad rows in the inbox",
+    "verify": false
+   },
+   {
+    "id": "AOL-07",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Message view and compose",
+    "verify": false
+   },
+   {
+    "id": "AOL-08",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Smart views: Packages, Gift cards, Coupons/Deals, Attachments; filters",
+    "verify": false
+   },
+   {
+    "id": "AOL-09",
+    "priority": "P0",
+    "type": "screen",
+    "item": "Weather: current, hourly and daily; alerts (location permission is external)",
+    "verify": false
+   },
+   {
+    "id": "AOL-10",
+    "priority": "P1",
+    "type": "screen",
+    "item": "Video tab and player (pre-roll or mid-roll ads) [verify]",
+    "verify": true
+   },
+   {
+    "id": "AOL-11",
+    "priority": "P0",
+    "type": "screen",
+    "item": "AOL Mail Plus paywall: $1.99/mo or $19.99/yr; ad-free inbox, ad-lite articles, custom default screen and navigation",
+    "verify": false
+   },
+   {
+    "id": "AOL-12",
+    "priority": "P2",
+    "type": "screen",
+    "item": "AOL Plus and Security bundle offers",
+    "verify": false
+   },
+   {
+    "id": "AOL-13",
+    "priority": "P2",
+    "type": "screen",
+    "item": "Settings: notifications, navigation customization (Plus-gated)",
+    "verify": false
+   },
+   {
+    "id": "AOL-14",
+    "priority": "P2",
+    "type": "external",
+    "item": "Ad tap opens the external browser (record it, move on)",
+    "verify": false
+   }
+  ]
+ }
+}

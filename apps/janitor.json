@@ -1,0 +1,7 @@
+{
+  "id": "janitor",
+  "package": "com.janitor.ai",
+  "name": "Janitor",
+  "profile": "shallow",
+  "login": "manual"
+}

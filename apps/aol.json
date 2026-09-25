@@ -1,0 +1,7 @@
+{
+  "id": "aol",
+  "package": "com.aol.mobile.aolapp",
+  "name": "AOL",
+  "profile": "shallow",
+  "login": "manual"
+}
