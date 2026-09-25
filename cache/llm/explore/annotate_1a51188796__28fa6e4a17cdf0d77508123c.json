@@ -1,0 +1,75 @@
+{
+ "purpose": "annotate:1a51188796",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s02",
+  "name": "Bot Detail Page",
+  "kind": "page",
+  "purpose": "Shows details of the selected AI bot and allows starting a chat.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Start chatting with the bot",
+    "kind": "consume",
+    "priority": 3
+   },
+   {
+    "el": "e11",
+    "intent": "View Starship Galley bot details",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e12",
+    "intent": "View The Last Lighthouse bot details",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e13",
+    "intent": "View Detective Rowan bot details",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "View Dragon Tutor bot details",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e15",
+    "intent": "View all stories",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e1",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "limit",
+    "text": "Messages cost credits: Basic 10, Premium 30",
+    "el": "e9"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2299,
+  "output": 439,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:30.801Z"
+}

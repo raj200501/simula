@@ -27,6 +27,8 @@ export interface Frame {
   callouts: { text: string; box: Box | null }[];
   newBoxes: Box[];
   choices: { play: Box | null; decline: Box | null };
+  /** Visible text on the frame (leaf elements), so pins can avoid covering words. */
+  texts?: Box[];
   caption: string;
   source: "mock" | "model-screenshot" | "placeholder";
 }
@@ -113,7 +115,15 @@ const MEASURE = `(a) => {
   const newBoxes = Array.from(document.querySelectorAll("[data-new]"))
     .filter(el => !(el.parentElement && el.parentElement.closest("[data-new]")))
     .map(el => rectOf(el)).filter(Boolean).map(box);
-  return { vw, vh, callouts: a.nodes.map(find), newBoxes, play: byText(a.play), decline: byText(a.decline) };
+  const texts = [];
+  for (const el of document.querySelectorAll("body *")) {
+    if (texts.length >= 250) break;
+    const own = Array.from(el.childNodes).some(n => n.nodeType === 3 && n.nodeValue.trim());
+    if (!own) continue;
+    const r = rectOf(el);
+    if (r && onTop(el, r)) texts.push(box(r));
+  }
+  return { vw, vh, callouts: a.nodes.map(find), newBoxes, play: byText(a.play), decline: byText(a.decline), texts };
 }`;
 
 export interface CaptureInput {
@@ -159,14 +169,14 @@ export async function captureFlow(o: CaptureInput): Promise<Frame[]> {
         nodes: sb.callouts.map(c => c.node),
         play: phase === "offer" ? [o.p.offer.cta, "Play now", "Play"] : [],
         decline: phase === "offer" ? [o.p.offer.decline, "No thanks", "No, thanks", "Not now"] : [],
-      })})`)) as { vw: number; vh: number; callouts: (Box | null)[]; newBoxes: Box[]; play: Box | null; decline: Box | null };
+      })})`)) as { vw: number; vh: number; callouts: (Box | null)[]; newBoxes: Box[]; play: Box | null; decline: Box | null; texts: Box[] };
       if (errors.length) trace("failure", { where: `slides:capture:${o.p.id}:${phase}`, error: errors.slice(0, 3).join(" | ") });
       if (phase === "offer" && (!meas.play || !meas.decline))
         trace("failure", { where: `slides:capture:${o.p.id}:offer`, error: `offer frame is missing ${!meas.play ? "the play button" : ""}${!meas.play && !meas.decline ? " and " : ""}${!meas.decline ? "the decline button" : ""}` });
       frames.push({
         phase, screen: sb.screen, img: rel, vw: meas.vw, vh: meas.vh,
         callouts: sb.callouts.map((c, k) => ({ text: c.text, box: meas.callouts[k] ?? null })),
-        newBoxes: meas.newBoxes.slice(0, 4), choices: { play: meas.play, decline: meas.decline },
+        newBoxes: meas.newBoxes.slice(0, 4), choices: { play: meas.play, decline: meas.decline }, texts: meas.texts,
         caption: sb.caption, source: "mock",
       });
     } catch (e) {

@@ -527,7 +527,7 @@ Economy rules:
 - Ids: screens sNN, edges gNNNN and resources rN as given; new items k1.. (sinks), src1.. (sources), of1.. (offers), w1.. (walls).
 
 The brief is for a product team: concise and specific to what was observed. Put unknowns in openQuestions instead of guessing.
-extraMoments: only moments where a value exchange could happen that walls, spends, rewards, tabs and stores do not already cover (types: wall, desire, decline, post-reward, hub, first-value).`,
+extraMoments: only moments where a value exchange could happen that walls, spends, rewards, tabs and stores do not already cover (types: wall, desire, decline, post-reward, hub). Code decides the first-value moment; do not add one.`,
 ];
 
 export function graphText(cm: Compiled, flows: Flow[]): string {

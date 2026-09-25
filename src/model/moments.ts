@@ -71,7 +71,7 @@ export function detectMoments(m: { screens: Screen[]; edges: Edge[]; economy: Ec
     const amounts = [...new Set(ks.map(k => k.amount))].sort((a, b) => a - b);
     const amt = amounts.length > 1 ? `${amounts[0]}–${amounts[amounts.length - 1]}` : `${amounts[0]}`;
     add({ type: "desire", screen, resource, edge: ks[0].edges[0],
-      description: `Each "${ks[0].action}" on ${name(screen)} costs ${amt} ${resName(resource)}${ks.some(k => k.context) ? ` depending on ${ks.map(k => k.context).filter(Boolean).join(" / ")}` : ""}`,
+      description: `Each "${ks[0].action}" on ${name(screen)} costs ${amt} ${resName(resource)}${ks.filter(k => k.context).length > 1 ? ` depending on ${ks.map(k => k.context).filter(Boolean).join(" / ")}` : ks[0].context ? ` in ${ks[0].context}` : ""}`,
       evidence: ks.flatMap(k => k.evidence).slice(0, 3) });
   }
   for (const s of m.screens) {
@@ -106,6 +106,12 @@ export function detectMoments(m: { screens: Screen[]; edges: Edge[]; economy: Ec
       if (!seen.has(e.to)) { seen.add(e.to); q.push(e.to); }
   }
 
-  for (const x of extra) add({ ...x, noOffer: x.type === "first-value" });
+  // First value is decided in code (the BFS above): a model-suggested one would forbid offers on
+  // another screen, typically the core-loop chat, so it is only used when code found none.
+  const codeFirst = out.some(o => o.type === "first-value");
+  for (const x of extra) {
+    if (x.type === "first-value" && codeFirst) continue;
+    add({ ...x, noOffer: x.type === "first-value" });
+  }
   return out.map((o, i) => ({ ...o, id: `m${i + 1}` }));
 }

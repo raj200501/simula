@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:01dc0f9c41",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Bot Detail Page",
+  "kind": "page",
+  "purpose": "Displays details of a chat bot and allows starting a chat with credit cost information.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Start chat with bot",
+    "kind": "consume",
+    "priority": 3
+   },
+   {
+    "el": "e11",
+    "intent": "View similar bot",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e1",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "limit",
+    "text": "Messages cost credits: Basic 10, Premium 30",
+    "el": "e9"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2297,
+  "output": 263,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:09.570Z"
+}

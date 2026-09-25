@@ -350,7 +350,7 @@ function phone(fr: Frame, width: number, o: { pins: boolean; numbered?: Pin[] })
     const pinned = (b: Box) => shown.some(p => Math.abs(p.box.x - b.x) < 6 && Math.abs(p.box.y - b.y) < 6 && Math.abs(p.box.w - b.w) < 12);
     if (fr.phase === "change") for (const b of fr.newBoxes.filter(x => !pinned(x))) overlays.push(`<span class="newtag" style="left:${pc(b.x, fr.vw)};top:${pc(b.y, fr.vh)}">NEW</span>`);
     // Pin radius in device px (the pin is 26 slide px wide; the screen is `sw` slide px for `vw` device px).
-    const spots = placePins(shown.map(p => p.box), fr.vw, fr.vh, (13 * fr.vw) / sw + 1);
+    const spots = placePins(shown.map(p => p.box), fr.vw, fr.vh, (13 * fr.vw) / sw + 1, fr.texts ?? []);
     shown.forEach((p, k) => {
       overlays.push(`<span class="ring" style="left:${pc(p.box.x, fr.vw)};top:${pc(p.box.y, fr.vh)};width:${pc(p.box.w, fr.vw)};height:${pc(p.box.h, fr.vh)}"></span>`);
       overlays.push(`<span class="pin" style="left:${pc(spots[k].x, fr.vw)};top:${pc(spots[k].y, fr.vh)}">${p.n}</span>`);
@@ -364,7 +364,7 @@ function phone(fr: Frame, width: number, o: { pins: boolean; numbered?: Pin[] })
  * the next free spot around the element. A spot is "free" when the pin covers no other pin and no
  * other callout target (the offer's Play / No thanks included), and preferably not its own element.
  */
-export function placePins(boxes: Box[], vw: number, vh: number, r: number): { x: number; y: number }[] {
+export function placePins(boxes: Box[], vw: number, vh: number, r: number, texts: Box[] = []): { x: number; y: number }[] {
   const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
   const covers = (x: number, y: number, b: Box) => {
     const nx = clamp(x, b.x, b.x + b.w), ny = clamp(y, b.y, b.y + b.h);
@@ -390,6 +390,9 @@ export function placePins(boxes: Box[], vw: number, vh: number, r: number): { x:
       if (placed.some(p => (p.x - c.x) ** 2 + (p.y - c.y) ** 2 < (2 * r + 2) ** 2)) v += 100;
       boxes.forEach((o, j) => { if (j !== i && covers(c.x, c.y, o)) v += 10; });
       if (covers(c.x, c.y, b)) v += 3;
+      // Words on screen that are not a target: covering one is a small cost, so free space wins.
+      const inside = (t: Box) => t.x >= b.x - 1 && t.y >= b.y - 1 && t.x + t.w <= b.x + b.w + 1 && t.y + t.h <= b.y + b.h + 1;
+      v += 1.5 * texts.filter(t => !inside(t) && covers(c.x, c.y, t)).length;
       if (v < cost) { cost = v; best = c; }
     });
     placed.push(best);
