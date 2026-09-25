@@ -1,6 +1,6 @@
 # Trajectory: luzia
 
-Autonomous decisions: **620**. Human interventions: **20**. Autonomy ratio: **96.9%**.
+Autonomous decisions: **624**. Human interventions: **20**. Autonomy ratio: **96.9%**.
 
 ## Stage runs
 
@@ -33,6 +33,7 @@ Autonomous decisions: **620**. Human interventions: **20**. Autonomy ratio: **96
 | judge | ju0925-193035 | 19:30:35 | 19:32:32 | 77 | 16 | revision stalled: weighted 4.4 -> 4.5 |
 | slides | sl0925-193252 | 19:32:52 | 19:33:49 | 20 | 1 |  |
 | slides | sl0925-194008 | 19:40:08 | 19:40:28 | 12 | 0 |  |
+| slides | sl0925-205116 | 20:51:16 | 20:51:37 | 12 | 0 |  |
 
 ## New states discovered over time
 
@@ -702,7 +703,7 @@ Autonomous decisions: **620**. Human interventions: **20**. Autonomy ratio: **96
 - 2026-09-25T17:07:40 [explore] "Create Account Sheet" (s07) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - 2026-09-25T17:16:27 [explore] "Login Screen" (s23) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - 2026-09-25T17:16:50 [explore] "Response Style Signup" (s24) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- 2026-09-25T18:47:29 [human] luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: /Users/rajkashikar/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
+- 2026-09-25T18:47:29 [human] luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
 - 2026-09-25T18:47:31 [human] luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 
 
 ## Key exploration decisions (priority 3)

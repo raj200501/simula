@@ -58,14 +58,22 @@ export function readQa(file: string): QaDigest | null {
   };
 }
 
-export interface TraceStats { human: number; humanNotes: string[]; failures: number; recoveries: number; decisions: number }
+export interface TraceStats { human: number; humanNotes: string[]; skippedForHuman: number; failures: number; recoveries: number; decisions: number }
 
+/**
+ * Human steps are what a person did (`npm run note`, or a pause the explorer actually waited through).
+ * A sign-in wall the explorer only marked "needs a human" and moved past is not one: it is counted apart.
+ */
 export function traceStats(file: string): TraceStats {
   const evs = safe(() => readTrace(file), []);
-  const human = evs.filter(e => e.type === "human");
+  const all = evs.filter(e => e.type === "human");
+  // the explorer marks a wall it moved past with waiting:false; everything else is a person's step
+  const human = all.filter(e => e.data.waiting !== false);
+  const skipped = new Set(all.filter(e => !human.includes(e)).map(e => String(e.data.state ?? e.data.note ?? "")));
   return {
     human: human.length,
     humanNotes: human.map(e => String(e.data.note ?? "")).filter(Boolean),
+    skippedForHuman: skipped.size,
     failures: evs.filter(e => e.type === "failure").length,
     recoveries: evs.filter(e => e.type === "recovery").length,
     decisions: evs.filter(e => e.type === "decision").length,

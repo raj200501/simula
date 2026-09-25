@@ -978,3 +978,14 @@
 {"ts":"2026-09-25T19:40:04.167Z","app":"janitor","run":"sl0925-193947","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P3.gif"}}
 {"ts":"2026-09-25T19:40:07.838Z","app":"janitor","run":"sl0925-193947","stage":"slides","type":"info","data":{"stage":"slides","slides":10,"flowSlides":2,"deck":"slides/deck.html"}}
 {"ts":"2026-09-25T19:40:07.892Z","app":"janitor","run":"sl0925-193947","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":20803,"llm":{"calls":4,"cached":4,"usd":0,"mode":"record"}}}
+{"ts":"2026-09-25T20:51:37.991Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"record"}}
+{"ts":"2026-09-25T20:51:38.540Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"decision","data":{"stage":"slides","ships":["P3","P2"],"why":"every final SHIP gets a flow slide; REVISE is never promoted"}}
+{"ts":"2026-09-25T20:51:38.541Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"llm_call","data":{"purpose":"variant:P3:ns1","key":"24fe6f73c2fb24e194687e96","cached":true,"usd":0}}
+{"ts":"2026-09-25T20:51:38.542Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"llm_call","data":{"purpose":"variant:P3:ne1","key":"122b5240d075cbcd1f33bca0","cached":true,"usd":0}}
+{"ts":"2026-09-25T20:51:38.542Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"llm_call","data":{"purpose":"variant:P2:ns1","key":"51ef1eb93bfb690d58107e97","cached":true,"usd":0}}
+{"ts":"2026-09-25T20:51:38.543Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"llm_call","data":{"purpose":"variant:P2:ne1","key":"d8ba722f9c79673b6e673764","cached":true,"usd":0}}
+{"ts":"2026-09-25T20:51:42.631Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P3","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":3}}
+{"ts":"2026-09-25T20:51:46.567Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P2","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":3}}
+{"ts":"2026-09-25T20:51:55.039Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P3.gif"}}
+{"ts":"2026-09-25T20:51:58.589Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"info","data":{"stage":"slides","slides":10,"flowSlides":2,"deck":"slides/deck.html"}}
+{"ts":"2026-09-25T20:51:58.652Z","app":"janitor","run":"sl0925-205137","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":20661,"llm":{"calls":4,"cached":4,"usd":0,"mode":"record"}}}

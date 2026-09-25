@@ -160,7 +160,8 @@ function moneySlide(d: DeckInput): string {
   const cols = stages.map((s, i) => {
     const img = s.screen ? d.shots.get(s.screen) : undefined;
     const phone = img ? phoneHtml(img, screenName(m, s.screen), pw, ratio, BEZEL) : `<div class="noshot" style="width:${pw}px;height:${ph}px">No screen</div>`;
-    const facts = s.facts.slice(0, 3).map(x => `<li>${h(clip(x, 84))}</li>`).join("") + (s.facts.length > 3 ? `<li class="more">+${s.facts.length - 3} more</li>` : "");
+    // two facts per column fit above the bottom boxes whatever their length; the rest is counted
+    const facts = s.facts.slice(0, 2).map(x => `<li>${h(clip(x, 72))}</li>`).join("") + (s.facts.length > 2 ? `<li class="more">+${s.facts.length - 2} more</li>` : "");
     return `<div class="m-col" style="left:${BR + i * (pw + gap)}px;width:${pw}px">${phone}
 ${elbow(Math.round(ph * 0.42), ph)}${marker(i + 1, ph)}<span class="ph" style="top:${ph + 2}px">${h(s.title)}</span>
 <div class="cap-block" style="top:${ph + 40}px;width:${pw + gap - 12}px">${s.screen ? `<div class="scr">${h(screenName(m, s.screen))}</div>` : ""}<ul class="facts">${facts}</ul></div></div>`;

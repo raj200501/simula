@@ -1,6 +1,6 @@
 # Simula App Monetization Agent
 
-[![ci](https://github.com/raj200501/simula/actions/workflows/ci.yml/badge.svg?branch=claude/serene-brahmagupta-owzz1n)](https://github.com/raj200501/simula/actions/workflows/ci.yml) Every push runs the typecheck, 267 tests (including the whole pipeline end to end on a bundled fixture app) and the no-key demo.
+[![ci](https://github.com/raj200501/simula/actions/workflows/ci.yml/badge.svg?branch=claude/serene-brahmagupta-owzz1n)](https://github.com/raj200501/simula/actions/workflows/ci.yml) Every push runs the typecheck, the full test suite (276 tests, including the whole pipeline end to end on a bundled fixture app) and the no-key demo.
 
 **Thesis: understand the app as an economy.** The explorer drives a real Android app through mobile-mcp and measures what users do, what each action costs, where free users hit a wall and what the app sells. It writes that into **one evidence-backed product model**: every price, cost and wall is quoted from the screen or measured as a counter change, then verified in code. **Everything else is compiled from that model:**
 - the 1:1 interactive mock and its QA loop;
@@ -170,7 +170,7 @@ Agents never message each other: stages share context only through typed, schema
 | Exchange rate at list price, or at cost to serve when the app shows no prices | Skip the number for apps without prices | A guest chat that caps free messages but never shows a price still gets a headline: one completed view is measured against what a message costs to serve (net of platform share), and rewards are sized to that break-even |
 | Verdict in code from rubric scores and gates | The judge LLM says SHIP or REJECT | Thresholds are explicit and testable. Only SHIP becomes a slide; REVISE is never promoted |
 | Gemini free tier, with a Claude path kept | A paid model only | $0 to run end to end. The fallback chain and cache absorb 503s and quotas. The same code runs on Claude by setting a key |
-| Luzia as the deep app | OOC | OOC's AppSecurity module kills the process about 0.8 s after launch on the Google Play emulator (logcat `Kill Process … [D11001]`). That is documented as blocked, not bypassed. Luzia has a free-message economy to go deep on |
+| Luzia as the deep app | OOC | OOC's AppSecurity module kills the process about 0.8 s after launch on the Google Play emulator (logcat `Kill Process … [D11001]`). That is documented as blocked, not bypassed. Luzia has the richest guest experience to go deep on: chat, image tools, services, and sign-up and subscription walls |
 
 ---
 
@@ -192,6 +192,8 @@ Agents never message each other: stages share context only through typed, schema
 ## Limitations
 
 - **OOC could not be explored** on the emulator (self-termination, above). It is covered by a note, not a model.
+- **Luzia's free-message cap was not measured in the final run.** The drain probe sent guest messages and got replies (about 5 in one run), but on the emulator it lost the chat between sends: a composer that never exposes its text, keys scrambled by the keyboard, and flaky navigation back to the thread. Each cause is fixed and covered by a regression test (see the commit history), but the last deep run still ended without a wall on the send. So Luzia's model is subscription- and sign-up-gated (six walls, all quoted from the screens), and its flows target those walls. The capped case is exercised end to end on the fixture and in `test/proposejudge.entitlement.test.ts`.
+- **Janitor was explored signed in.** The account's handle and join date are redacted in every artifact (text replaced, screenshots blurred). AOL's run opened Chrome's first-run screen, which showed the device owner's name; that screenshot was removed and the name replaced in text.
 - **Free-tier models.** Output quality depends on which Flash model answered; under quota pressure, calls fall back to Flash-Lite and then to stubs. `cost.jsonl` shows which model answered each call. The judge and the proposer are the same model family, so the judge has a shared blind spot. `eval:judge` measures the judge only on single-fault items built from KB precedents.
 - **Sparse accessibility trees.** React Native and Compose apps expose sparse trees: unlabeled icons and merged text nodes. Some elements are found by vision tap points or not at all, and those screens render as images in the mock (`htmlShare` in the QA summary).
 - **Mock fidelity** is judged by the QA metrics against one representative screenshot per screen. Animations, gestures and long lists beyond one scroll are not reproduced.

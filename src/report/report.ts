@@ -183,7 +183,7 @@ function scoreRow(r: AppRow): string {
     : `<span class="muted">no live calls</span>`;
   return `<tr class="st-${r.state.replace(" ", "-")}"><td><a href="#app-${h(r.id)}"><b>${h(r.name)}</b></a><div class="muted">${h(r.id)}${r.profile ? ` · ${h(r.profile)}` : ""}${r.stubs.length ? ` · <span class="stub">stub: ${h(r.stubs.join(", "))}</span>` : ""}</div></td>
 <td><span class="state ${r.state.replace(" ", "-")}">${h(r.state)}</span>${r.why ? `<div class="muted why">${h(r.why)}</div>` : ""}</td>
-<td>${explored}</td><td>${m ? h(m.regime) : dash}</td><td>${mech}</td><td>${qa}</td><td>${v}</td><td>${llm}</td><td class="num">${r.trace.human || (c?.humanInterventions ?? 0)}</td></tr>`;
+<td>${explored}</td><td>${m ? h(m.regime) : dash}</td><td>${mech}</td><td>${qa}</td><td>${v}</td><td>${llm}</td><td class="num">${r.trace.human}${r.trace.skippedForHuman ? `<div class="muted">${r.trace.skippedForHuman} sign-in wall${r.trace.skippedForHuman === 1 ? "" : "s"} skipped</div>` : ""}</td></tr>`;
 }
 
 function appSection(r: AppRow): string {

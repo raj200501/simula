@@ -28,7 +28,7 @@ export function numbersMd(x: NumbersInput): string {
   if (m) {
     const c = m.coverage;
     L.push(`- **${c.states} screens, ${c.edges} transitions**, ${c.externals} external surface${c.externals === 1 ? "" : "s"}, in ${c.steps} steps (${c.minutes.toFixed(0)} min). Stopped: ${c.stopReason}.`);
-    L.push(`- Human interventions: ${Math.max(c.humanInterventions, x.trace.human)}.`);
+    L.push(`- Human steps: ${x.trace.human}${x.trace.human ? " (listed under Human notes)" : ""}. Sign-in walls the explorer left for a human and moved past: ${x.trace.skippedForHuman}.`);
     if (c.notExplored.length) L.push(`- Deliberately not explored: ${c.notExplored.length} (${[...new Set(c.notExplored.map(n => n.why))].slice(0, 3).join("; ")}).`);
   } else L.push("- No product model yet.");
 

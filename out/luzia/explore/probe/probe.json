@@ -16,8 +16,8 @@
   "numbers": [],
   "counters": [],
   "secsPerObserve": 0.51,
-  "screenshot": "/Users/rajkashikar/simula/out/luzia/explore/probe/probe.png",
-  "deviceFile": "/Users/rajkashikar/simula/config/device.json",
+  "screenshot": "~/simula/out/luzia/explore/probe/probe.png",
+  "deviceFile": "~/simula/config/device.json",
   "checks": [
     {
       "name": "the app is in the foreground",

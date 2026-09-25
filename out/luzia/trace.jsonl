@@ -8474,7 +8474,7 @@
 {"ts":"2026-09-25T18:47:29.373Z","app":"luzia","run":"ju0925-142558","stage":"judge","type":"judge","data":{"proposal":"P2","version":3,"round":2,"verdict":"REJECT","weighted":4.6,"judgedBy":"stub","failed":["portfolio-distinct"]}}
 {"ts":"2026-09-25T18:47:29.383Z","app":"luzia","run":"ju0925-142558","stage":"judge","type":"decision","data":{"what":"judgments written","final":["P1v1:SHIP:4.6","P2v3:REJECT:4.6","P3v2:REJECT:4.25","P4v2:REJECT:4.05","P5v1:SHIP:4.5"]}}
 {"ts":"2026-09-25T18:47:29.384Z","app":"luzia","run":"ju0925-142558","stage":"judge","type":"stage","data":{"event":"end","stage":"judge","ms":1291345,"llm":{"calls":0,"cached":0,"usd":0,"mode":"record"}}}
-{"ts":"2026-09-25T18:47:29.958Z","app":"luzia","run":"manual","stage":"human","type":"human","data":{"note":"luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: /Users/rajkashikar/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log "}}
+{"ts":"2026-09-25T18:47:29.958Z","app":"luzia","run":"manual","stage":"human","type":"human","data":{"note":"luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log "}}
 {"ts":"2026-09-25T18:47:30.322Z","app":"luzia","run":"sl0925-144730","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"record"}}
 {"ts":"2026-09-25T18:47:30.598Z","app":"luzia","run":"sl0925-144730","stage":"slides","type":"decision","data":{"stage":"slides","ships":["P1","P5"],"why":"every final SHIP gets a flow slide; REVISE is never promoted"}}
 {"ts":"2026-09-25T18:47:30.649Z","app":"luzia","run":"sl0925-144730","stage":"slides","type":"failure","data":{"where":"stage:slides","error":"fetch failed"}}
@@ -8749,3 +8749,15 @@
 {"ts":"2026-09-25T19:40:24.388Z","app":"luzia","run":"sl0925-194008","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P1.gif"}}
 {"ts":"2026-09-25T19:40:28.173Z","app":"luzia","run":"sl0925-194008","stage":"slides","type":"info","data":{"stage":"slides","slides":10,"flowSlides":2,"deck":"slides/deck.html"}}
 {"ts":"2026-09-25T19:40:28.235Z","app":"luzia","run":"sl0925-194008","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":19342,"llm":{"calls":2,"cached":2,"usd":0,"mode":"record"}}}
+{"ts":"2026-09-25T20:51:16.183Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"record"}}
+{"ts":"2026-09-25T20:51:18.004Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"decision","data":{"stage":"slides","ships":["P1","P4"],"why":"every final SHIP gets a flow slide; REVISE is never promoted"}}
+{"ts":"2026-09-25T20:51:18.004Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"decision","data":{"stage":"slides","proposal":"P1","entry":"ne1","choice":"runtime-default","why":"no HTML base screen in the mock"}}
+{"ts":"2026-09-25T20:51:18.005Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"llm_call","data":{"purpose":"variant:P4:ns1","key":"e14f09c5689a074886afe987","cached":true,"usd":0}}
+{"ts":"2026-09-25T20:51:18.006Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"llm_call","data":{"purpose":"variant:P4:ne1","key":"c7d847779522883c63d82b6f","cached":true,"usd":0}}
+{"ts":"2026-09-25T20:51:18.006Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"decision","data":{"stage":"slides","proposal":"P4","entry":"ne2","choice":"runtime-default","why":"no HTML base screen in the mock"}}
+{"ts":"2026-09-25T20:51:18.006Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"decision","data":{"stage":"slides","proposal":"P4","entry":"ne3","choice":"runtime-default","why":"no HTML base screen in the mock"}}
+{"ts":"2026-09-25T20:51:21.911Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P1","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":3}}
+{"ts":"2026-09-25T20:51:25.700Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P4","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":1}}
+{"ts":"2026-09-25T20:51:33.104Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P1.gif"}}
+{"ts":"2026-09-25T20:51:36.988Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"info","data":{"stage":"slides","slides":10,"flowSlides":2,"deck":"slides/deck.html"}}
+{"ts":"2026-09-25T20:51:37.037Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":20853,"llm":{"calls":2,"cached":2,"usd":0,"mode":"record"}}}

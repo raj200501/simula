@@ -1,6 +1,6 @@
 # Trajectory: aol
 
-Autonomous decisions: **75**. Human interventions: **3**. Autonomy ratio: **96.2%**.
+Autonomous decisions: **76**. Human interventions: **3**. Autonomy ratio: **96.2%**.
 
 ## Stage runs
 
@@ -15,6 +15,7 @@ Autonomous decisions: **75**. Human interventions: **3**. Autonomy ratio: **96.2
 | judge | ju0925-151622 | 19:16:22 | 19:17:38 | 33 | 5 | revision stalled: weighted 4.5 -> 4.3 |
 | slides | sl0925-151738 | 19:17:38 | 19:17:39 | 4 | 0 |  |
 | human | manual | 19:26:58 | 19:26:58 | 1 | 0 |  |
+| slides | sl0925-205159 | 20:51:59 | 20:52:01 | 4 | 0 |  |
 
 ## New states discovered over time
 
@@ -40,45 +41,45 @@ Autonomous decisions: **75**. Human interventions: **3**. Autonomy ratio: **96.2
 
 ### explore · run ex0925-150140
 
-- 19:03:12 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:03:12 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:03:18 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:03:18 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:03:18 step 9 **observe**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:03:18 step 9 **observe**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:03:30 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:03:30 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:03:35 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:03:35 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:03:36 step 9 **observe**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:03:36 step 9 **observe**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - recovered: cold relaunch after repeated observe failures
-- 19:04:32 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:04:32 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:04:38 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:04:38 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:04:39 step 12 **observe (travel)**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:04:39 step 12 **observe (travel)**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
 - 19:04:39 step 12 **travel:g0009**: device error while observing
   - recovered: cold relaunch: travel hop g0009 failed
 - 19:05:43 step 18 **act:a10_2**: element not found on screen
   - no recovery (continued)
-- 19:07:18 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:07:18 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:07:23 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:07:23 **mcp:mobile_get_foreground_app**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
-- 19:07:24 step 35 **observe (travel)**: mobile_get_foreground_app: Error: Command failed: /Users/rajkashikar/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
-failed 
+- 19:07:24 step 35 **observe (travel)**: mobile_get_foreground_app: Error: Command failed: ~/simula/node_modules/@mobilenext/mobilecli-darwin-arm64/mobilecli-darwin-arm64 apps foreground --device simula_pixel_8_api35
+failed to get foreground
   - no recovery (continued)
 - 19:07:24 step 35 **travel:g0009**: device error while observing
   - recovered: cold relaunch: travel hop g0009 failed

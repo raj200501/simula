@@ -91,7 +91,8 @@ describe("buildSlides (stub LLM, real mock runtime)", { skip, timeout: 60_000 },
   test("self-contained: images are files next to the deck, the prototype link points at the mock", () => {
     const html = fs.readFileSync(deck, "utf8");
     for (const [, src] of html.matchAll(/<img src="([^"]+)"/g)) assert.ok(fs.existsSync(path.join(path.dirname(deck), src)), src);
-    assert.match(html, /href="\.\.\/mock\/index\.html\?proposal=P1"/);
+    // the prototype opens with the proposal applied, on the screen where the change is
+    assert.match(html, /href="\.\.\/mock\/index\.html\?proposal=P1&amp;screen=[sn]s?\d+"/);
     assert.doesNotMatch(html, /fetch\(|https?:\/\//);
   });
 });

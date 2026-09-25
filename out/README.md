@@ -34,8 +34,6 @@ Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 2
 
 **Human notes:**
 
-- "Add Comment Page" (s05) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Sign In Screen" (s06) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
 
 ## Janitor
@@ -121,26 +119,12 @@ Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 1
 
 **Human notes:**
 
-- "Login Screen" (s03) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Create Account Sheet" (s07) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Response Style Signup" (s10) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Create Account Sheet" (s03) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Response Style Signup" (s05) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Login Screen" (s14) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Account Creation Sheet" (s05) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Custom Bestie Signup" (s06) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Response Style Signup" (s11) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Teacher Profile" (s13) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Create account sheet" (s03) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Login Screen" (s08) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Response Style Signup" (s03) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Login Screen" (s06) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Login Screen" (s23) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- "Response Style Signup" (s24) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: /Users/rajkashikar/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
+- luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
 - luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 
-- luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: /Users/rajkashikar/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log
+- luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log
 - luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed
+- Resolved: the eval-judge failure above was a script-name typo in the unattended run script (the command is `npm run eval:judge`); it was re-run and wrote proposals/judge-eval.md.
+- Resolved: slides failed because the Mac slept mid-call (fetch failed). propose, judge and slides were then re-run with live Gemini from the committed model (proposals had fallen back to stubs during the Mac run because of Gemini 503s).
 
 ## OOC
 

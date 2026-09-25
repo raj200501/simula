@@ -1,10 +1,10 @@
 {
   "stage": "slides",
   "app": "luzia",
-  "runId": "sl0925-194008",
-  "gitSha": "f37f19c",
-  "startedAt": "2026-09-25T19:40:08.890Z",
-  "finishedAt": "2026-09-25T19:40:28.234Z",
+  "runId": "sl0925-205116",
+  "gitSha": "228956b",
+  "startedAt": "2026-09-25T20:51:16.180Z",
+  "finishedAt": "2026-09-25T20:51:37.036Z",
   "status": "ok",
   "inputs": [
     {

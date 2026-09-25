@@ -68,7 +68,8 @@ export async function buildSlides(c: StageCtx, m: ProductModel, modelDir: string
         claim: claimOf(p),
         declineTo: declineTarget(p, m, offer.screen),
         surfaceName: surfaceLabel(p, m),
-        protoHref: `${rel(outDir, indexHtml ?? path.join(c.paths.mock, "index.html"))}?proposal=${encodeURIComponent(p.id)}`,
+        // the prototype opens where the change is, not on the app's first screen
+        protoHref: `${rel(outDir, indexHtml ?? path.join(c.paths.mock, "index.html"))}?proposal=${encodeURIComponent(p.id)}${(() => { const ch = story.find(x => x.phase === "change")?.screen; return ch ? `&screen=${encodeURIComponent(ch)}` : ""; })()}`,
         snippet: integrationSnippet(p, { surfaceName: surfaceLabel(p, m).replace(/\s*\(new [^)]*\)$/, ""), resourceName: res ? unitOf(res) : undefined }),
         changes: judgeChanges(p, cands, j),
         why: whyBullets(p, m, econ),

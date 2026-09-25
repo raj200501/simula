@@ -1,2 +1,4 @@
-- 2026-09-25T18:47:29.959Z luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: /Users/rajkashikar/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
+- 2026-09-25T18:47:29.959Z luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
 - 2026-09-25T18:47:31.014Z luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 
+- 2026-09-25T20:05:00.000Z Resolved: the eval-judge failure above was a script-name typo in the unattended run script (the command is `npm run eval:judge`); it was re-run and wrote proposals/judge-eval.md.
+- 2026-09-25T20:05:00.000Z Resolved: slides failed because the Mac slept mid-call (fetch failed). propose, judge and slides were then re-run with live Gemini from the committed model (proposals had fallen back to stubs during the Mac run because of Gemini 503s).
