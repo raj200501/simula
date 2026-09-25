@@ -263,7 +263,10 @@ const centreDist = (a: Rect, b: Rect) => Math.hypot(a.x + a.w / 2 - b.x - b.w / 
 
 /**
  * Re-find an element: exact key; else the same key without its ordinal; else, when it has a resource id,
- * the same type + resource id (the title of another item on the same template). Nearest to where it was.
+ * the same type + resource id (the title of another item on the same template); else, without a resource
+ * id but knowing where it was, the element of the same type in that place (another story's title or
+ * avatar on the same chat template). Nearest to where it was. The caller re-checks the guard rails on
+ * whatever a fallback returns.
  */
 export function findByKey(els: NormElement[], key: string, hint?: Rect): NormElement | undefined {
   const exact = els.find(e => e.key === key);
@@ -273,9 +276,12 @@ export function findByKey(els: NormElement[], key: string, hint?: Rect): NormEle
   const same = els.filter(e => keyPrefix(e.key) === p);
   if (same.length) return nearest(same);
   const [type, id] = key.split("|");
-  if (!id) return undefined;
-  const kin = els.filter(e => e.key.startsWith(`${type}|${id}|`));
-  return kin.length === 1 || hint ? nearest(kin) : undefined;
+  if (id) {
+    const kin = els.filter(e => e.key.startsWith(`${type}|${id}|`));
+    return kin.length === 1 || hint ? nearest(kin) : undefined;
+  }
+  if (!hint) return undefined;
+  return nearest(els.filter(e => shortType(e.type) === type && !e.identifier && !isInputType(e.type) && overlapRatio(e.rect, hint) >= 0.6));
 }
 
 export interface Counter { resource: string; value: number }

@@ -5,7 +5,7 @@ import type { Action, DeviceInfo, NormElement, RawElement, Rect } from "../core/
 import { mask, sleep } from "../core/io.ts";
 import type { Timing } from "./observe.ts";
 import { findByKey } from "./observe.ts";
-import { OUT_OF_SCOPE } from "./guards.ts";
+import { OUT_OF_SCOPE, guardReason } from "./guards.ts";
 import { DEFAULT_INPUT, SEND_RE, isInput } from "./heuristic.ts";
 import { labelOf, overlapRatio, shortType } from "./signature.ts";
 
@@ -66,9 +66,13 @@ export async function swipe(dev: Device, info: DeviceInfo, dir: "up" | "down", d
 
 const look = async (c: ActCtx) => c.normalize(await c.dev.elements());
 
-/** Find the element by key on the live screen; if absent, scroll down (up to twice) to reveal it. */
+/**
+ * Find the element by key on the live screen; if absent, scroll down (up to twice) to reveal it, unless it
+ * sat in the top bar (a bar does not scroll: scrolling would only move the content under it).
+ */
 async function locate(c: ActCtx, key: string, hint?: Rect): Promise<NormElement | undefined> {
-  for (let i = 0; i <= 2; i++) {
+  const inTopBar = !!hint && hint.y + hint.h <= c.info.heightPx * 0.15;
+  for (let i = 0; i <= (inTopBar ? 0 : 2); i++) {
     const el = findByKey(await look(c), key, hint);
     if (el) return el;
     if (i < 2) { await swipe(c.dev, c.info, "up", 0.4 * c.info.heightPx); await sleep(c.timing.pollMs); }
@@ -106,7 +110,11 @@ export async function perform(c: ActCtx, a: Action, hint?: Rect): Promise<ActRes
         return { ok: true, note: "vision tap point" };
       }
       const el = a.elKey ? await locate(c, a.elKey, hint) : undefined;
-      return el ? tapElement(c, el) : { ok: false, reason: "element not found on screen" };
+      if (!el) return { ok: false, reason: "element not found on screen" };
+      // re-found by place on another item of the template: its own words must pass the guard rails too
+      const veto = el.key !== a.elKey ? guardReason(el, labelOf(el), a.kind) : undefined;
+      if (veto) return { ok: false, reason: `${veto} (the element found in its place)`, skip: true };
+      return tapElement(c, el);
     }
     case "type-send":
     case "consume":

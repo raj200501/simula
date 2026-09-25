@@ -172,7 +172,7 @@ export interface Match {
 type Seen = Pick<Observation, "signature" | "dhash" | "elements">;
 
 /**
- * exact -> Jaccard >= 0.85 -> dHash for sparse screens -> borderline for the annotator -> new.
+ * exact -> Jaccard >= 0.85 -> dHash for sparse, wordless screens -> borderline for the annotator -> new.
  * `variants` are extra signatures of a state that the explorer already decided belong to it (a scrolled
  * view, a sameAs page for another item), so coming back to them is recognised directly.
  */
@@ -195,7 +195,9 @@ export function matchState(states: State[], obs: Seen, variants?: ReadonlyMap<st
   if (best && best.j >= SAME && !hidesOverlay(best.sig, obs.signature)) {
     return { state: best.s, how: "jaccard", score: best.j, borderline: [], nearest };
   }
-  if (obs.elements.length < SPARSE && obs.dhash) {
+  // pixels only when the element list says almost nothing (a canvas, a WebView): two sparse screens whose
+  // few elements carry different words are different screens, however alike their mostly-empty pixels are
+  if (obs.elements.length < SPARSE && obs.dhash && chromeTexts(obs.signature).length < 2) {
     const d = states.map(s => ({ s, h: hamming(s.dhash, obs.dhash) })).sort((x, y) => x.h - y.h)[0];
     if (d && d.h <= DHASH_MAX) return { state: d.s, how: "dhash", score: best?.j ?? 0, borderline: [], nearest };
   }

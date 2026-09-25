@@ -38,11 +38,24 @@ test("the drain probe reaches the wall: limitHit on a consume edge, with an infe
   assert.ok(stateById(wall.to).signals.some(s => s.kind === "limit"));
   const drained = g.edges.find(e => e.action === wall.action && !e.limitHit)!;
   const inferred = drained.effects.filter(f => f.kind === "counter" && f.inferred);
-  assert.ok(inferred.length >= 2, JSON.stringify(drained.effects.filter(f => f.kind === "counter")));
-  for (const f of inferred) assert.equal(f.kind === "counter" && f.delta, -10);
+  // one counter effect per resource per edge: the most common per-send delta over all its traversals
+  assert.equal(inferred.length, 1, JSON.stringify(drained.effects.filter(f => f.kind === "counter")));
+  assert.equal(inferred[0].kind === "counter" && inferred[0].delta, -10);
+  assert.ok(drained.seen >= 10, `traversals live in seen (${drained.seen})`);
   assert.equal(fake.balance, 0, "spent down to the wall");
   // the wall's own actions were explored afterwards: Refill leads to the store
   assert.ok(g.edges.some(e => e.from === wall.to && stateById(e.to)?.kind === "store"));
+});
+
+test("an edge summarises its traversals: one counter effect per resource, at most 5 appeared and 5 disappeared texts", () => {
+  for (const e of g.edges) {
+    const res = e.effects.filter(f => f.kind === "counter").map(f => f.kind === "counter" && f.resource);
+    assert.equal(new Set(res).size, res.length, `${e.id}: ${JSON.stringify(e.effects)}`);
+    for (const kind of ["appeared", "disappeared"] as const) {
+      const texts = e.effects.filter(f => f.kind === kind).map(f => f.kind === kind && f.text);
+      assert.ok(texts.length <= 5 && new Set(texts).size === texts.length, `${e.id} ${kind}: ${texts.length}`);
+    }
+  }
 });
 
 test("never taps Log out, the ad, or inside the status/navigation rows", () => {

@@ -36,7 +36,7 @@ import {
 } from "./observe.ts";
 import {
   counterEffects, diffEffects, labelCounts, labelOf, matchState, overlapRatio, overlayOf, overlayTokens, relabelOnly,
-  shortType, signatureOf, skeletonOf,
+  shortType, signatureOf, skeletonOf, type CounterEffect,
 } from "./signature.ts";
 import { annotate, toActions, toSignals, type Annotation, type AnnotateOut } from "./annotate.ts";
 import { heuristicAnnotation, isInput } from "./heuristic.ts";
@@ -62,7 +62,8 @@ const GAP_STEPS = 25;              // bounded crawl after each gap-check round
 const AFTER_WALL_STEPS = 12;       // explore the wall's own actions (refill, decline) after the drain
 const MAX_IDLE_MOVES = 8;          // travels in a row without an action: the frontier is not really reachable
 const HUMAN_WAIT_MS = 10 * 60_000;
-const MAX_FX = 60;
+const MAX_TEXT_FX = 5;             // appeared / disappeared texts kept per edge, each
+
 const MAX_VARIANTS = 8;
 const MEASURE_SENDS = 3;           // T1: sends per selection to measure its cost before draining
 const READ_EVERY = 3;              // T1: read a balance shown on another screen every 3 sends
@@ -94,6 +95,7 @@ interface Run {
   anchors: Map<string, string[]>;    // overlay state -> tokens of what is on top (a screen without them is not it)
   parents: Map<string, string>;      // overlay state -> observation of the screen it opened over
   openers: Map<string, NormElement>; // overlay state -> the control whose tap opened it (on that screen)
+  counterLog: Map<string, CounterEffect[]>; // edge|resource -> every reading behind its one counter effect
   obsIndex: Map<string, Observation>;
   cur: State;                 // where we are
   last: Observation;          // what we last saw there (baseline for the next diff)
@@ -146,6 +148,7 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
     anchors: new Map<string, string[]>(),
     parents: new Map<string, string>(),
     openers: new Map<string, NormElement>(),
+    counterLog: new Map<string, CounterEffect[]>(),
     obsIndex: new Map(g.observations.map(x => [x.id, x])),
     home: "",
     t0: Date.now(),
@@ -750,7 +753,10 @@ function refreshContexts(r: Run): void {
     twin.seen += e.seen;
     twin.failures += e.failures;
     twin.firstStep = Math.min(twin.firstStep, e.firstStep);
-    for (const f of e.effects) if (twin.effects.length < MAX_FX) twin.effects.push(f);
+    for (const f of counterEffects(e.effects)) {
+      for (const x of r.counterLog.get(`${e.id}|${f.resource}`) ?? [f]) addCounter(r, twin, x);
+    }
+    addEffects(r, twin, e.effects.filter(f => f.kind !== "counter"));
   }
   g.edges = keep;
 }
@@ -763,8 +769,38 @@ function nextEdgeId(g: ExploreGraph): string {
 }
 
 /**
- * One edge per (from, action, to, context, limitHit); repeats bump `seen` and add new effects, so the
- * drain's many sends stay one edge per selection with all their counter readings and replies (the transcript).
+ * An edge's effects summarise its traversals (counted in `seen`): per resource ONE counter effect, the most
+ * common delta across traversals (inferred only if every reading of that delta was); appeared and
+ * disappeared texts deduplicated, at most 5 of each (the first replies: a transcript sample).
+ */
+function addEffects(r: Run, e: GraphEdge, fx: Effect[]): void {
+  for (const f of fx) {
+    if (f.kind === "counter") { addCounter(r, e, f); continue; }
+    const same = e.effects.filter(x => x.kind === f.kind);
+    if (same.length >= MAX_TEXT_FX || same.some(x => "text" in x && x.text === f.text)) continue;
+    e.effects.push(f);
+  }
+}
+
+function addCounter(r: Run, e: GraphEdge, f: CounterEffect): void {
+  const k = `${e.id}|${f.resource}`;
+  const i = e.effects.findIndex(x => x.kind === "counter" && x.resource === f.resource);
+  // after a resume only the stored summary is known: it stands for one earlier reading
+  const log = r.counterLog.get(k) ?? (i >= 0 ? [e.effects[i] as CounterEffect] : []);
+  log.push(f);
+  r.counterLog.set(k, log);
+  const byDelta = new Map<number, CounterEffect[]>();
+  for (const x of log) byDelta.set(x.delta, [...(byDelta.get(x.delta) ?? []), x]);
+  const group = [...byDelta.values()].sort((a, b) => b.length - a.length)[0]; // ties: the first delta seen
+  const rep = group[0];
+  const eff: CounterEffect = { kind: "counter", resource: f.resource, before: rep.before, after: rep.after, delta: rep.delta };
+  if (group.every(x => x.inferred)) eff.inferred = true;
+  if (i >= 0) e.effects[i] = eff; else e.effects.push(eff);
+}
+
+/**
+ * One edge per (from, action, to, context, limitHit); repeats bump `seen` and fold their effects in, so the
+ * drain's many sends stay one edge per selection, with one cost per resource and a sample of the replies.
  */
 function recordEdge(r: Run, from: State, a: Action, to: string, before: Observation, after: Observation, fx: Effect[], limitHit = false): GraphEdge {
   const g = r.g;
@@ -773,19 +809,15 @@ function recordEdge(r: Run, from: State, a: Action, to: string, before: Observat
     && sameList(x.context.selected, selected));
   if (e) {
     e.seen++;
-    for (const f of fx) {
-      if (e.effects.length >= MAX_FX) break;
-      if (f.kind !== "counter" && e.effects.some(x => x.kind === f.kind && "text" in x && x.text === f.text)) continue;
-      e.effects.push(f);
-    }
   } else {
     e = {
       id: nextEdgeId(g), from: from.id, to, action: a.id, obsBefore: before.id, obsAfter: after.id,
-      effects: fx.slice(0, MAX_FX), context: { selected }, seen: 1, failures: 0, firstStep: g.steps,
+      effects: [], context: { selected }, seen: 1, failures: 0, firstStep: g.steps,
     };
     if (limitHit) e.limitHit = true;
     g.edges.push(e);
   }
+  addEffects(r, e, fx);
   // an action that lowered a bound counter spends something: the drain probe may repeat it
   if (a.kind === "tap" && counterEffects(fx).some(f => f.delta < 0 && !f.resource.startsWith("auto:"))) {
     a.kind = "consume";
@@ -1143,7 +1175,7 @@ function backfill(r: Run, edge: GraphEdge, base: Reading, now: Reading, n: numbe
     const v = now.values.get(res);
     if (v === undefined || v === b || n <= 0) continue;
     const delta = round((v - b) / n);
-    edge.effects.push({ kind: "counter", resource: res, before: b, after: v, delta, inferred: true });
+    addCounter(r, edge, { kind: "counter", resource: res, before: b, after: v, delta, inferred: true });
     trace("effect", { edge: edge.id, inferred: true, resource: res, before: b, after: v, sends: n, perSend: delta, context: edge.context.selected }, r.g.steps);
   }
   checkpoint(r);

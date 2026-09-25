@@ -131,7 +131,12 @@ export function mergeAnnotations(code: Annotation, model: Annotation): Annotatio
     if (!m) { actions.push({ ...h, priority: Math.max(1, h.priority) }); continue; }
     const kind = h.kind === "consume" || m.kind === "consume" ? "consume"
       : (h.kind === "type-send" && m.kind !== "type-send") || m.kind === "scroll" ? h.kind : m.kind;
-    actions.push({ ...h, ...m, kind, input: m.input ?? h.input, sendEl: m.sendEl ?? h.sendEl });
+    const merged: AnnAction = { ...h, ...m, kind };
+    const input = m.input ?? h.input;
+    const sendEl = m.sendEl ?? h.sendEl;
+    if (input !== undefined) merged.input = input;
+    if (sendEl !== undefined) merged.sendEl = sendEl;
+    actions.push(merged);
   }
   for (const rest of byKey.values()) actions.push(...rest);
   const counters = [...model.counters, ...code.counters.filter(c => !model.counters.some(k => k.el === c.el))];
