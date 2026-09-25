@@ -393,6 +393,13 @@ export const Proposal = z.object({
   reward: z.object({ what: z.string(), resource: z.string().optional(), amount: z.number().optional(), duration: z.string().optional(), grantOn: z.literal("REWARD_VERIFIED") }),
   caps: z.object({ perDay: z.number(), cooldownMin: z.number() }),
   cannibalizationGuard: z.string(),
+  // Inputs to the code-computed economics. The LLM states assumptions; it never does the arithmetic.
+  assumptions: z.object({
+    engagedShare: z.number(),          // share of DAU that sees the surface and opts in at least once/day (0-1)
+    viewsPerEngager: z.number(),       // completed views per engaged user per day
+    cogs: z.enum(["none", "text-cheap", "text-premium", "image", "voice"]),
+    cogsUnitsPerView: z.number(),      // e.g. messages / images / voice-minutes granted per view
+  }),
   kpis: z.object({ primary: z.string(), guardrails: z.array(z.string()), holdout: z.string() }),
   precedents: z.array(z.string()),     // KB ids
   risks: z.array(z.string()),

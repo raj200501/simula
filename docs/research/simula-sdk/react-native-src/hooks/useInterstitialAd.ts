@@ -1,0 +1,151 @@
+/**
+ * useInterstitialAd — component-scoped imperative interstitial.
+ *
+ * Creates a `SimulaInterstitialAd` on mount and destroys it on unmount, surfacing
+ * its lifecycle as React state. Stable `load`/`show` callbacks let you drive it
+ * from effects or handlers without re-creating the instance.
+ *
+ *   const { isLoaded, clickCount, load, show, error } = useInterstitialAd('home_interstitial');
+ *   useEffect(() => { load(); }, [load]);
+ */
+import { useEffect, useRef, useState, useCallback } from "react";
+import { SimulaInterstitialAd } from "../ads/SimulaInterstitialAd";
+import {
+  SimulaAdLoadOptions,
+  SimulaAdError,
+  SimulaMetadata,
+  AdValue,
+} from "../ads/types";
+import {
+  isNonBlankString,
+  warnInvalidIdentifier,
+} from "../internal/identifiers";
+
+export interface UseInterstitialAd {
+  isLoaded: boolean;
+  isClosed: boolean;
+  /** True once the impression was recorded for the current show. */
+  impressionRecorded: boolean;
+  /** Number of CLICKED events received for the current displayed impression. */
+  clickCount: number;
+  /** Whether the current displayed impression has received a CLICKED event. */
+  wasClicked: boolean;
+  /** Estimated per-impression revenue (set on the PAID event), else null. */
+  adValue: AdValue | null;
+  error: SimulaAdError | undefined;
+  load: (options?: SimulaAdLoadOptions) => void;
+  show: () => void;
+  setMetadata: {
+    (key: string, value: string): void;
+    (metadata: SimulaMetadata): void;
+  };
+}
+
+export function useInterstitialAd(adUnitId: string): UseInterstitialAd {
+  const adRef = useRef<SimulaInterstitialAd | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isClosed, setIsClosed] = useState(false);
+  const [impressionRecorded, setImpressionRecorded] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [adValue, setAdValue] = useState<AdValue | null>(null);
+  const [error, setError] = useState<SimulaAdError | undefined>(undefined);
+
+  useEffect(() => {
+    setIsLoaded(false);
+    setIsClosed(false);
+    setImpressionRecorded(false);
+    setClickCount(0);
+    setAdValue(null);
+    setError(undefined);
+    if (!isNonBlankString(adUnitId)) {
+      adRef.current = null;
+      warnInvalidIdentifier("useInterstitialAd", "adUnitId");
+      return;
+    }
+
+    const ad = SimulaInterstitialAd.create(adUnitId);
+    adRef.current = ad;
+
+    const off = ad.addAdEventsListener((event) => {
+      setIsLoaded(ad.loaded);
+      switch (event.type) {
+        case "LOADED":
+          setIsClosed(false);
+          setError(undefined);
+          break;
+        case "DISPLAYED":
+          setIsClosed(false);
+          setImpressionRecorded(false);
+          setClickCount(0);
+          setAdValue(null);
+          setError(undefined);
+          break;
+        case "IMPRESSION":
+          setImpressionRecorded(true);
+          break;
+        case "CLICKED":
+          setClickCount((count) => count + 1);
+          break;
+        case "PAID":
+          if (event.adValue) setAdValue(event.adValue);
+          break;
+        case "CLOSED":
+          setIsClosed(true);
+          break;
+        case "LOAD_FAILED":
+          // duplicate_request rejects the redundant load() call, NOT the ad — the
+          // in-flight/ready ad survives natively, so isLoaded must not flip false.
+          // The error (with retryInSeconds) is still surfaced as information.
+          if (event.error) setError(event.error);
+          break;
+        case "DISPLAY_FAILED":
+          // no_presentation_context keeps the loaded ad natively (show() can be
+          // retried); every other display failure means nothing is ready.
+          if (event.error) setError(event.error);
+          break;
+        default:
+          break;
+      }
+    });
+
+    return () => {
+      off();
+      ad.destroy();
+      adRef.current = null;
+    };
+  }, [adUnitId]);
+
+  const load = useCallback((options?: SimulaAdLoadOptions) => {
+    adRef.current?.load(options);
+  }, []);
+
+  const show = useCallback(() => {
+    adRef.current?.show();
+  }, []);
+
+  const setMetadata: UseInterstitialAd["setMetadata"] = useCallback(
+    (keyOrMetadata: string | SimulaMetadata, value?: string) => {
+      const ad = adRef.current;
+      if (!ad) return;
+      if (typeof keyOrMetadata === "string" || value !== undefined) {
+        ad.setMetadata(keyOrMetadata as string, value!);
+      } else {
+        ad.setMetadata(keyOrMetadata);
+      }
+    },
+    [],
+  );
+
+  return {
+    isLoaded,
+    isClosed,
+    impressionRecorded,
+    clickCount,
+    wasClicked: clickCount > 0,
+    adValue,
+    error,
+    load,
+    show,
+    setMetadata,
+  };
+}

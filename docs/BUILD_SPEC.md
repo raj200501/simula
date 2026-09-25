@@ -204,3 +204,64 @@ This is a plain HTML/JS phone app, 411×914 CSS px, with no framework and no net
 Also:
 - One list row is **half hidden under a 48 px bottom nav bar**.
 - State persists in `localStorage` under a key the tests can reset via `?reset=1`.
+
+## Cross-module details (resolved)
+
+### Back navigation on web pages
+
+`WebDevice.back()` calls `window.__appBack()` when the page defines it, and `history.back()` otherwise. Both the fixture and the mock runtime define `window.__appBack`.
+
+### External surfaces on web pages
+
+A visible element `[data-external="<kind>"]` makes `WebDevice.foreground()` return `ext:<kind>`. The kinds are `billing`, `browser`, `signin`, `permission` and `other`. Closing it (BACK) returns to the app.
+
+### Ads on web pages
+
+Elements with a `data-ad` attribute are reported with `identifier: "web:id/ad_container"`, so the explorer's generic ad guard catches them. There is no special case for the fixture.
+
+### Mock with proposals
+
+`buildMock(m, modelDir, outDir, { proposals: [{ proposal, html }] })`.
+
+- `html` is a `{ id, html }[]` covering:
+  - `newScreens[i].id` → a full screen fragment;
+  - `newElements[i].id` → an element fragment.
+- Each entry is written to `outDir/proposals/<pid>.js` as `window.__PATCHES = window.__PATCHES || {}; window.__PATCHES["<pid>"] = {...}`.
+- `index.html?proposal=<pid>` loads that file with a `<script>` tag.
+- **When a fragment is missing**, the runtime renders a default:
+  - a `newScreens` entry becomes a clone of `basedOn` with a callout card showing the `change` text;
+  - a `newElements` entry becomes a pill button showing the `change` text, styled with the design accent.
+- Every element the proposal adds carries `data-new`.
+- A `newEdges` entry with `to:"rwd"` opens the rewarded flow. Its effects are applied only on `REWARD_VERIFIED`.
+
+### Mock runtime API (used by QA and slides)
+
+```
+window.__mock = {
+  go(screenId), state() -> screenId, get(resourceId) -> number, set(resourceId, value),
+  openRewarded(phase: "invite"|"game"|"verified"|"nofill"|"close", proposalId?),
+  applyPatch(pid), history() -> screenId[]
+}
+```
+
+URL parameters:
+
+| Parameter | Effect |
+|---|---|
+| `?screen=sNN` | open that screen directly (QA render) |
+| `?proposal=Pn` | apply that proposal's patch |
+| `?debug=1` | outline every `data-node` and show its id |
+| `?slide=1` | outline new elements with a dashed accent |
+| `?frame=0` | render without the device frame and status bar (QA) |
+
+### Simula SDK for integration snippets
+
+The real sources are in `docs/research/simula-sdk/react-native-src/` (`@simula/ads-react-native` 1.4.1). Read `hooks/useRewardedAd.ts` and `ads/SimulaAds.ts` before writing a snippet. Never invent API names.
+
+### Where to look
+
+| Topic | File |
+|---|---|
+| Test data for downstream modules | `test/helpers/sample-model.ts` → `sampleModel()` |
+| Economics | `src/model/economics.ts` (implemented, pure) |
+| Digest | `src/model/digest.ts` (implemented) |
