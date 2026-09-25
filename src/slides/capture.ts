@@ -118,7 +118,8 @@ const MEASURE = `(a) => {
 
 export interface CaptureInput {
   browser: Browser;
-  indexHtml: string;
+  /** The patched mock's index.html; null when the mock could not be built (every frame falls back). */
+  indexHtml: string | null;
   p: Proposal;
   story: Story[];
   m: ProductModel;
@@ -140,6 +141,10 @@ export async function captureFlow(o: CaptureInput): Promise<Frame[]> {
     // "Today" is the app as it is: no proposal patch, unless the screen only exists in the patch.
     const patched = phase !== "today" || !known.has(sb.screen);
     const qs = new URLSearchParams(patched ? { proposal: o.p.id, slide: "1", frame: "0" } : { frame: "0" });
+    if (!o.indexHtml) {
+      frames.push(await fallbackFrame(o, sb, phase, rel, vw, vh));
+      continue;
+    }
     const url = `${pathToFileURL(o.indexHtml).href}?${qs.toString()}`;
     const ctx = await o.browser.newContext({ viewport: { width: vw, height: vh }, deviceScaleFactor: 2 });
     try {

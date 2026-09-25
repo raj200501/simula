@@ -5,7 +5,7 @@
 // and resource id. Because it is a set and digits are masked, a chat with 3 or 30 messages, a refreshed
 // feed, and "450" vs "360" credits are the same state; another selected tab, another title, or a sheet
 // opened on top is a different one.
-import type { Effect, NormElement, Observation, State } from "../core/schema.ts";
+import type { Effect, NormElement, Observation, Rect, State } from "../core/schema.ts";
 import { mask, parseNumber } from "../core/io.ts";
 import { isWallText } from "./signals.ts";
 
@@ -29,7 +29,8 @@ export function signatureOf(els: NormElement[]): string[] {
 }
 
 const fields = (t: string) => t.split("|");
-const skeletonOf = (t: string) => fields(t).slice(0, 2).join("|");
+/** type|identifier: the structure of a token without its words. */
+export const skeletonOf = (t: string) => fields(t).slice(0, 2).join("|");
 const textOf = (t: string) => fields(t)[2] ?? "";
 
 /** Chrome tokens that carry a label: the words that make a screen "this screen". */
