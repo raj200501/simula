@@ -304,7 +304,7 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
 // Free-tier Flash models get overloaded (503) at busy times; each model has its own capacity and quota,
 // so the fastest recovery is to move the call to the next Flash model rather than wait on the same one.
 function fallbackChain(model: string): string[] {
-  const extra = (process.env.SIMULA_MODEL_FALLBACKS ?? "gemini-3.5-flash,gemini-3.7-flash,gemini-3.6-flash")
+  const extra = (process.env.SIMULA_MODEL_FALLBACKS ?? "gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash,gemini-3-flash-preview,gemini-2.5-flash,gemini-3.1-flash-lite")
     .split(",").map(x => x.trim()).filter(Boolean);
   // Flash-Lite is the last resort for Flash calls: a weaker answer beats a deterministic stub.
   return [...new Set([model, ...extra, MODELS.fast].filter(Boolean))];

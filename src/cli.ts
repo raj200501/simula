@@ -266,7 +266,9 @@ program.command("all").description("run every stage in order (explore .. slides)
     const b = base(G(), { ...o, noConsume: o.consume === false, noGap: o.gap === false });
     for (const s of STAGES.slice(i)) {
       await runStage(s, b);
-      if (s === "judge") await runEvalJudge(b).catch(e => console.error(`eval-judge skipped: ${(e as Error).message}`));
+      // The judge calibration (13 judge calls) runs for the deep app; transfer apps reuse its verdict on the judge.
+      if (s === "judge" && (b.app.profile === "deep" || b.app.profile === "fixture"))
+        await runEvalJudge(b).catch(e => console.error(`eval-judge skipped: ${(e as Error).message}`));
     }
     await runReport(G());
   });

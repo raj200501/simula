@@ -1,6 +1,6 @@
 {
-  "deep":    { "crawlSteps": 150, "minutes": 75, "exploreUsd": 6, "totalUsd": 35, "drainMax": 40, "gapRounds": 1, "htmlScreens": 14, "qaRounds": 3, "qaTopN": 8, "qaUsd": 10, "candidates": 10, "proposals": 6, "saturation": 30 },
-  "medium":  { "crawlSteps": 100, "minutes": 40, "exploreUsd": 3, "totalUsd": 14, "drainMax": 30, "gapRounds": 1, "htmlScreens": 6,  "qaRounds": 2, "qaTopN": 4, "qaUsd": 4,  "candidates": 10, "proposals": 5, "saturation": 25 },
-  "shallow": { "crawlSteps": 60,  "minutes": 25, "exploreUsd": 2, "totalUsd": 9,  "drainMax": 20, "gapRounds": 0, "htmlScreens": 4,  "qaRounds": 1, "qaTopN": 4, "qaUsd": 2,  "candidates": 8,  "proposals": 4, "saturation": 20 },
-  "fixture": { "crawlSteps": 80,  "minutes": 5,  "exploreUsd": 1, "totalUsd": 5,  "drainMax": 30, "gapRounds": 0, "htmlScreens": 8,  "qaRounds": 2, "qaTopN": 8, "qaUsd": 2,  "candidates": 8,  "proposals": 4, "saturation": 25 }
+  "deep": {"crawlSteps": 150, "minutes": 75, "exploreUsd": 6, "totalUsd": 35, "drainMax": 40, "gapRounds": 1, "htmlScreens": 10, "qaRounds": 2, "qaTopN": 4, "qaUsd": 10, "candidates": 10, "proposals": 5, "saturation": 30},
+  "medium": {"crawlSteps": 100, "minutes": 40, "exploreUsd": 3, "totalUsd": 14, "drainMax": 30, "gapRounds": 1, "htmlScreens": 6, "qaRounds": 1, "qaTopN": 3, "qaUsd": 4, "candidates": 10, "proposals": 4, "saturation": 25},
+  "shallow": {"crawlSteps": 60, "minutes": 25, "exploreUsd": 2, "totalUsd": 9, "drainMax": 20, "gapRounds": 0, "htmlScreens": 4, "qaRounds": 1, "qaTopN": 2, "qaUsd": 2, "candidates": 8, "proposals": 3, "saturation": 20},
+  "fixture": {"crawlSteps": 80, "minutes": 5, "exploreUsd": 1, "totalUsd": 5, "drainMax": 30, "gapRounds": 0, "htmlScreens": 8, "qaRounds": 2, "qaTopN": 8, "qaUsd": 2, "candidates": 8, "proposals": 4, "saturation": 25}
 }
