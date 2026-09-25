@@ -39,6 +39,7 @@ test("a monogram screen name is replaced by the top-bar title", () => {
   ];
   assert.equal(betterScreenName("ML", els, 914), "The Midnight Library");
   assert.equal(betterScreenName("Store", els, 914), "Store");
+  assert.equal(betterScreenName("ML", els, 914, "chat"), "The Midnight Library chat", "a chat stays distinct from the character's page");
 });
 
 test("flow-slide claims are complete sentences of at most 70 characters", () => {

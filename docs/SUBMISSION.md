@@ -15,7 +15,7 @@
   - OOC: recorded as blocked, with its note
 - [ ] `out/index.html` shows the transfer scorecard across all apps
 - [ ] No keys or personal data in the repo:
-  - [ ] `git grep -nE "AIza|AQ\.[A-Za-z0-9_-]{20,}|sk-ant-"` returns nothing
+  - [ ] `git grep -nE "AIza[0-9A-Za-z_-]{30}|AQ\.[A-Za-z0-9_-]{20,}|sk-ant-[A-Za-z0-9]"` returns nothing
   - [ ] `.env` is not committed
   - [ ] you've looked through the screenshots in `out/*/model/screens/`
 - [ ] Recording (10–15 min) uploaded, with the link pasted below. Script: `docs/RECORDING_SCRIPT.md`

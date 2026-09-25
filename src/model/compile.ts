@@ -241,12 +241,24 @@ export async function compile(graph: ExploreGraph, runDir: string, modelDir: str
       const el = src ? resolveEl(src.key, rep, first) : s.el && rep?.elements.some(e => e.id === s.el) ? s.el : resolveEl(s.el, rep);
       return { ...s, text: redactText(s.text), el };
     });
+    // A priced mode chip ("Basic · 10") shows what an action costs, not the balance: binding it as the
+    // resource's counter would paint the balance into the chip. Such bindings are dropped (traced).
+    const isPriceChip = (el: string, r: { name: string; unit: string }) => {
+      const t = (elements.find(e => e.id === el)?.text ?? elements.find(e => e.id === el)?.label ?? "").trim();
+      const words = [r.name, r.unit].map(w => w.toLowerCase().replace(/s$/, "")).filter(w => w.length >= 2);
+      return /^[^\d]{2,24}\s*[·•:|\-–]\s*\d[\d.,]*\s*$/.test(t) && !words.some(w => t.toLowerCase().includes(w));
+    };
     const bindings = graph.resources.flatMap(r => r.bindings.filter(b => b.state === st.id).map(b => ({ resource: r.id, el: resolveEl(b.elKey, rep) }))
-      .filter((b): b is { resource: string; el: string } => !!b.el));
+      .filter((b): b is { resource: string; el: string } => !!b.el)
+      .filter(b => {
+        if (!isPriceChip(b.el, r)) return true;
+        trace("decision", { what: "binding dropped", screen: id, resource: r.id, el: b.el, why: "a priced mode chip is a cost, not the balance" });
+        return false;
+      }));
 
     screens.push({
       // An avatar monogram ("ML") is not a name: use the top-bar title (the chat's character, the page heading).
-      id, name: redactText(betterScreenName(st.name, elements, dev.heightPx / (dev.density || 1))), purpose: redactText(st.purpose), kind: st.kind, inScope: st.inScope,
+      id, name: redactText(betterScreenName(st.name, elements, dev.heightPx / (dev.density || 1), st.kind)), purpose: redactText(st.purpose), kind: st.kind, inScope: st.inScope,
       signature: st.signature.map(t => redactKey(t)), observations: st.obs, representative: rep?.id ?? "", screenshot: file, scrolledScreenshot,
       scrollable: st.scrollable, visits: st.visits, elements, actions: st.actions.map(redactAction), bindings, signals, render: "image", variants: [],
     });

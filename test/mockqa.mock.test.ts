@@ -218,7 +218,10 @@ describe("mock: stub generation and runtime", () => {
     assert.equal(c0, "9");
     // A new screen without a fragment is a clean default sheet over its base (not the raw spec text).
     await ev("window.__mock.go('N1')");
-    assert.match(await page.locator('[data-screen-layer="N1"] .mock-ns-sheet').innerText(), /rewarded offer/);
+    // With no quoted title in its spec, the sheet shows the proposal's own offer copy, never the spec text.
+    const sheet = await page.locator('[data-screen-layer="N1"] .mock-ns-sheet').innerText();
+    assert.match(sheet, /Out of credits\? Play for 30 more/);
+    assert.doesNotMatch(sheet, /Sheet variant/);
     assert.equal(await page.locator('[data-screen-layer="s04"]').count(), 1, "the base screen shows underneath");
     await open("?debug=1&screen=s01");
     assert.equal(await page.locator(".mock-debug-tag").count(), 8);

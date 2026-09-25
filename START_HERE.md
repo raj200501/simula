@@ -123,19 +123,34 @@ Then reply **done** in the Claude chat and it continues.
 Keep your Mac **plugged in** and don't close the lid. Then paste:
 
 ```
-Read README.md, docs/BUILD_SPEC.md and docs/design/FINAL_PLAN.md §13 and §15. Then:
-1) npm ci && npx playwright install chromium && npm test && npm run demo  (report results; fix only genuine generic bugs).
-2) npm run probe -- --app ooc and tell me the go/no-go result (OOC is the deep app; Luzia is the fallback if OOC is blocked).
-3) Run the pipeline for OOC stage by stage under `caffeinate -i`: explore, understand, mock, qa, propose, judge, eval-judge, slides. After each stage, read its outputs and the trace for failures; fix only generic problems (never app-specific code in src/ — the boundary test enforces this), re-run, and write a one-line note of every manual fix with `npm run note`.
-4) Repeat with the medium/shallow profiles for luzia, janitor, aol (npm run all -- --app <id>), then npm run report.
-5) Set up GitHub pushing: install the GitHub CLI and run `gh auth login` (HAND BACK to me for the browser authorization and any password), then commit (author: Raj Kashikar <65059626+raj200501@users.noreply.github.com>, no Co-Authored-By line) and push to branch claude/serene-brahmagupta-owzz1n.
+Read README.md and docs/BUILD_SPEC.md. Then, in order:
+1) npm ci && npx playwright install chromium && npm test && npm run demo   (report the results; fix only genuine generic bugs).
+2) Luzia is the deep app. Under `caffeinate -i`, run each stage, one at a time:
+   npm run probe -- --app luzia
+   npm run explore -- --app luzia
+   npm run understand -- --app luzia
+   npm run mock -- --app luzia
+   npm run qa -- --app luzia
+   npm run propose -- --app luzia
+   npm run judge -- --app luzia
+   npm run eval:judge -- --app luzia
+   npm run slides -- --app luzia
+   After each stage, read its outputs and out/luzia/trace.jsonl for failures. Fix only generic problems (never app-specific code in src/; the boundary test enforces this), re-run the stage, and log every manual step or fix with: npm run note -- --app luzia "<what you did>".
+3) Transfer: npm run all -- --app janitor, then npm run all -- --app aol.
+4) OOC closes itself about 0.8 s after launch on the Google Play emulator (logcat: AppSecurity "Kill Process ... [D11001]"). Do NOT try to bypass it. Record it as blocked:
+   npm run note -- --app ooc "OOC closes itself ~0.8 s after launch on the Google Play emulator (AppSecurity Kill Process D11001); recorded as blocked, not bypassed"
+5) npm run report, then open out/index.html and check that every app has a row.
+6) Set up GitHub pushing: install the GitHub CLI and run `gh auth login` (HAND BACK to me for the browser authorization and any password). Check `git grep -nE "AIza[0-9A-Za-z_-]{30}|AQ\.[A-Za-z0-9_-]{20,}|sk-ant-[A-Za-z0-9]"` finds nothing. Then commit everything under out/ except raw explorer screenshots (.gitignore already skips out/*/explore/*/obs/). Author: Raj Kashikar <65059626+raj200501@users.noreply.github.com>, no Co-Authored-By line. Push to branch claude/serene-brahmagupta-owzz1n.
+Free Gemini tier: about 20 requests per day per Flash model. If a stage reports a DAILY quota, stop and tell me. Tomorrow, re-run the same command: finished calls are cached and not repeated.
 Stop and ask me before anything that spends money or touches purchases. Never tap ads.
 ```
 
 **What happens:**
-- It explores OOC by itself; you'll see the phone tapping around.
+- It checks that everything works on the built-in demo app first.
+- It explores Luzia by itself; you'll see the phone tapping around. It sends chat messages until Luzia's free limit appears. That's on purpose: it measures the limit.
 - It builds the product model, the mock, the QA report, the proposals, the judge scores and the slides.
-- It does the same for the other 3 apps.
+- It does a shorter run on Janitor and AOL.
+- It writes OOC down as blocked (OOC closes itself on the emulator).
 - It uploads everything to GitHub. It hands back once so you can click **Authorize** in your browser.
 
 When it's done, paste this to see the results page:
@@ -147,7 +162,7 @@ open ~/simula/out/index.html
 
 ## Part G: the recording (10–15 min video)
 
-Simula says they care about this most. `docs/RECORDING_SCRIPT.md` will hold a script to read from, with what to click and what to say. Record your screen with **⌘ Command + Shift + 5**, then **Record Entire Screen**, or with Loom.
+Simula says they care about this most. `docs/RECORDING_SCRIPT.md` is a script to read from, with what to click and what to say. Record your screen with **⌘ Command + Shift + 5**, then **Record Entire Screen**, or with Loom.
 
 ---
 
@@ -158,6 +173,6 @@ Simula says they care about this most. `docs/RECORDING_SCRIPT.md` will hold a sc
 | `command not found: npm` | Redo A2, then quit and reopen Terminal. |
 | `command not found: claude` | Redo the last box in A4. |
 | The emulator is black or frozen | Tell Claude "the emulator is frozen, cold boot it". It runs `COLD=1 bash scripts/device.sh boot`. |
-| Gemini says quota or "high demand" | Nothing to do. It waits and retries by itself. If it says **daily** quota, continue tomorrow; finished steps are saved and aren't redone. |
+| Gemini says quota or "high demand" | Nothing to do. It waits, retries, and switches to another free model by itself. If it says **DAILY** quota on every model, continue tomorrow by re-running the same command; finished calls are cached and aren't redone. |
 | An app refuses to run on the emulator | Tell Claude to switch the deep app to Luzia. If all apps are blocked, email Yizhen and Athreya (the assignment says to ask when blocked). |
 | You accidentally pasted your key somewhere public | Go to https://aistudio.google.com/apikey, delete that key and make a new one. Put the new one in `.env`. |

@@ -129,7 +129,10 @@ export function topBarTitle(elements: TitleEl[], heightDp: number): string | und
 }
 
 /** A screen name that is only an avatar monogram or an icon label ("ML", "AB") is replaced by the top-bar title. */
-export function betterScreenName(name: string, elements: TitleEl[], heightDp: number): string {
+export function betterScreenName(name: string, elements: TitleEl[], heightDp: number, kind?: string): string {
   if (name.trim().length > 3 && !/^[A-Z]{1,3}$/.test(name.trim())) return name;
-  return topBarTitle(elements, heightDp) ?? name;
+  const title = topBarTitle(elements, heightDp);
+  if (!title) return name;
+  // A chat is named after who you talk to, and stays distinct from that character's profile page.
+  return kind === "chat" && !/\bchat\b/i.test(title) ? `${title} chat` : title;
 }

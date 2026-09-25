@@ -109,7 +109,9 @@ function resources(x: Ctx): Res[] {
   const { cm } = x;
   const obsList = [...cm.obs.values()].sort((a, b) => a.step - b.step);
   const out: Res[] = cm.graph.resources.map(r => {
-    const values = obsList.flatMap(o => o.counters.filter(c => c.resource === r.id).map(c => c.value));
+    // Values read on screens where the binding survived compile (a priced mode chip is not a balance).
+    const bound = (o: Observation) => { const sid = cm.obsScreen.get(o.id); return !sid || !!x.scr.get(sid)?.bindings.some(k => k.resource === r.id); };
+    const values = obsList.filter(bound).flatMap(o => o.counters.filter(c => c.resource === r.id).map(c => c.value));
     const evidence: Evidence[] = [];
     for (const b of r.bindings) {
       const s = cm.screenOf.get(b.state);
