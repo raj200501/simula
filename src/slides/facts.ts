@@ -124,7 +124,7 @@ export function headlineOf(p: Proposal, m: ProductModel, max = 8): Headline {
   const what = oneLine(p.reward.what).replace(/[.!;:,]+$/, "");
   let reward = "";
   if (p.reward.amount != null && res) reward = what.includes(String(p.reward.amount)) && wordCount(what) <= 4 ? what : `+${num(p.reward.amount)} ${unitOf(res)}`;
-  else if (what && wordCount(what) <= 4) reward = what;
+  else if (what && wordCount(what) <= 4 && !/^(nothing|none|n\/a|no reward)$/i.test(what)) reward = what;
   const moment = momentOf(p, m);
   const title = oneLine(p.offer.title).replace(/[.!:;,]+$/, "");
   const sec = p.simula.minPlaySec;

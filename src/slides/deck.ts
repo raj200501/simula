@@ -50,7 +50,7 @@ export interface DeckInput {
 const W = 1920, PAD_X = 64;
 // Flow slide: five phones left of a light "why" rail. BR is the room an elbow bracket needs left of
 // its phone; the trigger bracket sits in TRIG_H above phones 2 and 3.
-const RAIL = 300, RAIL_GAP = 44, BR = 34, COL_GAP = 52, BEZEL = 8, TRIG_H = 92, STAGE_TOP = 214, MAX_PHONE_H = 560;
+const RAIL = 300, RAIL_GAP = 44, BR = 34, COL_GAP = 52, BEZEL = 8, TRIG_H = 92, STAGE_TOP = 232, MAX_PHONE_H = 560;
 const PIN = 20; // pin diameter in slide px
 const NEW_W = 40; // NEW tag width in slide px
 const MK = 40;  // numbered circle diameter
@@ -106,7 +106,7 @@ function recommendation(d: DeckInput, rows: IdeaRow[]): string {
     ? `<div class="cards n${Math.min(n, 4)}" style="grid-template-columns:repeat(${Math.min(n, 4)},1fr)">${flows.map((f, i) => {
         // One flow: show what changed -> offer -> value; two: change -> offer; more: the offer only.
         const want: PhaseId[] = n === 1 ? ["change", "offer", "value"] : n === 2 ? ["change", "offer"] : ["offer"];
-        const pw = n <= 2 ? 176 : n === 3 ? 168 : 132;
+        const pw = n <= 2 ? 200 : n === 3 ? 188 : 142;
         const strip = want.map(ph => f.frames.find(x => x.phase === ph)).filter((x): x is Frame => !!x)
           .map(fr => phoneHtml(fr.img, `${PHASE_LABEL[fr.phase as PhaseId]}: ${fr.screen}`, pw, fr.vh / fr.vw, 6)).join(`<div class="mini-arrow">${chevron()}</div>`);
         return `<a class="card" href="#flow-${h(f.p.id)}"><div class="strip">${strip}</div><div class="card-body">
@@ -161,7 +161,7 @@ function moneySlide(d: DeckInput): string {
     const facts = s.facts.slice(0, 3).map(x => `<li>${h(clip(x, 84))}</li>`).join("") + (s.facts.length > 3 ? `<li class="more">+${s.facts.length - 3} more</li>` : "");
     return `<div class="m-col" style="left:${BR + i * (pw + gap)}px;width:${pw}px">${phone}
 ${elbow(Math.round(ph * 0.42), ph)}${marker(i + 1, ph)}<span class="ph" style="top:${ph + 2}px">${h(s.title)}</span>
-<div class="cap-block" style="top:${ph + 40}px;width:${pw + gap - 12}px">${s.screen ? `<div class="scr">${h(screenName(m, s.screen))}</div>` : ""}<ul class="facts">${facts}</ul></div></div>`;
+<div class="cap-block" style="top:${ph + 40}px;width:${i < stages.length - 1 ? pw + gap - 12 : W - 2 * PAD_X - (BR + i * (pw + gap)) + MK / 2 - 6}px">${s.screen ? `<div class="scr">${h(screenName(m, s.screen))}</div>` : ""}<ul class="facts">${facts}</ul></div></div>`;
   }).join("");
   const uname = (id: string) => unitOf(resourceOf(m, id) ?? { unit: id, name: id });
   const unit = derived.unitPriceUsd.map(u => `$${u.min.toPrecision(3)}–$${u.max.toPrecision(3)} per ${singular(uname(u.resource))}`).join("; ");
@@ -361,7 +361,7 @@ function headlineHtml(hl: Headline): string {
 }
 
 /** One callout on a flow frame: `label` is its letter (or NEW), null when no free spot exists on screen. */
-export interface PinSpot { label: string | null; text: string; box: Box | null; spot: { x: number; y: number } | null; isNew: boolean }
+export interface PinSpot { label: string | null; text: string; box: Box | null; spot: { x: number; y: number } | null; isNew: boolean; choice?: boolean }
 
 /**
  * Pins for every frame of a flow: the storyboard callouts, Play / No thanks on the offer frame, and
@@ -377,8 +377,8 @@ export function flowPins(f: FlowInput, sw: number): PinSpot[][] {
     for (const c of fr.callouts) if (c.box) out.push({ label: null, text: c.text, box: c.box, spot: null, isNew: false });
     if (fr.phase === "offer") {
       const near = (b: Box) => out.some(x => x.box && Math.abs(x.box.x - b.x) < 8 && Math.abs(x.box.y - b.y) < 8);
-      if (fr.choices.play && !near(fr.choices.play)) out.push({ label: null, text: `${f.p.offer.cta}: starts a ${f.p.simula.minPlaySec}s sponsored game`, box: fr.choices.play, spot: null, isNew: false });
-      if (fr.choices.decline && !near(fr.choices.decline)) out.push({ label: null, text: `${f.p.offer.decline}: dismisses the offer`, box: fr.choices.decline, spot: null, isNew: false });
+      if (fr.choices.play && !near(fr.choices.play)) out.push({ label: null, text: `${f.p.offer.cta}: starts a ${f.p.simula.minPlaySec}s sponsored game`, box: fr.choices.play, spot: null, isNew: false, choice: true });
+      if (fr.choices.decline && !near(fr.choices.decline)) out.push({ label: null, text: `${f.p.offer.decline}: dismisses the offer`, box: fr.choices.decline, spot: null, isNew: false, choice: true });
     }
     if (fr.phase === "change") {
       for (const p of out) if (p.box && fr.newBoxes.some(b => same(p.box!, b))) { p.isNew = true; p.text = p.text.replace(/^new\b[:\s-]*/i, ""); }
@@ -390,9 +390,12 @@ export function flowPins(f: FlowInput, sw: number): PinSpot[][] {
     const r = (PIN / 2) * k2d + 1, rx = (placed.some(p => p.isNew) ? NEW_W / 2 : PIN / 2) * k2d + 1;
     const controls = fr.controls ?? [];
     const spots = placePins(placed.map(p => p.box!), fr.vw, fr.vh, r, fr.texts ?? [], controls, rx);
+    const taken: { x: number; y: number }[] = [];
     placed.forEach((p, k) => {
-      // Never on a control other than the pin's own element (a badge on its own corner is fine).
+      // Never on a control other than the pin's own element (a badge on its own edge is fine), never on another pin.
       if (controls.some(c => !sameBox(c, p.box!) && coversRect(spots[k].x, spots[k].y, rx, r, c))) return;
+      if (taken.some(t => Math.abs(t.x - spots[k].x) < 2 * rx && Math.abs(t.y - spots[k].y) < 2 * r)) return;
+      taken.push(spots[k]);
       p.spot = spots[k];
       p.label = p.isNew ? "NEW" : LETTERS[letter++ % LETTERS.length];
     });
@@ -405,7 +408,8 @@ function pinOverlays(fr: Frame, pins: PinSpot[], sw: number): string {
   const pc = (v: number, of: number) => `${Math.max(0, Math.min(100, (v / of) * 100)).toFixed(2)}%`;
   const out: string[] = [];
   for (const p of pins) {
-    if (!p.box || (!p.text && !p.spot)) continue;
+    // Play / No thanks carry a pin only: a ring would make the quiet No thanks read as an outlined button.
+    if (!p.box || p.choice || (!p.text && !p.spot)) continue;
     out.push(`<span class="ring" style="left:${pc(p.box.x, fr.vw)};top:${pc(p.box.y, fr.vh)};width:${pc(p.box.w, fr.vw)};height:${pc(p.box.h, fr.vh)}"></span>`);
   }
   for (const p of pins) {
@@ -419,7 +423,8 @@ function pinOverlays(fr: Frame, pins: PinSpot[], sw: number): string {
 
 /**
  * Where each pin goes: just outside its element's top-right corner when that is free, else the next
- * free spot around the element, else straddling its own element's top edge (a badge on the element).
+ * free spot around the element, else straddling its own element's top edge (a badge on the element,
+ * never inside it).
  * A pin is a rectangle of half-size `rx` x `r` device px (a letter pin is square, the NEW tag wider).
  * Covering another control (button, tab, input) or another pin is never chosen while any other spot
  * exists; covering words or the pin's own element costs a little, so free space wins.
@@ -443,7 +448,6 @@ export function placePins(boxes: Box[], vw: number, vh: number, r: number, texts
       [b.x - dx * 0.7, b.y + b.h + dy * 0.7],
       [b.x + b.w - rx - 4, b.y],              // a badge on the element's own top-right corner
       [b.x + rx + 4, b.y],                    // ... or top-left corner
-      [b.x + b.w - rx, b.y + r],              // last resort: inside the top-right corner
     ].map(([x, y]) => ({ x: clamp(x, rx, vw - rx), y: clamp(y, r, vh - r) }));
     let best = cands[0], cost = Infinity;
     cands.forEach((c, k) => {

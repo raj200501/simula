@@ -4,9 +4,9 @@ import assert from "node:assert/strict";
 import { proposalEconomics } from "../src/model/economics.ts";
 import type { Frame } from "../src/slides/capture.ts";
 import { phaseSteps } from "../src/slides/capture.ts";
-import { renderDeck, type FlowInput } from "../src/slides/deck.ts";
+import { flowPins, renderDeck, type FlowInput } from "../src/slides/deck.ts";
 import {
-  accentOf, claimOf, clampWords, declineTarget, econTable, ideaRows, judgeChanges, normalizeStoryboard, shipped, whyBullets, PHASES,
+  accentOf, claimOf, clampWords, declineTarget, econTable, headlineOf, ideaRows, judgeChanges, normalizeStoryboard, recommendationHeadline, shipped, shortCaption, whyBullets, PHASES,
 } from "../src/slides/facts.ts";
 import { integrationSnippet } from "../src/slides/integration.ts";
 import type { CostRollup } from "../src/report/data.ts";
@@ -61,6 +61,43 @@ describe("slide facts", () => {
     assert.equal(claimOf(sampleCandidates().proposals[1]), "Out of credits? Play a 15-second game with Mara and get 10 credits.");
   });
 
+  test("flow headline: at most 8 words, the reward is the accent phrase", () => {
+    const p = sampleCandidates().proposals[1];
+    assert.deepEqual(headlineOf(p, m), { text: "Out of credits: play for 10 credits", accent: "10 credits" });
+    const premium = { ...p, offer: { ...p.offer, title: "Unlock 15 Min Premium" }, reward: { what: "15 minutes of Premium mode", grantOn: "REWARD_VERIFIED" as const } };
+    assert.deepEqual(headlineOf(premium, m), { text: "Unlock 15 Min Premium for one short game", accent: "Unlock 15 Min Premium" });
+    for (const x of [...sampleCandidates().proposals, premium]) {
+      const hl = headlineOf(x, m);
+      assert.ok(hl.text.split(/\s+/).length <= 8, hl.text);
+      assert.ok(!hl.accent || hl.text.includes(hl.accent), hl.text);
+      assert.doesNotMatch(hl.text, /…|Nothing/);
+    }
+    assert.deepEqual(recommendationHeadline(m, [p]), { text: "Let users play a short game for credits.", accent: "play a short game for credits" });
+  });
+
+  test("flow captions fit two lines: whole, first sentence, first clause, or cut before a qualifier", () => {
+    assert.equal(shortCaption("Credits at 20: not enough to send a message."), "Credits at 20: not enough to send a message.");
+    assert.equal(shortCaption("Out of credits gains a secondary rewarded option under \"Refill now\"."), "Out of credits gains a secondary rewarded option.");
+    assert.equal(shortCaption("+10 credits: credits at 30. Back in The Midnight Library chat."), "+10 credits: credits at 30.");
+    assert.equal(shortCaption("\"Play for +10\" or \"No thanks\", which returns to the chat with the draft kept."), "\"Play for +10\" or \"No thanks\".");
+    for (const c of normalizeStoryboard(sampleCandidates().proposals[1], m).map(s => shortCaption(s.caption))) assert.ok(c.length <= 60, c);
+  });
+
+  test("pins never cover a control: a pin with no free spot keeps its ring and loses its letter", () => {
+    const p = sampleCandidates().proposals[1];
+    const [flow] = flowsFor();
+    // An offer card whose Play button is boxed in by other controls on every side.
+    const play = { x: 40, y: 700, w: 330, h: 48 };
+    const walls = [{ x: 0, y: 640, w: 411, h: 58 }, { x: 0, y: 750, w: 411, h: 60 }, { x: 0, y: 698, w: 38, h: 52 }, { x: 372, y: 698, w: 39, h: 52 }];
+    const offer: Frame = { ...flow.frames[2], callouts: [], choices: { play, decline: null }, controls: [play, ...walls], texts: [] };
+    const free: Frame = { ...flow.frames[2], callouts: [], choices: { play, decline: null }, controls: [play], texts: [] };
+    const [boxed] = flowPins({ ...flow, frames: [offer] }, 226);
+    const [open] = flowPins({ ...flow, frames: [free] }, 226);
+    assert.equal(boxed[0].label, null, "no spot clear of the neighbouring controls");
+    assert.equal(open[0].label, "A");
+    assert.match(open[0].text, new RegExp(`^${p.offer.cta}: starts a 15s sponsored game`));
+  });
+
   test("why-rail bullets are built from code numbers: exchange rate, pack multiple, caps", () => {
     const p = sampleCandidates().proposals[1];
     const why = whyBullets(p, m, proposalEconomics(p, m));
@@ -112,7 +149,9 @@ describe("deck.html", () => {
     const order = ["data-phase=\"change\"", 'class="trigger"', "data-phase=\"offer\""].map(s => f.indexOf(s));
     assert.ok(order[0] < order[1] && order[1] < order[2], "trigger sits between What changed and Offer");
     assert.match(f, /<div class="t">Trigger<\/div><p>Balance below 30/);
-    assert.equal(count(f, /<svg /g), 4, "four arrows between five frames");
+    assert.equal(count(f, /class="elbow"/g), 5, "each frame's numbered circle has its elbow arrow");
+    assert.equal(count(f, /class="trig-arrow"/g), 1, "one trigger bracket, from frame 2 into frame 3");
+    assert.equal(count(f, /class="mk"/g), 5, "five numbered circles");
   });
 
   test("offer frame shows Play and No thanks, and the decline note", () => {

@@ -14,11 +14,14 @@ export interface Fragment { id: string; html: string }
 
 const SYSTEM = [
   `You edit one screen of a high-fidelity HTML mock of a mobile app so a product team can see a proposed change.
+The added UI must look like the app's own designers shipped it: native, polished and premium, never a generic web widget.
 Rules:
 - Reply with exactly one \`\`\`html fenced block and nothing else.
-- Reuse the base screen's markup patterns, class names and CSS variables from design.css so the change looks native to the app. Do not restyle anything that already exists.
+- Reuse the base screen's markup patterns, class names and CSS variables from design.css (--c-accent, --c-on-accent, --c-bg, --c-surface, --c-text, --c-muted, --c-border, --font-body, --r-sm/--r-md/--r-lg) so the change looks native to the app, in its light or dark theme. Do not restyle anything that already exists.
+- Design of a new offer (modal, sheet, card or row), top to bottom: an icon badge (a rounded square filled with the accent, holding a simple inline <svg> game controller drawn with a few paths, stroke="currentColor"); a bold title; ONE line of value with the reward in <b> (e.g. "Play a 15-second game for <b>+10 credits</b>"); ONE large rounded primary button in the accent colour (full width, at least 48px tall) with the play label; a clear decline ("No thanks" as a quiet text button of the same size, and/or a close × in the top corner). A modal or sheet sits over a dimmed scrim (rgba black ~0.5, backdrop-filter: blur(6px)); give it generous padding, a large corner radius and a soft shadow.
+- Design of a new button, chip or row inside an existing screen: the same icon + label + one CTA grammar at the scale of its neighbours, tinted with the accent (never plain grey, never raw spec text), aligned to the screen's grid and spacing.
 - Every element you ADD carries a data-new attribute (data-new="<entry id>" on the outermost added element). Existing elements keep their data-node attributes unchanged.
-- No <script>, no inline event handlers, no external URLs, no web fonts, no images other than paths already used by the base screen.
+- No <script>, no inline event handlers, no external URLs, no web fonts, no images other than paths already used by the base screen. Icons are inline <svg> only.
 - Use the exact user-facing copy you are given (title, body, button labels). Keep it short and in the app's tone.
 - The offer is opt-in: never auto-play, never add countdowns or guilt copy, and always keep a visible way to decline.`,
 ];

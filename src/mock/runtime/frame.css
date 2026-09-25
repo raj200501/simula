@@ -97,18 +97,19 @@ html.mock-noframe .mock-statusbar, html.mock-noframe .mock-badge { display: none
   font: 700 13px/1.2 var(--mk-font); white-space: nowrap; cursor: pointer; box-shadow: 0 6px 14px -6px var(--mk-accent);
 }
 [data-screen-root] .mock-new-pill .mock-new-ic { width: 22px; height: 22px; padding: 3px; box-sizing: border-box; border-radius: 50%; background: rgba(255, 255, 255, 0.22); }
-[data-screen-root] .mock-new-pill small, [data-screen-root] .mock-new-button small { flex: none; font-size: 12px; font-weight: 700; opacity: 0.85; }
-/* A new button: tinted accent surface, controller icon tile, the label, and its small detail as a chip. */
+[data-screen-root] .mock-new-pill small { flex: none; font-size: 12px; font-weight: 700; opacity: 0.85; }
+/* A new button: tinted accent surface, controller icon tile, the label (wraps) over its small detail. */
 [data-screen-root] .mock-new-button {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 7px 16px 7px 7px; max-width: 100%; box-sizing: border-box;
+  display: inline-grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; row-gap: 1px; align-items: center;
+  min-height: 48px; padding: 7px 14px 7px 7px; max-width: 100%; box-sizing: border-box;
   border: 1.5px solid color-mix(in srgb, var(--mk-accent) 32%, transparent); border-radius: max(var(--r-md, 12px), 14px);
   background: color-mix(in srgb, var(--mk-accent) 9%, var(--mk-bg)); color: var(--mk-accent);
-  font: 700 15px/1.2 var(--mk-font); text-align: left; cursor: pointer; white-space: nowrap; overflow: hidden;
+  font: 700 14.5px/1.22 var(--mk-font); text-align: left; cursor: pointer;
 }
-[data-screen-root] .mock-new-button .mock-new-ic { width: 34px; height: 34px; padding: 6px; box-sizing: border-box; border-radius: 11px; background: var(--mk-tile); color: var(--mk-on); box-shadow: 0 6px 12px -6px var(--mk-accent); }
-[data-screen-root] .mock-new-button small { padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--mk-accent) 14%, transparent); }
-[data-screen-root] .mock-new-button.mock-new-wide { display: flex; width: 100%; justify-content: flex-start; }
-[data-screen-root] .mock-new-button.mock-new-wide small { margin-left: auto; }
+[data-screen-root] .mock-new-button .mock-new-ic { grid-row: 1 / span 2; width: 34px; height: 34px; padding: 6px; box-sizing: border-box; border-radius: 11px; background: var(--mk-tile); color: var(--mk-on); box-shadow: 0 6px 12px -6px var(--mk-accent); }
+[data-screen-root] .mock-new-button .mock-new-label { grid-column: 2; overflow: visible; }
+[data-screen-root] .mock-new-button small { grid-column: 2; font-size: 12px; font-weight: 600; color: var(--mk-muted); opacity: 1; }
+[data-screen-root] .mock-new-button.mock-new-wide { display: grid; width: 100%; }
 /* A new card / row: icon tile, bold title, one line of value, one CTA. */
 [data-screen-root] .mock-new-card {
   display: flex; align-items: center; gap: 12px; box-sizing: border-box; padding: 12px; border-radius: max(var(--r-lg, 16px), 16px);
