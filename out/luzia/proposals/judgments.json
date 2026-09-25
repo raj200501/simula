@@ -60,17 +60,17 @@
         },
         {
           "gate": "grounding",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "every referenced id exists; new ids are declared in the patch"
+          "evidence": "new element \"ne1\" is placed near \"e61\", which is not an element on s07; storyboard change: callout node \"e61\" is not on s07 and not declared; evidence element \"e61\" is not on s07"
         },
         {
           "gate": "label",
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "cites observed economy items: r1, w1"
+          "evidence": "cites observed economy items: r1, r3"
         },
         {
           "gate": "already-exists",
@@ -88,10 +88,10 @@
         },
         {
           "gate": "economics",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+          "evidence": "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
         },
         {
           "gate": "structure",
@@ -119,120 +119,116 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Proposal targets Settings (s19) and SFW interactions."
+          "evidence": "Proposal targets general AI task assistance and uses SFW interactions with Game Partner Luzia."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Reward is in-app time (30 minutes of Upgrade to Luzia+); no cash, gift cards, or install incentives."
+          "evidence": "Rewards task access for playing a mini-game; no rewards for clicks, installs, or cash-like items."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Copy uses positive framing ('Play to try') with a clear decline ('No thanks')."
+          "evidence": "Uses gain framing ('Play a quick game... to unlock') without dark patterns or loss tactics."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Offer uses an explicit 'Play to try' button."
+          "evidence": "Requires explicit tap on 'Play Now' button before the mini-game starts."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Offer states the exact action and reward: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+'."
+          "evidence": "Clearly states the reward (1 task access) and required action (15s game with Luzia) beforehand."
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Decline option ('No thanks') leaves Settings fully usable without penalty."
+          "evidence": "Includes an equally legible decline option ('No thanks') that returns the user without penalty."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Trigger sits in Settings (s19), away from any streaming AI response."
+          "evidence": "Appears at the subscription/account wall (s07) when attempting a task, never mid-stream."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Eligibility explicitly excludes subscribers ('never subscribers')."
-        },
-        {
-          "gate": "portfolio-distinct",
-          "pass": false,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "near-duplicate of P2: differentiate the moment or the reward: same surface (s19), same reward (r1) and same archetype family (time-boxed unlock); offer copy overlap 0.82 (Jaccard >= 0.7)"
+          "evidence": "Explicitly restricted to non-paying, logged-out users hitting the subscription wall."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "Tying the ad directly to the 'Upgrade to Luzia+' upsell in Settings gives users who tapped the premium feature an immediate try via a game sample.",
+          "evidence": "Proposal targets moment m1 (subscription wall on s07 when starting a task) and rewards task access (r3) right at the point of need.",
           "score": 4
         },
         {
           "criterion": "product-integrity",
-          "evidence": "Appears in Settings rather than mid-chat, preserving the user's roleplay and input flow.",
-          "score": 4
+          "evidence": "Triggers at the subscription wall rather than interrupting chat flow, preserving native experience.",
+          "score": 3
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "Time-boxes the unlock to 30 minutes, caps it at 2 per day, restricts it to non-subscribers, and provides a holdout.",
+          "evidence": "Capped at 2 per day, restricted to non-payers at the wall, keeping the subscription as the superior path.",
           "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "Cost to serve is $0.0000 (none), well below net revenue per view.",
-          "score": 5
+          "evidence": "Code computed cost to serve ($0.0090) exceeding net revenue per view ($0.0063) at the low end.",
+          "score": 2
         },
         {
           "criterion": "reach",
-          "evidence": "Settings is a frequent hub (m12, m19), but tapping Upgrade to Luzia+ from settings is a narrower subset of DAU.",
-          "score": 3
-        },
-        {
-          "criterion": "feasibility",
-          "evidence": "Maps to SIM-RWD with button entry, REWARD_VERIFIED, and remote config.",
-          "score": 5
-        },
-        {
-          "criterion": "specificity",
-          "evidence": "Cites obs o0060 ('Upgrade to Luzia+'), screen s19, resource r1, and moments m23/m1.",
+          "evidence": "Tied to starting a task from the Services Tab, which is a frequent core activity.",
           "score": 4
         },
         {
-          "criterion": "frequency-fatigue",
-          "evidence": "Caps at 2 per day with a 60-minute cooldown.",
+          "criterion": "feasibility",
+          "evidence": "Maps directly to SIM-RWD with button entry, Game Partner Luzia, and 15s play threshold.",
+          "score": 4
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "Cites screen s07, s06, resources r1 and r3, and uses Luzia as Game Partner from digest nouns.",
           "score": 5
         },
         {
+          "criterion": "frequency-fatigue",
+          "evidence": "Includes explicit caps of 2 per day, a 30-minute cooldown, and decline options.",
+          "score": 4
+        },
+        {
           "criterion": "measurability",
-          "evidence": "Defines primary metric, guardrails, and a 10% user-level holdout.",
+          "evidence": "Defines primary metric, guardrails, and a 10% user-level holdout group.",
           "score": 5
         }
       ],
-      "weighted": 4.2,
+      "weighted": 3.8,
       "requiredChanges": [
-        "near-duplicate of P2: differentiate the moment or the reward"
+        "Fix element grounding: element 'e61' is not present on screen s07; reference a valid element ID from s07.",
+        "Resolve unit economics violation: reduce reward COGS (e.g. by using a cheaper model or smaller task unit) so that cost to serve is below net revenue per view."
       ],
-      "topConcern": "near-duplicate of P2: differentiate the moment or the reward",
+      "topConcern": "Unit economics show that the cost to serve the task ($0.0090) exceeds net revenue per view ($0.0063) at the low end, making the reward unprofitable.",
       "verdict": "REVISE",
       "reasons": [
-        "fixable gate failed: portfolio-distinct (code)"
+        "fixable gate failed: grounding (code)",
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 2 (< 3)"
       ],
       "judgedBy": "llm"
     },
@@ -260,7 +256,7 @@
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "cites observed economy items: r1, w5"
+          "evidence": "cites observed economy items: r1, r3"
         },
         {
           "gate": "already-exists",
@@ -278,10 +274,10 @@
         },
         {
           "gate": "economics",
-          "pass": false,
+          "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "Cost to serve the reward ($0.0900) exceeds net revenue per view ($0.0063) at the low end."
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
         },
         {
           "gate": "structure",
@@ -309,128 +305,124 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Proposal targets Attachment and Mode Sheet (s27) for Deep reasoning, which is SFW and age-appropriate."
+          "evidence": "The proposed surface is the Services Tab (s07/Create Account Sheet), which relates to assistant tasks (bookings, shopping, reminders), a standard SFW utility surface."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Rewards 1 hour of Deep reasoning as a time-boxed entitlement; no rewards for clicks, installs, or cash-like items."
+          "evidence": "The reward is '1 task access' granted in-app, with no incentives for clicks, installs, or external rewards."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Uses positive gain framing with a clear No thanks decline button and no dark patterns or confirmshaming."
+          "evidence": "The proposal uses gain framing: 'Play... to unlock this task', avoiding threats or hostage dynamics."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "User explicitly opts in by tapping the primary CTA Play to try."
+          "evidence": "The proposal includes an offer card with a clear 'Play Now' CTA."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The exact reward (1 hour of Deep reasoning) and required action (15-second game) are stated before the ad."
+          "evidence": "The offer text states: 'Play a quick 15-second game with Luzia to unlock this task.'"
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Declining via No thanks leaves the app fully usable at the pre-offer state with no penalty."
+          "evidence": "The offer includes a 'No thanks' button, and declining simply closes the prompt."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Trigger specifies the offer appears after the current response finishes, avoiding stream interruption."
+          "evidence": "The trigger is a subscription wall (s07) rather than mid-stream chat."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Explicitly restricts eligibility to signed-in non-subscribers and excludes subscribers."
+          "evidence": "The proposal explicitly limits eligibility to 'Non-paying users hitting the subscription wall'."
         },
         {
           "gate": "portfolio-distinct",
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "distinct from P3, P5, P2 (surface, reward, archetype family; offer copy overlap < 0.7)"
+          "evidence": "the first SHIP of the portfolio"
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "P1 targets s27 where users hit the paywall for Deep reasoning (r1), offering a time-boxed sample of Deep reasoning right at the moment of need.",
+          "evidence": "The trigger is the exact moment of need: when a user attempts to start a task and hits the subscription wall.",
           "score": 5
         },
         {
           "criterion": "product-integrity",
-          "evidence": "Places a chip on Attachment and Mode Sheet (s27), preserves input, respects stream finish, and uses Luzia as the Game Partner.",
+          "evidence": "The ad is placed at the wall boundary, keeping the chat experience uninterrupted and preserving the user's intent.",
           "score": 5
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "Time-boxed to 1 hour, capped at 2 per day, restricted to non-subscribers, with a paid contrast line and holdout planned.",
+          "evidence": "The reward is capped at 2 accesses per day, and the offer is only shown to non-payers at the wall, preserving the subscription as the superior, unlimited option.",
           "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "Code flags that cost to serve the reward ($0.0900) exceeds net revenue per view ($0.0063) at the low end due to text-premium COGS.",
-          "score": 1
+          "evidence": "Cost to serve ($0.0009) is roughly 6-10% of the computed revenue per view ($0.009–0.015), providing a healthy margin.",
+          "score": 5
         },
         {
           "criterion": "reach",
-          "evidence": "Deep reasoning on s27 is an occasional feature for users exploring advanced modes rather than a frequent daily core loop.",
-          "score": 3
+          "evidence": "The Services Tab (s06/s07) is identified as a frequent interaction point in the digest (m1, m18).",
+          "score": 4
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps directly to SIM-RWD unit, button entry, existing screen s27, and SSV with a small engineering patch.",
+          "evidence": "The proposal maps clearly to SIM-RWD and existing screen s07, making it a low-complexity integration.",
           "score": 5
         },
         {
           "criterion": "specificity",
-          "evidence": "Uses actual nouns and IDs from the digest: s27 (Attachment and Mode Sheet), r1 (Luzia+ Subscription), w5, and Game Partner Luzia.",
+          "evidence": "Uses app-specific screen s07, character Luzia, and r3 task resource.",
           "score": 5
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Capped at 2 per day with a 60-minute cooldown, and decliners are not re-prompted.",
+          "evidence": "Includes explicit caps (2 per day) and a 30-minute cooldown.",
           "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Defines a primary metric, guardrails (-3% non-inferiority margin), and a 10% user-level holdout.",
+          "evidence": "Defines primary metrics and guardrails, including a 10% user-level holdout.",
           "score": 5
         }
       ],
-      "weighted": 4.25,
-      "requiredChanges": [
-        "Reduce reward COGS by switching the reward model tier from text-premium to a cheaper base model or reducing message count so COGS is below 30% of net revenue per view.",
-        "Verify regional eCPM assumptions and adjust reward sizing or daily caps to ensure positive net margin per view."
-      ],
-      "topConcern": "The cost to serve the reward ($0.0900) significantly exceeds net revenue per view ($0.0063), resulting in negative unit economics.",
-      "verdict": "REVISE",
+      "weighted": 4.75,
+      "requiredChanges": [],
+      "topConcern": "None. The proposal is well-reasoned, economically sound, and strictly adheres to policy.",
+      "verdict": "SHIP",
       "reasons": [
-        "fixable gate failed: economics (code)",
-        "unit-economics scored 1 (< 3)"
+        "weighted 4.75 >= 3.8, every criterion >= 3, all gates pass"
       ],
       "judgedBy": "llm"
     },
     {
       "proposalId": "P2",
-      "version": 3,
+      "version": 1,
       "round": 0,
       "gates": [
         {
@@ -452,7 +444,7 @@
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "cites observed economy items: r1, w1"
+          "evidence": "cites observed economy items: r2"
         },
         {
           "gate": "already-exists",
@@ -484,329 +476,141 @@
         },
         {
           "gate": "reward-coherence",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
-        },
-        {
-          "gate": "not-for-account-wall",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "no ad in place of creating an account"
-        },
-        {
-          "gate": "sfw",
-          "pass": true,
-          "by": "llm",
-          "severity": "policy",
-          "evidence": "The proposal uses SFW surfaces (Settings s19) and a standard game partner."
-        },
-        {
-          "gate": "no-incentivized-action",
-          "pass": true,
-          "by": "llm",
-          "severity": "policy",
-          "evidence": "Reward is in-app time-boxed feature access, with no cash or click incentives."
-        },
-        {
-          "gate": "no-loss-framing",
-          "pass": true,
-          "by": "llm",
-          "severity": "policy",
-          "evidence": "The offer uses gain framing ('Play to try') with a clear 'No thanks' decline button."
-        },
-        {
-          "gate": "explicit-opt-in",
-          "pass": true,
-          "by": "llm",
-          "severity": "fixable",
-          "evidence": "The user taps 'Play to try' explicitly."
-        },
-        {
-          "gate": "disclosed",
-          "pass": true,
-          "by": "llm",
-          "severity": "fixable",
-          "evidence": "Body specifies: 'Play a 15-second game to unlock 5 minutes of Upgrade to Luzia+'."
-        },
-        {
-          "gate": "free-decline",
-          "pass": true,
-          "by": "llm",
-          "severity": "fixable",
-          "evidence": "Decline option 'No thanks' returns the user to the Settings screen with no penalty."
-        },
-        {
-          "gate": "no-stream-interrupt",
-          "pass": true,
-          "by": "llm",
-          "severity": "fixable",
-          "evidence": "Triggered from Settings (s19) when reaching for the feature, not during a stream."
-        },
-        {
-          "gate": "not-for-subscribers",
-          "pass": true,
-          "by": "llm",
-          "severity": "fixable",
-          "evidence": "Eligibility explicitly excludes subscribers ('never subscribers')."
-        },
-        {
-          "gate": "portfolio-distinct",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "distinct from P3, P5 (surface, reward, archetype family; offer copy overlap < 0.7)"
-        }
-      ],
-      "scores": [
-        {
-          "criterion": "value-moment-fit",
-          "evidence": "Triggering right when a user taps Upgrade to Luzia+ on Settings provides a direct sampling moment for the blocked feature.",
-          "score": 4
-        },
-        {
-          "criterion": "product-integrity",
-          "evidence": "Integrity is well-maintained via an expiring time box (5 minutes) and clean placement on Settings.",
-          "score": 4
-        },
-        {
-          "criterion": "cannibalization-safety",
-          "evidence": "Protected by strict time-boxing (5 minutes), a daily cap (2), non-payer restriction, and holdout plans.",
-          "score": 5
-        },
-        {
-          "criterion": "unit-economics",
-          "evidence": "Cost to serve is zero (entitlement time box with no marginal inference cost stated), well within revenue per view.",
-          "score": 5
-        },
-        {
-          "criterion": "reach",
-          "evidence": "Settings is a frequent hub (m12), but users hitting the specific upgrade wall here represents a more modest share of daily active usage.",
-          "score": 3
-        },
-        {
-          "criterion": "feasibility",
-          "evidence": "Maps cleanly to SIM-RWD via a button entry on Settings, leveraging standard REWARD_VERIFIED and remote config.",
-          "score": 5
-        },
-        {
-          "criterion": "specificity",
-          "evidence": "Cites actual screen s19, economy resource r1, and moments m23/m1 from the Luzia digest.",
-          "score": 4
-        },
-        {
-          "criterion": "frequency-fatigue",
-          "evidence": "Capped at 2 per day with a 60-minute cooldown.",
-          "score": 5
-        },
-        {
-          "criterion": "measurability",
-          "evidence": "Includes a primary conversion metric, guardrails (-3% relative check), and a 10% user-level holdout.",
-          "score": 5
-        }
-      ],
-      "weighted": 4.35,
-      "requiredChanges": [],
-      "topConcern": "Treating an entitlement/plan name ('Upgrade to Luzia+') as a grant noun requires careful client-side enforcement to ensure the 5-minute time box correctly toggles the specific features without granting permanent account status.",
-      "verdict": "SHIP",
-      "reasons": [
-        "weighted 4.35 >= 3.8, every criterion >= 3, all gates pass"
-      ],
-      "judgedBy": "llm"
-    },
-    {
-      "proposalId": "P3",
-      "version": 2,
-      "round": 0,
-      "gates": [
-        {
-          "gate": "schema",
-          "pass": true,
-          "by": "code",
-          "severity": "policy",
-          "evidence": "parses as a Proposal"
-        },
-        {
-          "gate": "grounding",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "every referenced id exists; new ids are declared in the patch"
-        },
-        {
-          "gate": "label",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "declares new mechanic \"Daily tasks\""
-        },
-        {
-          "gate": "already-exists",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "no ad of this format on this surface today"
-        },
-        {
-          "gate": "policy-lint",
-          "pass": true,
-          "by": "code",
-          "severity": "policy",
-          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
-        },
-        {
-          "gate": "economics",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
-        },
-        {
-          "gate": "structure",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
-        },
-        {
-          "gate": "reward-coherence",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+          "evidence": "the patch adds 1 \"account\" of Account Access on REWARD_VERIFIED"
         },
         {
           "gate": "not-for-account-wall",
           "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "the reward is \"Adjust response style\", which only an account unlocks: an ad cannot stand in for signing up"
+          "evidence": "the reward is Account Access: an ad cannot stand in for creating an account; the reward is \"View Favorite messages\", which only an account unlocks: an ad cannot stand in for signing up"
         },
         {
           "gate": "sfw",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Daily tasks and mini-games with AI personas like Elias are SFW and age-appropriate."
+          "evidence": "The proposal features a game partner session with Luzia for saving favorite messages, which is SFW."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The proposal offers an in-app reward (Account Access/usage) and explicitly forbids incentivized clicks or installs."
+          "evidence": "The proposal rewards completing a 15-second mini-game view, not clicks, installs, or cash."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The proposal uses a proactive task sheet; no hostage framing or dark patterns are identified."
+          "evidence": "The proposal uses gain framing (play to unlock saving for 72 hours) without dark patterns."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The user must open the sheet and tap \"Play task\" to trigger the game."
+          "evidence": "The proposal uses an explicit CTA button 'Play Now' before launching the ad."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The proposal states: \"Play a 15-second sponsored game to get 15 minutes of Account Access\"."
+          "evidence": "The proposal clearly states the reward and action ('Play a 15-second game with Luzia to save your favorite messages for 72 hours') prior to the ad."
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The proposal includes a \"Close\" button on the sheet."
+          "evidence": "The proposal includes a clear decline option ('No Thanks') that returns the user to the screen."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The tasks are triggered from a proactive sheet on the Chats Home, not during a conversation."
+          "evidence": "The proposal triggers when hitting the signup wall on s21 (Favorite Messages sheet), not mid-stream."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The eligibility rules explicitly exclude subscribers."
+          "evidence": "Eligibility is restricted to non-signed-up users (guests) encountering the favorite messages wall."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "The user is offered a way to unlock a desired feature (Account Access), but this feature is gated by account creation, creating a path mismatch.",
-          "score": 3
+          "evidence": "The proposal targets the account signup wall on s21, but attempts to grant account access entitlement r2 as a reward, violating the rule that account-only features cannot be rewarded. Score: 2.",
+          "score": 2
         },
         {
           "criterion": "product-integrity",
-          "evidence": "The proposal attempts to grant account-only features via ads, which undermines the signup wall and the value of account creation.",
+          "evidence": "Procedure rule 8 states that an ad never stands in for creating an account and account-only features (saving) are never rewards. Score: 2.",
           "score": 2
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "Granting account-level entitlements (Account Access) replaces the primary conversion funnel (Sign up free).",
-          "score": 2
+          "evidence": "Access is time-boxed to 72 hours for guests, keeping permanent account saving behind sign-up, though granting account access via ad is flawed. Score: 3.",
+          "score": 3
         },
         {
           "criterion": "unit-economics",
-          "evidence": "Cost to serve ($0.0027) is well below the net revenue (estimated ~$0.0075+ after haircut).",
-          "score": 5
+          "evidence": "Code computed COGS as $0.0000 against US view revenue of $0.0090-$0.0150. Score: 4.",
+          "score": 4
         },
         {
           "criterion": "reach",
-          "evidence": "The surface is a tab on Chats Home (core loop).",
-          "score": 5
+          "evidence": "Triggered on m5 (Favorite messages wall), which is a frequent core loop interaction. Score: 4.",
+          "score": 4
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps to SIM-RWD and existing screens.",
+          "evidence": "Maps directly to SIM-RWD with button entry, Luzia game partner, 15s play, and REWARD_VERIFIED. Score: 5.",
           "score": 5
         },
         {
           "criterion": "specificity",
-          "evidence": "Uses app-specific nouns like 'Chats Home', 'Account Access', and specific personas like 'Explain quantum physics simply.'.",
-          "score": 5
+          "evidence": "References screen s21 (Favorite messages), resource r2, and Luzia, but loses points for treating account entitlement as a currency. Score: 3.",
+          "score": 3
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Capped at 3 tasks per day.",
-          "score": 5
+          "evidence": "Specifies a per-day cap of 3 and a 15-minute cooldown. Score: 4.",
+          "score": 4
         },
         {
           "criterion": "measurability",
-          "evidence": "Includes a 10% user-level holdout and clear metrics.",
+          "evidence": "Includes primary metric ARPDAU, guardrails (retention, signup conversion, completion rate), and a 5% user-level holdout for 28 days. Score: 5.",
           "score": 5
         }
       ],
-      "weighted": 3.7,
+      "weighted": 3.2,
       "requiredChanges": [
-        "Do not offer 'Account Access' or any entitlement that requires an account (Adjust AI response style, Save favorite messages) as a reward. Account-only features are never rewards.",
-        "Change the reward to a feature usage that does not gate identity or account creation. For example, offer '1 image generation credit' or '1 deep reasoning mode usage' if those can be decoupled from the full account entitlement, or offer cosmetic rewards.",
-        "Ensure the reward does not replace the 'Sign up free' value proposition."
+        "Remove account access (r2) as a direct reward entitlement; an ad never stands in for creating an account or granting account-only features like saving.",
+        "Redesign the offer to be a post-decline fallback sample (TAX-10) rather than a direct substitute for account signup wall creation."
       ],
-      "topConcern": "The proposal offers account-locked entitlements ('Account Access') as an ad reward, which directly cannibalizes the signup funnel and violates the policy against using ads to bypass account-gated features.",
+      "topConcern": "The proposal treats account access (r2) and account-only saving features as a rewarded entitlement, violating core rules that account creation must remain the primary path and account-only features cannot be rewarded.",
       "verdict": "REVISE",
       "reasons": [
+        "fixable gate failed: reward-coherence (code)",
         "fixable gate failed: not-for-account-wall (code)",
+        "value-moment-fit scored 2 (< 3)",
         "product-integrity scored 2 (< 3)",
-        "cannibalization-safety scored 2 (< 3)",
-        "weighted 3.7 < 3.8"
+        "weighted 3.2 < 3.8"
       ],
       "judgedBy": "llm"
     },
     {
-      "proposalId": "P3",
-      "version": 3,
+      "proposalId": "P2",
+      "version": 2,
       "round": 1,
       "gates": [
         {
@@ -818,17 +622,17 @@
         },
         {
           "gate": "grounding",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "every referenced id exists; new ids are declared in the patch"
+          "evidence": "edge effect on unknown resource \"TemporaryFavoriteAccess\""
         },
         {
           "gate": "label",
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "declares new mechanic \"Daily tasks\""
+          "evidence": "cites observed economy items: r2"
         },
         {
           "gate": "already-exists",
@@ -846,10 +650,10 @@
         },
         {
           "gate": "economics",
-          "pass": false,
+          "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end."
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
         },
         {
           "gate": "structure",
@@ -867,130 +671,133 @@
         },
         {
           "gate": "not-for-account-wall",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "no ad in place of creating an account"
+          "evidence": "the reward is \"View Favorite messages\", which only an account unlocks: an ad cannot stand in for signing up"
         },
         {
           "gate": "sfw",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Proposal uses Chats Home (s01) and game partner Luzia, keeping interactions SFW and age-appropriate."
+          "evidence": "The proposal targets s21 (Favorite messages), which is a standard SFW feature in Luzia."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Proposal rewards completing a 15-second sponsored game, explicitly avoiding rewards for clicks, installs, or cash-like items."
+          "evidence": "The reward is 24-hour access to favorite message saving obtained by playing a 15-second game; no clicks, installs, or cash-like rewards are incentivized."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Proposal uses gain framing ('Play a 15-second sponsored game to get 1 image generation credit') without dark patterns or hostage framing."
+          "evidence": "The offer copy uses clean gain/fallback framing without dark patterns or confirmshaming."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "User explicitly opts in by tapping the task sheet and selecting 'Play task'."
+          "evidence": "The user must tap the CTA button Play Now to opt in."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The reward (1 image generation credit) and required action (15-second sponsored game) are clearly stated before the ad starts."
+          "evidence": "The body clearly states the action and reward before the ad."
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Declining is free via a clear 'Close' button that returns the user to Chats Home with no penalty."
+          "evidence": "The decline button is No Thanks, which returns the user to the screen without penalty."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer is triggered via a badge on Chats Home (s01), never interrupting a streaming AI response."
+          "evidence": "The trigger occurs after dismissing the account signup wall on the Favorite messages screen, not during a streaming response."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Eligibility explicitly restricts the offer to non-payers only and never shows it to subscribers."
+          "evidence": "Eligibility specifies guest users who dismiss the account signup wall."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "Proposal offers image generation credits via a daily task hub (TAX-9) on Chats Home, well-aligned with proactive engagement.",
+          "evidence": "Triggered immediately after dismissing the account signup wall on the Favorite messages screen, offering a 24-hour sample of favorite message saving.",
           "score": 4
         },
         {
           "criterion": "product-integrity",
-          "evidence": "Native badge and sheet integration on Chats Home with Luzia as game partner, preserving flow and input.",
-          "score": 5
+          "evidence": "Provides a time-boxed sample with clear decline, but violates the rule that account-only features requiring account access cannot be granted via ads.",
+          "score": 2
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "Restricted to non-payers, capped at 3 per day, and protected by a holdout and remote-config kill switch.",
-          "score": 5
+          "evidence": "Gated to guest users who decline signup, time-boxed to 24 hours, and capped at 1 per day.",
+          "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "Cost to serve the image generation credit ($0.0250) exceeds net revenue per view ($0.0063 at the low end), failing unit economics.",
-          "score": 1
+          "evidence": "Cost to serve is zero and US view earnings are within economic viability.",
+          "score": 5
         },
         {
           "criterion": "reach",
-          "evidence": "Triggered via a badge on Chats Home (s01), the core loop hub visited frequently by users.",
-          "score": 5
+          "evidence": "Triggered on s21 (Favorite messages), a frequent guest wall moment.",
+          "score": 4
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps cleanly to Simula SIM-RWD unit, invitation entry, Luzia game partner, and REWARD_VERIFIED grant.",
-          "score": 5
+          "evidence": "Uses SIM-RWD unit and standard config, though patch references an unknown resource.",
+          "score": 3
         },
         {
           "criterion": "specificity",
-          "evidence": "Uses Luzia app nouns from digest (Chats Home s01, image generation credit r3, Luzia).",
-          "score": 5
+          "evidence": "Cites screen s21, resource r2, moment m5, and character Luzia.",
+          "score": 4
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Capped at 3 per day with a 5-minute cooldown and clean decline option.",
-          "score": 5
+          "evidence": "Caps per day at 1 with a 60-minute cooldown.",
+          "score": 4
         },
         {
           "criterion": "measurability",
-          "evidence": "Defines primary tasks-per-DAU metric, subscription non-inferiority guardrails, and a 10% user-level holdout.",
+          "evidence": "Includes primary metric, guardrails, and a 5% user-level holdout for 30 days.",
           "score": 5
         }
       ],
-      "weighted": 4.4,
+      "weighted": 3.75,
       "requiredChanges": [
-        "Switch the reward to a zero-COGS or lower-cost item (such as priority queue, cosmetics, or cheaper model messages) or increase required views per reward, to resolve the unit economics deficit where COGS ($0.0250) exceeds net revenue per view."
+        "Change the reward from granting access to an account-locked feature (saving messages) to a non-account feature or separate bonus quota, as account-only features cannot be bypassed by ads per procedure rule 8.",
+        "Fix the patch resource delta to use an existing or correctly defined resource instead of the unknown TemporaryFavoriteAccess."
       ],
-      "topConcern": "Cost to serve the image generation credit ($0.0250) exceeds net revenue per view ($0.0063 at the low end).",
+      "topConcern": "An ad cannot stand in for account creation; account-only features like saving messages require account access (r2) and cannot be granted via rewarded ads.",
       "verdict": "REVISE",
       "reasons": [
-        "fixable gate failed: economics (code)",
-        "unit-economics scored 1 (< 3)"
+        "fixable gate failed: grounding (code)",
+        "fixable gate failed: not-for-account-wall (code)",
+        "product-integrity scored 2 (< 3)",
+        "weighted 3.75 < 3.8"
       ],
       "judgedBy": "llm"
     },
     {
-      "proposalId": "P3",
-      "version": 4,
+      "proposalId": "P2",
+      "version": 3,
       "round": 2,
       "gates": [
         {
@@ -1012,7 +819,7 @@
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "declares new mechanic \"Daily tasks\""
+          "evidence": "cites observed economy items: r2, r3"
         },
         {
           "gate": "already-exists",
@@ -1030,10 +837,10 @@
         },
         {
           "gate": "economics",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+          "evidence": "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
         },
         {
           "gate": "structure",
@@ -1061,124 +868,123 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The proposal targets 'Chats Home' (s01), which is the main chat interface and is SFW."
+          "evidence": "Proposal targets screen s21 (Favorite messages), which is an SFW surface."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The reward is for watching a 15-second game, not for clicks, installs, or ratings, and is in-app usage quota (r3)."
+          "evidence": "Proposal rewards 5 bonus chat messages via a 15-s game with Luzia; no clicks, installs, or cash-like items."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The offer is an opt-in 'Daily tasks' incentive without any hostage, loss, or 'support us' language."
+          "evidence": "Offer copy uses gain framing ('Play a quick game... for 5 bonus messages') with no dark patterns or confirmshaming."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The proposal uses a dedicated sheet (ns1) with an explicit 'Play task' CTA."
+          "evidence": "Uses SIM-RWD with an explicit CTA 'Play Now' and a button entry point."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The body copy explicitly states 'Play a 15-second sponsored game to get 1 extra AI message.'"
+          "evidence": "Offer title 'Get Bonus Messages' and body clearly state the reward and required action prior to viewing."
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The proposal offers a 'Close' button to exit without penalty."
+          "evidence": "Provides an equally legible decline button 'No Thanks' that returns the user without penalty."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer is placed as a badge on the Chats Home screen (s01), not within an ongoing chat."
+          "evidence": "Triggered after dismissing the signup wall on s21, not during an AI text stream."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The eligibility criteria explicitly states 'never shown to subscribers.'"
-        },
-        {
-          "gate": "portfolio-distinct",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "the first SHIP of the portfolio"
+          "evidence": "Guard restricts eligibility to guest users who do not have account access (r2 < 1)."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "The trigger is a proactive hub (Chats Home), which provides lower intent than a reactive refill, though it builds a healthy habit.",
-          "score": 4
+          "evidence": "Proposal targets s21 (Favorite messages wall) and offers bonus messages (r3). While s21 is an account signup wall for saving messages rather than a direct quota cap, offering a refill fallback is a reasonable engagement moment.",
+          "score": 3
         },
         {
           "criterion": "product-integrity",
-          "evidence": "The integration is native to Luzia, using the Game Partner mechanic; it is additive and preserves the conversation flow.",
-          "score": 5
+          "evidence": "Proposal preserves user flow, uses an in-world game partner ('Luzia'), and operates on an SFW surface without degrading core functionality.",
+          "score": 4
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "Non-payer gating, daily caps, and clear exclusion of subscribers make this highly safe.",
-          "score": 5
+          "evidence": "Gated to guest users (r2 < 1), grants temporary usage quota (r3) rather than permanent account access (r2), and is capped at 1 per day.",
+          "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "COGS ($0.0018) is roughly 20% of net revenue ($0.009), providing a healthy margin.",
-          "score": 5
+          "evidence": "Economics code flags: Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end due to 5 text-cheap messages.",
+          "score": 2
         },
         {
           "criterion": "reach",
-          "evidence": "Chats Home is the core hub (13 visits during exploration) ensuring high visibility.",
-          "score": 5
+          "evidence": "Targeting users hitting the Favorite messages wall (m5, reach=frequent) captures a recurring friction point.",
+          "score": 3
         },
         {
           "criterion": "feasibility",
-          "evidence": "Uses standard SIM-RWD component, simple badge element, and remote config.",
+          "evidence": "Maps directly to SIM-RWD unit, button entry, and resource r3 with a clean patch adding ne1 to s21.",
           "score": 5
         },
         {
           "criterion": "specificity",
-          "evidence": "Uses Luzia persona, Chats Home (s01), and the specific AI Usage Quota resource (r3).",
-          "score": 5
+          "evidence": "Uses app-specific screen s21 ('Favorite messages'), resource r3, and gamePartner 'Luzia'.",
+          "score": 4
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Strict daily cap of 3 tasks prevents nagging.",
-          "score": 5
+          "evidence": "Caps usage explicitly at perDay: 1 and cooldownMin: 60.",
+          "score": 4
         },
         {
           "criterion": "measurability",
-          "evidence": "Explicitly names primary metrics, guardrails, and a user-level holdout as per MEAS-5.",
+          "evidence": "Defines primary conversion metric, guardrails, and a 5% user-level holdout for 30 days.",
           "score": 5
         }
       ],
-      "weighted": 4.8,
-      "requiredChanges": [],
-      "topConcern": "None.",
-      "verdict": "SHIP",
+      "weighted": 3.65,
+      "requiredChanges": [
+        "Reduce the reward size from 5 messages to 2–3 messages (or switch to an ultra-cheap model) so that the cost to serve ($0.0090) does not exceed net revenue per view ($0.0063).",
+        "Ensure the reward more closely aligns with the wall's specific blocked feature on s21 (e.g., temporary message saving or preview slot) or frame the quota refill clearly."
+      ],
+      "topConcern": "The cost to serve 5 bonus messages ($0.0090) exceeds net revenue per view ($0.0063) at the low end, resulting in negative unit economics.",
+      "verdict": "REJECT",
       "reasons": [
-        "weighted 4.8 >= 3.8, every criterion >= 3, all gates pass"
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 2 (< 3)",
+        "weighted 3.65 < 3.8",
+        "still REVISE after round 2"
       ],
       "judgedBy": "llm"
     },
     {
-      "proposalId": "P4",
-      "version": 2,
+      "proposalId": "P3",
+      "version": 1,
       "round": 0,
       "gates": [
         {
@@ -1200,7 +1006,7 @@
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "declares new mechanic \"Sponsored Account Access session\""
+          "evidence": "declares new mechanic \"Deep Reasoning Session Pass\""
         },
         {
           "gate": "already-exists",
@@ -1218,10 +1024,10 @@
         },
         {
           "gate": "economics",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+          "evidence": "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
         },
         {
           "gate": "structure",
@@ -1232,141 +1038,141 @@
         },
         {
           "gate": "reward-coherence",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
-        },
-        {
-          "gate": "not-for-account-wall",
           "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "the reward is \"Adjust response style\", which only an account unlocks: an ad cannot stand in for signing up"
+          "evidence": "the patch adds 1 \"plan\" of Luzia+ Subscription on REWARD_VERIFIED"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
         },
         {
           "gate": "sfw",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "SFW surface on Chats Home with an educational game partner."
+          "evidence": "The proposal targets deep reasoning mode on safe, SFW assistant surfaces."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Rewards a 15-second game play, no clicks, installs, cash or gift cards."
+          "evidence": "Reward is earned via a 15-second mini-game play with no cash, gift cards, or click/install incentives."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Gain framing for 30 minutes of time-boxed access with a clear decline option."
+          "evidence": "Uses gain-oriented session pass copy ('Unlock Deep Reasoning Now') with standard opt-in buttons and no dark patterns."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Play to unlock CTA, opt-in per instance."
+          "evidence": "Requires an explicit tap on the 'Play Now' CTA before any ad initiates."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Play a 15-second sponsored game to get 30 minutes of Account Access (Adjust AI response style)."
+          "evidence": "Clearly states the action ('Play a quick 15-second game') and reward ('30 minutes of deep reasoning') prior to the ad."
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Decline option Not today leaves the app fully usable."
+          "evidence": "Includes an equally legible 'No Thanks' decline option returning the user to the sheet without penalty."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Offered at the start of the first session of the day on Chats Home, never mid-reply."
+          "evidence": "Triggered when hitting the subscription wall on deep reasoning, not mid-stream during generation."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Non-payers only, suppressed for subscribers and recent purchasers."
+          "evidence": "Explicitly restricted to non-paying guests and free users hitting the paywall."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "Account Access is an account-level entitlement rather than a consumable, and offering it at session start rather than at the feature wall mismatches user intent. Score: 2.",
+          "evidence": "The proposal targets the exact moment of need when hitting the deep reasoning wall (m9), but the patch incorrectly models an entitlement plan (r1) as a numeric delta (delta: 1), capping the score at 2 per instruction rule 7.",
           "score": 2
         },
         {
           "criterion": "product-integrity",
-          "evidence": "An ad cannot stand in for creating an account; account-only features require an account first per rule 8. Score: 2.",
-          "score": 2
+          "evidence": "Time-boxed session pass preserves user flow, provides native tasting of deep reasoning without permanent devaluing, and keeps the subscription upsell visible.",
+          "score": 4
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "Time-boxed to 30 minutes, restricted to non-payers, with holdout planned. Score: 4.",
+          "evidence": "Gated strictly to non-payers hitting the paywall, time-boxed to 30 minutes, capped at 2 per day, and preserves the Luzia+ subscription upsell.",
           "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "COGS $0.0054 is below net revenue per view ($0.0090-$0.0150). Score: 4.",
-          "score": 4
+          "evidence": "Cost to serve ($0.0090) exceeds net revenue per view ($0.0063) at the low end as flagged by code.",
+          "score": 2
         },
         {
           "criterion": "reach",
-          "evidence": "Offered on Chats Home which is frequently visited. Score: 3.",
+          "evidence": "Hits users attempting to use deep reasoning mode (m9), representing a solid segment of engaged feature users.",
           "score": 3
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps to SIM-RWD on s01 with an added chip. Score: 4.",
+          "evidence": "Uses standard Simula SIM-RWD unit with button entry point and SSV verification.",
           "score": 4
         },
         {
           "criterion": "specificity",
-          "evidence": "References s01 and Account Access, but violates entitlement/account rules. Score: 2.",
-          "score": 2
+          "evidence": "References Luzia, deep reasoning, s07, and s27, but loses specificity credit for improperly treating the subscription plan entitlement as a numeric currency delta.",
+          "score": 3
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Capped at 1 per day. Score: 4.",
-          "score": 4
+          "evidence": "Explicit caps of 2 per day and 30-minute cooldowns, with no re-offer after decline.",
+          "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Named primary metric, guardrails, and 10% user-level holdout. Score: 5.",
+          "evidence": "Defines primary metric, guardrails (-3% subscription conversion, retention parity), and a 10% user-level randomized holdout over 28 days.",
           "score": 5
         }
       ],
-      "weighted": 3.05,
+      "weighted": 3.3,
       "requiredChanges": [
-        "Move the reward away from account-bound features like Account Access to consumable resources or post-decline sampling.",
-        "Ensure account creation remains the required first path for account-only features."
+        "Fix the patch resource grant to specify a proper time-boxed entitlement rather than granting numeric delta 1 of subscription plan r1.",
+        "Optimize COGS by routing session passes through a lighter model or adjusting duration/view requirements to ensure net positive margins per view."
       ],
-      "topConcern": "Account-only features (such as Account Access and Adjust AI response style) require a user account and cannot be bypassed or rewarded directly via ads.",
+      "topConcern": "The patch incorrectly treats a subscription plan entitlement as a countable currency quantity (delta: 1), and inference COGS exceeds net revenue per view at the low end.",
       "verdict": "REVISE",
       "reasons": [
-        "fixable gate failed: not-for-account-wall (code)",
+        "fixable gate failed: economics (code)",
+        "fixable gate failed: reward-coherence (code)",
         "value-moment-fit scored 2 (< 3)",
-        "product-integrity scored 2 (< 3)",
-        "specificity scored 2 (< 3)",
-        "weighted 3.05 < 3.8"
+        "unit-economics scored 2 (< 3)",
+        "weighted 3.3 < 3.8"
       ],
       "judgedBy": "llm"
     },
     {
-      "proposalId": "P4",
-      "version": 3,
+      "proposalId": "P3",
+      "version": 2,
       "round": 1,
       "gates": [
         {
@@ -1388,7 +1194,378 @@
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "declares new mechanic \"Sponsored AI usage session\""
+          "evidence": "declares new mechanic \"Deep Reasoning Session Pass\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Proposal targets standard app utility features ('Start a task', 'Toggle deep reasoning mode'), ensuring SFW, age-appropriate content."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Reward is a time-boxed premium session entitlement, not a click, install, or cash reward."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Proposal uses gain framing ('Unlock Deep Reasoning') and adheres to standard UX practices."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Uses SIM-RWD `RewardInvitation`, ensuring the user must explicitly opt in via a clearly labeled control."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Body copy states: 'Play a quick 15-second game to unlock 15 minutes of deep reasoning mode.'"
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Includes a 'No Thanks' button and returns the user to the wall/Services tab without penalty."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Placement is at the subscription wall boundary, not mid-response or during generation."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Targeted explicitly to non-paying guest users on the subscription wall."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "The reward directly satisfies the need identified by the subscription wall hit (need for 'Deep Reasoning'), making it a high-intent, moment-of-need match.",
+          "score": 5
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "The pass is a natural sampling mechanism for a premium feature, appearing at a wall boundary without interrupting the organic flow.",
+          "score": 5
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "The session is time-boxed (15m), capped (2/day), and non-permanently granted, which mitigates long-term substitution while providing a trial for conversion.",
+          "score": 4
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "The code indicates the reward COGS ($0.0090) exceeds the net revenue per view ($0.0063) at the low end. The reward size is too generous for the cost.",
+          "score": 2
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Triggers are on high-frequency subscription walls (m9, m10) related to Luzia+ features, hitting a core segment of the user base.",
+          "score": 4
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Uses the native SIM-RWD unit with an existing wall trigger, requiring minimal engineering lift.",
+          "score": 5
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "References app-specific elements like 'Attachment and Mode Sheet', 'Deep reasoning mode', and 'Luzia+' throughout.",
+          "score": 5
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Defines explicit caps (2 per day) and cooldowns (30 minutes), and provides a 'No Thanks' escape.",
+          "score": 5
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Specifies 'Rewarded ARPDAU' as a primary metric and includes a 10% user-level holdout as a guardrail.",
+          "score": 5
+        }
+      ],
+      "weighted": 4.45,
+      "requiredChanges": [
+        "Reduce the session pass duration from 15 minutes to 5-10 minutes to align the reward COGS with the projected net revenue per view.",
+        "Verify the implementation of server-side verification (SSV) to ensure rewards are granted only after successful completion of the mini-game."
+      ],
+      "topConcern": "The unit economics are unfavorable; the cost of providing 15 minutes of deep reasoning inference exceeds the anticipated revenue per view, which must be corrected by shortening the trial or tightening the economy.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 2 (< 3)"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P3",
+      "version": 3,
+      "round": 2,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "every referenced id exists; new ids are declared in the patch"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Deep Reasoning Session Pass\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The proposal triggers on the 'Attachment and Mode Sheet' (s27) and 'Create Account Sheet' (s07), which are standard paywall surfaces in the app."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The reward is an ephemeral 5-minute session pass, which is a non-transferable, in-app benefit."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The proposal uses standard offer-based framing without any negative reinforcement or dark patterns."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The user must actively choose to play the mini-game via the 'Play Now' CTA."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The offer card states: 'Play a quick 15-second game to unlock 5 minutes of deep reasoning mode'."
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The proposal includes an explicit 'No Thanks' option, and declining returns the user to the previous screen."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The trigger occurs on the paywall screen (s07/s27), which is a clear boundary, not during an active response."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The proposal explicitly limits eligibility to 'non-paying guest users'."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "The reward (Deep Reasoning Session Pass) directly addresses the user's specific block when they attempt to use that feature.",
+          "score": 5
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "The pass is a natural extension of the premium subscription and fits into the app flow without disrupting user input.",
+          "score": 4
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "It is gated to non-paying guests and time-boxed to 5 minutes, though deep reasoning is a core subscription value, creating some risk.",
+          "score": 3
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "Per the provided code, cost-to-serve ($0.0090) exceeds the revenue-per-view at the low end ($0.0063).",
+          "score": 1
+        },
+        {
+          "criterion": "reach",
+          "evidence": "The wall (s07) is triggered frequently in the Luzia+ flow.",
+          "score": 4
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Uses the standard SIM-RWD unit and maps cleanly to the existing paywall flow.",
+          "score": 4
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "Correctly identifies 'Deep reasoning mode', 'Luzia+', and the 'Attachment and Mode Sheet' (s27).",
+          "score": 5
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Includes daily caps (2/day) and cooldowns (30m), preventing over-exposure.",
+          "score": 4
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Proposes a holdout experiment and tracks ARPDAU.",
+          "score": 4
+        }
+      ],
+      "weighted": 3.85,
+      "requiredChanges": [
+        "Address the unit economics failure by requiring 2 rewarded views to unlock the 5-minute session or reducing the session duration to 2 minutes, as the current cost-to-serve exceeds the net revenue.",
+        "Explicitly label the reward in the UI as a 'Deep Reasoning Sample' to differentiate it from the permanent 'Deep Reasoning Mode' included in the Luzia+ subscription."
+      ],
+      "topConcern": "The cost of the reward (inference for premium reasoning models) exceeds the generated net revenue per view, making the current offer unprofitable.",
+      "verdict": "REJECT",
+      "reasons": [
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 1 (< 3)",
+        "still REVISE after round 2"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P4",
+      "version": 1,
+      "round": 0,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "storyboard offer: callout node \"e10\" is not on ns1 and not declared; storyboard ad: callout node \"e10\" is not on ns1 and not declared"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Daily Character Quest\""
         },
         {
           "gate": "already-exists",
@@ -1437,113 +1614,114 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The proposal targets Chats Home (s01), which is a standard SFW chat interface."
+          "evidence": "A daily engagement task where users play a 15-second mini-game with Luzia to earn bonus chat credits."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Reward is +10 AI Usage Quota actions (r3), an in-app resource, with no incentives for clicks, installs, or cash."
+          "evidence": "Earn bonus chat credits daily by completing a quick interactive mini-game with Luzia."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Uses gain framing ('Play a 15-second sponsored game to get +10 bonus...') with a clear decline option ('Not today')."
+          "evidence": "Play a quick 15-second mini-game with Luzia to earn 10 bonus chat credits."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "User taps an explicit CTA ('Play to unlock') before the ad plays."
+          "evidence": "\"cta\": \"Play Now\""
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The required action (15-second game) and reward (+10 bonus AI Usage Quota actions) are clearly stated."
+          "evidence": "\"body\": \"Play a quick 15-second mini-game with Luzia to earn 10 bonus chat credits.\""
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Declining via 'Not today' leaves the app fully usable at the pre-offer state with no penalty."
+          "evidence": "\"decline\": \"No Thanks\""
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Triggered at the start of a session on Chats Home; explicitly specifies 'never mid-reply'."
+          "evidence": "User taps the daily quest banner on the Chats Home hub upon returning to the app."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Explicitly eligibility-restricted to non-payers and never shown to subscribers."
+          "evidence": "Non-paying users who have completed their first session and have remaining daily quota capacity."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "Proposal targets AI Usage Quota (r3) at the session start on Chats Home (s01) when quota is low.",
+          "evidence": "Proposal implements archetype TAX-9 (Daily quests) offering 10 bonus chat credits via an opt-in mini-game on the Chats Home hub.",
           "score": 4
         },
         {
           "criterion": "product-integrity",
-          "evidence": "Proposal uses a native dismissible chip on Chats Home (s01) with game partner Luzia, preserving flow.",
-          "score": 4
+          "evidence": "Implemented as a proactive daily quest banner on s01 with no removal of existing free features, using Luzia as a game partner.",
+          "score": 5
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "Restricted to non-payers, capped at 1 per day, keeping Luzia+ as the permanent unlimited option with a holdout.",
-          "score": 4
+          "evidence": "Gated to non-paying users with strict daily caps, rewarding soft usage quota rather than permanent subscription features or premium reasoning models.",
+          "score": 5
         },
         {
           "criterion": "unit-economics",
-          "evidence": "Cost to serve the reward ($0.0180) exceeds net revenue per view ($0.0063 at the low end), making unit economics upside down.",
+          "evidence": "Code computed cost to serve ($0.0180) exceeds net revenue per view ($0.0063) at the low end.",
           "score": 2
         },
         {
           "criterion": "reach",
-          "evidence": "Chats Home (s01) is the core loop hub with high daily reach.",
+          "evidence": "Placed on s01 (Chats Home), which is the core-loop hub reached on every app open.",
           "score": 5
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps directly to SIM-RWD with standard patch elements (ne1 on s01).",
-          "score": 4
+          "evidence": "Uses SIM-RWD with button entry, REWARD_VERIFIED, and clear patch definitions for screen ns1 and element ne1.",
+          "score": 5
         },
         {
           "criterion": "specificity",
-          "evidence": "Uses app-specific nouns like Chats Home (s01), AI Usage Quota (r3), and Game Partner Luzia.",
-          "score": 4
+          "evidence": "Explicitly references Luzia, s01 (Chats Home), and chat credits resource r3.",
+          "score": 5
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Strictly capped at 1 per day (perDay: 1).",
-          "score": 4
+          "evidence": "Caps set to 3 per day with a 60-minute cooldown.",
+          "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Defines primary metrics, guardrails, and a 10% user-level holdout.",
-          "score": 4
+          "evidence": "Includes a 10% user-level randomized holdout for 28 days, primary metric Rewarded ARPDAU and retention, and paid conversion guardrails.",
+          "score": 5
         }
       ],
-      "weighted": 3.9,
+      "weighted": 4.5,
       "requiredChanges": [
-        "Reduce the reward size from +10 to +3 or +4 actions (or use a cheaper model tier) so that the cost to serve ($0.0180) is well below net revenue per view ($0.0063-$0.0150).",
-        "Ensure that on Chats Home (s01), the offer is strictly suppressed during the absolute first session launch (m22) to respect first-value guardrails."
+        "Reduce the reward size or switch to a cheaper model so that the cost to serve ($0.0180) does not exceed net revenue per view ($0.0063).",
+        "Fix storyboard callout node references (node \"e10\" is not declared on screen ns1)."
       ],
-      "topConcern": "Unit economics are upside down because the cost to serve 10 text actions ($0.0180) exceeds the net revenue per completed view ($0.0063 at the low end).",
+      "topConcern": "The cost to serve the reward ($0.0180) exceeds net revenue per view ($0.0063) at the low end, resulting in negative net unit economics.",
       "verdict": "REVISE",
       "reasons": [
+        "fixable gate failed: grounding (code)",
         "fixable gate failed: economics (code)",
         "unit-economics scored 2 (< 3)"
       ],
@@ -1551,8 +1729,8 @@
     },
     {
       "proposalId": "P4",
-      "version": 4,
-      "round": 2,
+      "version": 2,
+      "round": 1,
       "gates": [
         {
           "gate": "schema",
@@ -1573,7 +1751,7 @@
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "declares new mechanic \"Sponsored AI usage session\""
+          "evidence": "declares new mechanic \"Daily Character Quest\""
         },
         {
           "gate": "already-exists",
@@ -1622,115 +1800,121 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Chats Home is a general chat interface, and the proposal limits offers to non-paying users in SFW contexts."
+          "evidence": "The proposal uses a daily retention task centered on character interaction on the SFW home hub, avoiding all sensitive topics."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The reward is for playing a 15-second sponsored game, not for clicks, installs, or ratings."
+          "evidence": "The reward is 'bonus chat credits' (resource r3) which are in-app and non-transferable. There is no incentive for clicks or installs."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The proposal uses positive gain framing ('+3 bonus AI Usage Quota actions')."
+          "evidence": "The proposal uses gain framing ('earn bonus chat credits') and avoids hostage scenarios or loss framing."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The storyboard shows a clear opt-in flow with 'Play to unlock' and 'Not today' options."
+          "evidence": "The user must tap the 'Play Now' CTA on the Daily Quest banner to start."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer clearly states '+3 bonus AI Usage Quota actions' and '15-second sponsored game' before opt-in."
+          "evidence": "The proposal clearly states: 'Play a quick 15-second mini-game with Luzia to earn 3 bonus chat credits.'"
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The user has a clear 'Not today' option that returns them to the Chats Home without penalty."
+          "evidence": "The offer includes a 'No Thanks' button which dismisses the sheet with no penalty."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer triggers on Chats Home (s01), not during chat or generation."
+          "evidence": "The offer appears as a banner on the Chats Home hub (s01), not mid-conversation."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The eligibility clause explicitly states: 'never shown to subscribers'."
+          "evidence": "Eligibility is explicitly limited to 'Non-paying users'."
+        },
+        {
+          "gate": "portfolio-distinct",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "distinct from P1 (surface, reward, archetype family; offer copy overlap < 0.7)"
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "The offer triggers on the home screen for a quota refill, providing a direct solution to usage limits.",
-          "score": 5
+          "evidence": "The proposal targets a daily habit-building loop ('Daily Character Quest') on the home hub, which is a proactive, well-aligned retention trigger, though less urgent than a reactive refill.",
+          "score": 4
         },
         {
           "criterion": "product-integrity",
-          "evidence": "The ad is additive and non-interruptive, appearing as a sponsored chip on the home screen.",
+          "evidence": "The mini-game features the Luzia character as a partner, making the interaction feel native to the assistant persona and conversational flow.",
           "score": 5
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "The reward is capped at one per day and limited to non-payers, ensuring the Luzia+ subscription remains the premium choice.",
+          "evidence": "Gated to non-payers with a strict daily cap of 3 credits. This creates an additive retention incentive rather than giving away subscription-core benefits.",
           "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "The requested 3 actions (COGS $0.0054) represent roughly 60-80% of net revenue per view ($0.0067-$0.009), exceeding the 30% COGS target.",
-          "score": 2
+          "evidence": "Cost to serve is $0.0054, with net revenue per view ranging from $0.009 to $0.015. At the lower bound, the cost is 60% of net revenue, which is at the upper threshold for acceptable margin.",
+          "score": 3
         },
         {
           "criterion": "reach",
-          "evidence": "Chats Home is the core hub of the app (m16), ensuring high visibility.",
-          "score": 4
+          "evidence": "Placed on the Chats Home hub, the core entry point for the app, ensuring high visibility for all users.",
+          "score": 5
         },
         {
           "criterion": "feasibility",
-          "evidence": "Uses standard SIM-RWD units on an existing surface (s01).",
+          "evidence": "Maps clearly to the SIM-RWD unit, using existing hub real estate (s01). Engineering overhead is low.",
           "score": 5
         },
         {
           "criterion": "specificity",
-          "evidence": "Refers to r3 (AI Usage Quota), Luzia persona, Chats Home, and the Luzia+ subscription model.",
+          "evidence": "Uses specific app nouns and resources (r3, Chats Home, Luzia character, s01), well-aligned with the Luzia product digest.",
           "score": 5
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Daily cap of 1 and explicit cooldowns prevent nagging.",
+          "evidence": "Includes a strict daily cap of 3 completions and a 60-minute cooldown, preventing over-exposure.",
           "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Includes a 4-week holdout and clear guardrails for conversion.",
+          "evidence": "Proposes primary metrics (ARPDAU, retention), guardrails (conversion), and a 10% randomized holdout.",
           "score": 5
         }
       ],
       "weighted": 4.45,
       "requiredChanges": [
-        "Reduce the reward amount to +1 AI Usage Quota action to ensure the cost-to-serve remains below 30% of the net revenue per view.",
-        "Explicitly document the non-inferiority conversion guardrail in the rollout plan."
+        "Monitor the cost-to-revenue ratio closely during the pilot; if COGS exceeds 60% of realized revenue, reduce reward to 2 credits per view.",
+        "Ensure the 'Daily Quest' banner does not push core chat functionality off the fold on small screens."
       ],
-      "topConcern": "The COGS for a 3-action reward ($0.0054) significantly exceeds the 30% target relative to the computed net revenue per view, risking the unit economics of the ad placement.",
-      "verdict": "REJECT",
+      "topConcern": "The COGS for a 3-credit reward sits at 60% of the lower-bound net revenue per view, placing it at the limit of the acceptable margin threshold.",
+      "verdict": "SHIP",
       "reasons": [
-        "unit-economics scored 2 (< 3)",
-        "still REVISE after round 2"
+        "weighted 4.45 >= 3.8, every criterion >= 3, all gates pass"
       ],
       "judgedBy": "llm"
     },
@@ -1758,7 +1942,7 @@
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "declares new mechanic \"Guest sample of Upgrade to Luzia+\""
+          "evidence": "declares new mechanic \"Photo Analysis Credits\""
         },
         {
           "gate": "already-exists",
@@ -1776,10 +1960,10 @@
         },
         {
           "gate": "economics",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+          "evidence": "Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end."
         },
         {
           "gate": "structure",
@@ -1807,118 +1991,299 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The proposal uses the AI character 'Explain quantum physics simply.' for the game partner, which is SFW."
+          "evidence": "The proposed surface is the Attachment and Mode Sheet (s27), which is a utility screen for photo processing, entirely SFW and age-appropriate."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The reward is 30 minutes of 'Upgrade to Luzia+' access, not a click, install, or rating."
+          "evidence": "The reward is in-app photo analysis credits, which are non-transferable and not cash-like. There is no incentive for clicks, installs, or ratings."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The offer appears after a decline, offering a sample rather than punishing the user."
+          "evidence": "The offer uses benefit-driven language ('Get Free Photo Credits') and includes a clear, neutral 'No Thanks' option, avoiding dark patterns."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The storyboard includes an opt-in card with 'Play to try' and 'No thanks' buttons."
+          "evidence": "The offer is an opt-in invitation card with explicit 'Play Now' and 'No Thanks' buttons, as stated in the storyboard."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer text explicitly states 'Play a 15-second game to try 30 minutes of Upgrade to Luzia+ now.'"
+          "evidence": "The offer specifies the reward ('3 bonus photo analysis credits') and the required action ('Play a quick game with Luzia')."
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer card contains a 'No thanks' button."
+          "evidence": "The offer includes a 'No Thanks' option, and declining allows the user to continue using the app at the pre-offer state."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Triggered on the Services Tab only after the account sheet is dismissed."
+          "evidence": "The trigger occurs on the Attachment and Mode Sheet (s27), which is a pre-generation or utility state, not a streaming AI chat response."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Proposal explicitly limits eligibility to 'Guests who just declined the account sheet'."
-        },
-        {
-          "gate": "portfolio-distinct",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "distinct from P3 (surface, reward, archetype family; offer copy overlap < 0.7)"
+          "evidence": "The proposal states it is 'Gated strictly to non-subscribers'."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "The offer triggers immediately after the user declines the account sheet (m2), precisely when they are at a wall, providing a sample of the missed entitlement.",
+          "evidence": "The trigger occurs exactly when a non-subscriber hits their quota limit while attempting an action, which is the high-intent moment of need.",
           "score": 5
         },
         {
           "criterion": "product-integrity",
-          "evidence": "The proposal is native, offering a sample of the very feature just blocked. It does not degrade free services.",
+          "evidence": "The proposal fits natively into the existing Attachment and Mode Sheet flow, using the character Luzia as a Game Partner in-world.",
           "score": 5
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "High safety: gated to decliners, capped at once a day, and time-boxed (30 mins). It uses sampling to drive future subscription value.",
+          "evidence": "The design is gated strictly to non-subscribers, uses a temporary consumable resource (bonus credits), and implements a conservative daily cap of 3.",
           "score": 5
         },
         {
           "criterion": "unit-economics",
-          "evidence": "Cost to serve is zero, while revenue per view is positive ($0.009-$0.015).",
-          "score": 5
+          "evidence": "Code-computed economics reveal a cost to serve ($0.0250/view) that significantly exceeds the net revenue per view ($0.0063/view), making the current 3-credit grant unsustainable.",
+          "score": 1
         },
         {
           "criterion": "reach",
-          "evidence": "Targeting decliners of the account wall is a significant part of the guest user journey, though less than 100% of DAU.",
-          "score": 3
+          "evidence": "Photo analysis and image generation are part of the core Luzia loop, providing frequent and broad reach for the offer.",
+          "score": 4
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps directly to SIM-RWD units with standard SSV and remote config.",
+          "evidence": "The proposal uses existing Simula units (SIM-RWD), existing screens, and clear resource definitions, minimizing technical overhead.",
           "score": 5
         },
         {
           "criterion": "specificity",
-          "evidence": "Uses Luzia specific terms: 'Upgrade to Luzia+', 'Services Tab', 'Explain quantum physics simply.', 'Create Account Sheet'.",
+          "evidence": "Uses app-specific nouns including Luzia, 'Attachment and Mode Sheet' (s27), and 'Photo Analysis Credits' (r3).",
           "score": 4
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Explicitly capped at once per day, avoiding nagging.",
+          "evidence": "Implements an explicit daily cap of 3 and a 15-minute cooldown, which prevents nagging and fatigue.",
           "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Planned metrics include subscription conversion rates, D7 retention, and a 10% intent-to-treat user-level holdout.",
+          "evidence": "Defines primary metrics (Rewarded ARPDAU), guardrails (subscription conversion, retention), and a user-level holdout experiment.",
           "score": 5
         }
       ],
-      "weighted": 4.7,
-      "requiredChanges": [],
-      "topConcern": "None, the proposal is well-designed and aligns with the knowledge base.",
-      "verdict": "SHIP",
+      "weighted": 4.4,
+      "requiredChanges": [
+        "Reduce the reward grant size from 3 credits to 1 credit per view, or implement a 2-view bundle requirement to align COGS with net revenue.",
+        "Perform an additional unit-economic review after adjusting the reward size to ensure the cost to serve remains within the 60% threshold of net revenue per view."
+      ],
+      "topConcern": "The unit economics are currently negative, as granting 3 photo credits per view costs significantly more ($0.0250) than the net revenue generated per view ($0.0063).",
+      "verdict": "REVISE",
       "reasons": [
-        "weighted 4.7 >= 3.8, every criterion >= 3, all gates pass"
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 1 (< 3)"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P5",
+      "version": 2,
+      "round": 1,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "every referenced id exists; new ids are declared in the patch"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Photo Analysis Credits\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end."
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "\"surface\": \"s27\", \"Attachment and Mode Sheet\""
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "\"offer\": { \"title\": \"Get Free Photo Credit\", \"body\": \"Play a quick game with Luzia to earn 1 bonus photo analysis credit now.\" }"
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "\"decline\": \"No Thanks\""
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "\"cta\": \"Play Now\""
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "\"body\": \"Play a quick game with Luzia to earn 1 bonus photo analysis credit now.\""
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "\"decline\": \"No Thanks\""
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "\"trigger\": \"User taps photo attachment when daily photo analysis quota is exhausted\""
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "\"eligibility\": \"Non-subscribers on Attachment and Mode Sheet\""
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "Proposal triggers on user tapping photo attachment when quota is exhausted on screen s27 (Attachment and Mode Sheet), granting 1 photo analysis credit matching the exact moment of need.",
+          "score": 5
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "Proposal uses SIM-RWD with Game Partner Luzia on s27, preserving flow and adding supplementary quota without removing existing free value.",
+          "score": 5
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "Gated strictly to non-subscribers, capped at 3 daily grants, kept separate from Luzia+ subscription core benefits, with a holdout planned.",
+          "score": 5
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "Code economics note states: Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end due to image generation COGS.",
+          "score": 1
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Triggered when photo attachment quota is hit on s27 (Attachment and Mode Sheet), engaging users in the image/attachment core loop.",
+          "score": 4
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Maps directly to SIM-RWD, button entry point, and existing resource r3.",
+          "score": 5
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "Uses app-specific screen s27 (Attachment and Mode Sheet), character Luzia, resource r3, and mechanic Photo Analysis Credits.",
+          "score": 5
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Explicit daily cap (perDay: 3), cooldown (cooldownMin: 15), and clean decline path.",
+          "score": 5
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Named primary metric (Rewarded ARPDAU), guardrails (subscription conversion non-inferiority, D7 retention), and a 10% user-level holdout for 28 days.",
+          "score": 5
+        }
+      ],
+      "weighted": 4.5,
+      "requiredChanges": [
+        "Switch the reward from an image generation credit (COGS $0.0250) to text message credits or a lower-cost utility to ensure cost to serve remains well below net revenue per view ($0.0063)."
+      ],
+      "topConcern": "Image generation COGS ($0.0250) exceeds net revenue per view ($0.0063), making the reward unprofitable at current unit economics.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 1 (< 3)"
       ],
       "judgedBy": "llm"
     }
@@ -1927,37 +2292,37 @@
     {
       "proposalId": "P1",
       "version": 2,
-      "verdict": "REJECT",
-      "weighted": 4.25,
-      "summary": "REJECT after 1 revision: revision stalled (weighted +0.05, below +0.2) with the same gate failures. Top concern: The cost to serve the reward ($0.0900) significantly exceeds net revenue per view ($0.0063), resulting in negative unit economics."
+      "verdict": "SHIP",
+      "weighted": 4.75,
+      "summary": "SHIP at 4.75 (v2 after 1 revision)."
     },
     {
       "proposalId": "P2",
       "version": 3,
-      "verdict": "SHIP",
-      "weighted": 4.35,
-      "summary": "SHIP at 4.35 (v3)."
+      "verdict": "REJECT",
+      "weighted": 3.65,
+      "summary": "REJECT after 2 revisions: fixable gate failed: economics (code); unit-economics scored 2 (< 3); weighted 3.65 < 3.8; still REVISE after round 2. Top concern: The cost to serve 5 bonus messages ($0.0090) exceeds net revenue per view ($0.0063) at the low end, resulting in negative unit economics."
     },
     {
       "proposalId": "P3",
-      "version": 4,
-      "verdict": "SHIP",
-      "weighted": 4.8,
-      "summary": "SHIP at 4.8 (v4 after 2 revisions)."
+      "version": 3,
+      "verdict": "REJECT",
+      "weighted": 3.85,
+      "summary": "REJECT after 2 revisions: fixable gate failed: economics (code); unit-economics scored 1 (< 3); still REVISE after round 2. Top concern: The cost of the reward (inference for premium reasoning models) exceeds the generated net revenue per view, making the current offer unprofitable."
     },
     {
       "proposalId": "P4",
-      "version": 4,
-      "verdict": "REJECT",
+      "version": 2,
+      "verdict": "SHIP",
       "weighted": 4.45,
-      "summary": "REJECT after 2 revisions: unit-economics scored 2 (< 3); still REVISE after round 2. Top concern: The COGS for a 3-action reward ($0.0054) significantly exceeds the 30% target relative to the computed net revenue per view, risking the unit economics of the ad placement."
+      "summary": "SHIP at 4.45 (v2 after 1 revision)."
     },
     {
       "proposalId": "P5",
-      "version": 1,
-      "verdict": "SHIP",
-      "weighted": 4.7,
-      "summary": "SHIP at 4.7 (v1)."
+      "version": 2,
+      "verdict": "REJECT",
+      "weighted": 4.5,
+      "summary": "REJECT after 1 revision: revision stalled (weighted +0.1, below +0.2) with the same gate failures. Top concern: Image generation COGS ($0.0250) exceeds net revenue per view ($0.0063), making the reward unprofitable at current unit economics."
     }
   ]
 }

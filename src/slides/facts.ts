@@ -242,7 +242,10 @@ export function clip(s: string, n: number): string {
 
 /** ", 10 min apart" for a cooldown; nothing for none (never "0 min apart"). */
 export function spacing(p: Proposal, lead = ""): string {
-  return p.caps.cooldownMin > 0 ? `, ${lead}${p.caps.cooldownMin} min apart` : "";
+  const m = p.caps.cooldownMin;
+  // once a day needs no spacing; long cooldowns read in hours ("24 h", not "1440 min")
+  if (m <= 0 || p.caps.perDay <= 1) return "";
+  return `, ${lead}${m >= 60 ? `${Math.round((m / 60) * 10) / 10} h` : `${m} min`} apart`;
 }
 
 export const oneLine = (s: string | undefined) => (s ?? "").replace(/\s+/g, " ").trim();

@@ -1,10 +1,10 @@
 {
   "stage": "slides",
   "app": "janitor",
-  "runId": "sl0925-145925",
-  "gitSha": "edcac2a",
-  "startedAt": "2026-09-25T18:59:25.917Z",
-  "finishedAt": "2026-09-25T19:01:39.213Z",
+  "runId": "sl0925-193947",
+  "gitSha": "f37f19c",
+  "startedAt": "2026-09-25T19:39:47.086Z",
+  "finishedAt": "2026-09-25T19:40:07.891Z",
   "status": "ok",
   "inputs": [
     {
@@ -13,7 +13,7 @@
     },
     {
       "path": "proposals/judgments.json",
-      "sha256": "f74b118475fc7f4256504cc2b46ead241c5f9a892a4d19b137294c5e5daf9c6d"
+      "sha256": "9ec546513e07e8eacf30ba054b3165ff031df6123e8076d2f0992a4403bfd80f"
     }
   ],
   "outputs": [
@@ -22,7 +22,7 @@
   ],
   "llm": {
     "calls": 4,
-    "cached": 0,
+    "cached": 4,
     "usd": 0,
     "mode": "record"
   }

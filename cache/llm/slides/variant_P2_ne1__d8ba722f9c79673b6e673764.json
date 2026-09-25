@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P2:ne1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne1\" class=\"scrim\" style=\"z-index: 100;\">\n  <div class=\"modal\" style=\"width: 340px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);\">\n    <div style=\"background: var(--c-accent); color: var(--c-on-accent); width: 56px; height: 56px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center;\">\n      <svg width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n        <rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"2\" />\n        <circle cx=\"16\" cy=\"12\" r=\"1.5\" />\n        <circle cx=\"13\" cy=\"12\" r=\"1.5\" />\n        <path d=\"M6 9H8M7 8V10\" />\n      </svg>\n    </div>\n    <h2 style=\"margin: 0; font-size: var(--fs-xl); color: var(--c-text); font-weight: 700;\">Unlock Free Frontier Swipes</h2>\n    <p style=\"margin: 0; color: var(--c-muted); line-height: 1.4; font-size: var(--fs-md);\">Play a 15-second mini-game with Janitor AI to claim your daily check-in reward.</p>\n    <div style=\"font-size: var(--fs-md); color: var(--c-text);\">Play a 15-second game for <b>+3 frontier swipes</b></div>\n    <button class=\"btn btn-primary\" style=\"height: 48px; width: 100%;\">Play Now</button>\n    <button class=\"btn\" style=\"height: 48px; width: 100%; background: transparent; color: var(--c-muted);\">No Thanks</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 9814,
+  "output": 531,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 7541
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:38:53.965Z"
+}

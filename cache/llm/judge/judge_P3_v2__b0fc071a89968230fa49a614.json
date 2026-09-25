@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets standard app utility features ('Start a task', 'Toggle deep reasoning mode'), ensuring SFW, age-appropriate content."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is a time-boxed premium session entitlement, not a click, install, or cash reward."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses gain framing ('Unlock Deep Reasoning') and adheres to standard UX practices."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Uses SIM-RWD `RewardInvitation`, ensuring the user must explicitly opt in via a clearly labeled control."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Body copy states: 'Play a quick 15-second game to unlock 15 minutes of deep reasoning mode.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes a 'No Thanks' button and returns the user to the wall/Services tab without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Placement is at the subscription wall boundary, not mid-response or during generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Targeted explicitly to non-paying guest users on the subscription wall."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward directly satisfies the need identified by the subscription wall hit (need for 'Deep Reasoning'), making it a high-intent, moment-of-need match.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The pass is a natural sampling mechanism for a premium feature, appearing at a wall boundary without interrupting the organic flow.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The session is time-boxed (15m), capped (2/day), and non-permanently granted, which mitigates long-term substitution while providing a trial for conversion.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The code indicates the reward COGS ($0.0090) exceeds the net revenue per view ($0.0063) at the low end. The reward size is too generous for the cost.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggers are on high-frequency subscription walls (m9, m10) related to Luzia+ features, hitting a core segment of the user base.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses the native SIM-RWD unit with an existing wall trigger, requiring minimal engineering lift.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References app-specific elements like 'Attachment and Mode Sheet', 'Deep reasoning mode', and 'Luzia+' throughout.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Defines explicit caps (2 per day) and cooldowns (30 minutes), and provides a 'No Thanks' escape.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies 'Rewarded ARPDAU' as a primary metric and includes a 10% user-level holdout as a guardrail.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the session pass duration from 15 minutes to 5-10 minutes to align the reward COGS with the projected net revenue per view.",
+   "Verify the implementation of server-side verification (SSV) to ensure rewards are granted only after successful completion of the mini-game."
+  ],
+  "topConcern": "The unit economics are unfavorable; the cost of providing 15 minutes of deep reasoning inference exceeds the anticipated revenue per view, which must be corrected by shortening the trial or tightening the economy."
+ },
+ "usage": {
+  "input": 42756,
+  "output": 1075,
+  "cacheRead": 40428,
+  "cacheWrite": 0,
+  "thoughts": 1502
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:32:14.230Z"
+}

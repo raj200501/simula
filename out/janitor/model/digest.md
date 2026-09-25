@@ -38,15 +38,15 @@ long chats.), reach=frequent: The user dismisses More memory for
 long chats. ("Close paywall") without buying and returns to More memory for
 long chats.
 - m3 [decline] on s04 (Janitor Plus Paywall), reach=rare: The user leaves Janitor Plus Paywall without buying
-- m4 [desire] on s02 (@8iyiyiyiy), reach=core-loop: @8iyiyiyiy shows an upsell: "Upgrade to Janitor Plus"
+- m4 [desire] on s02 (@your_handle), reach=core-loop: @your_handle shows an upsell: "Upgrade to Janitor Plus"
 - m5 [first-value, NO OFFERS ALLOWED] on s01 (Build, Share, Explore), reach=core-loop: Build, Share, Explore is the first screen with core content after launch: no offer may appear here
 - m6 [desire] on s09 (Character Details), reach=occasional: User views character details and reviews before initiating a chat.
 
 ## Flows
 
-- f1 [core] App Navigation & Character Discovery: Build, Share, Explore (launch) → @8iyiyiyiy (Tap the unlabeled icon) → Explore Characters (Close drawer while "Main navigation" is selected (auto:TextView||#|2 −146))
+- f1 [core] App Navigation & Character Discovery: Build, Share, Explore (launch) → @your_handle (Tap the unlabeled icon) → Explore Characters (Close drawer while "Main navigation" is selected (auto:TextView||#|2 −146))
 - f2 [monetization] Hit the wall: More memory for
-long chats.: Build, Share, Explore (launch) → @8iyiyiyiy (Tap the unlabeled icon) → More memory for
+long chats.: Build, Share, Explore (launch) → @your_handle (Tap the unlabeled icon) → More memory for
 long chats. (Upgrade to Janitor Plus while "Main navigation" is selected)
 
 ## Screens (id, kind, name — purpose; key texts; actions)
@@ -58,12 +58,12 @@ Content page
 - actions: tap "Limited Only" (monetization) [no-effect]; tap "Limited Only" (monetization) [no-effect]; tap "Hidden Gems" (monetization); tap "Hidden Gems" (monetization) [no-effect]; tap "⭐ Trending shows popular characters wit…" (core loop) [no-effect]; tap the unlabeled icon at top-right; tap "All" [untried]; tap "All" [untried]; tap "Following" [untried]; tap "Favorites" [untried]
 - element ids available for callouts: e3="Close drawer", e5="Build, Share, Explore", e6="All", e7="Limited Only", e8="All", e9="Limited Only", e10="Following", e11="Favorites", e12="Trending", e13="Hidden Gems", e14="Following", e15="Favorites", e16="Trending", e17="Hidden Gems", e18="24h", e19="Weekly", e20="24h", e21="Weekly", e22="⭐ Trending shows popular"
 
-### s02 [page] @8iyiyiyiy
+### s02 [page] @your_handle
 Content page
-- texts: "Close drawer", "@8iyiyiyiy", "0", "Following", "Followers", "Member Since Sep 24, 2026", "Hidden Gems", "Explore All", "View public profile", "￼Hidden Gems show characters from smaller creators", "Main navigation", "1 / 102", "Blocks", "Snails on the Slope", "154", "Media Library", "Settings", "Billing", "Upgrade to Janitor Plus", "“I don’t expect anything magical. I just want it t", "“I don’t expect anything magical. I just want it t", "Upgrade to", "Get Help", "Feel the air, my favorite reader.", "You, your beloved wife, and a three-day climb toge"
+- texts: "Close drawer", "@your_handle", "0", "Following", "Followers", "Member Since (date)", "Hidden Gems", "Explore All", "View public profile", "￼Hidden Gems show characters from smaller creators", "Main navigation", "1 / 102", "Blocks", "Snails on the Slope", "154", "Media Library", "Settings", "Billing", "Upgrade to Janitor Plus", "“I don’t expect anything magical. I just want it t", "“I don’t expect anything magical. I just want it t", "Upgrade to", "Get Help", "Feel the air, my favorite reader.", "You, your beloved wife, and a three-day climb toge"
 - signals: upsell:"Upgrade to Janitor Plus", upsell:"Upgrade to"
-- actions: tap "Hidden Gems" (monetization); tap "Hidden Gems" (monetization); tap "￼Hidden Gems show characters from small…" (monetization); tap "Upgrade to Janitor Plus" (monetization); tap "Upgrade to" (monetization); tap "Close drawer"; tap the unlabeled icon at top-left; tap "@8iyiyiyiy" [untried]; tap "0 Following" [untried]; tap "0" [untried]
-- element ids available for callouts: e3="Close drawer", e6="@8iyiyiyiy", e8="0", e9="0", e10="Following", e11="Followers", e12="Member Since Sep 24, 202", e13="Hidden Gems", e14="Explore All", e15="Hidden Gems", e16="Explore All", e18="View public profile", e19="￼Hidden Gems show charac", e20="Main navigation", e21="Main navigation", e22="Following", e23="Following", e25="1 / 102", e26="1 / 102", e27="Blocks"
+- actions: tap "Hidden Gems" (monetization); tap "Hidden Gems" (monetization); tap "￼Hidden Gems show characters from small…" (monetization); tap "Upgrade to Janitor Plus" (monetization); tap "Upgrade to" (monetization); tap "Close drawer"; tap the unlabeled icon at top-left; tap "@your_handle" [untried]; tap "0 Following" [untried]; tap "0" [untried]
+- element ids available for callouts: e3="Close drawer", e6="@your_handle", e8="0", e9="0", e10="Following", e11="Followers", e12="Member Since (date), 202", e13="Hidden Gems", e14="Explore All", e15="Hidden Gems", e16="Explore All", e18="View public profile", e19="￼Hidden Gems show charac", e20="Main navigation", e21="Main navigation", e22="Following", e23="Following", e25="1 / 102", e26="1 / 102", e27="Blocks"
 
 ### s03 [page] More memory for
 long chats.
@@ -168,7 +168,7 @@ Search and filter AI characters by tags and categories.
 - g0027: s03 → s03 [replace] via a03_16
 - g0028: s02 → s03 [push] via a02_5 (e41) while Main navigation selected
 - g0029: s04 → s02 [push] via a04_1 (e2)
-- g0030: s02 → s05 [push] via a02_6 (e3) while Main navigation selected; auto:TextView||#|2 -146, appeared "Build, Share, Explore", appeared "All", appeared "Limited Only", appeared "Favorites", appeared "Trending", disappeared "@8iyiyiyiy", disappeared "0", disappeared "Following", disappeared "Followers", disappeared "Member Since Sep 24, 2026"
+- g0030: s02 → s05 [push] via a02_6 (e3) while Main navigation selected; auto:TextView||#|2 -146, appeared "Build, Share, Explore", appeared "All", appeared "Limited Only", appeared "Favorites", appeared "Trending", disappeared "@your_handle", disappeared "0", disappeared "Following", disappeared "Followers", disappeared "Member Since (date)"
 - g0031: s05 → s05 [replace] via a05_1 (e7)
 - g0032: s05 → s05 [replace] via a05_2 (e9)
 - g0033: s05 → s05 [replace] via a05_3 (e13)
@@ -191,7 +191,7 @@ Search and filter AI characters by tags and categories.
 - g0050: s14 → s14 [replace] via a14_1 (e6)
 - g0051: s14 → s14 [replace] via a14_2 (e9)
 - g0052: s14 → s13 [push] via a14_3 (e4)
-- g0053: s13 → s02 [push] via a13_2 (e5); appeared "@8iyiyiyiy", appeared "0", appeared "Following", appeared "Followers", appeared "Member Since Sep 24, 2026", disappeared "No notifications"
+- g0053: s13 → s02 [push] via a13_2 (e5); appeared "@your_handle", appeared "0", appeared "Following", appeared "Followers", appeared "Member Since (date)", disappeared "No notifications"
 - g0054: s02 → s13 [push] via a02_7 (e4) while Main navigation selected
 - g0055: s02 → s13 [push] via a02_16 (e20) while Main navigation selected
 - g0056: s02 → s15 [push] via a02_19 (e27) while Main navigation selected

@@ -1,0 +1,208 @@
+{
+ "purpose": "revise:P2:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Favorite Message Saving Fallback",
+  "oneLiner": "Watch a quick game partner session to sample favorite message saving for 24 hours.",
+  "case": "existing",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m5"
+   ],
+   "economy": [
+    "r2"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s21",
+  "trigger": "After dismissing the account signup wall on the Favorite messages screen.",
+  "eligibility": "Guest users who dismiss the account signup wall (m6).",
+  "offer": {
+   "title": "Try Saving for 24h",
+   "body": "Not ready to sign up? Play a 15-second game with Luzia to try saving favorite messages for 24 hours.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "24-hour access to favorite message saving",
+   "resource": null,
+   "amount": null,
+   "duration": "24 hours",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Access is a time-boxed sample for guests who already declined signup; it does not grant permanent account access (r2) or bypass signup permanently.",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 1,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Conversion rate from ad-engagement to account signup",
+   "guardrails": [
+    "Account signup rate",
+    "Guest D1/D7 retention",
+    "Ad completion rate"
+   ],
+   "holdout": "5% user-level holdout for 30 days comparing total account creation and engagement rates"
+  },
+  "precedents": [
+   "TAX-3",
+   "EX-DUO",
+   "TAX-10"
+  ],
+  "risks": [
+   "Ad-supported access might delay signups if users find the temporary sample sufficient for short-term needs."
+  ],
+  "evidence": [
+   {
+    "obs": "o0084",
+    "el": "e6",
+    "quote": "Sign up to start saving your favorite messages. It's quick, easy, and free!"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s21",
+     "near": "e10",
+     "place": "after",
+     "change": "Add 'Try for 24h' rewarded button after the user declines the signup wall."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s21",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "TemporaryFavoriteAccess",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "r2",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e6",
+      "text": "Mandatory signup wall"
+     }
+    ],
+    "caption": "Guest users are blocked by a mandatory signup wall when trying to save messages."
+   },
+   {
+    "phase": "change",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Fallback 'Try for 24h' button"
+     }
+    ],
+    "caption": "Users who dismiss the signup wall see a fallback offer to sample the feature."
+   },
+   {
+    "phase": "offer",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s game with Luzia"
+     }
+    ],
+    "caption": "The user opts in to a 15-second rewarded game to unlock temporary access."
+   },
+   {
+    "phase": "ad",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Simula Rewarded Mini-Game"
+     }
+    ],
+    "caption": "The user engages in the rewarded mini-game with Luzia as the Game Partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "24-hour access granted"
+     }
+    ],
+    "caption": "On verification, the user receives a 24-hour sample of favorite message saving."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43234,
+  "output": 1055,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2124
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:12.821Z"
+}

@@ -1,0 +1,210 @@
+{
+ "purpose": "revise:P2:r2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "AI Usage Quota Refill Fallback",
+  "oneLiner": "Watch a quick game partner session to earn bonus AI usage quota after dismissing the signup wall.",
+  "case": "existing",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m5"
+   ],
+   "economy": [
+    "r2",
+    "r3"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s21",
+  "trigger": "After dismissing the account signup wall on the Favorite messages screen.",
+  "eligibility": "Guest users who dismiss the account signup wall (m6).",
+  "offer": {
+   "title": "Get Bonus Messages",
+   "body": "Not ready to sign up? Play a quick game with Luzia for 5 bonus messages.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "5 bonus chat messages",
+   "resource": "r3",
+   "amount": 5,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Grants bonus AI usage quota (r3) rather than bypassing account-locked features like saving messages; does not grant account access (r2).",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 1,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 5
+  },
+  "kpis": {
+   "primary": "Conversion rate from ad-engagement to account signup",
+   "guardrails": [
+    "Account signup rate",
+    "Guest D1/D7 retention",
+    "Ad completion rate"
+   ],
+   "holdout": "5% user-level holdout for 30 days comparing total account creation and engagement rates"
+  },
+  "precedents": [
+   "TAX-3",
+   "EX-DUO",
+   "TAX-1",
+   "TAX-10"
+  ],
+  "risks": [
+   "Ad-supported bonus messages do not grant permanent account access or message saving features."
+  ],
+  "evidence": [
+   {
+    "obs": "o0084",
+    "el": "e6",
+    "quote": "Sign up to start saving your favorite messages. It's quick, easy, and free!"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s21",
+     "near": "e10",
+     "place": "after",
+     "change": "Add 'Get Bonus Messages' rewarded button after the user declines the signup wall."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s21",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r3",
+       "delta": 5
+      }
+     ],
+     "guard": {
+      "resource": "r2",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 10
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e6",
+      "text": "Mandatory signup wall"
+     }
+    ],
+    "caption": "Guest users encounter a signup wall when accessing features."
+   },
+   {
+    "phase": "change",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 10
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Bonus messages button"
+     }
+    ],
+    "caption": "Users who dismiss the wall see bonus message options."
+   },
+   {
+    "phase": "offer",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 10
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s game with Luzia"
+     }
+    ],
+    "caption": "The user opts in to a rewarded mini-game."
+   },
+   {
+    "phase": "ad",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 10
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Simula Rewarded Mini-Game"
+     }
+    ],
+    "caption": "The user plays the rewarded mini-game with Luzia."
+   },
+   {
+    "phase": "value",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 15
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "+5 messages added"
+     }
+    ],
+    "caption": "Upon verification, bonus AI usage quota is granted."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43146,
+  "output": 1441,
+  "cacheRead": 30828,
+  "cacheWrite": 0,
+  "thoughts": 2465
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:53.566Z"
+}

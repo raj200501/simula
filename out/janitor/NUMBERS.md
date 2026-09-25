@@ -40,13 +40,13 @@ long chats..
 
 ## Cost
 
-- **$0**, 47 live model calls (+0 served from cache), 1.1M tokens in, 203.5k out (free Gemini tier).
-- Models that answered: gemini-3.5-flash-lite, gemini-3.1-flash-lite.
+- **$0**, 49 live model calls (+6 served from cache), 1.1M tokens in, 230.5k out (free Gemini tier).
+- Models that answered: gemini-3.5-flash-lite, gemini-3.1-flash-lite, gemini-3-flash-preview.
 - explore: 15 live, 0 cached.
 - understand: 1 live, 0 cached.
 - mock: 6 live, 0 cached.
 - qa: 3 live, 0 cached.
 - propose: 10 live, 0 cached.
 - judge: 8 live, 0 cached.
-- slides: 4 live, 0 cached.
-- Trace: 74 decisions, 34 failures, 36 recoveries.
+- slides: 6 live, 6 cached.
+- Trace: 76 decisions, 34 failures, 36 recoveries.

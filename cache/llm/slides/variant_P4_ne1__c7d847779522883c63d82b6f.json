@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P4:ne1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne1\" style=\"position:absolute;top:275px;left:16px;width:379.4px;background:var(--c-surface);border-radius:var(--r-md);padding:16px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;z-index:20;\">\n  <div style=\"display:flex;align-items:center;justify-content:space-between;\">\n    <div style=\"display:flex;align-items:center;gap:12px;\">\n      <div style=\"width:40px;height:40px;background:var(--c-accent);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--c-on-accent);\">\n        <svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n          <rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"3\"></rect>\n          <path d=\"M6 12h4\"></path>\n          <path d=\"M8 10v4\"></path>\n          <circle cx=\"15\" cy=\"10\" r=\"1\"></circle>\n          <circle cx=\"18\" cy=\"14\" r=\"1\"></circle>\n        </svg>\n      </div>\n      <div style=\"font-size:var(--fs-md);font-weight:600;color:var(--c-text);\">Play Daily Quest Now</div>\n    </div>\n    <div style=\"color:var(--c-muted);font-size:18px;line-height:1;cursor:pointer;\">×</div>\n  </div>\n  <div style=\"font-size:var(--fs-sm);color:var(--c-muted);line-height:1.4;\">\n    Play a quick 15-second mini-game with Luzia to earn <b>+3 bonus chat credits</b>.\n  </div>\n  <div style=\"display:flex;flex-direction:column;gap:8px;\">\n    <button class=\"btn btn-primary\" style=\"width:100%;height:48px;border-radius:var(--r-lg);background:var(--c-accent);color:var(--c-on-accent);border:none;font-weight:500;font-size:var(--fs-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;\">Play Now</button>\n    <button class=\"btn btn-secondary\" style=\"width:100%;height:48px;border-radius:var(--r-lg);background:var(--c-surface-variant);color:var(--c-text);border:none;font-weight:500;font-size:var(--fs-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;\">No Thanks</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 7508,
+  "output": 728,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 5460
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:33:30.073Z"
+}

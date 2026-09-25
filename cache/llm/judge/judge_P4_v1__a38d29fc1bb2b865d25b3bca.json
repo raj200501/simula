@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "A daily engagement task where users play a 15-second mini-game with Luzia to earn bonus chat credits."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Earn bonus chat credits daily by completing a quick interactive mini-game with Luzia."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a quick 15-second mini-game with Luzia to earn 10 bonus chat credits."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "\"cta\": \"Play Now\""
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "\"body\": \"Play a quick 15-second mini-game with Luzia to earn 10 bonus chat credits.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "\"decline\": \"No Thanks\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "User taps the daily quest banner on the Chats Home hub upon returning to the app."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-paying users who have completed their first session and have remaining daily quota capacity."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal implements archetype TAX-9 (Daily quests) offering 10 bonus chat credits via an opt-in mini-game on the Chats Home hub.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Implemented as a proactive daily quest banner on s01 with no removal of existing free features, using Luzia as a game partner.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-paying users with strict daily caps, rewarding soft usage quota rather than permanent subscription features or premium reasoning models.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code computed cost to serve ($0.0180) exceeds net revenue per view ($0.0063) at the low end.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Placed on s01 (Chats Home), which is the core-loop hub reached on every app open.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD with button entry, REWARD_VERIFIED, and clear patch definitions for screen ns1 and element ne1.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Explicitly references Luzia, s01 (Chats Home), and chat credits resource r3.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps set to 3 per day with a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a 10% user-level randomized holdout for 28 days, primary metric Rewarded ARPDAU and retention, and paid conversion guardrails.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward size or switch to a cheaper model so that the cost to serve ($0.0180) does not exceed net revenue per view ($0.0063).",
+   "Fix storyboard callout node references (node \"e10\" is not declared on screen ns1)."
+  ],
+  "topConcern": "The cost to serve the reward ($0.0180) exceeds net revenue per view ($0.0063) at the low end, resulting in negative net unit economics."
+ },
+ "usage": {
+  "input": 42651,
+  "output": 1026,
+  "cacheRead": 32333,
+  "cacheWrite": 0,
+  "thoughts": 1401
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:10.485Z"
+}

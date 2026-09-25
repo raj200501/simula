@@ -1,6 +1,6 @@
 # Trajectory: janitor
 
-Autonomous decisions: **74**. Human interventions: **0**. Autonomy ratio: **100.0%**.
+Autonomous decisions: **76**. Human interventions: **0**. Autonomy ratio: **100.0%**.
 
 ## Stage runs
 
@@ -14,11 +14,13 @@ Autonomous decisions: **74**. Human interventions: **0**. Autonomy ratio: **100.
 | propose | pr0925-145628 | 18:56:28 | 18:57:31 | 18 | 4 |  |
 | judge | ju0925-145731 | 18:57:31 | 18:59:25 | 48 | 12 |  |
 | slides | sl0925-145925 | 18:59:25 | 19:01:39 | 15 | 2 |  |
+| slides | sl0925-193657 | 19:36:57 | 19:39:14 | 17 | 0 |  |
+| slides | sl0925-193947 | 19:39:47 | 19:40:07 | 11 | 0 |  |
 
 ## New states discovered over time
 
 - step 0 (18:47:35): **s01** "Build, Share, Explore"
-- step 6 (18:47:44): **s02** "@8iyiyiyiy"
+- step 6 (18:47:44): **s02** "@your_handle"
 - step 10 (18:48:03): **s03** "More memory for
 long chats."
 - step 28 (18:48:53): **s04** "Janitor Plus Paywall"

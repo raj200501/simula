@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal uses a daily retention task centered on character interaction on the SFW home hub, avoiding all sensitive topics."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 'bonus chat credits' (resource r3) which are in-app and non-transferable. There is no incentive for clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing ('earn bonus chat credits') and avoids hostage scenarios or loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the 'Play Now' CTA on the Daily Quest banner to start."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal clearly states: 'Play a quick 15-second mini-game with Luzia to earn 3 bonus chat credits.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No Thanks' button which dismisses the sheet with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears as a banner on the Chats Home hub (s01), not mid-conversation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly limited to 'Non-paying users'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets a daily habit-building loop ('Daily Character Quest') on the home hub, which is a proactive, well-aligned retention trigger, though less urgent than a reactive refill.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The mini-game features the Luzia character as a partner, making the interaction feel native to the assistant persona and conversational flow.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-payers with a strict daily cap of 3 credits. This creates an additive retention incentive rather than giving away subscription-core benefits.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.0054, with net revenue per view ranging from $0.009 to $0.015. At the lower bound, the cost is 60% of net revenue, which is at the upper threshold for acceptable margin.",
+    "score": 3
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Placed on the Chats Home hub, the core entry point for the app, ensuring high visibility for all users.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps clearly to the SIM-RWD unit, using existing hub real estate (s01). Engineering overhead is low.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses specific app nouns and resources (r3, Chats Home, Luzia character, s01), well-aligned with the Luzia product digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a strict daily cap of 3 completions and a 60-minute cooldown, preventing over-exposure.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposes primary metrics (ARPDAU, retention), guardrails (conversion), and a 10% randomized holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Monitor the cost-to-revenue ratio closely during the pilot; if COGS exceeds 60% of realized revenue, reduce reward to 2 credits per view.",
+   "Ensure the 'Daily Quest' banner does not push core chat functionality off the fold on small screens."
+  ],
+  "topConcern": "The COGS for a 3-credit reward sits at 60% of the lower-bound net revenue per view, placing it at the limit of the acceptable margin threshold."
+ },
+ "usage": {
+  "input": 42671,
+  "output": 1086,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1692
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:32:20.755Z"
+}

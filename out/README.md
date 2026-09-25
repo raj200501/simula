@@ -6,7 +6,7 @@ One section per app, all produced by the same pipeline with no per-app code. Thi
 |---|---|---|---|---|---|
 | [AOL](#aol) | complete | 17 screens · 58 transitions | no-scarcity | 0 SHIP · 0 REVISE · 3 REJECT | 0.77 · 22/22 |
 | [Janitor](#janitor) | complete | 16 screens · 60 transitions | subscription-gated | 2 SHIP · 0 REVISE · 1 REJECT | 0.90 · 45/45 |
-| [Luzia](#luzia) | complete (stub: proposals) | 38 screens · 171 transitions | subscription-gated | 3 SHIP · 0 REVISE · 2 REJECT | 0.72 · 134/135 |
+| [Luzia](#luzia) | complete | 38 screens · 171 transitions | subscription-gated | 2 SHIP · 0 REVISE · 3 REJECT | 0.72 · 134/135 |
 | [OOC](#ooc) | blocked | – | – | – | – |
 
 ## AOL
@@ -36,6 +36,7 @@ Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 2
 
 - "Add Comment Page" (s05) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - "Sign In Screen" (s06) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
+- Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
 
 ## Janitor
 
@@ -70,7 +71,7 @@ _The lead flow played in the generated mock: today → what changed → the offe
 | Screen | Real app | Mock | Score |
 |---|---|---|---|
 | Build, Share, Explore | <img src="janitor/qa/s01/original.png" width="180"> | <img src="janitor/qa/s01/best.png" width="180"> | 0.94 (html) |
-| @8iyiyiyiy | <img src="janitor/qa/s02/original.png" width="180"> | <img src="janitor/qa/s02/best.png" width="180"> | 0.92 (html) |
+| @your_handle | <img src="janitor/qa/s02/original.png" width="180"> | <img src="janitor/qa/s02/best.png" width="180"> | 0.92 (html) |
 | More memory for
 long chats. | <img src="janitor/qa/s03/original.png" width="180"> | <img src="janitor/qa/s03/best.png" width="180"> | 0.91 (html) |
 | Janitor Plus Paywall | <img src="janitor/qa/s04/original.png" width="180"> | <img src="janitor/qa/s04/best.png" width="180"> | 0.83 (html) |
@@ -83,25 +84,21 @@ Luzia is an AI assistant providing chat capabilities, creative content generatio
 
 [Numbers](luzia/NUMBERS.md) · [Product model digest](luzia/model/digest.md) · [Candidates](luzia/proposals/candidates.md) · [Judgments (every score, with evidence)](luzia/proposals/judgments.md) · [Judge self-check](luzia/proposals/judge-eval.md) · [Trajectory](luzia/trajectory.md) · [Slides (PDF)](luzia/slides/deck.pdf)
 
-### P3 in motion
+### P1 in motion
 
-<img src="luzia/slides/flow-P3.gif" width="300" alt="P3: Daily tasks on Chats Home, played in the generated mock">
+<img src="luzia/slides/flow-P1.gif" width="300" alt="P1: Start Task with Rewarded Refill, played in the generated mock">
 
 _The lead flow played in the generated mock: today → what changed → the offer → the game → the reward confirmed in-app._
 
 ### Shipped flows
 
-**P3: Daily tasks on Chats Home**
+**P1: Start Task with Rewarded Refill**
 
-![P3: Daily tasks on Chats Home](luzia/slides/png/03-flow-P3.png)
+![P1: Start Task with Rewarded Refill](luzia/slides/png/03-flow-P1.png)
 
-**P5: Guest sample of Upgrade to Luzia+**
+**P4: Daily Character Quest & Credits**
 
-![P5: Guest sample of Upgrade to Luzia+](luzia/slides/png/05-flow-P5.png)
-
-**P2: Try Upgrade to Luzia+ for a game**
-
-![P2: Try Upgrade to Luzia+ for a game](luzia/slides/png/07-flow-P2.png)
+![P4: Daily Character Quest & Credits](luzia/slides/png/05-flow-P4.png)
 
 <details><summary>Recommendation slide</summary>
 

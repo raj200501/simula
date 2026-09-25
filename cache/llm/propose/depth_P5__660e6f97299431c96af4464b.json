@@ -1,0 +1,213 @@
+{
+ "purpose": "depth:P5",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Attachment Studio Extra Credit",
+  "oneLiner": "Provide non-subscribers with bonus photo analysis credits via opt-in rewarded mini-game sessions.",
+  "case": "product-change",
+  "archetype": "TAX-1",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m14"
+   ],
+   "economy": [
+    "r3"
+   ],
+   "newMechanic": {
+    "name": "Photo Analysis Credits",
+    "description": "A supplementary quota of free photo analysis actions for non-subscribers",
+    "whyNeeded": "To provide a value exchange at the attachment studio boundary without locking core free text chat",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s27",
+  "trigger": "User taps photo attachment when daily photo analysis quota is exhausted",
+  "eligibility": "Non-subscribers on Attachment and Mode Sheet",
+  "offer": {
+   "title": "Get Free Photo Credits",
+   "body": "Play a quick game with Luzia to earn 3 bonus photo analysis credits now.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "3 bonus photo analysis credits",
+   "resource": "r3",
+   "amount": 3,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 15
+  },
+  "cannibalizationGuard": "Gated strictly to non-subscribers, capped at 3 daily grants, and kept separate from Luzia+ subscription core benefits.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 1.5,
+   "cogs": "image",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU",
+   "guardrails": [
+    "Subscription conversion non-inferiority",
+    "D7 retention"
+   ],
+   "holdout": "10% user-level holdout for 28 days"
+  },
+  "precedents": [
+   "TAX-1",
+   "AI-5",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Image processing COGS near break-even",
+   "User fatigue if daily cap is exceeded"
+  ],
+  "evidence": [
+   {
+    "obs": "s27",
+    "el": "e12",
+    "quote": "Attach Photos"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s27",
+     "near": "e12",
+     "place": "after",
+     "change": "Rewarded ad button for extra photo credits"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s27",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r3",
+       "delta": 3
+      }
+     ],
+     "guard": {
+      "resource": "r3",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e12",
+      "text": "User taps photo attachment when out of free credits."
+     }
+    ],
+    "caption": "User taps photo attachment feature when out of free credits."
+   },
+   {
+    "phase": "change",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "App introduces rewarded ad prompt for photo analysis credits."
+     }
+    ],
+    "caption": "App introduces rewarded ad prompt for photo analysis credits."
+   },
+   {
+    "phase": "offer",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "User sees opt-in invitation card with explicit reward details."
+     }
+    ],
+    "caption": "User sees opt-in invitation card with explicit reward details."
+   },
+   {
+    "phase": "ad",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "User plays 15-second mini-game partner session with Luzia."
+     }
+    ],
+    "caption": "User plays 15-second mini-game partner session with Luzia."
+   },
+   {
+    "phase": "value",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 3
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e12",
+      "text": "Reward verified and 3 photo analysis credits added instantly."
+     }
+    ],
+    "caption": "Reward verified and 3 photo analysis credits added instantly."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42722,
+  "output": 1501,
+  "cacheRead": 15403,
+  "cacheWrite": 0,
+  "thoughts": 3220
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:30:12.565Z"
+}

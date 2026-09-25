@@ -167,7 +167,7 @@ long chats. (s03) · reward 30 minutes of enhanced context memory · caps 3/day
 
 > Earn daily check-in rewards and frontier model swipes by completing character quests via rewarded mini-games.
 
-- product-change · TAX-9 · surface @8iyiyiyiy (s02) · reward Daily frontier swipe credits · caps 3/day
+- product-change · TAX-9 · surface @your_handle (s02) · reward Daily frontier swipe credits · caps 3/day
 
 #### Round 0 (v1): **REVISE** · weighted 4.3 · judged by llm
 
@@ -182,7 +182,7 @@ long chats. (s03) · reward 30 minutes of enhanced context memory · caps 3/day
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | Surface s02 is the profile screen (@8iyiyiyiy), which is SFW and age-appropriate. |
+| sfw | llm | policy | pass | Surface s02 is the profile screen (@your_handle), which is SFW and age-appropriate. |
 | no-incentivized-action | llm | policy | pass | Reward is in-app frontier swipe credits earned by playing a 15-second mini-game; no cash or install incentivized. |
 | no-loss-framing | llm | policy | pass | Proactive daily check-in hub uses positive gain framing ('claim your daily check-in reward') with a clear decline option. |
 | explicit-opt-in | llm | fixable | pass | User opts in explicitly via the 'Play Now' CTA button on the invitation screen. |

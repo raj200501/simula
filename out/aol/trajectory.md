@@ -1,6 +1,6 @@
 # Trajectory: aol
 
-Autonomous decisions: **75**. Human interventions: **2**. Autonomy ratio: **97.4%**.
+Autonomous decisions: **75**. Human interventions: **3**. Autonomy ratio: **96.2%**.
 
 ## Stage runs
 
@@ -14,6 +14,7 @@ Autonomous decisions: **75**. Human interventions: **2**. Autonomy ratio: **97.4
 | propose | pr0925-151538 | 19:15:38 | 19:16:22 | 8 | 0 |  |
 | judge | ju0925-151622 | 19:16:22 | 19:17:38 | 33 | 5 | revision stalled: weighted 4.5 -> 4.3 |
 | slides | sl0925-151738 | 19:17:38 | 19:17:39 | 4 | 0 |  |
+| human | manual | 19:26:58 | 19:26:58 | 1 | 0 |  |
 
 ## New states discovered over time
 
@@ -141,6 +142,7 @@ failed
 
 - 2026-09-25T19:02:33 [explore] "Add Comment Page" (s05) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - 2026-09-25T19:02:52 [explore] "Sign In Screen" (s06) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
+- 2026-09-25T19:26:58 [human] Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
 
 ## Key exploration decisions (priority 3)
 

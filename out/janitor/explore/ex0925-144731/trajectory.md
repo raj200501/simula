@@ -12,7 +12,7 @@ Autonomous decisions: **60**. Human interventions: **0**. Autonomy ratio: **100.
 ## New states discovered over time
 
 - step 0 (18:47:35): **s01** "Build, Share, Explore"
-- step 6 (18:47:44): **s02** "@8iyiyiyiy"
+- step 6 (18:47:44): **s02** "@your_handle"
 - step 10 (18:48:03): **s03** "More memory for
 long chats."
 - step 28 (18:48:53): **s04** "Janitor Plus Paywall"

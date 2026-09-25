@@ -1,0 +1,227 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Deep Reasoning Session Pass",
+  "oneLiner": "Allow guests to sample deep reasoning mode for 15 minutes by engaging with a rewarded mini-game.",
+  "case": "product-change",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m9",
+    "m10"
+   ],
+   "economy": [
+    "r1"
+   ],
+   "newMechanic": {
+    "name": "Deep Reasoning Session Pass",
+    "description": "An ephemeral, time-boxed 15-minute entitlement to deep reasoning mode earned via a rewarded ad, separate from the Luzia+ subscription.",
+    "whyNeeded": "Provides a high-value sample for non-paying users to experience premium capabilities, driving upgrade intent without devaluing the permanent subscription.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s07",
+  "trigger": "User taps 'Toggle deep reasoning mode' or 'Start a task' on the Attachment and Mode Sheet (s27), triggering the subscription paywall (s07).",
+  "eligibility": "Non-paying guest users hitting the Luzia+ subscription wall.",
+  "offer": {
+   "title": "Unlock Deep Reasoning",
+   "body": "Play a quick 15-second game to unlock 15 minutes of deep reasoning mode.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "15 minutes of deep reasoning mode",
+   "resource": "ENT_DR_PASS",
+   "amount": 1,
+   "duration": "15 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Gated strictly to non-paying guests; session is time-boxed to 15 minutes (short duration); cap of 2 per day prevents power-usage substitution; paywall remains the primary CTA.",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-premium",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU",
+   "guardrails": [
+    "Paid conversion non-inferiority within -3%",
+    "D30 retention parity",
+    "Daily usage limits per user"
+   ],
+   "holdout": "10% user-level holdout over 28 days"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-MUSIC",
+   "POL-8"
+  ],
+  "risks": [
+   "Inference COGS for premium reasoning models must be strictly monitored per user.",
+   "Risk of users habituating to the 15-minute window instead of converting."
+  ],
+  "evidence": [
+   {
+    "obs": "o0060",
+    "el": null,
+    "quote": "Upgrade to Luzia+"
+   },
+   {
+    "obs": "s27",
+    "el": "e15",
+    "quote": "Deep reasoning"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s07",
+     "kind": "sheet",
+     "change": "Rewarded reward invitation sheet"
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s07",
+     "near": "e7",
+     "place": "before",
+     "change": "Button: Watch ad to unlock 15m deep reasoning"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s07",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "ENT_DR_PASS",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "ENT_DR_PASS",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "Deep reasoning is locked for guests"
+     }
+    ],
+    "caption": "Deep reasoning mode is exclusively for Luzia+ subscribers."
+   },
+   {
+    "phase": "change",
+    "screen": "s07",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Added rewarded option"
+     }
+    ],
+    "caption": "A new option to unlock via rewarded ad appears on the wall."
+   },
+   {
+    "phase": "offer",
+    "screen": "s07",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s to get 15m"
+     }
+    ],
+    "caption": "User chooses to watch an ad instead of subscribing."
+   },
+   {
+    "phase": "ad",
+    "screen": "s07",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Simula mini-game"
+     }
+    ],
+    "caption": "User plays the 15-second mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "ENT_DR_PASS",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "15m pass unlocked"
+     }
+    ],
+    "caption": "Deep reasoning is unlocked for the next 15 minutes."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43257,
+  "output": 1667,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1274
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:24.308Z"
+}

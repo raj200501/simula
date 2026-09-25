@@ -1,0 +1,242 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Watch an ad to unlock Luzia+ subscription",
+   "Watch a video ad to get free messages",
+   "Watch an ad to remove all ads"
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Yes, refill task messages when subscription runs out",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "Yes, offer reward fallback when dismissing create account sheet",
+    "viable": true
+   },
+   {
+    "moment": "m3",
+    "exchange": "Yes, unlock response style temporarily",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Yes, offer reward fallback on style sheet dismissal",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "Yes, unlock favorite message slots",
+    "viable": true
+   },
+   {
+    "moment": "m6",
+    "exchange": "Yes, fallback on favorites sheet dismissal",
+    "viable": true
+   },
+   {
+    "moment": "m7",
+    "exchange": "Yes, create custom bestie trial profile",
+    "viable": true
+   },
+   {
+    "moment": "m8",
+    "exchange": "Yes, fallback on bestie sheet dismissal",
+    "viable": true
+   },
+   {
+    "moment": "m9",
+    "exchange": "Yes, time-boxed deep reasoning mode pass",
+    "viable": true
+   },
+   {
+    "moment": "m10",
+    "exchange": "Yes, priority task processing pass",
+    "viable": true
+   },
+   {
+    "moment": "m11",
+    "exchange": "Yes, sample premium features from chats home upsell",
+    "viable": true
+   },
+   {
+    "moment": "m12",
+    "exchange": "Yes, settings upgrade session pass",
+    "viable": true
+   },
+   {
+    "moment": "m13",
+    "exchange": "Yes, login screen feature unlock sample",
+    "viable": true
+   },
+   {
+    "moment": "m14",
+    "exchange": "Yes, attachment credit refill in mode sheet",
+    "viable": true
+   },
+   {
+    "moment": "m15",
+    "exchange": "Yes, post-signup bonus multiplier",
+    "viable": true
+   },
+   {
+    "moment": "m16",
+    "exchange": "Yes, chats home proactive daily task loop",
+    "viable": true
+   },
+   {
+    "moment": "m17",
+    "exchange": "Yes, ideas feed bonus credits",
+    "viable": false
+   },
+   {
+    "moment": "m18",
+    "exchange": "Yes, services tab daily check-in bonus",
+    "viable": true
+   },
+   {
+    "moment": "m19",
+    "exchange": "Yes, apps catalog tool unlock",
+    "viable": false
+   },
+   {
+    "moment": "m20",
+    "exchange": "Yes, animate tool trial",
+    "viable": false
+   },
+   {
+    "moment": "m21",
+    "exchange": "Yes, image creation hub credits",
+    "viable": false
+   },
+   {
+    "moment": "m22",
+    "exchange": "First value screen, no offers allowed",
+    "viable": false
+   },
+   {
+    "moment": "m23",
+    "exchange": "Settings upsell fallback",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Out-of-Task Message Refill",
+    "case": "existing",
+    "archetype": "TAX-1",
+    "moment": "m1",
+    "reward": "3 free task messages",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Response Style Trial Pass",
+    "case": "existing",
+    "archetype": "TAX-2",
+    "moment": "m3",
+    "reward": "15 minutes of response style customization",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Favorite Message Slot Unlock",
+    "case": "existing",
+    "archetype": "TAX-3",
+    "moment": "m5",
+    "reward": "Unlock 3 saved favorite message slots",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Custom Bestie Sample Creation",
+    "case": "existing",
+    "archetype": "TAX-3",
+    "moment": "m7",
+    "reward": "Create 1 custom bestie trial profile",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Services Hub Daily Check-in Bonus",
+    "case": "existing",
+    "archetype": "TAX-5",
+    "moment": "m18",
+    "reward": "Double daily service task credits",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Deep Reasoning Mode Session Pass",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m9",
+    "reward": "30 minutes of deep reasoning mode",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Task Queue Priority Boost",
+    "case": "product-change",
+    "archetype": "TAX-4",
+    "moment": "m10",
+    "reward": "1 hour of priority task processing",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Daily Character Quest & Credits",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m16",
+    "reward": "10 bonus chat credits via daily task",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Settings Hub Ad-Free Session",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m12",
+    "reward": "1 hour ad-free experience",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Attachment Studio Extra Credit",
+    "case": "product-change",
+    "archetype": "TAX-1",
+    "moment": "m14",
+    "reward": "3 bonus photo analysis credits",
+    "beyondBaseline": true
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "Directly addresses wall m1 when task limits are hit with a high-intent consumable refill."
+   },
+   {
+    "index": 2,
+    "why": "Unlocks favorite messages feature on demand without undermining full account signup."
+   },
+   {
+    "index": 5,
+    "why": "Product change introducing time-boxed premium deep reasoning access, sampling subscription value safely."
+   },
+   {
+    "index": 7,
+    "why": "Proactive daily task loop on Chats Home hub establishing habit retention with character interaction."
+   },
+   {
+    "index": 9,
+    "why": "Product change granting attachment analysis credits to drive engagement without subscription friction."
+   }
+  ]
+ },
+ "usage": {
+  "input": 50442,
+  "output": 1758,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2814
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:29:38.027Z"
+}

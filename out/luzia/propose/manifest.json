@@ -1,10 +1,10 @@
 {
   "stage": "propose",
   "app": "luzia",
-  "runId": "pr0925-141402",
-  "gitSha": "edcac2a",
-  "startedAt": "2026-09-25T18:14:02.868Z",
-  "finishedAt": "2026-09-25T18:25:57.443Z",
+  "runId": "pr0925-192921",
+  "gitSha": "f37f19c",
+  "startedAt": "2026-09-25T19:29:21.334Z",
+  "finishedAt": "2026-09-25T19:30:12.573Z",
   "status": "ok",
   "inputs": [
     {
@@ -17,7 +17,7 @@
     "proposals/candidates.md"
   ],
   "llm": {
-    "calls": 0,
+    "calls": 6,
     "cached": 0,
     "usd": 0,
     "mode": "record"

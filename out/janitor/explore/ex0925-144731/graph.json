@@ -348,7 +348,7 @@
         "o0068",
         "o0070"
       ],
-      "name": "@8iyiyiyiy",
+      "name": "@your_handle",
       "kind": "page",
       "purpose": "Content page",
       "inScope": true,
@@ -423,7 +423,7 @@
           "id": "a02_8",
           "elKey": "TextView||@#iyiyiyiy|0",
           "kind": "tap",
-          "intent": "tap \"@8iyiyiyiy\"",
+          "intent": "tap \"@your_handle\"",
           "priority": 1,
           "status": "untried",
           "tries": 0
@@ -459,7 +459,7 @@
           "id": "a02_12",
           "elKey": "TextView||member since sep #, #|0",
           "kind": "tap",
-          "intent": "tap \"Member Since Sep 24, 2026\"",
+          "intent": "tap \"Member Since (date)\"",
           "priority": 1,
           "status": "untried",
           "tries": 0
@@ -5266,7 +5266,7 @@
         },
         {
           "kind": "disappeared",
-          "text": "@8iyiyiyiy"
+          "text": "@your_handle"
         },
         {
           "kind": "disappeared",
@@ -5282,7 +5282,7 @@
         },
         {
           "kind": "disappeared",
-          "text": "Member Since Sep 24, 2026"
+          "text": "Member Since (date)"
         }
       ],
       "context": {
@@ -5978,7 +5978,7 @@
       "effects": [
         {
           "kind": "appeared",
-          "text": "@8iyiyiyiy"
+          "text": "@your_handle"
         },
         {
           "kind": "appeared",
@@ -5994,7 +5994,7 @@
         },
         {
           "kind": "appeared",
-          "text": "Member Since Sep 24, 2026"
+          "text": "Member Since (date)"
         },
         {
           "kind": "disappeared",
@@ -8562,7 +8562,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -8642,7 +8642,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -9095,11 +9095,11 @@
       "counters": [],
       "texts": [
         "Close drawer",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "Hidden Gems",
         "Explore All",
         "View public profile",
@@ -9549,7 +9549,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -9629,7 +9629,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -10082,11 +10082,11 @@
       "counters": [],
       "texts": [
         "Close drawer",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "Hidden Gems",
         "Explore All",
         "View public profile",
@@ -10536,7 +10536,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -10616,7 +10616,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -11069,11 +11069,11 @@
       "counters": [],
       "texts": [
         "Close drawer",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "Hidden Gems",
         "Explore All",
         "View public profile",
@@ -11523,7 +11523,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -11603,7 +11603,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -12056,11 +12056,11 @@
       "counters": [],
       "texts": [
         "Close drawer",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "Hidden Gems",
         "Explore All",
         "View public profile",
@@ -18827,7 +18827,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -18907,7 +18907,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -19360,11 +19360,11 @@
       "counters": [],
       "texts": [
         "Close drawer",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "Hidden Gems",
         "Explore All",
         "View public profile",
@@ -20373,7 +20373,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -20453,7 +20453,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -21194,11 +21194,11 @@
       "counters": [],
       "texts": [
         "Close drawer",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "Hidden Gems",
         "Explore All",
         "View public profile",
@@ -45111,7 +45111,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -45191,7 +45191,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -45577,11 +45577,11 @@
       "texts": [
         "Close drawer",
         "Notifications",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "View public profile",
         "Main navigation",
         "Blocks",
@@ -46476,7 +46476,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -46556,7 +46556,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -46942,11 +46942,11 @@
       "texts": [
         "Close drawer",
         "Notifications",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "View public profile",
         "Main navigation",
         "Blocks",
@@ -47244,7 +47244,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "@8iyiyiyiy",
+          "text": "@your_handle",
           "rect": {
             "x": 532,
             "y": 192,
@@ -47324,7 +47324,7 @@
         },
         {
           "type": "android.widget.TextView",
-          "text": "Member Since Sep 24, 2026",
+          "text": "Member Since (date)",
           "rect": {
             "x": 318,
             "y": 404,
@@ -47710,11 +47710,11 @@
       "texts": [
         "Close drawer",
         "Notifications",
-        "@8iyiyiyiy",
+        "@your_handle",
         "0",
         "Following",
         "Followers",
-        "Member Since Sep 24, 2026",
+        "Member Since (date)",
         "View public profile",
         "Main navigation",
         "Blocks",

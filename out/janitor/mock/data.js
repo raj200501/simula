@@ -25,7 +25,7 @@ window.MODEL = {
   },
   {
    "id": "s02",
-   "name": "@8iyiyiyiy",
+   "name": "Profile menu",
    "kind": "page",
    "render": "html",
    "inScope": true
@@ -1002,11 +1002,11 @@ window.MODEL = {
    "consume": false,
    "deltas": [],
    "appeared": [
-    "@8iyiyiyiy",
+    "@your_handle",
     "0",
     "Following",
     "Followers",
-    "Member Since Sep 24, 2026"
+    "Member Since (date)"
    ],
    "context": []
   },

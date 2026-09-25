@@ -671,7 +671,7 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Surface s02 is the profile screen (@8iyiyiyiy), which is SFW and age-appropriate."
+          "evidence": "Surface s02 is the profile screen (@your_handle), which is SFW and age-appropriate."
         },
         {
           "gate": "no-incentivized-action",

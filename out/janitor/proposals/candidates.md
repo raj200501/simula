@@ -9,7 +9,7 @@ Label each proposal SHIP, REVISE or REJECT from the write-ups below, before runn
 | id | title | case | archetype | surface | reward | your label (SHIP/REVISE/REJECT) |
 |---|---|---|---|---|---|---|
 | P1 | Extended Context Unlock | existing | TAX-1 | More memory for long chats. (s03) | 1 hour of 5x context memory |  |
-| P2 | Daily Character Quest Hub | product-change | TAX-9 | @8iyiyiyiy (s02) | Daily frontier swipe credits |  |
+| P2 | Daily Character Quest Hub | product-change | TAX-9 | @your_handle (s02) | Daily frontier swipe credits |  |
 | P3 | Subscription Feature Sampling via Rewarded Ad | product-change | TAX-2 | Janitor Plus Paywall (s04) | 1-hour trial of Janitor Plus features for 1 hour |  |
 
 ## The obvious baseline (the bar to beat)
@@ -25,7 +25,7 @@ Label each proposal SHIP, REVISE or REJECT from the write-ups below, before runn
 | m1 | wall | More memory for long chats. (s03) | User hits the memory limit on long chats and watches an ad to unlock temporary extended context | yes |
 | m2 | decline | More memory for long chats. (s03) | User dismisses the memory paywall and is offered a time-boxed session pass of Janitor Plus features | yes |
 | m3 | decline | Janitor Plus Paywall (s04) | User closes the main subscription paywall and can watch an ad for a frontier model feature sample | yes |
-| m4 | desire | @8iyiyiyiy (s02) | User views the billing or account menu and engages with a proactive daily credit hub | yes |
+| m4 | desire | @your_handle (s02) | User views the billing or account menu and engages with a proactive daily credit hub | yes |
 | m5 | first-value | Build, Share, Explore (s01) | First value discovery screen on launch; ads are strictly prohibited here by policy and safety rules | no |
 | m6 | desire | Character Details (s09) | User views character details before starting a chat and can watch an ad for a session priority boost | yes |
 
@@ -96,7 +96,7 @@ long chats. (s03) after e5: Rewarded ad trigger button for 1-hour context unlock
 - **Case:** product-change · **Archetype:** TAX-9 · **Beyond baseline:** yes
 - **Anchor:** moments m4; economy of1, w1
 - **New mechanic:** Daily Character Quest Hub: A proactive hub on the profile screen where users complete daily tasks and check-ins with characters to earn frontier swipe credits. Why: Janitor Plus gating frontier swipes leaves non-payers with limited access; a proactive quest hub creates predictable, non-interruptive rewarded inventory.
-- **Surface:** @8iyiyiyiy (s02) · **Trigger:** When the user views their profile and taps the new daily quest hub entry after onboarding.
+- **Surface:** @your_handle (s02) · **Trigger:** When the user views their profile and taps the new daily quest hub entry after onboarding.
 - **Eligibility:** Non-paying users.
 - **Offer:** "Unlock Free Frontier Swipes" / "Play a 15-second mini-game with Janitor AI to claim your daily check-in reward." / [Play Now] [No Thanks]
 - **Simula:** SIM-RWD, entry invitation, Game Partner: Janitor AI, min play 15 s, grant on REWARD_VERIFIED
@@ -113,19 +113,19 @@ long chats. (s03) after e5: Rewarded ad trigger button for 1-hour context unlock
 
 **Patch**
 
-- new sheet `ns1` based on @8iyiyiyiy (s02): Add a Daily Character Quest Hub section to the profile screen.
-- new element `ne1` in @8iyiyiyiy (s02) after e21: Daily Character Quest Hub button
+- new sheet `ns1` based on @your_handle (s02): Add a Daily Character Quest Hub section to the profile screen.
+- new element `ne1` in @your_handle (s02) after e21: Daily Character Quest Hub button
 - edge s02/ne1 → ns1 (frontier_swipes +10 on REWARD_VERIFIED) when frontier_swipes_claims < 3
 
 **Storyboard**
 
 | # | phase | screen | overlay | counters | callouts | caption |
 |---|---|---|---|---|---|---|
-| 1 | today | @8iyiyiyiy (s02) | none | frontier_swipes=0 | e21: Upgrade to Janitor Plus only | Profile shows subscription upsell with no free daily reward option. |
-| 2 | change | @8iyiyiyiy (s02) | none | frontier_swipes=0 | ne1: Daily Character Quest Hub | Add a proactive Daily Character Quest Hub to the profile. |
+| 1 | today | @your_handle (s02) | none | frontier_swipes=0 | e21: Upgrade to Janitor Plus only | Profile shows subscription upsell with no free daily reward option. |
+| 2 | change | @your_handle (s02) | none | frontier_swipes=0 | ne1: Daily Character Quest Hub | Add a proactive Daily Character Quest Hub to the profile. |
 | 3 | offer | ns1 | invite | frontier_swipes=0 | ne1: Play 15s to get frontier swipes | User taps quest and sees clear opt-in disclosure. |
 | 4 | ad | ns1 | game | frontier_swipes=0 | ne1: Mini-game with Janitor AI | User plays the 15-second mini-game with Game Partner. |
-| 5 | value | @8iyiyiyiy (s02) | verified | frontier_swipes=10 | ne1: +10 frontier swipes granted | Reward verified and credited instantly to user account. |
+| 5 | value | @your_handle (s02) | verified | frontier_swipes=10 | ne1: +10 frontier swipes granted | Reward verified and credited instantly to user account. |
 
 ### P3 v1: Subscription Feature Sampling via Rewarded Ad
 
@@ -163,5 +163,5 @@ long chats. (s03) after e5: Rewarded ad trigger button for 1-hour context unlock
 | 2 | change | Janitor Plus Paywall (s04) | none | plan=0 | ne1: New trial offer button appears | App introduces a rewarded sampling offer upon paywall decline. |
 | 3 | offer | ns1 | invite | plan=0 | ne1: Clear disclosure of 1-hour trial | User sees clear opt-in prompt with working decline. |
 | 4 | ad | ns1 | game | plan=0 | ne1: 15-second partner mini-game | User completes the voluntary 15-second rewarded mini-game. |
-| 5 | value | @8iyiyiyiy (s02) | verified | plan=1 | e6: 1-hour trial active | Reward verified and 1-hour trial unlocked successfully. |
+| 5 | value | @your_handle (s02) | verified | plan=1 | e6: 1-hour trial active | Reward verified and 1-hour trial unlocked successfully. |
 

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets general AI task assistance and uses SFW interactions with Game Partner Luzia."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards task access for playing a mini-game; no rewards for clicks, installs, or cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses gain framing ('Play a quick game... to unlock') without dark patterns or loss tactics."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Requires explicit tap on 'Play Now' button before the mini-game starts."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Clearly states the reward (1 task access) and required action (15s game with Luzia) beforehand."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes an equally legible decline option ('No thanks') that returns the user without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Appears at the subscription/account wall (s07) when attempting a task, never mid-stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Explicitly restricted to non-paying, logged-out users hitting the subscription wall."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets moment m1 (subscription wall on s07 when starting a task) and rewards task access (r3) right at the point of need.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Triggers at the subscription wall rather than interrupting chat flow, preserving native experience.",
+    "score": 3
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Capped at 2 per day, restricted to non-payers at the wall, keeping the subscription as the superior path.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code computed cost to serve ($0.0090) exceeding net revenue per view ($0.0063) at the low end.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Tied to starting a task from the Services Tab, which is a frequent core activity.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with button entry, Game Partner Luzia, and 15s play threshold.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Cites screen s07, s06, resources r1 and r3, and uses Luzia as Game Partner from digest nouns.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes explicit caps of 2 per day, a 30-minute cooldown, and decline options.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails, and a 10% user-level holdout group.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix element grounding: element 'e61' is not present on screen s07; reference a valid element ID from s07.",
+   "Resolve unit economics violation: reduce reward COGS (e.g. by using a cheaper model or smaller task unit) so that cost to serve is below net revenue per view."
+  ],
+  "topConcern": "Unit economics show that the cost to serve the task ($0.0090) exceeds net revenue per view ($0.0063) at the low end, making the reward unprofitable."
+ },
+ "usage": {
+  "input": 42616,
+  "output": 728,
+  "cacheRead": 16166,
+  "cacheWrite": 0,
+  "thoughts": 3861
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:30:50.788Z"
+}

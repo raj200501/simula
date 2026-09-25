@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal triggers on the 'Attachment and Mode Sheet' (s27) and 'Create Account Sheet' (s07), which are standard paywall surfaces in the app."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is an ephemeral 5-minute session pass, which is a non-transferable, in-app benefit."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses standard offer-based framing without any negative reinforcement or dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must actively choose to play the mini-game via the 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer card states: 'Play a quick 15-second game to unlock 5 minutes of deep reasoning mode'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes an explicit 'No Thanks' option, and declining returns the user to the previous screen."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs on the paywall screen (s07/s27), which is a clear boundary, not during an active response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly limits eligibility to 'non-paying guest users'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward (Deep Reasoning Session Pass) directly addresses the user's specific block when they attempt to use that feature.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The pass is a natural extension of the premium subscription and fits into the app flow without disrupting user input.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "It is gated to non-paying guests and time-boxed to 5 minutes, though deep reasoning is a core subscription value, creating some risk.",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Per the provided code, cost-to-serve ($0.0090) exceeds the revenue-per-view at the low end ($0.0063).",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The wall (s07) is triggered frequently in the Luzia+ flow.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses the standard SIM-RWD unit and maps cleanly to the existing paywall flow.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Correctly identifies 'Deep reasoning mode', 'Luzia+', and the 'Attachment and Mode Sheet' (s27).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes daily caps (2/day) and cooldowns (30m), preventing over-exposure.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposes a holdout experiment and tracks ARPDAU.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Address the unit economics failure by requiring 2 rewarded views to unlock the 5-minute session or reducing the session duration to 2 minutes, as the current cost-to-serve exceeds the net revenue.",
+   "Explicitly label the reward in the UI as a 'Deep Reasoning Sample' to differentiate it from the permanent 'Deep Reasoning Mode' included in the Luzia+ subscription."
+  ],
+  "topConcern": "The cost of the reward (inference for premium reasoning models) exceeds the generated net revenue per view, making the current offer unprofitable."
+ },
+ "usage": {
+  "input": 42772,
+  "output": 1045,
+  "cacheRead": 40428,
+  "cacheWrite": 0,
+  "thoughts": 1271
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:32:32.386Z"
+}

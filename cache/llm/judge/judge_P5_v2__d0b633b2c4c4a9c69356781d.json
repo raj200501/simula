@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P5:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "\"surface\": \"s27\", \"Attachment and Mode Sheet\""
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "\"offer\": { \"title\": \"Get Free Photo Credit\", \"body\": \"Play a quick game with Luzia to earn 1 bonus photo analysis credit now.\" }"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "\"decline\": \"No Thanks\""
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "\"cta\": \"Play Now\""
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "\"body\": \"Play a quick game with Luzia to earn 1 bonus photo analysis credit now.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "\"decline\": \"No Thanks\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "\"trigger\": \"User taps photo attachment when daily photo analysis quota is exhausted\""
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "\"eligibility\": \"Non-subscribers on Attachment and Mode Sheet\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal triggers on user tapping photo attachment when quota is exhausted on screen s27 (Attachment and Mode Sheet), granting 1 photo analysis credit matching the exact moment of need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal uses SIM-RWD with Game Partner Luzia on s27, preserving flow and adding supplementary quota without removing existing free value.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to non-subscribers, capped at 3 daily grants, kept separate from Luzia+ subscription core benefits, with a holdout planned.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code economics note states: Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end due to image generation COGS.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered when photo attachment quota is hit on s27 (Attachment and Mode Sheet), engaging users in the image/attachment core loop.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD, button entry point, and existing resource r3.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific screen s27 (Attachment and Mode Sheet), character Luzia, resource r3, and mechanic Photo Analysis Credits.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily cap (perDay: 3), cooldown (cooldownMin: 15), and clean decline path.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Named primary metric (Rewarded ARPDAU), guardrails (subscription conversion non-inferiority, D7 retention), and a 10% user-level holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Switch the reward from an image generation credit (COGS $0.0250) to text message credits or a lower-cost utility to ensure cost to serve remains well below net revenue per view ($0.0063)."
+  ],
+  "topConcern": "Image generation COGS ($0.0250) exceeds net revenue per view ($0.0063), making the reward unprofitable at current unit economics."
+ },
+ "usage": {
+  "input": 42561,
+  "output": 1030,
+  "cacheRead": 32332,
+  "cacheWrite": 0,
+  "thoughts": 2055
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:32:29.108Z"
+}
