@@ -1254,6 +1254,8 @@ async function reachTarget(r: Run, t: DrainTarget): Promise<boolean> {
   const at = (s: State) => s.id === t.state;
   for (let i = 0; i < 3; i++) {
     if (!(await travelTo(r, at))) return false;
+    // With no balance anywhere (a guest chat), a selection changes no measured cost: the screen is enough.
+    if (!r.g.resources.length) return true;
     if (sameList(contextOf(r, r.last), t.context)) return true;
     const setter = setterFor(r, t);
     if (!setter) {
@@ -1380,17 +1382,23 @@ async function drainGroup(r: Run, actions: Set<string>, run: { budget: number; r
     }
   }
   const ranked = left().sort((x, y) => (x.cost ?? 0) - (y.cost ?? 0) || Number(y.replies) - Number(x.replies) || hintOf(y.context) - hintOf(x.context));
-  const pick = ranked[0];
-  if (!pick) return null;
-  trace("info", {
-    phase: "drain", drain: ctxText(pick.context), state: pick.state, action: pick.action, cost: pick.cost, core: pick.chat, budget: run.budget,
-    why: pick.cost !== null ? `largest cost per action (${pick.cost}) among ${ranked.length} target(s): ${ranked.map(x => `${x.state}/${ctxText(x.context)}=${x.cost}`).join(", ")}`
-      : g.resources.length ? "no cost could be measured" : "no balance shown anywhere: send until a limit shows",
-  }, g.steps);
-  const res = await sendLoop(r, pick, run.budget, "drain", run.reading);
-  run.budget -= res.sends;
-  run.reading = res.reading;
-  return res.end;
+  if (!ranked.length) return null;
+  // The first target that can be reached drains; an unreachable one (a screen or selection that could not
+  // be recreated) hands over to the next instead of ending the whole group.
+  let last = "unreachable";
+  for (const pick of ranked.slice(0, 4)) {
+    trace("info", {
+      phase: "drain", drain: ctxText(pick.context), state: pick.state, action: pick.action, cost: pick.cost, core: pick.chat, budget: run.budget,
+      why: pick.cost !== null ? `largest cost per action (${pick.cost}) among ${ranked.length} target(s): ${ranked.map(x => `${x.state}/${ctxText(x.context)}=${x.cost}`).join(", ")}`
+        : g.resources.length ? "no cost could be measured" : "no balance shown anywhere: send until a limit shows",
+    }, g.steps);
+    const res = await sendLoop(r, pick, run.budget, "drain", run.reading);
+    run.budget -= res.sends;
+    run.reading = res.reading;
+    last = res.end;
+    if (!(res.sends === 0 && /^unreachable/.test(res.end)) || run.budget <= 0 || r.stop) break;
+  }
+  return last;
 }
 
 function drainEnd(r: Run, ends: string[]): string[] {
