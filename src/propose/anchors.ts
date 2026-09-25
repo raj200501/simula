@@ -4,6 +4,7 @@
 // build their proposals from these, so every id they emit exists in the model.
 import type { Economy, Moment, ProductModel, Proposal, Screen, UiElement } from "../core/schema.ts";
 import { ECON, deriveEconomy } from "../model/economics.ts";
+import { cleanName, humanizeAction, sinkUse, topBarTitle } from "../core/humanize.ts";
 
 type Sink = Economy["sinks"][number];
 type Source = Economy["sources"][number];
@@ -30,13 +31,16 @@ export interface Anchors {
   hub?: { moment: Moment; screen: Screen; balanceEl?: UiElement; anchorEl?: UiElement };
   postReward?: { moment: Moment; screen: Screen; parent?: Screen; source?: Source; claimEl?: UiElement };
   desire?: { moment: Moment; screen: Screen; modeEl?: UiElement };
-  chat?: { screen: Screen; inputEl?: UiElement; titleEl?: UiElement };
+  chat?: { screen: Screen; inputEl?: UiElement; titleEl?: UiElement; persona?: string };
+  /** Who plays along in the game: the character or persona shown on the chat, else the app itself. */
+  partner: string;
   noOfferScreens: Set<string>;
 }
 
 const REACH = { "core-loop": 4, frequent: 3, occasional: 2, rare: 1 } as const;
 const DECLINE = /not now|no,? thanks|maybe later|later|cancel|close|dismiss|skip/i;
 const CLAIM = /claim|collect|get|receive|redeem/i;
+const CTA = /refill|top.?up|buy|get (more|premium|pro|plus)|upgrade|subscribe|unlock|go (premium|pro|plus)|continue|purchase|recharge|store|shop|see (plans|offers)|try (free|premium|pro)/i;
 
 const txt = (e?: UiElement) => (e?.text || e?.label || "").trim();
 const byReach = (a: Moment, b: Moment) => REACH[b.reach] - REACH[a.reach] || a.id.localeCompare(b.id);
@@ -64,7 +68,7 @@ export function sizeReward(m: ProductModel, resource: string): Sized | undefined
   const cogs = cheap ? cogsOf(m, cheap, sinks) : "none";
   const unitName = m.economy.resources.find(r => r.id === resource)?.unit ?? resource;
   if (cheap && (!unit || cheap.amount * unit.min <= ECON.maxRewardToView * d.viewValueUsd.US[1]))
-    return { amount: cheap.amount, buys: `one "${cheap.action}"${cheap.context ? ` in ${cheap.context}` : ""}`, cogs, cogsUnits: 1 };
+    return { amount: cheap.amount, buys: sinkUse(cheap.action, 1, cheap.context), cogs, cogsUnits: 1 };
   if (upv) {
     const amount = Math.max(1, Math.floor(upv.max));
     return { amount, buys: `about one view's worth of ${unitName}`, cogs, cogsUnits: cheap ? Math.round((amount / cheap.amount) * 100) / 100 : 0 };
@@ -81,7 +85,7 @@ export function cogsOf(m: ProductModel, k: Sink, all: Sink[]): Cogs {
 }
 
 export function resolveAnchors(m: ProductModel): Anchors {
-  const a: Anchors = { noOfferScreens: new Set(m.moments.filter(x => x.noOffer).map(x => x.screen)) };
+  const a: Anchors = { noOfferScreens: new Set(m.moments.filter(x => x.noOffer).map(x => x.screen)), partner: cleanName(m.app.name) };
   const offerable = m.moments.filter(x => !x.noOffer);
   const of = (t: Moment["type"]) => offerable.filter(x => x.type === t).sort(byReach);
 
@@ -110,13 +114,15 @@ export function resolveAnchors(m: ProductModel): Anchors {
     const upsellId = screen.signals.find(s => s.kind === "upsell" && s.el)?.el;
     const declineEdge = item?.declineEdge ? m.edges.find(e => e.id === item.declineEdge) : undefined;
     const declineEl = screen.elements.find(e => e.id === declineEdge?.el) ?? buttons.find(e => DECLINE.test(txt(e)));
-    const upsellEl = screen.elements.find(e => e.id === upsellId) ?? buttons.find(e => e !== declineEl);
+    // The paid call to action ("Refill now", "Upgrade"), not the sentence that explains the wall.
+    const cta = buttons.filter(e => e !== declineEl && CTA.test(txt(e)) && txt(e).length <= 30);
+    const upsellEl = cta[0] ?? screen.elements.find(e => e.id === upsellId) ?? buttons.find(e => e !== declineEl);
     // The cost that could not be paid: a sink whose price appears in the selected mode at the wall.
     const sel = (edge?.context.selected ?? []).flatMap(numbers);
     const onFrom = m.economy.sinks.filter(k => k.resource === wallM.resource && k.edges.some(g => m.edges.find(e => e.id === g)?.from === edge?.from));
     const blocked = onFrom.find(k => sel.includes(k.amount)) ?? onFrom.sort((x, y) => y.amount - x.amount)[0] ?? a.cheapSink;
     a.wall = { moment: wallM, screen, item, from: screenOf(m, edge?.from), upsellEl, declineEl, blockedCost: blocked?.amount,
-      blockedIntent: item?.blockedIntent ?? blocked?.action ?? "the next action" };
+      blockedIntent: humanizeAction(item?.blockedIntent ?? blocked?.action) || "Continue" };
   }
 
   const dec = of("decline").sort((x, y) => Number(y.edge === a.wall?.item?.declineEdge) - Number(x.edge === a.wall?.item?.declineEdge))[0];
@@ -158,7 +164,12 @@ export function resolveAnchors(m: ProductModel): Anchors {
   }
 
   const chat = m.screens.filter(s => s.inScope && s.kind === "chat" && !a.noOfferScreens.has(s.id)).sort((x, y) => y.visits - x.visits)[0];
-  if (chat) a.chat = { screen: chat, inputEl: chat.elements.find(e => e.role === "input"), titleEl: chat.elements.find(e => e.role === "text" && txt(e)) };
+  if (chat) {
+    const dev = { h: m.device.heightPx / (m.device.density || 1) };
+    const persona = topBarTitle(chat.elements, dev.h);
+    a.chat = { screen: chat, inputEl: chat.elements.find(e => e.role === "input"), titleEl: chat.elements.find(e => txt(e) === persona) ?? chat.elements.find(e => e.role === "text" && txt(e)), persona };
+    if (persona) a.partner = persona;
+  }
   return a;
 }
 

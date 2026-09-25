@@ -13,6 +13,7 @@ import type { Candidates, Moment, ProductModel, Proposal, Screen, UiElement } fr
 import type { Profile } from "../core/config.ts";
 import { proposalEconomics } from "../model/economics.ts";
 import { elText, resolveAnchors, type Anchors, type Cogs } from "./anchors.ts";
+import { midSentence, modeName } from "../core/humanize.ts";
 import type { LlmIdea } from "./schemas.ts";
 
 export interface Params { amount?: number; perDay: number; cooldownMin: number; cogsUnits: number; minutes?: number }
@@ -70,7 +71,8 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   const T: Template[] = [];
   const res = a.res, s = a.sized;
   const u = (n: number) => `${n} ${res?.unit ?? "units"}`;
-  const partner = a.chat ? "the character from the open chat" : undefined;
+  // The Game Partner is who the user already talks to (the chat's character or persona), else the app.
+  const partner = a.partner;
   const Cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1);
   const cheapest = a.cheapestOffer ? `${a.cheapestOffer.label} for ${a.cheapestOffer.priceText}` : "the cheapest pack";
   const guard = (lead: string) => `${lead} Non-payers only; capped per day; the grant screen repeats the paid option (${cheapest}); a remote-config kill switch rolls it back if paid conversion drops [CANN-4].`;
@@ -92,10 +94,10 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
         const before = Math.max(0, (w.blockedCost ?? amt) - amt);
         return {
           id: pid, version: 1, title: `Refill game on "${w.screen.name}"`, case: "existing", archetype: "TAX-1", beyondBaseline: false,
-          oneLiner: `When ${res.name} run out on "${w.blockedIntent}", ${w.screen.name} offers a ${SEC}-second game for +${u(amt)} (${s.buys}) under "${upsell}".`,
+          oneLiner: `When ${res.name} run out and the user tries to ${midSentence(w.blockedIntent)}, ${w.screen.name} offers a ${SEC}-second game for +${u(amt)} (${s.buys}) under "${upsell}".`,
           anchor: { moments: [w.moment.id], economy: ids(res.id, w.item?.id, a.cheapSink?.id) },
           surface: w.screen.id,
-          trigger: `${w.screen.name} opens because ${res.name} are below the cost of "${w.blockedIntent}"${w.blockedCost ? ` (${u(w.blockedCost)})` : ""}. The offer sits under "${upsell}", appears only after the previous reply has finished, and the typed draft stays in the composer.`,
+          trigger: `${w.screen.name} opens because ${res.name} are below what it costs to ${midSentence(w.blockedIntent)}${w.blockedCost ? ` (${u(w.blockedCost)})` : ""}. The offer sits under "${upsell}", appears only after the previous reply has finished, and the typed draft stays in the composer.`,
           eligibility: ELIG,
           offer: { title: `Out of ${res.name}`, body: `Play a ${SEC}-second game to get +${u(amt)}, enough for ${s.buys}. ${p.perDay} per day.`, cta: `Play for +${amt}`, decline: "No thanks" },
           simula: { unit: "SIM-RWD", entry: "button", gamePartner: partner, minPlaySec: SEC },
@@ -113,10 +115,10 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
             newEdges: [{ from: w.screen.id, el: "ne1", to: "rwd", effects: [{ resource: res.id, delta: amt }] }],
           },
           storyboard: [
-            phase("today", origin, [[res.id, before]], "none", co(origin, a.desire?.modeEl, `Next message: ${u(w.blockedCost ?? amt)}`), `${Cap(res.name)} at ${before}: not enough for "${w.blockedIntent}".`),
+            phase("today", origin, [[res.id, before]], "none", co(origin, a.desire?.modeEl, `Next message: ${u(w.blockedCost ?? amt)}`), `${Cap(res.name)} at ${before}: not enough to ${midSentence(w.blockedIntent)}.`),
             phase("change", w.screen, [[res.id, before]], "none", [{ node: "ne1", text: `NEW: play ${SEC} s for +${u(amt)}` }], `${w.screen.name} gains a secondary rewarded option under "${upsell}".`),
             phase("offer", w.screen, [], "invite", [{ node: "ne1", text: "Opt-in tap; reward and length disclosed" }], `"Play for +${amt}" or "No thanks", which returns to ${origin.name} with the draft kept.`),
-            phase("ad", w.screen, [], "game", [], `A ${SEC}-second mini-game with the Game Partner; the grant waits for REWARD_VERIFIED.`),
+            phase("ad", w.screen, [], "game", [], `A ${SEC}-second mini-game with ${partner}; the grant waits for REWARD_VERIFIED.`),
             phase("value", origin, [[res.id, before + amt]], "verified", co(origin, a.chat?.inputEl, "Draft still here: tap Send"), `+${u(amt)}: ${res.name} at ${before + amt}. Back in ${origin.name}.`),
           ],
         };
@@ -227,8 +229,8 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   const des = a.desire;
   const prem = a.premiumSink, cheapSink = a.cheapSink;
   if (des && res && prem && cheapSink && (!des.moment.resource || des.moment.resource === res.id)) {
-    const premLabel = prem.context ?? `the ${prem.amount}-${res.unit} mode`;
-    const cheapLabel = cheapSink.context ?? "the standard mode";
+    const premLabel = prem.context ? modeName(prem.context) : `the ${prem.amount}-${res.unit} mode`;
+    const cheapLabel = cheapSink.context ? modeName(cheapSink.context) : "the standard mode";
     const pc: Cogs = cogs === "none" ? "none" : "text-premium";
     T.push({
       key: "premium-sample", why: "Samples the premium mode at the moment of desire: a taste that shows the paid difference [CANN-1].",
@@ -262,7 +264,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
             phase("today", des.screen, [[res.id, baseBalance]], "none", co(des.screen, des.modeEl, `${premLabel} costs ${u(prem.amount)}`), `Chatting in ${cheapLabel}; ${premLabel} costs ${u(prem.amount)} per message.`),
             phase("change", des.screen, [[res.id, baseBalance]], "none", [{ node: "ne1", text: "NEW: sample chip" }], `A chip appears under the finished reply.`),
             phase("offer", des.screen, [], "invite", [{ node: "ne1", text: "Opt-in; reward disclosed" }], `"Play and upgrade" or "Keep current mode".`),
-            phase("ad", des.screen, [], "game", [], `A ${SEC}-second game with the Game Partner; grant on REWARD_VERIFIED.`),
+            phase("ad", des.screen, [], "game", [], `A ${SEC}-second game with ${partner}; grant on REWARD_VERIFIED.`),
             phase("value", des.screen, [[res.id, baseBalance]], "verified", co(des.screen, des.modeEl, `${premLabel} for this reply`), `The next reply uses ${premLabel}; the balance is untouched.`),
           ],
         };
@@ -390,7 +392,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
         const r = reward(p.amount);
         return {
           id: pid, version: 1, title: `Daily tasks on ${hub.screen.name}`, case: "product-change", archetype: "TAX-9", beyondBaseline: true,
-          oneLiner: `A "Daily tasks" sheet on ${hub.screen.name}: 3 sponsored ${SEC}-second games a day with the Game Partner, each for ${r.what}.`,
+          oneLiner: `A "Daily tasks" sheet on ${hub.screen.name}: 3 sponsored ${SEC}-second games a day with ${partner}, each for ${r.what}.`,
           anchor: {
             moments: [hub.moment.id], economy: ids(res?.id, dailySource?.id),
             newMechanic: { name: "Daily tasks", description: `A ${hub.screen.name} sheet listing 3 sponsored mini-game tasks per day, each paying ${r.what}; resets at midnight.`,
@@ -400,7 +402,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
           trigger: `A "Daily tasks 0/3" badge on ${hub.screen.name}; the user opens the sheet and picks a task. No pop-ups.`,
           eligibility: ELIG,
           offer: { title: "Daily tasks", body: `Play a ${SEC}-second sponsored game to get ${r.what}. 3 tasks a day.`, cta: "Play task", decline: "Close" },
-          simula: { unit: "SIM-RWD", entry: "invitation", gamePartner: partner ?? "a sponsor-approved Game Partner", minPlaySec: SEC },
+          simula: { unit: "SIM-RWD", entry: "invitation", gamePartner: partner, minPlaySec: SEC },
           reward: r,
           caps: { perDay: p.perDay, cooldownMin: p.cooldownMin },
           cannibalizationGuard: guard(`At most ${p.perDay} tasks a day; the free daily sources are unchanged.`),
@@ -413,7 +415,7 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
             newScreens: [{ id: "ns1", basedOn: hub.screen.id, kind: "sheet", change: `"Daily tasks" sheet: 3 rows "Play a ${SEC}-second game: ${r.what}", progress 0/3, resets at midnight` }],
             newElements: [
               { id: "ne1", in: hub.screen.id, near: bal?.id, place: "after", change: `Badge "Daily tasks 0/3"` },
-              { id: "ne2", in: "ns1", place: "overlay", change: `Task row "Play with the Game Partner: ${r.what}" with a Play button` },
+              { id: "ne2", in: "ns1", place: "overlay", change: `Task row "Play with ${partner}: ${r.what}" with a Play button` },
             ],
             newEdges: [
               { from: hub.screen.id, el: "ne1", to: "ns1", effects: [] },
@@ -435,8 +437,8 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
   // Sponsored session [TAX-11]: the paid mode, time-boxed [TAX-2]; else a taste of the paid plan;
   // else an ad-light hour [AI-17] (the judge checks whether ads there actually interrupt).
   const plan0 = m.economy.entitlements[0];
-  const premLabel = prem?.context ?? "the premium mode";
-  const cheapLabel = cheapSink?.context ?? "the standard price";
+  const premLabel = prem?.context ? modeName(prem.context) : "the premium mode";
+  const cheapLabel = cheapSink?.context ? modeName(cheapSink.context) : "the standard price";
   type Session = { where: Screen; mo: Moment; near?: UiElement; minutes: number; cogs: Cogs; units: number; archetype: string; title: string;
     what: (min: number) => string; today: string; why: string; paid: string; precedents: string[]; risk: string };
   const session: Session | undefined = des && prem && cheapSink && res

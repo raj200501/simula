@@ -11,6 +11,7 @@ import {
 } from "../core/schema.ts";
 import { ensureDir, sha256 } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
+import { betterScreenName } from "../core/humanize.ts";
 import { blurRects, hasPii, redactAction, redactKey, redactText } from "./redact.ts";
 import { crop, dHash, decode, hamming, hex, inkFg, inkFontDp, palette, ringBg, samplePixels, tightFontDp, typeScale, type RawImage, type RGB } from "./tokens.ts";
 
@@ -244,7 +245,8 @@ export async function compile(graph: ExploreGraph, runDir: string, modelDir: str
       .filter((b): b is { resource: string; el: string } => !!b.el));
 
     screens.push({
-      id, name: redactText(st.name), purpose: redactText(st.purpose), kind: st.kind, inScope: st.inScope,
+      // An avatar monogram ("ML") is not a name: use the top-bar title (the chat's character, the page heading).
+      id, name: redactText(betterScreenName(st.name, elements, dev.heightPx / (dev.density || 1))), purpose: redactText(st.purpose), kind: st.kind, inScope: st.inScope,
       signature: st.signature.map(t => redactKey(t)), observations: st.obs, representative: rep?.id ?? "", screenshot: file, scrolledScreenshot,
       scrollable: st.scrollable, visits: st.visits, elements, actions: st.actions.map(redactAction), bindings, signals, render: "image", variants: [],
     });

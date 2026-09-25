@@ -11,6 +11,7 @@ import { json, type Img } from "../core/llm.ts";
 import { MODELS } from "../core/config.ts";
 import { canonical, sha256 } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
+import { humanizeAction, midSentence, sinkUse } from "../core/humanize.ts";
 import type { Compiled } from "./compile.ts";
 import { isConsume } from "./flows.ts";
 import type { ExtraMoment } from "./moments.ts";
@@ -209,7 +210,8 @@ function sinks(x: Ctx): SinkT[] {
       const priced = textsOf(o).find(t => numbersIn(t).includes(amount) && !evidence.some(v => v.quote === t));
       if (priced) evidence.push(ev(o.id, priced));
     }
-    return { id: `k${i + 1}`, resource: g.resource, amount, action: a?.intent ?? e0.action, edges: g.e.map(e => e.id), context, conf: "inferred" as const, evidence: evidence.slice(0, 3) };
+    // The sink is named the way a user would say it ("Send a message"), not with the explorer's intent.
+    return { id: `k${i + 1}`, resource: g.resource, amount, action: humanizeAction(a?.intent ?? e0.action) || e0.action, edges: g.e.map(e => e.id), context, conf: "inferred" as const, evidence: evidence.slice(0, 3) };
   });
 }
 
@@ -241,7 +243,7 @@ function sources(x: Ctx, offers: OfferT[]): SourceT[] {
     const quote = textsOf(o).find(t => numbersIn(t).includes(amount));
     const act = x.action(e0);
     const el = act?.elKey ? o?.elements.find(k => k.key === act.elKey) : undefined;
-    out.push({ id: "", resource: g.resource, amount, cadence: cadence(texts), how: `${act?.intent ?? e0.action} on ${x.name(e0.from)}`, screen: e0.from,
+    out.push({ id: "", resource: g.resource, amount, cadence: cadence(texts), how: `${humanizeAction(act?.intent ?? e0.action) || e0.action} on ${x.name(e0.from)}`, screen: e0.from,
       conf: "inferred", evidence: o ? [...(quote ? [ev(o.id, quote)] : []), ...(el && label(el) ? [ev(o.id, label(el), el.id)] : [])] : [] });
   }
   for (const s of x.cm.screens) {
@@ -346,7 +348,7 @@ function walls(x: Ctx, sinkList: SinkT[], offerList: OfferT[]): WallT[] {
     const quote = sig?.text ?? textsOf(cm.obs.get(s.representative))[0];
     const resource = sinkList.find(k => k.edges.some(id => cm.edges.find(g => g.id === id)?.action === e.action))?.resource
       ?? x.resFor(x.screenTexts(shows).join(" ")) ?? (x.words.length === 1 ? x.words[0].id : undefined);
-    out.push({ id: `w${out.length + 1}`, edge: e.id, resource, blockedIntent: x.action(e)?.intent ?? e.action, shows,
+    out.push({ id: `w${out.length + 1}`, edge: e.id, resource, blockedIntent: humanizeAction(x.action(e)?.intent ?? e.action) || e.action, shows,
       offers: offerList.filter(o => hop.has(o.screen)).map(o => o.id), declineEdge: decline?.id, conf: "inferred",
       evidence: [ev(s.representative, quote, sig?.el)] });
   }
@@ -447,9 +449,9 @@ function stubBrief(x: Ctx, e: Economy, flows: Flow[]): Brief {
   if (e.ads.length) how.push(`ads (${uniq(e.ads.map(a => `${a.format} on ${x.name(a.screen)}`)).join(", ")})`);
   const scarce = uniq(e.sinks.map(k => k.resource)).map(r => {
     const ks = e.sinks.filter(k => k.resource === r);
-    return `${resName(r)}: ${ks.map(k => `${k.amount} per "${k.action}"${k.context ? ` (${k.context})` : ""}`).join(", ")}`;
+    return `${resName(r)}: ${ks.map(k => `${k.amount} per ${sinkUse(k.action, 1, k.context).replace(/^one /, "")}`).join(", ")}`;
   });
-  for (const w of e.walls) scarce.push(`${x.name(w.shows)} blocks "${w.blockedIntent}"`);
+  for (const w of e.walls) scarce.push(`${x.name(w.shows)} blocks "${w.blockedIntent}"${w.resource ? ` when ${resName(w.resource)} run out` : ""}`);
   const open: string[] = [];
   if (!e.offers.length) open.push("No prices were observed: is anything sold?");
   if (e.sinks.length && !e.sources.some(s => s.cadence === "daily")) open.push("No free daily source was observed.");
@@ -457,7 +459,7 @@ function stubBrief(x: Ctx, e: Economy, flows: Flow[]): Brief {
   if (cm.coverage.notExplored.length) open.push(`${cm.coverage.notExplored.length} action(s) were not explored (guard rails, unreachable or failed).`);
   open.push("Brief assembled heuristically (stub synthesis): audience and positioning need the LLM.");
   return {
-    oneLiner: `${cm.graph.app.name}: ${launch?.purpose || launch?.name || "app"}${sink ? `; "${sink.action}" spends ${resName(sink.resource)} (${range(e.sinks.filter(k => k.resource === sink.resource).map(k => k.amount))} each)` : ""}${packs.length ? `, sold in ${packs.length} pack(s)` : ""}.`,
+    oneLiner: `${cm.graph.app.name}: ${launch?.purpose || launch?.name || "app"}${sink ? `; each time users ${midSentence(sink.action)} it costs ${range(e.sinks.filter(k => k.resource === sink.resource).map(k => k.amount))} ${resName(sink.resource)}` : ""}${packs.length ? `, sold in ${packs.length} pack(s)` : ""}.`,
     audience: "Not inferred without the LLM (stub synthesis).",
     coreLoop: core ? core.steps.map((s, i) => (i === 0 || !s.note ? x.name(s.screen) : `${x.name(s.screen)}: ${s.note}`).slice(0, 90)) : [],
     howItMakesMoney: how.length ? how.join("; ") : "No monetization observed during exploration.",
@@ -516,6 +518,7 @@ Evidence rules (enforced by code afterwards; violations are marked "inferred"):
 Economy rules:
 - resources: things the app counts and the user spends or earns (currencies, quotas, time). Reuse the listed resource ids (r1, ...).
 - sinks: what an action costs, one per action and selection context (e.g. a mode). amount is positive. List the edge ids that showed the cost.
+- Action names (sinks[].action, walls[].blockedIntent, sources[].how) are short user-facing verb phrases a product team would say, like "Send a message", "Generate an image", "Claim the daily bonus": at most 6 words, no explorer notes in parentheses, never the explorer's own instructions ("type a short message and send it").
 - sources: how the resource is earned: cadence once | daily | per-task | purchase | unknown.
 - offers: every priced item seen (packs, subscriptions, trials, one-offs). priceText verbatim; priceUsd only when the price is in USD, else null; grants.amount from the text.
 - walls: where an action is blocked because a resource ran out or a paywall appears. shows = the blocking screen id; offers = offer ids it leads to; declineEdge = the edge id that dismisses it.

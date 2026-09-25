@@ -3,6 +3,7 @@
 // product team can trace each claim back to an observed price, a cap or a judge score.
 import type { Candidates, JudgmentRound, Judgments, ProductModel, Proposal, ProposalEconomics, Verdict } from "../core/schema.ts";
 import { deriveEconomy, exchangeRateLine, ECON } from "../model/economics.ts";
+import { actionNoun, firstQuoted, midSentence, modeName, sinkUse } from "../core/humanize.ts";
 
 export const PHASES = ["today", "change", "offer", "ad", "value"] as const;
 export type PhaseId = (typeof PHASES)[number];
@@ -84,14 +85,34 @@ export function declineTarget(p: Proposal, m: ProductModel, offerScreen: string)
 }
 
 // ---------------------------------------------------------------------------------------------- copy
-/** The flow slide title: the offer in the words the user reads on screen. */
-export function claimOf(p: Proposal): string {
+/**
+ * The flow slide title: the offer in the words the user reads on screen, as a complete claim of at
+ * most `max` characters (never cut with "…"): title + first sentence of the body, else title + the
+ * body's first clause, else the body's first sentence or clause, else the title alone.
+ */
+export function claimOf(p: Proposal, max = 70): string {
   const t = oneLine(p.offer.title).replace(/[.!:;,]+$/, "");
-  const body = firstSentence(oneLine(p.offer.body));
-  if (!t) return clampWords(body || p.title, 18);
-  if (!body) return clampWords(t, 18);
-  const joined = /\?$/.test(t) ? `${t} ${body}` : `${t}: ${body.charAt(0).toLowerCase()}${body.slice(1)}`;
-  return clampWords(joined, 18);
+  const body = firstSentence(oneLine(p.offer.body)).replace(/[.!]+$/, "");
+  const clause = body.split(/[,;:–—(]/)[0].trim();
+  const join = (a: string, b: string) => (!a ? b : !b ? a : /\?$/.test(a) ? `${a} ${b}` : `${a}: ${midSentence(b)}`);
+  const fits = (s: string) => s.length <= max && s.split(" ").length >= 2;
+  const options = [join(t, body), join(t, clause), body, clause, t, oneLine(p.title)].map(s => s.trim()).filter(Boolean);
+  const hit = options.find(fits);
+  if (hit) return /[?!]$/.test(hit) ? hit : `${hit}.`;
+  // Nothing fits: cut the title at a word boundary (still no ellipsis in the headline).
+  const words = (t || oneLine(p.title)).split(" ");
+  let out = "";
+  for (const w of words) { if ((out ? `${out} ${w}` : w).length > max) break; out = out ? `${out} ${w}` : w; }
+  return out || (t || p.title).slice(0, max);
+}
+
+/** Where the offer lives, in words: an existing screen's name, or the new surface the proposal adds. */
+export function surfaceLabel(p: Proposal, m: ProductModel): string {
+  if (m.screens.some(s => s.id === p.surface)) return screenName(m, p.surface);
+  const ns = p.patch.newScreens.find(s => s.id === p.surface);
+  if (!ns) return p.anchor.newMechanic?.name ?? p.surface;
+  const name = firstQuoted(ns.change) ?? p.anchor.newMechanic?.name ?? `new ${ns.kind}`;
+  return `${name} (new ${ns.kind === "screen" ? "screen" : ns.kind}${ns.basedOn ? ` on ${screenName(m, ns.basedOn)}` : ""})`;
 }
 
 /** Captions are at most 12 words (E5); longer proposer copy is cut at a word boundary. */
@@ -158,12 +179,19 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
   return out;
 }
 
-/** "10 credits = 1× send a message (Basic)": the reward translated into what users spend it on. */
+/** "10 credits = one message in Basic": the reward translated into what users spend it on. */
 export function sinkEquivalent(m: ProductModel, resource: string, amount: number): string {
   const sinks = m.economy.sinks.filter(s => s.resource === resource && s.amount > 0).sort((a, b) => a.amount - b.amount);
   const parts = sinks.slice(0, 2).map(s => ({ n: Math.floor(amount / s.amount), s })).filter(x => x.n > 0)
-    .map(x => `${x.n}× ${x.s.action}${x.s.context ? ` (${x.s.context})` : ""}`);
+    .map(x => sinkUse(x.s.action, x.n, x.s.context));
   return parts.join(" or ");
+}
+
+/** "10 credits per message in Basic" / "30 credits to generate an image". */
+export function sinkLine(s: { action: string; amount: number; context?: string }, unit: string): string {
+  const noun = actionNoun(s.action);
+  const mode = modeName(s.context);
+  return `${s.amount} ${unit} ${noun ? `per ${noun}` : `to ${midSentence(s.action)}`}${mode ? ` in ${mode}` : ""}`;
 }
 
 export function cheapestPack(m: ProductModel, resource?: string) {
@@ -206,9 +234,9 @@ export function moneyToday(m: ProductModel): MoneyStage[] {
     { key: "balance", title: "Balance", screen: e.resources.flatMap(x => x.shownOn)[0]?.screen,
       facts: e.resources.map(x => `${cap(x.name)} (${x.kind})${x.shownOn.length ? `, shown on ${uniq(x.shownOn.map(s => screenName(m, s.screen))).join(", ")}` : ""}${x.observedValues.length ? `; seen ${x.observedValues.slice(0, 4).join(", ")}` : ""}`) },
     { key: "sinks", title: "Spend", screen: e.sinks.map(s => sinkScreen(s.edges)).find(Boolean),
-      facts: e.sinks.map(s => `${s.amount} ${u(s.resource)} per ${s.action}${s.context ? ` (${s.context})` : ""}`) },
+      facts: e.sinks.map(s => sinkLine(s, u(s.resource))) },
     { key: "wall", title: "Hit the wall", screen: e.walls[0]?.shows,
-      facts: e.walls.map(w => `“${screenName(m, w.shows)}” blocks: ${w.blockedIntent}${w.offers.length ? `; offers ${w.offers.length} pack${w.offers.length > 1 ? "s" : ""}` : ""}`) },
+      facts: e.walls.map(w => `“${screenName(m, w.shows)}” stops “${w.blockedIntent}”${w.resource ? ` when ${r(w.resource)?.name ?? "the balance"} run out` : ""}${w.offers.length ? `; offers ${w.offers.length} pack${w.offers.length > 1 ? "s" : ""}` : ""}`) },
     { key: "store", title: "Buy", screen: e.offers[0]?.screen,
       facts: e.offers.map(o => `${o.label}: ${o.priceText}${o.kind !== "pack" ? ` (${o.kind})` : ""}`).concat(e.entitlements.map(x => `${x.plan}: ${x.benefits.slice(0, 2).join(", ")}`)) },
   ];

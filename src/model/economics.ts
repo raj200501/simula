@@ -1,6 +1,7 @@
 // Pure economics. Every number that reaches a slide is computed here from observed prices and
 // explicit, cited constants - never by an LLM. Constants cite kb/rewarded_ads_kb.md chunk ids.
 import type { Derived, Economy, ProductModel, Proposal, ProposalEconomics, Regime } from "../core/schema.ts";
+import { sinkUse } from "../core/humanize.ts";
 
 export const ECON = {
   // Gross revenue per completed rewarded view = eCPM / 1000. [CORE-4], [MEAS-3]
@@ -35,7 +36,7 @@ export function deriveEconomy(e: Economy): Derived {
     .map(([resource, units]) => {
       const sinks = e.sinks.filter(s => s.resource === resource && s.amount > 0).sort((a, b) => a.amount - b.amount);
       const buys = sinks.length
-        ? sinks.map(s => `${Math.floor(units / s.amount)}x ${s.action}${s.context ? ` (${s.context})` : ""}`).join(", ")
+        ? sinks.map(s => sinkUse(s.action, Math.floor(units / s.amount), s.context)).join(", ")
         : "no observed sink";
       return { resource, units, buys };
     });

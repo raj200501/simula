@@ -58,6 +58,13 @@ including product changes that create a real value exchange.
 11. "existing" = anchored to something valuable the app already has (a resource, limit, entitlement, action);
     it must cite at least one economy id. "product-change" = adds or changes a constraint, resource, surface
     or flow; it must fill anchor.newMechanic.
+12. Every user-facing string (title, oneLiner, trigger, offer, reward.what, captions, callouts) reads like a
+    product team wrote it: action names are short user-facing verb phrases like "send a message" or
+    "generate an image" (never the explorer's wording such as "type a short message and send it (may spend)"),
+    screens are called by their names, never by ids. offer.title is at most 5 words; the first sentence of
+    offer.body is at most 14 words; captions at most 12 words.
+13. simula.gamePartner is the character or persona the user already talks to on the surface (for example the
+    chat's title), else the app's name. Never a placeholder like "the character".
 </rules>
 
 <simula_vocabulary>

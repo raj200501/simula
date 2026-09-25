@@ -216,9 +216,10 @@ describe("mock: stub generation and runtime", () => {
     await page.waitForTimeout(400);
     assert.equal(await page.locator("[data-rw-count]").innerText(), c0, "frozen for a deterministic slide frame");
     assert.equal(c0, "9");
-    // A new screen without a fragment is a clone of its base with a callout.
+    // A new screen without a fragment is a clean default sheet over its base (not the raw spec text).
     await ev("window.__mock.go('N1')");
-    assert.match(await page.locator('[data-screen-layer="N1"] .mock-callout').innerText(), /rewarded offer/);
+    assert.match(await page.locator('[data-screen-layer="N1"] .mock-ns-sheet').innerText(), /rewarded offer/);
+    assert.equal(await page.locator('[data-screen-layer="s04"]').count(), 1, "the base screen shows underneath");
     await open("?debug=1&screen=s01");
     assert.equal(await page.locator(".mock-debug-tag").count(), 8);
     assert.equal(errors.length, 0, errors.join("\n"));

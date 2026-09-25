@@ -340,14 +340,53 @@ function phone(fr: Frame, width: number, o: { pins: boolean; numbered?: Pin[] })
   const overlays: string[] = [];
   if (o.pins) {
     if (fr.phase === "change") for (const b of fr.newBoxes) overlays.push(`<span class="newtag" style="left:${pc(b.x, fr.vw)};top:${pc(b.y, fr.vh)}">NEW</span>`);
-    for (const p of o.numbered ?? []) {
-      if (!p.box || p.n == null) continue;
+    const shown = (o.numbered ?? []).filter((p): p is Pin & { box: Box; n: number } => !!p.box && p.n != null);
+    // Pin radius in device px (the pin is 26 slide px wide; the screen is `sw` slide px for `vw` device px).
+    const spots = placePins(shown.map(p => p.box), fr.vw, fr.vh, (13 * fr.vw) / sw + 1);
+    shown.forEach((p, k) => {
       overlays.push(`<span class="ring" style="left:${pc(p.box.x, fr.vw)};top:${pc(p.box.y, fr.vh)};width:${pc(p.box.w, fr.vw)};height:${pc(p.box.h, fr.vh)}"></span>`);
-      const cx = Math.min(fr.vw - 14, Math.max(14, p.box.x + p.box.w - 4)), cy = Math.min(fr.vh - 14, Math.max(14, p.box.y + 4));
-      overlays.push(`<span class="pin" style="left:${pc(cx, fr.vw)};top:${pc(cy, fr.vh)}">${p.n}</span>`);
-    }
+      overlays.push(`<span class="pin" style="left:${pc(spots[k].x, fr.vw)};top:${pc(spots[k].y, fr.vh)}">${p.n}</span>`);
+    });
   }
   return `<div class="phone" style="width:${width}px"><div class="screen" style="height:${sh}px"><img src="${h(fr.img)}" alt="${h(PHASE_LABEL[fr.phase as PhaseId] ?? fr.phase)}: ${h(fr.screen)}">${overlays.join("")}</div></div>`;
+}
+
+/**
+ * Where each numbered pin goes: just outside its element's top-right corner when that is free, else
+ * the next free spot around the element. A spot is "free" when the pin covers no other pin and no
+ * other callout target (the offer's Play / No thanks included), and preferably not its own element.
+ */
+export function placePins(boxes: Box[], vw: number, vh: number, r: number): { x: number; y: number }[] {
+  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+  const covers = (x: number, y: number, b: Box) => {
+    const nx = clamp(x, b.x, b.x + b.w), ny = clamp(y, b.y, b.y + b.h);
+    return (x - nx) ** 2 + (y - ny) ** 2 < r * r;
+  };
+  const placed: { x: number; y: number }[] = [];
+  boxes.forEach((b, i) => {
+    const d = r + 1;
+    const cands = [
+      [b.x + b.w + d * 0.7, b.y - d * 0.7], // outside the top-right corner
+      [b.x + b.w - r, b.y - d],             // above the top-right corner
+      [b.x + b.w + d, b.y + b.h / 2],       // right of the element
+      [b.x - d * 0.7, b.y - d * 0.7],       // outside the top-left corner
+      [b.x + b.w / 2, b.y - d],             // above the middle
+      [b.x + b.w + d * 0.7, b.y + b.h + d * 0.7],
+      [b.x - d, b.y + b.h / 2],
+      [b.x + b.w / 2, b.y + b.h + d],
+      [b.x + b.w - r, b.y + r],             // last resort: inside the top-right corner
+    ].map(([x, y]) => ({ x: clamp(x, r, vw - r), y: clamp(y, r, vh - r) }));
+    let best = cands[0], cost = Infinity;
+    cands.forEach((c, k) => {
+      let v = k * 0.1;
+      if (placed.some(p => (p.x - c.x) ** 2 + (p.y - c.y) ** 2 < (2 * r + 2) ** 2)) v += 100;
+      boxes.forEach((o, j) => { if (j !== i && covers(c.x, c.y, o)) v += 10; });
+      if (covers(c.x, c.y, b)) v += 3;
+      if (v < cost) { cost = v; best = c; }
+    });
+    placed.push(best);
+  });
+  return placed;
 }
 
 function phoneImg(src: string, width: number, ratio: number, alt: string): string {

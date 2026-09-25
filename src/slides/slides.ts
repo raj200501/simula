@@ -21,7 +21,7 @@ import { captureFlow } from "./capture.ts";
 import { renderDeck, type FlowInput } from "./deck.ts";
 import { exportDeck } from "./export.ts";
 import {
-  accentOf, claimOf, declineTarget, econTable, judgeChanges, latestFinals, moneyToday, normalizeStoryboard, resourceOf, screenName, shipped, unitOf, whyBullets,
+  accentOf, claimOf, declineTarget, econTable, judgeChanges, latestFinals, moneyToday, normalizeStoryboard, resourceOf, screenName, shipped, surfaceLabel, unitOf, whyBullets,
 } from "./facts.ts";
 import { integrationSnippet } from "./integration.ts";
 import { variantFragments, type Fragment } from "./variants.ts";
@@ -66,9 +66,9 @@ export async function buildSlides(c: StageCtx, m: ProductModel, modelDir: string
         p, f, econ, frames,
         claim: claimOf(p),
         declineTo: declineTarget(p, m, offer.screen),
-        surfaceName: screenName(m, p.surface),
+        surfaceName: surfaceLabel(p, m),
         protoHref: `${rel(outDir, indexHtml ?? path.join(c.paths.mock, "index.html"))}?proposal=${encodeURIComponent(p.id)}`,
-        snippet: integrationSnippet(p, { surfaceName: screenName(m, p.surface), resourceName: res ? unitOf(res) : undefined }),
+        snippet: integrationSnippet(p, { surfaceName: surfaceLabel(p, m).replace(/\s*\(new [^)]*\)$/, ""), resourceName: res ? unitOf(res) : undefined }),
         changes: judgeChanges(p, cands, j),
         why: whyBullets(p, m, econ),
         econRows: econTable(p, m, econ),

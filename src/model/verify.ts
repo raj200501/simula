@@ -7,6 +7,7 @@
 import type { Economy, Evidence, ExploreGraph } from "../core/schema.ts";
 import { trace } from "../core/trace.ts";
 import { redactText } from "./redact.ts";
+import { humanizeAction } from "../core/humanize.ts";
 
 export interface Corpus {
   texts: Map<string, string[]>;          // observation id | screen id | ext id -> visible texts
@@ -89,7 +90,8 @@ export function verifyEconomy(e: Economy, c: Corpus, ids: Ids): { economy: Econo
   const resIds = new Set(resources.map(r => r.id));
   const sinks = uniqueIds(e.sinks).map(k => {
     const v = check(k.evidence, [{ value: k.amount, sign: -1, resource: k.resource }], c);
-    return { ...k, edges: k.edges.filter(x => ids.edges.has(x)), ...v, conf: resIds.has(k.resource) ? v.conf : "inferred" as const };
+    // Action names are user-facing (slides quote them): the short verb phrase, whoever wrote it.
+    return { ...k, action: humanizeAction(k.action) || k.action, edges: k.edges.filter(x => ids.edges.has(x)), ...v, conf: resIds.has(k.resource) ? v.conf : "inferred" as const };
   });
   const sources = uniqueIds(e.sources).map(s => ({
     ...s, screen: s.screen && ids.screens.has(s.screen) ? s.screen : undefined,
@@ -105,7 +107,7 @@ export function verifyEconomy(e: Economy, c: Corpus, ids: Ids): { economy: Econo
   const offerIds = new Set(offers.map(o => o.id));
   const walls = uniqueIds(e.walls).flatMap(w => {
     if (!ids.screens.has(w.shows)) { drop(`wall ${w.id}`, `unknown screen ${w.shows}`); return []; }
-    return [{ ...w, edge: w.edge && ids.edges.has(w.edge) ? w.edge : undefined, declineEdge: w.declineEdge && ids.edges.has(w.declineEdge) ? w.declineEdge : undefined,
+    return [{ ...w, blockedIntent: humanizeAction(w.blockedIntent) || w.blockedIntent, edge: w.edge && ids.edges.has(w.edge) ? w.edge : undefined, declineEdge: w.declineEdge && ids.edges.has(w.declineEdge) ? w.declineEdge : undefined,
       offers: w.offers.filter(x => offerIds.has(x)), ...check(w.evidence, [], c) }];
   });
   const entitlements = e.entitlements.map(x => ({ ...x, ...check(x.evidence, [], c) }));

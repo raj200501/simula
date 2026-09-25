@@ -4,6 +4,7 @@
 // product team recognises. Monetization flows are shortest paths to each wall, store and paywall;
 // secondary flows are shortest paths to the other tabs.
 import type { Action, Edge, Flow, Screen } from "../core/schema.ts";
+import { humanizeAction, midSentence } from "../core/humanize.ts";
 
 export interface FlowGraph {
   screens: Screen[];
@@ -57,7 +58,7 @@ export function noteFor(g: FlowGraph, e: Edge): string {
   const a = g.actionOf.get(e.id);
   const fx = e.effects.flatMap(f => (f.kind === "counter" ? [`${g.resourceName(f.resource)} ${f.delta > 0 ? "+" : "−"}${Math.abs(f.delta)}`] : []));
   const ctx = e.context.selected.length ? ` while "${e.context.selected.join(" / ")}" is selected` : "";
-  return `${a?.intent ?? e.action}${ctx}${fx.length ? ` (${fx.join(", ")})` : ""}${e.limitHit ? " → blocked" : ""}`;
+  return `${humanizeAction(a?.intent) || e.action}${ctx}${fx.length ? ` (${fx.join(", ")})` : ""}${e.limitHit ? " → blocked" : ""}`;
 }
 
 const stepsOf = (g: FlowGraph, start: string, path: Edge[]) =>
@@ -113,10 +114,10 @@ function coreFlow(g: FlowGraph, name: (id: string) => string): Flow | null {
       .filter((p): p is Edge[] => !!p && p.length > 0 && p.length <= 2).sort((a, b) => a.length - b.length)[0];
     if (viaForward) path.push(...viaForward);
   }
-  const intent = g.actionOf.get((sends[0] ?? wall ?? hubEdges[0]).id)?.intent ?? "use the app";
+  const intent = humanizeAction(g.actionOf.get((sends[0] ?? wall ?? hubEdges[0]).id)?.intent) || "Use the app";
   return {
-    id: "", kind: "core", name: wall ? `Core loop: ${intent} until ${name(wall.to)}` : `Core loop: ${intent}`,
-    goal: wall ? `Reach ${name(hub)} and ${intent.toLowerCase()} until the resource runs out` : `Reach ${name(hub)} and ${intent.toLowerCase()}`,
+    id: "", kind: "core", name: wall ? `Core loop: ${midSentence(intent)} until ${name(wall.to)}` : `Core loop: ${midSentence(intent)}`,
+    goal: wall ? `Reach ${name(hub)} and ${midSentence(intent)} until the resource runs out` : `Reach ${name(hub)} and ${midSentence(intent)}`,
     steps: stepsOf(g, start, path),
   };
 }

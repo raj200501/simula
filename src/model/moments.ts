@@ -8,6 +8,7 @@
 //   first-value  the first core-content screen after launch: offers are FORBIDDEN here (noOffer)
 import type { Economy, Edge, Evidence, Flow, Moment, Screen } from "../core/schema.ts";
 import { isConsume } from "./flows.ts";
+import { humanizeAction } from "../core/humanize.ts";
 
 export interface ExtraMoment { type: Moment["type"]; screen: string; edge?: string; resource?: string; description: string; evidence: Evidence[] }
 
@@ -47,7 +48,7 @@ export function detectMoments(m: { screens: Screen[]; edges: Edge[]; economy: Ec
   for (const e of m.edges) {
     const to = scr.get(e.to);
     if (to?.kind === "paywall" && !m.economy.walls.some(w => w.shows === to.id) && isConsume(e, actionOf(e)))
-      add({ type: "wall", screen: to.id, edge: e.id, description: `${actionOf(e)?.intent ?? "An action"} leads straight to the paywall ${to.name}`, evidence: [] });
+      add({ type: "wall", screen: to.id, edge: e.id, description: `${humanizeAction(actionOf(e)?.intent) || "An action"} leads straight to the paywall ${to.name}`, evidence: [] });
   }
   // Declines out of stores and paywalls: BACK, or a "not now" style control.
   for (const e of m.edges) {

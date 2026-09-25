@@ -106,25 +106,146 @@
     var tmp = document.createElement("template");
     if (ps) {
       if (ps.html) tmp.innerHTML = ps.html;
-      else {
-        var base = ps.basedOn && templateFor(ps.basedOn);
-        tmp.innerHTML = base ? base.innerHTML : '<div data-screen-root="' + id + '" style="position:relative;width:100%;height:100%;background:#fff"></div>';
-        var root = tmp.content.querySelector("[data-screen-root]") || tmp.content.firstElementChild;
-        if (root) {
-          var call = document.createElement("div");
-          call.className = "mock-callout";
-          call.setAttribute("data-new", "");
-          call.innerHTML = "<b>New</b>";
-          call.appendChild(document.createTextNode(" " + ps.change));
-          root.appendChild(call);
-        }
-      }
+      else tmp.content.appendChild(defaultNewScreen(id, ps));
       var r0 = tmp.content.querySelector("[data-screen-root]") || tmp.content.firstElementChild;
       if (r0) { r0.setAttribute("data-new", ""); r0.setAttribute("data-screen-root", id); }
       return tmp.content;
     }
     tmp.innerHTML = '<div data-screen-root="' + id + '" class="mock-missing">Screen ' + id + " is not part of this mock</div>";
     return tmp.content;
+  }
+
+  // ------------------------------------------------------------------ proposal defaults (no fragment)
+  // A proposal entry the model did not render gets a real, native-looking control instead of its
+  // spec text: the label is the first quoted string in `change` ("Secondary button "▶ Play 15 s"…"),
+  // else a five-word summary; the control kind (button / pill / card) comes from the words around it.
+  function quotedIn(s) {
+    var out = [], re = /"([^"]{1,80})"|“([^”]{1,80})”|«([^»]{1,80})»/g, m;
+    while ((m = re.exec(s || ""))) out.push(clean(m[1] || m[2] || m[3]));
+    return out;
+  }
+  var SPEC_WORDS = /^(?:(?:one-time|dismissible|secondary|primary|inline|small|new|sponsored)\s+)*(?:button|pill|chip|badge|tag|card|row|task row|tile|banner|bubble|invitation bubble|character invitation bubble|link|cta|sheet|modal|screen|variant)\b[:\s]*/i;
+  function summaryOf(s, n) {
+    var t = clean(String(s || "").replace(/\([^)]*\)/g, "").replace(/["“”«»]/g, ""));
+    for (var k = 0; k < 3; k++) t = t.replace(SPEC_WORDS, "");
+    var w = t.split(" ").filter(Boolean).slice(0, n || 5);
+    while (w.length > 1 && /^(a|an|the|to|and|or|of|with|for|in|on|at|under|after|before|next|shown)$/i.test(w[w.length - 1])) w.pop();
+    var out = w.join(" ").replace(/[,;:.\-–—]+$/, "");
+    return out ? out.charAt(0).toUpperCase() + out.slice(1) : "";
+  }
+  function specOf(change) {
+    var c = String(change || ""), q = quotedIn(c), low = c.toLowerCase();
+    var kind = /\b(card|row|tile|banner|bubble|invitation|list)\b/.test(low) ? "card"
+      : /\b(badge|chip|pill|tag)\b/.test(low) ? "pill" : "button";
+    var sub = (/\bwith\s+"([^"]{1,40})"/.exec(c) || /\bwith\s+“([^”]{1,40})”/.exec(c) || [])[1] || "";
+    var acts = [];
+    var two = /\bwith\s+(?:a\s+|an\s+)?([A-ZÀ-ɏ][\w'’ ]{0,20}?)\s*\/\s*([A-ZÀ-ɏ][\w'’ ]{0,20}?)(?=[,.;]|\s+(?:shown|under|after|before|next|visible|below|above)\b|$)/.exec(c);
+    var one = /\bwith\s+(?:a|an)\s+([A-ZÀ-ɏ][\w'’]{0,16}(?: [\w'’]{1,16})?)\s+button\b/.exec(c);
+    if (two) acts = [clean(two[1]), clean(two[2])]; else if (one) acts = [clean(one[1])];
+    return { kind: kind, label: q[0] || summaryOf(c, 5) || "New", sub: sub && sub !== q[0] ? sub : "", actions: acts };
+  }
+  function css(el, rules) { for (var k in rules) el.style.setProperty(k, rules[k]); return el; }
+  function newControl(ne, wide) {
+    var sp = specOf(ne.change), el;
+    if (sp.kind === "card") {
+      el = document.createElement("div");
+      el.className = "mock-new-card";
+      var body = document.createElement("div");
+      body.className = "mock-new-card-text";
+      var b = document.createElement("b"); b.textContent = sp.label; body.appendChild(b);
+      if (sp.sub) { var sm = document.createElement("span"); sm.textContent = sp.sub; body.appendChild(sm); }
+      el.appendChild(body);
+      var acts = sp.actions.length ? sp.actions : [];
+      if (acts.length) {
+        var row = document.createElement("div"); row.className = "mock-new-card-acts";
+        acts.forEach(function (a, i) { var x = document.createElement("span"); x.className = i ? "mock-new-ghost" : "mock-new-cta"; x.textContent = a; row.appendChild(x); });
+        el.appendChild(row);
+      }
+    } else {
+      el = document.createElement("button");
+      el.type = "button";
+      el.className = sp.kind === "pill" ? "mock-new-pill" : "mock-new-button";
+      el.textContent = sp.label;
+      if (sp.sub) { var s2 = document.createElement("small"); s2.textContent = sp.sub; el.appendChild(s2); }
+      if (sp.kind === "button" && wide) el.classList.add("mock-new-wide");
+    }
+    return el;
+  }
+
+  function defaultNewScreen(id, ps) {
+    var m = ps.meta || {}, overlay = !!OVERLAY[m.kind];
+    var sp = specOf(ps.change), change = String(ps.change || "");
+    var root = document.createElement("div");
+    root.setAttribute("data-screen-root", id);
+    css(root, { position: "relative", width: "100%", height: "100%", overflow: "hidden", background: overlay ? "transparent" : "#FFFFFF" });
+    if (overlay) { var scrim = document.createElement("div"); scrim.className = "mock-ns-scrim"; root.appendChild(scrim); }
+    var panel = document.createElement("div");
+    panel.className = overlay ? (m.kind === "sheet" ? "mock-ns-sheet" : "mock-ns-modal") : "mock-ns-page";
+    if (m.kind === "sheet") css(panel, { "padding-bottom": (M.device.navDp + 20) + "px" });
+    if (!overlay) css(panel, { "padding-top": (M.device.statusDp + 12) + "px" });
+    var head = document.createElement("div"); head.className = "mock-ns-head";
+    var h = document.createElement("div"); h.className = "mock-ns-title"; h.textContent = sp.label; head.appendChild(h);
+    var x = document.createElement("button"); x.type = "button"; x.className = "mock-ns-close"; x.setAttribute("aria-label", "Close"); x.textContent = overlay ? "✕" : "←";
+    x.addEventListener("click", function (ev) { ev.stopPropagation(); back(); });
+    if (overlay) head.appendChild(x); else head.insertBefore(x, h);
+    panel.appendChild(head);
+    // Details: the spec's remaining clauses ("progress 0/3", "resets at midnight"), minus the rows spec.
+    var rows = /(\d+)\s+(?:rows?|items?|tasks?|cards?)\s*(?:["“]([^"”]{1,80})["”])?/i.exec(change);
+    var rest = change.replace(/["“][^"”]*["”]/g, "\u0000").split(/[,;]|:\s/).map(function (t) { return clean(t.replace(/\u0000/g, "").replace(SPEC_WORDS, "")); })
+      .filter(function (t) { return t && t.length > 2 && !/^\d+\s+(rows?|items?|tasks?|cards?)\b/i.test(t) && t.split(" ").length <= 6; });
+    if (rest.length) { var d = document.createElement("div"); d.className = "mock-ns-sub"; d.textContent = rest.slice(0, 3).join(" · ").replace(/^./, function (c) { return c.toUpperCase(); }); panel.appendChild(d); }
+    var body = document.createElement("div"); body.className = "mock-ns-body"; body.setAttribute("data-mock-ns-body", "");
+    var mine = (S.patchElements[id] || []).filter(function (ne) { return /\b(row|item|task|card|tile)\b/i.test(ne.change || ""); }).length;
+    var n = rows ? Math.max(0, Math.min(6, Number(rows[1])) - mine) : 0;
+    for (var i = 0; i < n; i++) {
+      var r = document.createElement("div"); r.className = "mock-ns-row";
+      var t = document.createElement("span"); t.textContent = rows[2] ? clean(rows[2]) : sp.label + " " + (i + 1); r.appendChild(t);
+      var p = document.createElement("span"); p.className = "mock-new-cta"; p.textContent = "Play"; r.appendChild(p);
+      body.appendChild(r);
+    }
+    panel.appendChild(body);
+    root.appendChild(panel);
+    return root;
+  }
+
+  /**
+   * Absolute (spec-rendered) layouts have no flow: make room for a new element next to `near` by
+   * moving what is below it down (growing its panel), or, when that would push content off a
+   * bottom-anchored panel, moving `near` and what is above it up. Returns the element's top.
+   */
+  function makeRoom(near, el, place) {
+    var parent = near.parentElement, gap = 8;
+    var need = el.offsetHeight + gap;
+    var H = M.device.h - (M.device.navDp || 0);
+    var top0 = near.offsetTop, bot0 = near.offsetTop + near.offsetHeight;
+    var y0 = place === "before" ? top0 : bot0;
+    var kids = [].filter.call(parent.children, function (k) {
+      return k !== el && getComputedStyle(k).position === "absolute" && !k.classList.contains("sr-tabbar") && k.getAttribute("role") !== "tab" && !k.hasAttribute("data-new");
+    });
+    var centerIn = function (k, b) { var cx = k.offsetLeft + k.offsetWidth / 2, cy = k.offsetTop + k.offsetHeight / 2; return cx >= b.x && cx <= b.x + b.w && cy >= b.y && cy <= b.y + b.h; };
+    // The panel (sheet / dialog backdrop) holding `near`, if any: only what is drawn on it moves.
+    var panel = [].filter.call(parent.querySelectorAll(":scope > .sr-panel"), function (k) {
+      return k.offsetTop <= top0 + 2 && k.offsetTop + k.offsetHeight >= bot0 - 2 && k.offsetLeft <= near.offsetLeft + 2 && k.offsetLeft + k.offsetWidth >= near.offsetLeft + near.offsetWidth - 2;
+    }).pop() || null;
+    var pb = panel ? { x: panel.offsetLeft, y: panel.offsetTop, w: panel.offsetWidth, h: panel.offsetHeight } : null;
+    var after = function (k) { return !panel || (panel.compareDocumentPosition(k) & Node.DOCUMENT_POSITION_FOLLOWING); };
+    var mine = kids.filter(function (k) { return k !== panel && after(k) && (!pb || centerIn(k, pb)); });
+    var fixedBottom = function (k) { return !panel && k.offsetTop >= H - 90 && k.offsetHeight < 100; }; // tab bar, composer
+    var below = mine.filter(function (k) { return (k === near ? place === "before" : k.offsetTop >= y0 - 2) && !fixedBottom(k); });
+    var move = function (k, dy) { k.style.top = (parseFloat(getComputedStyle(k).top) || k.offsetTop) + dy + "px"; };
+    var lowest = below.reduce(function (a, k) { return Math.max(a, k.offsetTop + k.offsetHeight); }, pb ? pb.y + pb.h : y0);
+    var bottomAnchored = pb && pb.y + pb.h >= H - 4;
+    if (!bottomAnchored && (pb ? pb.y + pb.h + need <= H : true) && (panel || lowest + need <= H + 200)) {
+      below.forEach(function (k) { move(k, need); });
+      if (panel) panel.style.height = panel.offsetHeight + need + "px";
+      return y0 + gap / 2;
+    }
+    // Grow upwards: `near` and everything above it on the panel (or screen) move up.
+    var headerBottom = (M.device.statusDp || 0) + 64;
+    var above = mine.filter(function (k) { return k === near ? place !== "before" : k.offsetTop + k.offsetHeight <= y0 + 2 && (panel || k.offsetTop >= headerBottom); });
+    above.forEach(function (k) { move(k, -need); if (!panel && k.offsetTop < headerBottom) k.style.visibility = "hidden"; });
+    if (panel) { panel.style.top = panel.offsetTop - need + "px"; panel.style.height = panel.offsetHeight + need + "px"; }
+    return y0 - need + gap / 2;
   }
 
   function makeLayer(id) {
@@ -601,19 +722,34 @@
         t.innerHTML = ne.html;
         el = t.content.firstElementChild;
       }
-      if (!el) {
-        el = document.createElement("button");
-        el.type = "button";
-        el.className = "mock-new-pill";
-        el.textContent = ne.change.length > 80 ? ne.change.slice(0, 77) + "…" : ne.change;
-      }
+      var near = ne.near && nodeIn(layer, ne.near);
+      var fallback = !el;
+      if (!el) el = newControl(ne, !!near && near.offsetWidth >= 0.6 * M.device.w);
       if (!el.getAttribute("data-node")) el.setAttribute("data-node", ne.id);
       el.setAttribute("data-new", "");
       if (el.style.position === "absolute" && el.style.left && el.style.top) { root.appendChild(el); return; } // placed by its author
-      var near = ne.near && nodeIn(layer, ne.near);
+      var nsBody = layer.querySelector("[data-mock-ns-body]");
+      if (nsBody && (!near || ne.place === "overlay")) { nsBody.insertBefore(el, nsBody.firstChild); return; } // a default new screen: in its list
       var pos = near ? getComputedStyle(near).position : "";
       if (near && ne.place !== "overlay" && pos !== "absolute" && pos !== "fixed") {
         near.insertAdjacentElement(ne.place === "before" ? "beforebegin" : "afterend", el);
+        return;
+      }
+      if (near && ne.place !== "overlay" && pos === "absolute" && fallback) {
+        // In the layout flow: room is made next to `near`, nothing is covered.
+        el.style.position = "absolute";
+        el.style.visibility = "hidden";
+        near.parentElement.appendChild(el);
+        var wide = el.classList.contains("mock-new-wide") || el.classList.contains("mock-new-card");
+        if (wide) el.style.width = Math.max(near.offsetWidth, Math.min(M.device.w - 32, 280)) + "px";
+        var ew = el.offsetWidth;
+        var left = wide ? (near.offsetWidth >= 0.6 * M.device.w ? near.offsetLeft : 16)
+          : near.offsetLeft + near.offsetWidth / 2 > M.device.w / 2 ? near.offsetLeft + near.offsetWidth - ew : near.offsetLeft;
+        var top = makeRoom(near, el, ne.place);
+        el.style.left = Math.max(8, Math.min(M.device.w - ew - 8, left)) + "px";
+        el.style.top = top + "px";
+        el.style.zIndex = "20";
+        el.style.visibility = "";
         return;
       }
       // Absolute layouts: place the new element just above / below / over its neighbour.

@@ -71,11 +71,11 @@ const look = async (c: ActCtx) => c.normalize(await c.dev.elements());
  * sat in the top bar (a bar does not scroll: scrolling would only move the content under it).
  */
 async function locate(c: ActCtx, key: string, hint?: Rect): Promise<NormElement | undefined> {
-  const inTopBar = !!hint && hint.y + hint.h <= c.info.heightPx * 0.15;
-  for (let i = 0; i <= (inTopBar ? 0 : 2); i++) {
+  const scrolls = hint && hint.y + hint.h <= c.info.heightPx * 0.15 ? 0 : 2;
+  for (let i = 0; i <= scrolls; i++) {
     const el = findByKey(await look(c), key, hint);
     if (el) return el;
-    if (i < 2) { await swipe(c.dev, c.info, "up", 0.4 * c.info.heightPx); await sleep(c.timing.pollMs); }
+    if (i < scrolls) { await swipe(c.dev, c.info, "up", 0.4 * c.info.heightPx); await sleep(c.timing.pollMs); }
   }
   return undefined;
 }

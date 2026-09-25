@@ -17,7 +17,7 @@ import { mergeAnnotations, toActions, type Annotation } from "../src/explore/ann
 import { findSend } from "../src/explore/act.ts";
 import { explore, isWall, probe } from "../src/explore/explorer.ts";
 import { FakeCreditChat, FAKE_PKG, FAST_TIMING, H, NAV, STATUS, W, testCtx, tmpDir } from "./helpers/explore-fake-device.ts";
-import { T, TinyDevice, rect, type TinyEl } from "./helpers/explore-tiny-device.ts";
+import { T, TinyDevice, rect } from "./helpers/explore-tiny-device.ts";
 
 setLlmContext({ mode: "stub" });
 const tmp = tmpDir("simula-explore-rules-");
