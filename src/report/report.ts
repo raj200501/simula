@@ -12,6 +12,8 @@ import { summarize } from "../core/trace.ts";
 import { HOW_IT_WORKS, PRODUCTIONIZATION } from "./content.ts";
 import { fmtInt, fmtTokens, fmtUsd, readJsonSafe, readQa, rollupCost, traceStats, type CostRollup, type QaDigest, type TraceStats } from "./data.ts";
 import { renderMarkdown } from "./markdown.ts";
+import { galleryMd } from "./gallery.ts";
+import { numbersMd } from "./numbers.ts";
 
 type State = "complete" | "partial" | "blocked" | "not run";
 
@@ -42,6 +44,7 @@ export async function buildReport(appIds: string[], outRoot?: string): Promise<s
   const rows = appIds.map(id => collect(id, root));
   const file = path.join(root, "index.html");
   writeText(file, page(rows));
+  writeText(path.join(root, "README.md"), galleryMd(rows, root));
   return file;
 }
 
@@ -122,10 +125,18 @@ function collect(id: string, root: string): AppRow {
     if (state === "partial") why = `furthest stage: ${judgments ? "judge" : cands ? "propose" : qa ? "qa" : exists(path.join(p.mock, "index.html")) ? "mock" : "understand"}`;
   }
 
+  const cost = rollupCost(p.cost);
+  const evalText = exists(evalMd) ? fs.readFileSync(evalMd, "utf8") : "";
+  const name = model?.app.name ?? cfg?.name ?? id;
+  if (model) {
+    writeText(path.join(p.out, "NUMBERS.md"), numbersMd({ name, model, qa, cands, judgments, evalMd: evalText, cost, trace, notes, stubs }));
+    links.unshift({ label: "Numbers", href: rel("NUMBERS.md"), ok: true });
+  }
+
   return {
-    id, name: model?.app.name ?? cfg?.name ?? id, profile: cfg?.profile ?? "", state, why, model, modelError, qa, verdicts, ships,
-    cost: rollupCost(p.cost), trace, notes, stubs, links,
-    judgeEval: exists(evalMd) ? renderMarkdown(fs.readFileSync(evalMd, "utf8")) : "",
+    id, name, profile: cfg?.profile ?? "", state, why, model, modelError, qa, verdicts, ships,
+    cost, trace, notes, stubs, links,
+    judgeEval: evalText ? renderMarkdown(evalText) : "",
   };
 }
 

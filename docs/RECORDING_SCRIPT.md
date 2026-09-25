@@ -17,6 +17,7 @@
    | 6 | `out/luzia/proposals/judgments.md`, rendered (the report page links an HTML version) |
    | 7 | `out/luzia/proposals/judge-eval.md` |
    | 8 | `out/luzia/trajectory.md` |
+   | 9 | `out/luzia/NUMBERS.md`: keep it open on a second screen or printed. It holds every number you'll say |
 
 3. In a terminal: `cd ~/simula`, then make the font large (⌘ +).
 4. Optional: a 20-second screen clip of the emulator while `npm run explore -- --app luzia` runs. The fixture also works: `npm run demo`.
@@ -116,7 +117,7 @@
 - "Product change: we add a mechanic, like daily tasks, that creates a real value exchange."
 - "Each proposal is a typed patch to the model. So the mock can render it, and the judge can check it."
 - "The model never does the arithmetic. It states assumptions; code computes the economics."
-- "A note on your own Luzia slides: the out-of-free-messages moment you picked is the same one this system lands on. It gets there by measuring the cap, not by being told. To be fair, the knowledge base includes public rewarded patterns, yours among them. What the system adds is grounding them in the real UI, with measured numbers, and going past them: <name one SHIP idea that is not in your slides>."
+- "A note on your own Luzia slides: the out-of-free-messages moment you picked is the same one this system lands on. It gets there by measuring the cap, not by being told. To be fair, the knowledge base includes public rewarded patterns, yours among them. What the system adds is grounding them in the real UI, with measured numbers, and going past them: <name one SHIP idea that is not in your slides; the list is in out/luzia/NUMBERS.md>."
 
 ---
 
@@ -133,7 +134,7 @@
 - "Only SHIP becomes a slide. REVISE is never promoted."
 - "How do I know the judge is good? This table."
 - "I take good examples from the knowledge base, and break exactly one thing in each copy."
-- "Then I check that each broken one is caught, and whether code or the model caught it. <Say the numbers.>"
+- "Then I check that each broken one is caught, and whether code or the model caught it. <Say the numbers from out/luzia/NUMBERS.md, "Judge self-check".>"
 
 ---
 

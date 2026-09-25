@@ -145,6 +145,17 @@ test("slides + report: deck.pdf, the flow PNGs and out/index.html exist", () => 
   assert.ok(pngs.some(f => /flow-P\d+\.png$/.test(f)), pngs.join(", "));
   assert.equal(reportFile, path.join(outRoot, "index.html"));
   assert.ok(fs.existsSync(reportFile));
+  // The numbers card: every figure a recording needs, read from the artifacts.
+  const numbers = fs.readFileSync(path.join(outRoot, "fixture", "NUMBERS.md"), "utf8");
+  assert.match(numbers, /\d+ screens, \d+ transitions/);
+  assert.match(numbers, /\d+ SHIP \/ \d+ REVISE \/ \d+ REJECT/);
+  assert.match(numbers, /Exchange rate: \*\*1 completed US view/);
+  assert.match(numbers, /Flow QA: \*\*\d+ \/ \d+\*\*/);
+  assert.match(fs.readFileSync(reportFile, "utf8"), /fixture\/NUMBERS\.md/);
+  // The GitHub-rendered gallery: shipped flow slides and QA side-by-sides, relative paths only.
+  const gallery = fs.readFileSync(path.join(outRoot, "README.md"), "utf8");
+  assert.match(gallery, /### Shipped flows[\s\S]*!\[P\d+: [^\]]+\]\(fixture\/slides\/png\/\d+-flow-P\d+\.png\)/);
+  assert.match(gallery, /<img src="fixture\/qa\/s\d+\/original\.png"/);
   const html = fs.readFileSync(deck.deckHtml, "utf8");
   assert.doesNotMatch(html, /may spend|type a short message/i, "no explorer wording on the slides");
 });

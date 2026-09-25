@@ -106,20 +106,26 @@ Then run `npm test` or `npm run demo`.
 
 ---
 
-## 5. Numbers to know (fill in from your run)
+## 5. Numbers to know
+
+You don't have to fill these in by hand. `npm run report` writes **`out/luzia/NUMBERS.md`**, with every figure read from the artifacts of the last run. Open it before recording and learn these:
 
 **Luzia:**
-- ___ screens, ___ transitions
-- free-message cap: ___ messages ("limit after N sends")
-- exchange rate: 1 view ≈ ___ messages at cost to serve
+- screens and transitions explored, and why exploration stopped
+- the free-message cap it measured ("limit after N sends")
+- the exchange rate: 1 view ≈ N messages at cost to serve
 
-**Proposals:** ___ SHIP / ___ REVISE / ___ REJECT. Example of a rejected idea and why: ___
+**Proposals:**
+- SHIP / REVISE / REJECT counts
+- one rejected idea and the reason (it's in "Why the others did not ship")
 
-**Judge self-check:** caught ___ of ___ broken proposals; ___ of ___ good ones shipped.
+**Judge self-check:** how many single-fault broken proposals it caught, and how many good ones shipped.
 
-**QA:** mean fidelity ___, flow QA ___ / ___.
+**QA:** mean fidelity, and flow QA passed / total.
 
-**Cost:** $0 on the free Gemini tier; ___ model calls in total (from `cost.jsonl`).
+**Cost:** $0 on the free Gemini tier; the number of live model calls and which models answered.
+
+If the card starts with a ⚠ stub warning, some stages ran on deterministic fallbacks because the free quota ran out. Re-run those stages after the quota resets at midnight Pacific.
 
 **OOC:** it closes itself about 0.8 s after launch. Its security module logs `Kill Process … [D11001]`. It was recorded as blocked, not bypassed.
 

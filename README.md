@@ -16,6 +16,7 @@ Code owns control flow, state identity, arithmetic and verdicts. Models answer n
 
 | Assignment deliverable | Where it is |
 |---|---|
+| **Results at a glance** (browsable on GitHub, no clone) | [`out/README.md`](out/README.md): per app, the shipped flow slides, the real-app vs. mock screenshots with scores, and links to every artifact. `out/<app>/NUMBERS.md`: every figure (coverage, measured caps, exchange rate, verdicts with why the others failed, judge self-check, QA, cost) read from the artifacts |
 | **Code**: explorer, mock generator, QA loop, proposer, judge. One command per stage | `src/explore`, `src/model`, `src/mock`, `src/qa`, `src/propose`, `src/judge`, `src/slides`. Run `npm run <stage> -- --app <app>` ([per-stage commands](#run-it-on-the-real-apps)) |
 | Required models, keys, emulator, services | [Requirements](#requirements) |
 | **Product model** (Goal 1): what was explored, what was learned, how it is represented | `out/<app>/model/product-model.json` (schema: `src/core/schema.ts`), `digest.md` (what the proposer and judge read), `viewer.html` (human view: economy with evidence, screens, flows, coverage and what was *not* explored) |
@@ -70,7 +71,7 @@ npm run propose    -- --app luzia         # rewarded-ad candidates (KB-grounded)
 npm run judge      -- --app luzia         # code gates -> rubric -> verdict in code -> <=2 revisions
 npm run eval:judge -- --app luzia         # judge confusion table
 npm run slides     -- --app luzia         # SHIP proposals -> patched mock -> deck.pdf
-npm run report                            # out/index.html across all apps
+npm run report                            # out/index.html, out/README.md, out/<app>/NUMBERS.md
 
 npm run all -- --app janitor              # every stage in order, then the report
 npm run note -- --app ooc "OOC exits on launch (AppSecurity D11001); recorded as blocked"
@@ -247,7 +248,7 @@ src/qa/                 compare (IoU / SSIM / text / ΔE), fix loop with keep-be
 src/propose/            proposer: KB, anchors, stub templates, set validator, schemas
 src/judge/              gates, rubric, verdict (pure), judge + revisions, calibration (eval-judge)
 src/slides/             captures of the patched mock, deck, PDF/PNG export, SDK snippet
-src/report/             out/index.html and per-app report pages
+src/report/             out/index.html, the GitHub gallery (out/README.md), per-app NUMBERS.md and report pages
 kb/rewarded_ads_kb.md   the rewarded-ads knowledge base (chunk ids cited by proposals and the judge)
 eval/                   judge calibration items (read only by src/judge/calibrate.ts)
 fixtures/credit-chat/   the adversarial fixture app used by the demo and the tests
