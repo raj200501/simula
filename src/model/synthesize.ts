@@ -356,7 +356,9 @@ function ads(x: Ctx): AdT[] {
 function stubBrief(x: Ctx, e: Economy, flows: Flow[]): Brief {
   const { cm } = x;
   const resName = (id: string) => e.resources.find(r => r.id === id)?.name ?? id;
-  const launch = x.scr.get(cm.launch);
+  // Describe the app by its first real screen, not by a check-in or promo overlay shown at launch.
+  const first = x.scr.get(cm.launch);
+  const launch = first && ["modal", "sheet", "dialog"].includes(first.kind) && first.parent ? x.scr.get(first.parent) : first;
   const core = flows.find(f => f.kind === "core");
   const money = (n: number) => `$${n.toFixed(2)}`;
   const packs = e.offers.filter(o => o.kind === "pack" && o.priceUsd != null);

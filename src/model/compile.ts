@@ -217,7 +217,7 @@ export async function compile(graph: ExploreGraph, runDir: string, modelDir: str
       };
       const flags = { selected: e.selected || undefined, checked: e.checked || undefined, disabled: e.disabled || undefined, focused: e.focused || undefined };
       if (Object.values(flags).some(Boolean)) ui.flags = flags;
-      if (rep && (await cropAsset(ui, e, rImg, shot.png, shot.img, dev, density, rep.id, id, modelDir, assetLib, assets))) { /* ui.asset set */ }
+      if (rep) await cropAsset(ui, e, rImg, shot.png, shot.img, dev, density, rep.id, id, modelDir, assetLib, assets);
       elements.push(ui);
     }
 
@@ -314,13 +314,17 @@ function classify(selfLoop: boolean, to: string, action: Action | undefined, fro
   const tabEl = fromS.elements.find(e => e.id === el);
   const selTab = (s: Screen | undefined) => s?.elements.filter(e => e.role === "tab" && (e.flags?.selected || e.flags?.checked)).map(label).join("|");
   if (tabEl?.role === "tab" || (selTab(fromS) && selTab(toS) && selTab(fromS) !== selTab(toS))) return "tab";
-  // Overlay: most of the previous screen is still there, plus a new block smaller than the screen.
-  if (fromRep && toRep && fromS.signature.length) {
+  // Overlay: at least half of the previous signature AND most of its elements are still there (an
+  // overlay covers the screen, it does not replace it), plus a new block smaller than the screen.
+  // Dismissing an overlay shrinks the tree instead, so it never matches.
+  if (fromRep && toRep && fromS.signature.length && toRep.elements.length > fromRep.elements.length) {
     const prev = new Set(fromS.signature);
     const kept = (toS?.signature ?? []).filter(t => prev.has(t)).length / prev.size;
+    const now = new Set(toRep.elements.map(e => `${e.type}|${label(e)}`));
+    const stayed = fromRep.elements.filter(e => now.has(`${e.type}|${label(e)}`)).length / Math.max(1, fromRep.elements.length);
     const old = new Set(fromRep.elements.map(e => `${e.type}|${label(e)}`));
     const fresh = toRep.elements.filter(e => !old.has(`${e.type}|${label(e)}`));
-    if (kept >= 0.5 && fresh.length) {
+    if (kept >= 0.5 && stayed >= 0.7 && fresh.length) {
       const x0 = Math.min(...fresh.map(e => e.rect.x)), y0 = Math.min(...fresh.map(e => e.rect.y));
       const x1 = Math.max(...fresh.map(e => e.rect.x + e.rect.w)), y1 = Math.max(...fresh.map(e => e.rect.y + e.rect.h));
       if ((x1 - x0) * (y1 - y0) < 0.7 * dev.widthPx * dev.heightPx) return y1 >= dev.heightPx * 0.9 && y0 >= dev.heightPx * 0.3 ? "sheet" : "modal";
@@ -334,11 +338,16 @@ function classify(selfLoop: boolean, to: string, action: Action | undefined, fro
 function assignParents(screens: Screen[], edges: Edge[], graph: ExploreGraph): void {
   const step = new Map(graph.edges.map(g => [g.id, g.firstStep]));
   const byStep = (a: Edge, b: Edge) => (step.get(a.id) ?? 0) - (step.get(b.id) ?? 0);
+  // Two phases: decide every parent from the ORIGINAL classification, then relabel dismissals.
+  const parents = new Map<Screen, string>();
   for (const s of screens) {
     const opened = edges.filter(e => e.to === s.id && (e.transition === "modal" || e.transition === "sheet") && e.from !== s.id).sort(byStep)[0];
-    if (opened) s.parent = opened.from;
-    else if (OVERLAY_KINDS.has(s.kind)) s.parent = edges.filter(e => e.from === s.id && !e.to.startsWith("ext:") && e.to !== s.id).sort(byStep)[0]?.to;
-    if (s.parent) for (const e of edges) if (e.from === s.id && e.to === s.parent && e.transition !== "external") e.transition = "back";
+    const p = opened?.from ?? (OVERLAY_KINDS.has(s.kind) ? edges.filter(e => e.from === s.id && !e.to.startsWith("ext:") && e.to !== s.id).sort(byStep)[0]?.to : undefined);
+    if (p) parents.set(s, p);
+  }
+  for (const [s, p] of parents) {
+    s.parent = p;
+    for (const e of edges) if (e.from === s.id && e.to === p && e.transition !== "external") e.transition = "back";
   }
 }
 

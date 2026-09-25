@@ -52,7 +52,7 @@ export function heuristicAnnotation(obs: Observation, ctx: HeuristicCtx): Annota
   const { info } = ctx;
   const H = info.heightPx;
   const els = obs.elements;
-  const overlay = overlayOf(obs, ctx.prev ?? null);
+  const overlay = overlayOf(obs, ctx.prev ?? null, info);
   const scope = overlay ?? els;
   const tabs = overlay ? [] : tabBar(els, info);
   const counterEls = els.filter(e => counterOf(e, info));
@@ -61,7 +61,8 @@ export function heuristicAnnotation(obs: Observation, ctx: HeuristicCtx): Annota
   const humanCheck = HUMAN_CHECK_RE.test(allText);
   const loginWall = humanCheck || (LOGIN_RE.test(allText) && els.some(e => isInput(e) || /continue with/i.test(labelOf(e))));
   const input = els.find(e => isInput(e) && !e.ad && e.rect.y > H * 0.6);
-  const rows = els.filter(e => e.text && !isInput(e) && !/button/i.test(e.type) && e.rect.y >= H * BAND && e.rect.y + e.rect.h <= H * (1 - BAND));
+  const mid = (e: NormElement) => e.rect.y + e.rect.h / 2 > H * BAND && e.rect.y + e.rect.h / 2 < H * (1 - BAND);
+  const rows = els.filter(e => e.text && !isInput(e) && !/button/i.test(e.type) && mid(e));
 
   let kind: ScreenKind;
   if (loginWall) kind = "login";
@@ -110,19 +111,22 @@ const PURPOSE: Record<ScreenKind, string> = {
 };
 
 /**
- * Something opened on top of the previous screen: most of the previous screen is still there, and the
- * new elements include at least two labels, one of them a button or short text. (A dimmed backdrop
- * is invisible in the element list, so this is how overlays are recognised.) Returns the overlay's
- * own elements, or null.
+ * Something opened on top of the previous screen: most of the previous screen's elements are still there,
+ * same token at the same place (a dimmed backdrop is invisible in the element list, so this is how an
+ * overlay shows), and the new elements include at least two labels, one of them a button or short text.
+ * Position matters: in apps without resource ids, two different screens share most token types.
+ * Returns the overlay's own elements, or null.
  */
-function overlayOf(obs: Observation, prev: Observation | null): NormElement[] | null {
-  if (!prev?.signature.length) return null;
-  const before = new Set(prev.signature);
-  const now = new Set(obs.signature);
-  let kept = 0;
-  for (const t of before) if (now.has(t)) kept++;
-  if (kept / before.size < OVERLAY_KEEP) return null;
-  const added = obs.elements.filter(e => !before.has(token(e)));
+function overlayOf(obs: Observation, prev: Observation | null, info: DeviceInfo): NormElement[] | null {
+  if (!prev?.elements.length) return null;
+  const screen = info.widthPx * info.heightPx;
+  const samePlace = (a: NormElement, b: NormElement) =>
+    token(a) === token(b) && Math.abs(a.rect.x - b.rect.x) <= 8 && Math.abs(a.rect.y - b.rect.y) <= 8;
+  const before = prev.elements.filter(e => e.rect.w * e.rect.h < 0.9 * screen); // root containers are always there
+  if (!before.length) return null;
+  const kept = before.filter(p => obs.elements.some(e => samePlace(e, p))).length;
+  if (kept / before.length < OVERLAY_KEEP) return null;
+  const added = obs.elements.filter(e => !prev.elements.some(p => samePlace(e, p)));
   const labelled = added.filter(e => e.chrome && labelOf(e));
   if (labelled.length < 2) return null;
   if (!labelled.some(e => /button/i.test(e.type) || labelOf(e).length <= 16)) return null;

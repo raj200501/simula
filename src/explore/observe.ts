@@ -108,18 +108,17 @@ export function normalize(raw: RawElement[], info: DeviceInfo, ex: Exclusions): 
 
 /**
  * Chrome rule (T2): top/bottom 15% band, or selected/checked, or a short label (<= 24 chars) that is
- * not in a repeated group. Two refinements keep conversations out of identity: members of a repeated
- * group only count when selected, and text longer than 40 chars is always content.
+ * not in a repeated group. Never chrome: ads (they rotate), text the explorer caused (typed, replies),
+ * and text longer than 40 chars (a message or a description is content wherever it sits).
  */
 function isChrome(e: NormElement, info: DeviceInfo, ex: Exclusions): boolean {
   const lab = labelOf(e);
   if (e.ad || lab.length > LONG_TEXT) return false;
   if (lab && isExcluded(ex, lab)) return false;
   if (e.selected || e.checked) return true;
-  if (e.group) return false;
   const H = info.heightPx;
   const inBand = e.rect.y + e.rect.h <= H * BAND || e.rect.y >= H * (1 - BAND);
-  return inBand || (lab.length > 0 && lab.length <= SHORT_LABEL);
+  return inBand || (!e.group && lab.length > 0 && lab.length <= SHORT_LABEL);
 }
 
 /**

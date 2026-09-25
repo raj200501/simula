@@ -2,7 +2,7 @@
 // phone numbers seen on screen (profile pages, billing sheets) are blurred in every screenshot we
 // copy and masked in every text we keep. Detection is by regex on the element text; the blur covers
 // the element's rect.
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import type { Rect } from "../core/schema.ts";
 
 const EMAIL = /[A-Z0-9._%+-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)*\.[A-Z]{2,}/gi;
@@ -32,7 +32,7 @@ export async function blurRects(png: Buffer, rects: Rect[]): Promise<Buffer> {
   if (!rects.length) return png;
   const meta = await sharp(png).metadata();
   const W = meta.width ?? 0, H = meta.height ?? 0;
-  const layers: sharp.OverlayOptions[] = [];
+  const layers: OverlayOptions[] = [];
   for (const r of rects) {
     const left = Math.max(0, Math.floor(r.x) - 4), top = Math.max(0, Math.floor(r.y) - 4);
     const width = Math.min(W - left, Math.ceil(r.w) + 8), height = Math.min(H - top, Math.ceil(r.h) + 8);
