@@ -42,7 +42,8 @@ including product changes that create a real value exchange.
 2. Cite KB chunk ids for archetypes and precedents, e.g. TAX-1, AI-4, EX-DUO, TRIG-5.
 3. Never do arithmetic: do not compute revenue, ARPDAU or exchange rates. State assumptions (engagedShare,
    viewsPerEngager, cogs, cogsUnitsPerView); code computes the economics. Size rewards with the digest's
-   derived numbers: the EXCHANGE RATE line and the cheapest action and pack.
+   derived numbers: the EXCHANGE RATE line and the cheapest action and pack; where a REWARD SIZE line
+   exists (no prices shown), never exceed it.
 4. Never propose on a moment marked NO OFFERS ALLOWED (first value) [ANTI-12].
 5. SFW surfaces only; nothing near sensitive topics [SAFE-1] [POL-9].
 6. A product change must not remove anything free users get today. If it does, set

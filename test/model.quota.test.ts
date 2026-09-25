@@ -6,6 +6,7 @@ import { sampleModel } from "./helpers/sample-model.ts";
 import { quotaFromLimits, measuredCap } from "../src/model/quota.ts";
 import { deriveEconomy, exchangeRateLine, regimeOf, ECON } from "../src/model/economics.ts";
 import { sizeReward } from "../src/propose/anchors.ts";
+import { digest } from "../src/model/digest.ts";
 import { detectMoments } from "../src/model/moments.ts";
 import { withoutAllowanceMoments } from "../src/model/understand.ts";
 import type { ProductModel } from "../src/core/schema.ts";
@@ -69,6 +70,8 @@ test("with no prices, the exchange rate is measured at cost to serve", () => {
   const net = (x: number) => x * (1 - ECON.nonGameHaircut) * (1 - ECON.platformShare);
   assert.ok(Math.abs(u.min - net(ECON.grossPerViewUsd.US[0]) / ECON.cogsPerUnitUsd["text-cheap"]) < 0.05);
   assert.match(exchangeRateLine(m, r.id)!, /≈ 3\.5–5\.8 messages at cost to serve/);
+  // The digest gives the proposer the size ceiling, so a live model sizes it right the first time.
+  assert.match(digest(m), /REWARD SIZE for rq\d+: at most 2 messages per view/);
   assert.match(m.economy.derived.notes.join(" "), /cost to serve/);
   // List-price basis is unchanged for apps that do sell packs.
   const priced = sampleModel();

@@ -14,7 +14,14 @@ export const ECON = {
   cogsPerUnitUsd: { none: 0, "text-cheap": 0.0018, "text-premium": 0.009, image: 0.025, voice: 0.03 } as Record<string, number>,
   // Reward worth more than this multiple of one view's gross revenue at list price gets flagged.
   maxRewardToView: 3,
+  // Serving a reward should cost at most this share of what a view nets at the low end. [TRIG-4]
+  cogsTargetShare: 0.6,
 };
+
+/** At cost to serve: the most units one view can pay for while serving them stays under ECON.cogsTargetShare. */
+export function maxUnitsAtCost(upv: { min: number }): number {
+  return Math.max(1, Math.floor(ECON.cogsTargetShare * upv.min));
+}
 
 const r4 = (n: number) => Math.round(n * 10000) / 10000;
 const r2 = (n: number) => Math.round(n * 100) / 100;

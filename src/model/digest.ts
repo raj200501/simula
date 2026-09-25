@@ -1,7 +1,7 @@
 // Deterministic text rendering of the product model. The proposer and the judge both read exactly
 // this (plus a few screenshots), so they reason about the same facts with the same ids.
 import type { ProductModel } from "../core/schema.ts";
-import { exchangeRateLine } from "./economics.ts";
+import { ECON, exchangeRateLine, maxUnitsAtCost } from "./economics.ts";
 
 export function digest(m: ProductModel): string {
   const L: string[] = [];
@@ -35,7 +35,14 @@ export function digest(m: ProductModel): string {
     for (const a of d.actionCostUsd) L.push(`- action cost ${a.sink}: $${a.min.toFixed(4)}–$${a.max.toFixed(4)}`);
     for (const f of d.freeDailyUnits) L.push(`- free daily ${f.resource}: ${f.units} (buys ${f.buys})`);
     L.push(`- value of one completed rewarded view (after non-game haircut): US $${d.viewValueUsd.US.join("–")}, EU $${d.viewValueUsd.EU.join("–")}, LATAM $${d.viewValueUsd.LATAM.join("–")}`);
-    for (const u of d.unitsPerView) L.push(`- EXCHANGE RATE: ${exchangeRateLine(m, u.resource)}`);
+    for (const u of d.unitsPerView) {
+      L.push(`- EXCHANGE RATE: ${exchangeRateLine(m, u.resource)}`);
+      // No list price: the ceiling is what serving the reward costs against what a view nets.
+      if (u.basis === "cost-to-serve") {
+        const unit = e.resources.find(r => r.id === u.resource)?.unit ?? u.resource;
+        L.push(`- REWARD SIZE for ${u.resource}: at most ${maxUnitsAtCost(u)} ${unit} per view, so serving the reward costs at most ~${Math.round(ECON.cogsTargetShare * 100)}% of what a view nets at the low end [TRIG-4]`);
+      }
+    }
     L.push(`- cheapest paid pack: ${d.cheapestPaidUnitUsd != null ? `$${d.cheapestPaidUnitUsd}` : "none observed"}`);
     for (const n of d.notes) L.push(`- note: ${n}`);
   }
