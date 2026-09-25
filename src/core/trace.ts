@@ -43,13 +43,36 @@ export function readTrace(file: string): TraceEvent[] {
   return fs.readFileSync(file, "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l) as TraceEvent);
 }
 
+/**
+ * Pair each failure with the recovery that answered it, within the same stage run: the first later recovery
+ * with the same `where` (before another failure with that `where` claims it), else the very next event of
+ * the run if it is a recovery without a `where` of its own. A recovery answers at most one failure.
+ */
+export function pairRecoveries(evs: TraceEvent[]): Map<TraceEvent, TraceEvent> {
+  const out = new Map<TraceEvent, TraceEvent>();
+  const used = new Set<TraceEvent>();
+  evs.forEach((f, i) => {
+    if (f.type !== "failure") return;
+    const later = evs.slice(i + 1).filter(x => x.stage === f.stage && x.run === f.run);
+    const where = f.data.where;
+    if (where !== undefined) {
+      for (const x of later) {
+        if (x.type === "failure" && x.data.where === where) break;
+        if (x.type === "recovery" && x.data.where === where && !used.has(x)) { out.set(f, x); used.add(x); return; }
+      }
+    }
+    const next = later[0];
+    if (next?.type === "recovery" && next.data.where === undefined && !used.has(next)) { out.set(f, next); used.add(next); }
+  });
+  return out;
+}
+
 /** Render trajectory.md: phases, discovery over time, failures + recoveries, human steps, stop reasons, autonomy ratio. */
 export function summarize(file: string, outMd: string): string {
   const evs = readTrace(file);
   const byStage = new Map<string, TraceEvent[]>();
   for (const e of evs) byStage.set(`${e.stage}::${e.run}`, [...(byStage.get(`${e.stage}::${e.run}`) ?? []), e]);
   const fails = evs.filter(e => e.type === "failure");
-  const recov = evs.filter(e => e.type === "recovery");
   const human = evs.filter(e => e.type === "human");
   const decisions = evs.filter(e => e.type === "decision");
   const autonomous = decisions.length;
@@ -70,9 +93,17 @@ export function summarize(file: string, outMd: string): string {
   }
   lines.push("", "## Failures and recoveries", "");
   if (!fails.length) lines.push("None recorded.");
-  for (const f of fails) {
-    const r = recov.find(x => x.ts >= f.ts && x.stage === f.stage);
-    lines.push(`- [${f.stage}] ${f.ts.slice(11, 19)} **${String(f.data.where ?? "")}**: ${String(f.data.error ?? "").slice(0, 200)}${r ? `\n  - next step: ${String(r.data.how ?? "")}` : ""}`);
+  const pairs = pairRecoveries(evs);
+  const runsWithFailures = [...new Set(fails.map(f => `${f.stage}::${f.run}`))];
+  for (const k of runsWithFailures) {
+    const [stage, run] = k.split("::");
+    lines.push(`### ${stage} · run ${run}`, "");
+    for (const f of fails.filter(x => x.stage === stage && x.run === run)) {
+      const r = pairs.get(f);
+      lines.push(`- ${f.ts.slice(11, 19)}${f.step !== undefined ? ` step ${f.step}` : ""} **${String(f.data.where ?? "")}**: ${String(f.data.error ?? "").slice(0, 200)}`
+        + `\n  - ${r ? `recovered: ${String(r.data.how ?? "")}` : "no recovery (continued)"}`);
+    }
+    lines.push("");
   }
   lines.push("", "## Human interventions", "");
   if (!human.length) lines.push("None recorded.");

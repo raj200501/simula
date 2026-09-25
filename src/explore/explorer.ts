@@ -42,7 +42,7 @@ import { annotate, toActions, toSignals, type Annotation, type AnnotateOut } fro
 import { heuristicAnnotation, isInput } from "./heuristic.ts";
 import { perform, type ActResult } from "./act.ts";
 import { classifyForeground, escapeExternal, isInApp, isLauncherPackage } from "./externals.ts";
-import { WALL_KINDS } from "./signals.ts";
+import { GATE_RE, LIMIT_MESSAGE_RE, WALL_KINDS, isWallText } from "./signals.ts";
 import { applyGapTargets, gapCheck } from "./gap.ts";
 
 export { probe, type ProbeReport } from "./probe.ts";
@@ -390,8 +390,10 @@ async function step(r: Run, from: State, a: Action, phase: string): Promise<Step
   noteOpener(r, from, a, before, next);
   learnPicker(r, from, a, before, obs, next); // the control that opened a picker shows the current choice
   const fx = diffEffects(before, obs, boundKeys(r));
-  // T2: only a consume that lands on a wall-like screen is a limit; a different state id is not enough
-  const wall = consume && isWall(from, next, { fromObs: repObs(r, from), nextObs: repObs(r, next) });
+  // T2: only a consume that lands on a wall-like screen is a limit; a different state id is not enough.
+  // A message in the conversation itself ("you've used your free messages") is a wall on the same screen.
+  const wall = consume && (isWall(from, next, { fromObs: repObs(r, from), nextObs: repObs(r, next), before, after: obs })
+    || (next.id === from.id && fx.some(f => f.kind === "appeared" && LIMIT_MESSAGE_RE.test(f.text) && !isExcludedTyped(r, f.text))));
   const edge = recordEdge(r, from, a, next.id, before, obs, fx, wall);
   // an action that ever did something stays "done" (a later repeat may change nothing)
   a.status = a.status === "done" || next.id !== from.id || fx.length > 0 ? "done" : "no-effect";
@@ -434,24 +436,38 @@ const boundKeys = (r: Run) => new Set(r.g.resources.flatMap(x => x.bindings.map(
 const repObs = (r: Run, s: State) => r.obsIndex.get(s.obs[0]);
 
 /**
- * T2 wall test for an action that spends. A wall is: an overlay (modal, sheet, dialog, paywall); a new
- * limit signal ("out of credits", "limit reached") however the screen is drawn; a new screen that is not
- * a chat; or another chat carrying price/upsell evidence it did not have before. Never a wall: the same
- * state, or the same template with controls relabelled (a mode switch, another item), even when the new
- * label is monetization vocabulary ("Premium · 30"). A signal on an element the from-state already had
- * (the same mode chip) is not new evidence.
+ * T2 wall test for an action that spends: where it landed (an overlay, a new screen, another chat) is a wall
+ * only if it shows that the spending was blocked - a limit, price or upsell signal the from-state did not
+ * have, or an account/payment gate ("create an account to keep chatting", a login wall). A sheet that asks
+ * for a photo, a result page, a rating prompt are where the action leads, not walls. Never a wall: the same
+ * state (a message in the chat itself is checked separately), or the same template with controls
+ * relabelled (a mode switch, another item) unless it now says "limit". A signal on an element the
+ * from-state already had (the same mode chip reading "Premium · 30") is not new evidence.
  */
-export function isWall(from: State, next: State, o: { fromObs?: Observation; nextObs?: Observation } = {}): boolean {
+export function isWall(from: State, next: State, o: WallObs = {}): boolean {
   if (next.id === from.id) return false;
-  if (OVERLAY_KINDS.has(next.kind)) return true;
   const fresh = newWallSignals(from, next, o);
   if (fresh.some(s => s.kind === "limit")) return true;
   if (relabelOnly(from.signature, next.signature)) return false;
-  if (next.kind !== "chat") return true;
-  return fresh.length > 0;
+  return fresh.length > 0 || next.loginWall || gateTexts(from, next, o).length > 0;
 }
 
-function newWallSignals(from: State, next: State, o: { fromObs?: Observation; nextObs?: Observation }): Signal[] {
+/**
+ * fromObs / nextObs: the states' representative observations (signal element ids refer to them);
+ * before / after: what this action actually went from and to (for the words that appeared).
+ */
+export interface WallObs { fromObs?: Observation; nextObs?: Observation; before?: Observation; after?: Observation }
+
+/** Words of an account or payment gate (or a limit) that `next` shows and `from` did not. */
+function gateTexts(from: State, next: State, o: WallObs): string[] {
+  const was = o.before ?? o.fromObs;
+  const now = o.after ?? o.nextObs;
+  const had = new Set([...(was?.texts ?? []), ...from.signals.map(s => s.text), from.name]);
+  const shown = now ? now.texts : [...next.signals.map(s => s.text), next.name];
+  return shown.filter(t => !had.has(t) && (GATE_RE.test(t) || LIMIT_MESSAGE_RE.test(t) || isWallText(t)));
+}
+
+function newWallSignals(from: State, next: State, o: WallObs): Signal[] {
   const existed = (s: Signal) => {
     const el = s.el ? o.nextObs?.elements.find(e => e.id === s.el) : undefined;
     if (!el) return false;
@@ -479,7 +495,7 @@ async function observeNow(r: Run, o: ObserveOpts): Promise<Observation> {
       await sleep(Math.min(1000, r.timing.settleMaxMs));
       if (attempt >= 2) {
         await soft(guardedDevice(r, "launch", () => r.dev.launch({ cold: true })), undefined);
-        trace("recovery", { how: "cold relaunch after repeated observe failures" }, r.g.steps);
+        trace("recovery", { where: "observe", how: "cold relaunch after repeated observe failures" }, r.g.steps);
       }
     }
   }
@@ -493,7 +509,7 @@ async function arriveInApp(r: Run, why: string): Promise<State> {
     const kind = classifyForeground(obs.fg, r.g.app.package) as ExternalKind;
     trace("external", { kind, pkg: obs.fg, during: why }, r.g.steps);
     const how = await soft(guardedDevice(r, "escape", () => escapeExternal(r.dev, kind, r.g.app.package, r.timing.pollMs)), "escape failed");
-    trace("recovery", { how }, r.g.steps);
+    trace("recovery", { where: `external:${kind}`, how }, r.g.steps);
     if (i === 1) await soft(guardedDevice(r, "launch", () => r.dev.launch({ cold: true })), undefined);
   }
   r.stop = "device_unhealthy";
@@ -853,7 +869,7 @@ async function handleExternal(r: Run, from: State, a: Action, before: Observatio
   if (leftByBack) a.note = `BACK here leaves the app (${obs.fg})`;
   if (a.status === "failed") trace("failure", { where: `external:${kind}`, error: `${a.id} left the app (${obs.fg})` }, g.steps);
   const how = await soft(guardedDevice(r, "escape", () => escapeExternal(r.dev, kind, g.app.package, r.timing.pollMs)), "escape failed");
-  trace("recovery", { how, from: `ext:${kind}` }, g.steps);
+  trace("recovery", { where: `external:${kind}`, how, from: `ext:${kind}` }, g.steps);
   await arriveInApp(r, `escaping ext:${kind}`);
   return kind;
 }
@@ -924,7 +940,7 @@ async function toFrontier(r: Run, allowConsume: boolean): Promise<"moved" | "ret
       || x.state.visits - y.state.visits || x.path.length - y.path.length)[0];
   let target = pick();
   if (!target && r.cur.id !== r.home) {
-    await relaunch(r, "no known path to untried actions from here");
+    await relaunch(r, "no known path to untried actions from here", "frontier");
     target = pick();
   }
   if (!target) {
@@ -993,14 +1009,15 @@ async function travel(r: Run, path: GraphEdge[]): Promise<boolean> {
 async function hopFailed(r: Run, e: GraphEdge, why: string): Promise<false> {
   e.failures++;
   trace("failure", { where: `travel:${e.id}`, error: why }, r.g.steps);
-  await relaunch(r, `travel hop ${e.id} failed`);
+  await relaunch(r, `travel hop ${e.id} failed`, `travel:${e.id}`);
   return false;
 }
 
 async function hopElsewhere(r: Run, e: GraphEdge, at: State): Promise<false> {
   e.failures++;
-  trace("failure", { where: `travel:${e.id}`, error: `expected ${e.to}, landed on ${at.id}: re-planning from there` }, r.g.steps);
+  trace("failure", { where: `travel:${e.id}`, error: `expected ${e.to}, landed on ${at.id}` }, r.g.steps);
   await arrive(r, await observeNow(r, { mode: "ui" }), {});
+  trace("recovery", { where: `travel:${e.id}`, how: `re-planned from ${r.cur.id} (no relaunch)` }, r.g.steps);
   return false;
 }
 
@@ -1021,8 +1038,8 @@ async function lightObserve(r: Run, mode: "ui" | "content", prevEls: NormElement
   }
 }
 
-async function relaunch(r: Run, why: string): Promise<void> {
-  trace("recovery", { how: `cold relaunch: ${why}` }, r.g.steps);
+async function relaunch(r: Run, why: string, where = "travel"): Promise<void> {
+  trace("recovery", { where, how: `cold relaunch: ${why}` }, r.g.steps);
   await soft(guardedDevice(r, "launch", () => r.dev.launch({ cold: true })), undefined);
   await arriveInApp(r, "relaunch");
   r.home = r.cur.id;
@@ -1063,7 +1080,7 @@ async function guardedDevice<T>(r: Run, where: string, fn: () => Promise<T>): Pr
       countFailure(r, where, e);
       if (attempt >= 2) throw e;
       await sleep(Math.min(1000, r.timing.settleMaxMs));
-      trace("recovery", { how: `retrying ${where}` }, r.g.steps);
+      trace("recovery", { where, how: `retrying ${where}` }, r.g.steps);
     }
   }
 }

@@ -174,15 +174,17 @@ async function run<T>(req: LlmReq<T>): Promise<{ value: T | string; cached: bool
 
   const t0 = Date.now();
   const r = PROVIDER === "gemini" ? await callGemini(req, model, effort) : await callAnthropic(req, model, effort);
-  record(req, model, effort, r.usage, t0, key, r.stop);
-  const entry: CacheEntry = { purpose: req.purpose, model, effort, parsed: r.parsed, text: req.schema ? undefined : r.text, usage: r.usage, stop: r.stop, ts: nowIso() };
+  // The ledger names the model that actually answered (a fallback model when the requested one was busy).
+  const served = r.model ?? model;
+  record(req, served, effort, r.usage, t0, key, r.stop, served !== model ? model : undefined);
+  const entry: CacheEntry = { purpose: req.purpose, model: served, effort, parsed: r.parsed, text: req.schema ? undefined : r.text, usage: r.usage, stop: r.stop, ts: nowIso() };
   ensureDir(path.dirname(file));
   fs.writeFileSync(file, JSON.stringify(entry, null, 1));
   return { value: (req.schema ? r.parsed : r.text) as T | string, cached: false };
 }
 
 interface Usage { input: number; output: number; cacheRead: number; cacheWrite: number; thoughts: number }
-interface CallResult { parsed?: unknown; text: string; usage: Usage; stop: string | null }
+interface CallResult { parsed?: unknown; text: string; usage: Usage; stop: string | null; model?: string }
 
 // ------------------------------------------------------------------ Anthropic (Claude)
 async function callAnthropic<T>(req: LlmReq<T>, model: string, effort: Effort): Promise<CallResult> {
@@ -256,12 +258,15 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
   const usage: Usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, thoughts: 0 };
   let maxOut = Math.min(req.maxTokens ?? (req.schema ? 16000 : 32000), 65536);
   let feedback = "";
+  let served = model;
   for (let attempt = 0; attempt < 3; attempt++) {
     const config: GenerateContentConfig = { systemInstruction: req.system.join("\n\n"), maxOutputTokens: maxOut };
     if (!noThinking.has(model)) config.thinkingConfig = { thinkingLevel: THINKING[effort] };
     if (req.schema) { config.responseMimeType = "application/json"; config.responseJsonSchema = geminiSchema(req.schema as z.ZodType<unknown>); }
     const turn: Content[] = feedback ? [...contents, { role: "user", parts: [{ text: feedback }] }] : contents;
-    const res = await geminiWithRetry(req.purpose, model, { model, contents: turn, config });
+    const params = { model, contents: turn, config };
+    const res = await geminiWithRetry(req.purpose, model, params);
+    served = params.model;
     const um = res.usageMetadata;
     usage.input += um?.promptTokenCount ?? 0; usage.output += um?.candidatesTokenCount ?? 0;
     usage.thoughts += um?.thoughtsTokenCount ?? 0; usage.cacheRead += um?.cachedContentTokenCount ?? 0;
@@ -269,12 +274,12 @@ async function callGemini<T>(req: LlmReq<T>, model: string, effort: Effort): Pro
     const finish = res.candidates?.[0]?.finishReason ?? null;
     if (block || finish === "SAFETY" || finish === "PROHIBITED_CONTENT" || finish === "BLOCKLIST") throw new RefusalError(`${req.purpose}: blocked by Gemini (${block ?? finish})`);
     const text = res.text ?? "";
-    if (!req.schema) return { text, usage, stop: finish };
+    if (!req.schema) return { text, usage, stop: finish, model: served };
     if (finish === "MAX_TOKENS") { maxOut = Math.min(maxOut * 2, 65536); trace("failure", { where: `llm:${req.purpose}`, error: `MAX_TOKENS; retrying with ${maxOut}` }); continue; }
     let raw: unknown;
     try { raw = JSON.parse(text); } catch { feedback = "Your previous reply was not valid JSON. Reply with JSON only, matching the schema."; continue; }
     const ok = req.schema.safeParse(raw);
-    if (ok.success) return { parsed: ok.data, text: "", usage, stop: finish };
+    if (ok.success) return { parsed: ok.data, text: "", usage, stop: finish, model: served };
     const issues = ok.error.issues.slice(0, 12).map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
     trace("failure", { where: `llm:${req.purpose}`, error: `schema validation failed: ${issues.slice(0, 300)}` });
     feedback = `Your previous JSON failed validation: ${issues}. Return the complete corrected JSON.`;
@@ -290,7 +295,9 @@ function fallbackChain(model: string): string[] {
   return [model, ...extra.filter(m => m !== model)];
 }
 
-const MAX_GEMINI_ATTEMPTS = 8;
+// Three laps of the fallback chain (with 10 s / 20 s / 40 s pauses between laps): free-tier 503 storms
+// usually clear within a minute; after that the caller's deterministic fallback takes over.
+const MAX_GEMINI_ATTEMPTS = 12;
 
 async function geminiWithRetry(purpose: string, model: string, params: { model: string; contents: Content[]; config: GenerateContentConfig }): Promise<GenerateContentResponse> {
   const chain = fallbackChain(model);
@@ -331,13 +338,13 @@ async function geminiWithRetry(purpose: string, model: string, params: { model: 
   }
 }
 
-function record(req: LlmReq<unknown>, model: string, effort: string, u: Usage, t0: number, key: string, stop: string | null): number {
+function record(req: LlmReq<unknown>, model: string, effort: string, u: Usage, t0: number, key: string, stop: string | null, requested?: string): number {
   // Gemini free tier costs nothing; tokens are still logged so the ledger shows real usage.
   const usd = PROVIDER === "gemini" ? 0 : price(model, { input_tokens: u.input, output_tokens: u.output, cache_read_input_tokens: u.cacheRead, cache_creation_input_tokens: u.cacheWrite });
   spent.total += usd;
   spent.byStage.set(req.stage, (spent.byStage.get(req.stage) ?? 0) + usd);
   stats.calls++; stats.usd += usd;
-  ledger({ ts: nowIso(), app: ctx.app, stage: req.stage, purpose: req.purpose, provider: PROVIDER, model, effort, in: u.input, out: u.output, thoughts: u.thoughts,
+  ledger({ ts: nowIso(), app: ctx.app, stage: req.stage, purpose: req.purpose, provider: PROVIDER, model, ...(requested ? { requested } : {}), effort, in: u.input, out: u.output, thoughts: u.thoughts,
     cacheRead: u.cacheRead, cacheWrite: u.cacheWrite, usd: Number(usd.toFixed(5)), ms: Date.now() - t0, key, cached: false, stop });
   trace("llm_call", { purpose: req.purpose, key, cached: false, usd: Number(usd.toFixed(4)), stop });
   return usd;

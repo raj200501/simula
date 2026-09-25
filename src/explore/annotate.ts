@@ -106,7 +106,7 @@ export async function annotate(a: AnnotateIn): Promise<AnnotateOut> {
   } catch (e) {
     // refusal, invalid output twice, replay miss, budget: the heuristic annotator takes over
     trace("failure", { where: "annotate", error: String((e as Error)?.message ?? e).slice(0, 300) });
-    trace("recovery", { how: "heuristic annotator" });
+    trace("recovery", { where: "annotate", how: "heuristic annotator" });
     return { ann: base, by: "heuristic", tapScale: 1, budgetHit: e instanceof BudgetExceeded };
   }
 }

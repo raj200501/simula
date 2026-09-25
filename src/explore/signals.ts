@@ -7,7 +7,7 @@ export type SignalKind = Signal["kind"];
 
 export const SIGNAL_RES: ReadonlyArray<{ kind: SignalKind; re: RegExp }> = [
   { kind: "price", re: /[$€£¥₹]\s?\d|\d[\d.,]*\s?(€|£|usd|eur|gbp)\b/i },
-  { kind: "limit", re: /out of|no more|limit|insufficient|run out|not enough/i },
+  { kind: "limit", re: /out of|no more|limit|insufficient|run out|not enough|free messages?|messages? left|come back (later|tomorrow)|try again (later|tomorrow)|(sign ?up|log ?in|create (an |your )?account) to (continue|keep|send|chat)/i },
   { kind: "upsell", re: /upgrade|premium|\bpro\b|\bplus\b|refill|get more|subscribe/i },
   { kind: "reward", re: /\+\d+|claim|reward|bonus|\bfree\b/i },
   { kind: "timer", re: /\d+:\d\d|resets? in|come back/i },
@@ -18,6 +18,17 @@ export const SIGNAL_RES: ReadonlyArray<{ kind: SignalKind; re: RegExp }> = [
 export function signalKinds(text: string): SignalKind[] {
   return SIGNAL_RES.filter(s => s.re.test(text)).map(s => s.kind);
 }
+
+/**
+ * A message in the conversation itself that says the spending stopped ("You've used your free messages",
+ * "Sign up to keep chatting", "Come back tomorrow"): a wall even though the screen did not change. Strict
+ * phrases only, because a bot's ordinary reply may well mention a limit.
+ */
+export const LIMIT_MESSAGE_RE =
+  /free messages?|messages? left|no more messages|message limit|daily limit|limit reached|reached (your|the) (daily |free |message )?limit|out of (free )?(messages|credits|coins|tokens|gems)|run out of|(sign ?up|log ?in|create (an |your )?account|upgrade|subscribe) to (continue|keep|send|chat)|come back (later|tomorrow)|try again (later|tomorrow)|insufficient|not enough (credits|coins|gems|tokens|messages)/i;
+
+/** An account or payment gate: what a guest meets when the free allowance ends. */
+export const GATE_RE = /(sign ?up|sign ?in|log ?in|create (an |your )?account|register|subscribe|upgrade)/i;
 
 /** Signals that make a screen reached by spending look like a wall (BUILD_SPEC T2). */
 export const WALL_KINDS: ReadonlySet<SignalKind> = new Set<SignalKind>(["limit", "price", "upsell"]);

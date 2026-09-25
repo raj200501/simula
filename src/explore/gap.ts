@@ -80,7 +80,7 @@ export async function gapCheck(g: ExploreGraph, round: number): Promise<GapTarge
     return out.targets.slice(0, 5);
   } catch (e) {
     trace("failure", { where: "gap-check", error: String((e as Error)?.message ?? e).slice(0, 300) });
-    trace("recovery", { how: "skipped the gap check" });
+    trace("recovery", { where: "gap-check", how: "skipped the gap check" });
     return [];
   }
 }
