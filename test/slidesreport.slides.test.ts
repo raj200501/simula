@@ -49,7 +49,10 @@ describe("buildSlides (stub LLM, real mock runtime)", { skip, timeout: 60_000 },
     assert.match(f, /Play now: starts a 15s sponsored game/, "Play button found in the offer frame");
     assert.match(f, /No thanks: dismisses the offer/, "decline button found in the offer frame");
     assert.match(f, /No thanks<\/b> → back to Out of credits, nothing lost/);
-    assert.match(f, />NEW</, "the new element was found in the What changed frame");
+    // The new element was found in the What changed frame: it is ringed and pinned (the pin replaces the NEW tag).
+    const change = f.split('data-phase="change"')[1].split('data-phase="offer"')[0];
+    assert.match(change, /class="ring"/, "the new element was found in the What changed frame");
+    assert.match(change, /class="pin"/);
     assert.ok((f.match(/class="pin"/g) ?? []).length >= 4);
   });
 

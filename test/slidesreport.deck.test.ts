@@ -66,7 +66,7 @@ describe("slide facts", () => {
     const why = whyBullets(p, m, proposalEconomics(p, m));
     assert.equal(why.length, 3);
     assert.match(why[0].stat, /^1 view ≈ 6\.2–11 credits$/);
-    assert.match(why[0].text, /1× send a chat message \(Basic mode\)/);
+    assert.match(why[0].text, /enough for one message in Basic mode/);
     assert.match(why[1].stat, /1 pack = 33 days of ads/); // 1,000-credit pack vs 3 x 10 credits a day
     assert.match(why[2].stat, /≤ 3 a day/);
   });

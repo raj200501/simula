@@ -175,6 +175,11 @@ function flowSlide(d: DeckInput, f: FlowInput, i: number): string {
   const cols: string[] = [];
   f.frames.forEach((fr, k) => {
     const pins = numberPins(fr, f, () => ++pinNo);
+    // On "What changed", a pin on a new element says so (its NEW tag is replaced by the pin).
+    if (fr.phase === "change") for (const p of pins) {
+      const isNew = p.box && fr.newBoxes.some(b => Math.abs(p.box!.x - b.x) < 6 && Math.abs(p.box!.y - b.y) < 6 && Math.abs(p.box!.w - b.w) < 12);
+      if (isNew && !/^new\b/i.test(p.text)) p.text = `NEW: ${p.text}`;
+    }
     const legend = pins.filter(x => x.text).map(x => `<li><span class="d${x.n == null ? " off" : ""}">${x.n ?? ""}</span><span>${h(clip(x.text, 70))}</span></li>`).join("");
     const decline = fr.phase === "offer"
       ? `<div class="decline"><b>${h(f.p.offer.decline || "No thanks")}</b> → back to ${h(f.declineTo)}, nothing lost</div>` : "";
@@ -339,8 +344,11 @@ function phone(fr: Frame, width: number, o: { pins: boolean; numbered?: Pin[] })
   const pc = (v: number, of: number) => `${Math.max(0, Math.min(100, (v / of) * 100)).toFixed(2)}%`;
   const overlays: string[] = [];
   if (o.pins) {
-    if (fr.phase === "change") for (const b of fr.newBoxes) overlays.push(`<span class="newtag" style="left:${pc(b.x, fr.vw)};top:${pc(b.y, fr.vh)}">NEW</span>`);
     const shown = (o.numbered ?? []).filter((p): p is Pin & { box: Box; n: number } => !!p.box && p.n != null);
+    // A new element that already has a numbered pin is labelled "NEW" in its legend line; a separate tag
+    // would only cover its neighbours.
+    const pinned = (b: Box) => shown.some(p => Math.abs(p.box.x - b.x) < 6 && Math.abs(p.box.y - b.y) < 6 && Math.abs(p.box.w - b.w) < 12);
+    if (fr.phase === "change") for (const b of fr.newBoxes.filter(x => !pinned(x))) overlays.push(`<span class="newtag" style="left:${pc(b.x, fr.vw)};top:${pc(b.y, fr.vh)}">NEW</span>`);
     // Pin radius in device px (the pin is 26 slide px wide; the screen is `sw` slide px for `vw` device px).
     const spots = placePins(shown.map(p => p.box), fr.vw, fr.vh, (13 * fr.vw) / sw + 1);
     shown.forEach((p, k) => {

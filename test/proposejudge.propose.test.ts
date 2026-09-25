@@ -66,7 +66,7 @@ describe("propose (stub)", () => {
     assert.equal(wall.reward.resource, "r1");
     assert.equal(wall.reward.amount, 10);
     assert.deepEqual(wall.economics!.flags, []);
-    assert.deepEqual(sizeReward(m, "r1"), { amount: 10, buys: 'one "send a chat message" in Basic mode', cogs: "text-cheap", cogsUnits: 1 });
+    assert.deepEqual(sizeReward(m, "r1"), { amount: 10, buys: "one message in Basic mode", cogs: "text-cheap", cogsUnits: 1 });
   });
 
   test("candidates.md has the blind-label table with an empty label column", () => {

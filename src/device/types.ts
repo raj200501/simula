@@ -7,7 +7,7 @@ import type { DeviceInfo, RawElement } from "../core/schema.ts";
 export interface Device {
   readonly kind: "android" | "web";
   info(): Promise<DeviceInfo>;
-  /** Foreground package ("com.newai.ooc"), "web" for the WebDevice page, or "ext:<kind>" when the web page shows an external card. */
+  /** Foreground package ("com.example.app"), "web" for the WebDevice page, or "ext:<kind>" when the web page shows an external card. */
   foreground(): Promise<string>;
   elements(): Promise<RawElement[]>;
   /** Save a full-resolution PNG to an absolute path. */

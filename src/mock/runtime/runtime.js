@@ -191,7 +191,7 @@
     panel.appendChild(head);
     // Details: the spec's remaining clauses ("progress 0/3", "resets at midnight"), minus the rows spec.
     var rows = /(\d+)\s+(?:rows?|items?|tasks?|cards?)\s*(?:["“]([^"”]{1,80})["”])?/i.exec(change);
-    var rest = change.replace(/["“][^"”]*["”]/g, "\u0000").split(/[,;]|:\s/).map(function (t) { return clean(t.replace(/\u0000/g, "").replace(SPEC_WORDS, "")); })
+    var rest = change.replace(/["“][^"”]*["”]/g, "\u0000").split(/[,;]|:\s/).map(function (t) { return clean(clean(t.replace(/\u0000/g, "")).replace(SPEC_WORDS, "")); })
       .filter(function (t) { return t && t.length > 2 && !/^\d+\s+(rows?|items?|tasks?|cards?)\b/i.test(t) && t.split(" ").length <= 6; });
     if (rest.length) { var d = document.createElement("div"); d.className = "mock-ns-sub"; d.textContent = rest.slice(0, 3).join(" · ").replace(/^./, function (c) { return c.toUpperCase(); }); panel.appendChild(d); }
     var body = document.createElement("div"); body.className = "mock-ns-body"; body.setAttribute("data-mock-ns-body", "");

@@ -96,7 +96,10 @@ export function claimOf(p: Proposal, max = 70): string {
   const clause = body.split(/[,;:–—(]/)[0].trim();
   const join = (a: string, b: string) => (!a ? b : !b ? a : /\?$/.test(a) ? `${a} ${b}` : `${a}: ${midSentence(b)}`);
   const fits = (s: string) => s.length <= max && s.split(" ").length >= 2;
-  const options = [join(t, body), join(t, clause), body, clause, t, oneLine(p.title)].map(s => s.trim()).filter(Boolean);
+  // A body that is too long is cut before a trailing qualifier ("… bonus on top of today's +300").
+  const cuts = [...body.matchAll(/\s(?:on top of|on|for|in|with|at|after|before|until|so|and|while|each|per|every|from|once|when|if|or)\s/gi)]
+    .map(x => body.slice(0, x.index).trim()).filter(x => x.length >= 20).reverse();
+  const options = [join(t, body), join(t, clause), ...cuts.map(c => join(t, c)), body, clause, ...cuts, t, oneLine(p.title)].map(s => s.trim()).filter(Boolean);
   const hit = options.find(fits);
   if (hit) return /[?!]$/.test(hit) ? hit : `${hit}.`;
   // Nothing fits: cut the title at a word boundary (still no ellipsis in the headline).
