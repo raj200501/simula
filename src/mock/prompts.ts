@@ -71,7 +71,7 @@ The fragment is placed in a phone viewport where 1 CSS px = 1 dp, with design.cs
 The mock runtime adds ALL behaviour (navigation, counters, chat); you write only structure and style.
 Rules:
 1. Output exactly one \`\`\`html fenced block and nothing else.
-2. Wrap everything in <div data-screen-root="SCREEN_ID" style="position:relative;width:100%;height:100%;overflow:hidden">.
+2. Wrap everything in <div data-screen-root="<screen id>" style="position:relative;width:100%;height:100%;overflow:hidden">.
 3. Every element in the spec gets data-node="<id>" on the element whose box is that element. Keep every id; do not invent ids.
 4. Copy text verbatim: same case, punctuation, numbers and spacing.
 5. Each data-node box must be within 2 dp of its spec rect [x,y wxh] (dp from the screen's top-left corner).
@@ -114,7 +114,7 @@ export function screenPrompt(s: Screen, m: ProductModel, css: string): string {
     css,
     "```",
   ];
-  return lines.filter(l => l !== "").join("\n").replace(/SCREEN_ID/g, s.id);
+  return lines.filter(l => l !== "").join("\n");
 }
 
 export function retryPrompt(base: string, violations: string[]): string {

@@ -91,7 +91,7 @@ function proposalScript(input: ProposalInput): { pid: string; js: string } {
     // Fragments are model output too: same sanitizing as screens (new screens keep a root, elements don't need one).
     html[f.id] = sanitizeFragment(f.html, f.id, { wrap: p.patch.newScreens.some(s => s.id === f.id) }).html;
   }
-  const data = JSON.stringify({ proposal: p, html }).replace(/ /g, "\\u2028").replace(/ /g, "\\u2029");
+  const data = JSON.stringify({ proposal: p, html }).replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
   return { pid: p.id, js: `window.__PATCHES = window.__PATCHES || {};\nwindow.__PATCHES[${JSON.stringify(p.id)}] = ${data};\n` };
 }
 

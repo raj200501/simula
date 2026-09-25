@@ -21,7 +21,8 @@ export function labelOf(e: { text?: string; label?: string }): string {
 export function token(e: NormElement): string {
   const base = `${shortType(e.type)}|${e.identifier ?? ""}`;
   if (!e.chrome) return base;
-  return `${base}|${mask(labelOf(e))}${e.selected || e.checked ? "|sel" : ""}`;
+  // a selected tab switches the page: identity. A ticked option or a flipped switch is not (it is edge context).
+  return `${base}|${mask(labelOf(e))}${e.selected ? "|sel" : ""}`;
 }
 
 export function signatureOf(els: NormElement[]): string[] {
@@ -74,7 +75,7 @@ export function templateSame(a: string[], b: string[]): boolean {
 function labelDiff(a: string[], b: string[]): { onlyA: string[]; onlyB: string[] } | null {
   const sa = new Set(a.map(skeletonOf));
   const sb = new Set(b.map(skeletonOf));
-  if (sa.size !== sb.size || [...sa].some(t => !sb.has(t))) return false as unknown as null;
+  if (sa.size !== sb.size || [...sa].some(t => !sb.has(t))) return null;
   const ca = new Set(chromeTexts(a));
   const cb = new Set(chromeTexts(b));
   return { onlyA: [...ca].filter(t => !cb.has(t)), onlyB: [...cb].filter(t => !ca.has(t)) };
@@ -169,7 +170,10 @@ type Seen = Pick<Observation, "signature" | "dhash" | "elements">;
  * `variants` are extra signatures of a state that the explorer already decided belong to it (a scrolled
  * view, a sameAs page for another item), so coming back to them is recognised directly.
  */
-export function matchState(states: State[], obs: Seen, variants?: ReadonlyMap<string, string[][]>): Match {
+export function matchState(states: State[], obs: Seen, variants?: ReadonlyMap<string, string[][]>, veto?: (s: State) => boolean): Match {
+  // veto: states this screen cannot be, whatever the overlap (an overlay state without its overlay on screen,
+  // a screen without the sheet that just opened on top of it)
+  if (veto) states = states.filter(s => !veto(s));
   const sig = new Set(obs.signature);
   const key = obs.signature.join("\n");
   const sigsOf = (s: State) => [s.signature, ...(variants?.get(s.id) ?? [])];

@@ -61,7 +61,7 @@ export function chatParts(s: Screen, m: ProductModel): ChatParts | null {
   const composer = inputs.find(e => e.rectDp.y > dev.h * 0.5) ?? inputs[0];
   const byCount = new Map<string, number>();
   for (const e of consumes) byCount.set(e.el!, (byCount.get(e.el!) ?? 0) + e.seen);
-  let send = [...byCount].sort((a, b) => b[1] - a[1])[0]?.[0];
+  let send: string | undefined = [...byCount].sort((a, b) => b[1] - a[1])[0]?.[0];
   if (!send) send = s.elements.find(e => e.role === "button" && /send|submit|arrow/i.test(`${textOf(e)} ${e.identifier ?? ""}`))?.id;
   if (!send && composer) {
     const cy = composer.rectDp.y + composer.rectDp.h / 2;

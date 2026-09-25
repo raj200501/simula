@@ -34,7 +34,7 @@ interface AppRow {
   judgeEval: string;
 }
 
-// A human note that says the app could not be explored ("OOC exits on launch", "blocked by ...").
+// A human note that says the app could not be explored ("exits on launch", "blocked by ...").
 const BLOCKED_NOTE = /\b(blocked|could ?n[o']t (be )?explored?|cannot (be )?explored?|can'?t explore|not explorable|exits? on launch|crash(es|ed)? on (launch|start)|refuses to run|won'?t (run|launch|open))\b/i;
 
 export async function buildReport(appIds: string[], outRoot?: string): Promise<string> {
@@ -123,7 +123,7 @@ function collect(id: string, root: string): AppRow {
   }
 
   return {
-    id, name: model?.app.name ?? cfg?.name ?? id, profile: cfg?.profile ?? "?", state, why, model, modelError, qa, verdicts, ships,
+    id, name: model?.app.name ?? cfg?.name ?? id, profile: cfg?.profile ?? "", state, why, model, modelError, qa, verdicts, ships,
     cost: rollupCost(p.cost), trace, notes, stubs, links,
     judgeEval: exists(evalMd) ? renderMarkdown(fs.readFileSync(evalMd, "utf8")) : "",
   };
@@ -146,7 +146,7 @@ function page(rows: AppRow[]): string {
 <section><h2>Transfer scorecard</h2>
 <div class="scroll"><table class="score"><thead><tr><th>App</th><th>State</th><th>Explored</th><th>Regime</th><th>Mechanics found</th><th>QA</th><th>Verdicts</th><th>LLM</th><th>Human</th></tr></thead>
 <tbody>${rows.map(scoreRow).join("") || `<tr><td colspan="9">No app outputs found.</td></tr>`}</tbody>
-<tfoot><tr><td colspan="7">All apps</td><td>${fmtUsd(total.usd)} · ${fmtInt(total.live)} calls · ${fmtTokens(total.tok)} tok</td><td></td></tr></tfoot></table></div>
+<tfoot><tr><td colspan="7">All apps</td><td>${fmtUsd(total.usd)} · ${fmtInt(total.live)} call${total.live === 1 ? "" : "s"} · ${fmtTokens(total.tok)} tok</td><td></td></tr></tfoot></table></div>
 <p class="note">Explored: steps · states · edges · external surfaces, then why exploration stopped. Mechanics: resources · sinks · sources · offers · walls · ads, all with on-screen evidence in the model viewer. QA: mean composite similarity · navigation flows passing · share of screens rebuilt in HTML. “stub” marks outputs produced by deterministic fallbacks instead of a model.</p></section>
 
 <section><h2>How it works</h2>
@@ -168,9 +168,9 @@ function scoreRow(r: AppRow): string {
   const qa = r.qa ? `${r.qa.compositeMean != null ? r.qa.compositeMean.toFixed(2) : "–"} · ${r.qa.flowTotal ? `${r.qa.flowPassed}/${r.qa.flowTotal}` : "–"} · ${r.qa.htmlShare != null ? `${Math.round(r.qa.htmlShare * 100)}%` : "–"}` : dash;
   const v = r.verdicts ? `<span class="v ship">${r.verdicts.SHIP} SHIP</span> <span class="v revise">${r.verdicts.REVISE} REVISE</span> <span class="v reject">${r.verdicts.REJECT} REJECT</span>` : dash;
   const llm = r.cost.live + r.cost.cached
-    ? `${fmtUsd(r.cost.usd)} · ${r.cost.live} calls${r.cost.cached ? ` (+${r.cost.cached} cached)` : ""}<div class="muted">${fmtTokens(r.cost.tokensIn)} in · ${fmtTokens(r.cost.tokensOut + r.cost.thoughts)} out${r.cost.providers.includes("gemini") ? " · free tier" : ""}</div>`
+    ? `${fmtUsd(r.cost.usd)} · ${r.cost.live} call${r.cost.live === 1 ? "" : "s"}${r.cost.cached ? ` (+${r.cost.cached} cached)` : ""}<div class="muted">${fmtTokens(r.cost.tokensIn)} in · ${fmtTokens(r.cost.tokensOut + r.cost.thoughts)} out${r.cost.providers.includes("gemini") ? " · free tier" : ""}</div>`
     : `<span class="muted">no live calls</span>`;
-  return `<tr class="st-${r.state.replace(" ", "-")}"><td><a href="#app-${h(r.id)}"><b>${h(r.name)}</b></a><div class="muted">${h(r.id)} · ${h(r.profile)}${r.stubs.length ? ` · <span class="stub">stub: ${h(r.stubs.join(", "))}</span>` : ""}</div></td>
+  return `<tr class="st-${r.state.replace(" ", "-")}"><td><a href="#app-${h(r.id)}"><b>${h(r.name)}</b></a><div class="muted">${h(r.id)}${r.profile ? ` · ${h(r.profile)}` : ""}${r.stubs.length ? ` · <span class="stub">stub: ${h(r.stubs.join(", "))}</span>` : ""}</div></td>
 <td><span class="state ${r.state.replace(" ", "-")}">${h(r.state)}</span>${r.why ? `<div class="muted why">${h(r.why)}</div>` : ""}</td>
 <td>${explored}</td><td>${m ? h(m.regime) : dash}</td><td>${mech}</td><td>${qa}</td><td>${v}</td><td>${llm}</td><td class="num">${r.trace.human || (c?.humanInterventions ?? 0)}</td></tr>`;
 }
@@ -183,7 +183,7 @@ function appSection(r: AppRow): string {
   const costRows = r.cost.byStage.map(s => `<tr><td>${h(s.stage)}</td><td class="num">${s.live}</td><td class="num">${s.cached}</td><td class="num">${fmtTokens(s.tokensIn)}</td><td class="num">${fmtTokens(s.tokensOut + s.thoughts)}</td><td class="num">${fmtUsd(s.usd)}</td></tr>`).join("");
   return `<section class="app" id="app-${h(r.id)}">
 <h2>${h(r.name)} <span class="state ${r.state.replace(" ", "-")}">${h(r.state)}</span></h2>
-${m ? `<p class="lede2">${h(m.brief.oneLiner)} <span class="muted">Regime: ${h(m.regime)}. ${h(m.brief.howItMakesMoney)}</span></p>` : `<p class="lede2">${h(r.why || "No outputs yet.")}</p>`}
+${m ? `<p class="lede2">${h(m.brief.oneLiner)} <span class="muted">Regime: ${h(m.regime)}. ${h(m.brief.howItMakesMoney.replace(/([^.!?])$/, "$1."))}</span></p>` : `<p class="lede2">${h(r.why || "No outputs yet.")}</p>`}
 <div class="links">${links}</div>
 ${ships}
 ${r.notes.length ? `<h3>Human notes</h3><ul class="notes">${r.notes.map(n => `<li>${h(n)}</li>`).join("")}</ul>` : ""}

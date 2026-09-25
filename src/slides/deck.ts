@@ -9,7 +9,7 @@ import { fmtTokens, fmtUsd } from "../report/data.ts";
 import { PRODUCTIONIZATION } from "../report/content.ts";
 import type { Box, Frame } from "./capture.ts";
 import {
-  PHASE_LABEL, cheapestPack, clip, ideaRows, latestFinals, moneyToday, num, resourceOf, screenName, undevelopedIdeas, unitOf,
+  PHASE_LABEL, cheapestPack, clip, ideaRows, latestFinals, moneyToday, num, resourceOf, rewardText, screenName, undevelopedIdeas, unitOf,
   type EconRow, type Final, type IdeaRow, type JudgeChange, type PhaseId, type WhyBullet,
 } from "./facts.ts";
 
@@ -91,8 +91,11 @@ function recommendation(d: DeckInput, rows: IdeaRow[]): string {
     : `No rewarded flow for ${m.app.name} is ready to ship yet.`;
   const cards = n
     ? `<div class="cards" style="grid-template-columns:repeat(${Math.min(n, 4)},1fr)">${flows.map((f, i) => {
-        const fr = f.frames.find(x => x.phase === "offer") ?? f.frames[0];
-        return `<a class="card" href="#flow-${h(f.p.id)}">${fr ? phone(fr, n <= 3 ? 150 : 120, { pins: false }) : ""}<div class="card-body">
+        // One flow: show what changed -> offer -> value; two: change -> offer; more: the offer only.
+        const want: PhaseId[] = n === 1 ? ["change", "offer", "value"] : n === 2 ? ["change", "offer"] : ["offer"];
+        const strip = want.map(ph => f.frames.find(x => x.phase === ph)).filter((x): x is Frame => !!x)
+          .map(fr => phone(fr, n <= 2 ? 170 : n === 3 ? 150 : 120, { pins: false })).join(`<div class="mini-arrow">${arrowSvg(28, "#9CA3AF")}</div>`);
+        return `<a class="card" href="#flow-${h(f.p.id)}"><div class="strip">${strip}</div><div class="card-body">
 <div class="kicker">Flow ${i + 1} · slide ${3 + i * 2}</div><h3>${h(clip(f.claim, 90))}</h3><p>${h(clip(f.p.oneLiner, 150))}</p>
 <div class="badges">${badge("SHIP", "ship")}${score(f.f.weighted, d.j)}${badge(f.p.case === "product-change" ? "Product change" : "Existing mechanic")}</div></div></a>`;
       }).join("")}</div>`
@@ -142,7 +145,7 @@ ${s.screen ? `<div class="scr">${h(screenName(m, s.screen))}</div>` : ""}
 <ul class="facts">${s.facts.slice(0, 4).map(x => `<li>${h(clip(x, 90))}</li>`).join("")}${s.facts.length > 4 ? `<li class="more">+${s.facts.length - 4} more</li>` : ""}</ul></div>`;
   }).join("");
   const uname = (id: string) => unitOf(resourceOf(m, id) ?? { unit: id, name: id });
-  const unit = derived.unitPriceUsd.map(u => `$${u.min.toPrecision(2)}–$${u.max.toPrecision(2)} per ${uname(u.resource)}`).join("; ");
+  const unit = derived.unitPriceUsd.map(u => `$${u.min.toPrecision(3)}–$${u.max.toPrecision(3)} per ${singular(uname(u.resource))}`).join("; ");
   const free = derived.freeDailyUnits.map(f => `${f.units} ${uname(f.resource)} a day = ${f.buys}`).join("; ");
   const tiles = [
     ["Price per unit", unit || "No priced packs observed"],
@@ -153,7 +156,7 @@ ${s.screen ? `<div class="scr">${h(screenName(m, s.screen))}</div>` : ""}
   return slide("money-today", `
 <div class="kicker"><b>${h(m.app.name)}</b> · Today</div>
 <h1>How ${h(m.app.name)} makes money today</h1>
-<p class="sub">${h(clip(m.brief.howItMakesMoney, 180))} Real screens from the app; prices and costs as observed.</p>
+<p class="sub">${h(sentence(clip(m.brief.howItMakesMoney, 180)))} Real screens from the app; prices and costs as observed.</p>
 <div class="money">${cols}</div>
 <div class="tiles">${tiles.map(([k, v]) => `<div class="tile"><div class="stat-k">${h(k)}</div><p>${h(clip(v, 130))}</p></div>`).join("")}</div>`, m);
 }
@@ -205,15 +208,15 @@ ${legend ? `<ol class="legend">${legend}</ol>` : ""}${decline}</div>`);
 function detailsSlide(d: DeckInput, f: FlowInput, i: number): string {
   const { m } = d;
   const p = f.p, e = f.econ;
-  const res = resourceOf(m, p.reward.resource);
   const sc = e.scenario;
   const kv = (k: string, v: string) => `<div class="kv"><h4>${h(k)}</h4><p>${v}</p></div>`;
   const col1 = [
     kv("Trigger", h(clip(p.trigger, 200))),
     kv("Eligibility", h(clip(p.eligibility, 200))),
     kv("What the user sees", `<b>${h(clip(p.offer.title, 70))}</b> ${h(clip(p.offer.body, 140))}<br><span class="btn">${h(p.offer.cta)}</span> <span class="btn ghost">${h(p.offer.decline)}</span>`),
-    kv("Reward and caps", `${h(clip(p.reward.what, 90))}${p.reward.amount != null && res ? ` (${p.reward.amount} ${h(unitOf(res))})` : ""}${p.reward.duration ? `, ${h(p.reward.duration)}` : ""}; granted on REWARD_VERIFIED. At most ${p.caps.perDay} a day, ${p.caps.cooldownMin} min apart.`),
+    kv("Reward and caps", `${h(clip(rewardText(p, m), 100))}${p.reward.duration ? `, ${h(p.reward.duration)}` : ""}; granted on REWARD_VERIFIED. At most ${p.caps.perDay} a day, ${p.caps.cooldownMin} min apart.`),
     kv("Risks", `<ul>${p.risks.slice(0, 4).map(r => `<li>${h(clip(r, 110))}</li>`).join("") || "<li>None listed</li>"}</ul>`),
+    kv("Precedents (knowledge base)", f.precedents.length ? `<ul>${f.precedents.slice(0, 4).map(x => `<li><b>${h(x.id)}</b> ${h(clip(x.title, 80))}</li>`).join("")}</ul>` : "None cited"),
   ].join("");
   const flags = e.flags.length ? `<ul class="flags">${e.flags.map(x => `<li>${h(clip(x, 140))}</li>`).join("")}</ul>` : "";
   const col2 = `<div class="kv"><h4>Economics (computed in code)</h4><table class="econ">${f.econRows.map(r => `<tr><td>${h(r.label)}</td><td>${h(r.value)}</td></tr>`).join("")}</table>${flags}</div>
@@ -221,13 +224,10 @@ function detailsSlide(d: DeckInput, f: FlowInput, i: number): string {
 <div class="sc-row"><div><b>${sc.impressionsPerDau}</b><span>views per DAU</span></div><div><b>$${sc.arpdauUsd}</b><span>ARPDAU</span></div><div><b>$${Math.round(sc.annualPer1mDauUsd).toLocaleString("en-US")}</b><span>per year per 1M DAU</span></div></div>
 <p>${h(sc.label)}</p></div>
 ${kv("Cannibalization guard", h(clip(p.cannibalizationGuard, 220)))}
-${kv("KPI and holdout", `<b>${h(clip(p.kpis.primary, 90))}</b>${p.kpis.guardrails.length ? `; guardrails: ${h(clip(p.kpis.guardrails.join(", "), 120))}` : ""}. ${h(clip(p.kpis.holdout, 120))}`)}`;
-  const changes = f.changes
-    ? kv("What the judge changed", `<ul>${f.changes.rounds.map(r => `<li>${h(r)}</li>`).join("")}${f.changes.diffs.map(x => `<li><b>${h(x.field)}</b>: “${h(x.before)}” → “${h(x.after)}”</li>`).join("")}</ul>`)
-    : "";
-  const col3 = `${changes}
-${kv("Precedents (knowledge base)", f.precedents.length ? `<ul>${f.precedents.slice(0, 4).map(x => `<li><b>${h(x.id)}</b> ${h(clip(x.title, 80))}</li>`).join("")}</ul>` : "None cited")}
-<div class="kv"><h4>Integration (@simula/ads-react-native)</h4><pre class="code">${codeHtml(f.snippet)}</pre></div>`;
+${kv("KPI and holdout", `<b>${h(clip(p.kpis.primary, 90))}</b>${p.kpis.guardrails.length ? `; guardrails: ${h(clip(p.kpis.guardrails.join(", "), 120))}` : ""}. ${h(clip(p.kpis.holdout, 120))}`)}
+${f.changes ? kv("What the judge changed", `<ul>${f.changes.rounds.slice(0, 2).map(r => `<li>${h(r)}</li>`).join("")}${f.changes.diffs.slice(0, 3).map(x => `<li><b>${h(x.field)}</b>: “${h(x.before)}” → “${h(x.after)}”</li>`).join("")}</ul>`) : ""}`;
+  // The snippet gets the whole third column: it is the implementation ticket.
+  const col3 = `<div class="kv"><h4>Integration (@simula/ads-react-native)</h4><pre class="code">${codeHtml(f.snippet)}</pre></div>`;
   return slide(`details-${p.id}`, `
 <div class="kicker"><b>${h(m.app.name)}</b> · Flow ${i + 1} details · ${h(p.id)} v${p.version}</div>
 <h1 class="h2">${h(p.title)}</h1>
@@ -256,8 +256,8 @@ function appendixMethod(d: DeckInput): string {
   const finals = latestFinals(j);
   const judgedBy = [...new Set(j.rounds.map(r => r.judgedBy))].join(", ") || "n/a";
   const steps = [
-    ["Explore", `${c.steps} steps, ${c.states} states, ${c.edges} edges, ${c.externals} external surfaces in ${Math.round(c.minutes)} min; stopped: ${c.stopReason}. ${c.notExplored.length} actions deliberately not explored.`],
-    ["Understand", `${m.screens.length} screens in the product model; ${m.provenance.verifiedClaims} claims verified against on-screen text, ${m.provenance.inferredClaims} inferred. Synthesized by ${m.provenance.synthesizedBy}.`],
+    ["Explore", `${plural(c.steps, "step")}, ${plural(c.states, "state")}, ${plural(c.edges, "edge")}, ${plural(c.externals, "external surface")} in ${Math.round(c.minutes)} min; stopped: ${c.stopReason.replace(/_/g, " ")}. ${plural(c.notExplored.length, "action")} deliberately not explored.`],
+    ["Understand", `${plural(m.screens.length, "screen")} in the product model; ${plural(m.provenance.verifiedClaims, "claim")} verified against on-screen text, ${m.provenance.inferredClaims} inferred. Synthesized by ${m.provenance.synthesizedBy}.`],
     ["Mock + QA", qa ? `${qa.htmlShare != null ? `${Math.round(qa.htmlShare * 100)}% of screens rebuilt in HTML; ` : ""}${qa.flowTotal ? `${qa.flowPassed}/${qa.flowTotal} navigation flows pass` : "no flow replay"}.` : "QA summary not available for this run."],
     ["Propose", `${cands.ideas.length} ideas, ${cands.proposals.length} developed into typed proposals (patch, storyboard, assumptions). Generated by ${cands.generatedBy}.`],
     ["Judge", `${j.rounds.length} judgment rounds for ${finals.length} proposals: code gates first, then a rubric scored by ${judgedBy}; the verdict is computed in code (ship ≥ ${j.thresholds.ship}, every criterion ≥ ${j.thresholds.minCriterion}, ≤ ${j.thresholds.maxRounds} rounds).`],
@@ -286,8 +286,8 @@ function appendixCost(d: DeckInput): string {
   const free = cost.providers.includes("gemini");
   const rows = cost.byStage.map(r => `<tr><td>${h(r.stage)}</td><td class="num">${r.live}</td><td class="num">${r.cached}</td><td class="num">${fmtTokens(r.tokensIn)}</td><td class="num">${fmtTokens(r.tokensOut + r.thoughts)}</td><td class="num">${fmtUsd(r.usd)}</td></tr>`).join("");
   const lim = [
-    `Explored on an Android emulator (${m.app.accountState} account); ${m.coverage.notExplored.length} actions were left unexplored by guard rails or scope, listed in the model viewer.`,
-    `${m.provenance.inferredClaims} product-model claims are inferred rather than observed; the economy review is the human checkpoint for them.`,
+    `Explored on ${m.device.kind === "web" ? "a web build driven by Playwright" : "an Android emulator"} (${m.app.accountState} account); ${plural(m.coverage.notExplored.length, "action")} left unexplored by guard rails or scope, listed in the model viewer.`,
+    `${plural(m.provenance.inferredClaims, "product-model claim")} inferred rather than observed; the economy review is the human checkpoint for them.`,
     "Revenue per view uses KB eCPM ranges with a non-game haircut; some constants are inferred. ARPDAU appears only as a labelled scenario.",
     "The ad in the frames is simulated by the mock; real fill, creatives and completion rates vary by market.",
     "The judge is a separate call of the same model family as the proposer; its single-fault calibration table is in judge-eval.md.",
@@ -379,6 +379,11 @@ function codeHtml(src: string): string {
   }).join("\n");
 }
 
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+const sentence = (s: string) => (s && !/[.!?…]$/.test(s) ? `${s}.` : s);
+/** "credits" -> "credit" for "per <unit>"; leaves "pass", "gems"->"gem" style plurals sensible. */
+const singular = (u: string) => (/[^s]s$/i.test(u) && u.length > 3 ? u.slice(0, -1) : u);
+
 function words(n: number): string {
   return ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"][n] ?? String(n);
 }
@@ -418,7 +423,10 @@ h1.h2{font-size:40px}
 .noshot{display:grid;place-items:center;background:var(--soft);border:2px dashed var(--line);border-radius:24px;color:var(--muted);font-size:15px}
 /* recommendation */
 .cards{display:grid;gap:28px;margin-top:40px}
-.card{display:flex;gap:22px;align-items:flex-start;text-decoration:none;background:var(--soft);border-radius:20px;padding:22px}
+.card{display:flex;gap:28px;align-items:flex-start;text-decoration:none;background:var(--soft);border-radius:20px;padding:22px}
+.strip{display:flex;align-items:center;gap:6px;flex:none}
+.mini-arrow{display:flex}
+.card-body{padding-top:8px}
 .card h3{font-size:24px;line-height:1.25;margin:8px 0 8px}
 .card p{font-size:17px;line-height:1.4;color:#4B5563;margin:0 0 12px}
 .card .kicker{font-size:13px}
@@ -484,7 +492,7 @@ table{border-collapse:collapse;width:100%}
 .sc-row b{display:block;font-size:22px}
 .sc-row span{font-size:13px;color:var(--muted)}
 .scenario p{font-size:13.5px;line-height:1.35;color:var(--muted);margin:8px 0 0}
-.code{background:#0F172A;color:#E2E8F0;border-radius:12px;padding:14px 16px;font:12px/1.42 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;margin:0;max-height:560px;overflow:hidden}
+.code{background:#0F172A;color:#E2E8F0;border-radius:12px;padding:14px 16px;font:12px/1.42 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;margin:0;max-height:820px;overflow:hidden}
 .code .c{color:#94A3B8}
 /* ideas */
 .ideas{margin-top:26px;font-size:18px}

@@ -80,7 +80,7 @@ describe("integration snippet", () => {
     assert.match(s, /export function RefillByPlayOffer\(/);
     assert.match(s, /SimulaAds\.checkFrequencyCap\(AD_UNIT, userId\)/);
     assert.match(s, /rwd\.load\(\{ charName: "Mara" \}\)/);
-    assert.match(s, /3\/day, 30 min cooldown/);
+    assert.match(s, /Caps 3\/day, 30 min apart/);
     assert.match(s, /if \(rwd\.rewardVerified\) grant\(\{ amount: 10, resource: "credits", token: rwd\.rewardToken \}\)/);
     assert.match(s, /rwd\.error\?\.code === "no_fill"/);
     assert.match(s, /ctaText=\{"Play now"\}/);

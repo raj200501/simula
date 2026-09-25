@@ -39,33 +39,31 @@ export function integrationSnippet(p: Proposal, o: SnippetOpts = {}): string {
   lines.push(`import { SimulaAds, useRewardedAd, ${comp} } from "${SDK_PACKAGE}";`);
   lines.push(`import { useEffect, useState } from "react";`);
   lines.push("");
-  lines.push(`// ${p.id} · ${oneLine(p.title)}${o.surfaceName ? ` · surface: ${oneLine(o.surfaceName)}` : ""}`);
-  lines.push(`// Trigger: ${clip(oneLine(p.trigger), 110)}`);
-  lines.push(`// Caps: ${p.caps.perDay}/day, ${p.caps.cooldownMin} min cooldown (app remote config; unit cap in the Simula dashboard)`);
-  if (p.simula.unit !== "SIM-RWD") lines.push(`// Proposal names ${p.simula.unit}; only rewarded units emit REWARD_VERIFIED, so this uses the rewarded API.`);
-  lines.push(`const AD_UNIT = ${js(unitId)}; // placeholder id: create the rewarded unit in the dashboard`);
+  lines.push(`// ${p.id}${o.surfaceName ? ` on "${oneLine(o.surfaceName)}"` : ""}. Trigger: ${clip(oneLine(p.trigger), 90)}`);
+  lines.push(`// Caps ${p.caps.perDay}/day, ${p.caps.cooldownMin} min apart: app remote config (unit cap: dashboard)`);
+  if (p.simula.unit !== "SIM-RWD") lines.push(`// Proposal names ${p.simula.unit}; only rewarded units emit REWARD_VERIFIED.`);
+  lines.push(`const AD_UNIT = ${js(unitId)}; // placeholder: create it in the dashboard`);
   lines.push("");
-  lines.push(`type Props = { userId: string; partnerImageUrl: string; grant: (reward: object) => void; onDecline: () => void };`);
-  lines.push(`export function ${fn}({ userId, partnerImageUrl, grant, onDecline }: Props) {`);
+  lines.push(`export function ${fn}({ userId, partnerImageUrl, grant, onDecline }) {`);
   lines.push(`  const rwd = useRewardedAd(AD_UNIT);`);
   lines.push(`  const [capped, setCapped] = useState(true);`);
   lines.push(`  useEffect(() => {`);
-  lines.push(`    SimulaAds.checkFrequencyCap(AD_UNIT, userId).then(setCapped); // true = cap reached: hide the offer`);
+  lines.push(`    SimulaAds.checkFrequencyCap(AD_UNIT, userId).then(setCapped); // true: hide`);
   lines.push(`    rwd.setMetadata({ surface: ${js(slug(o.surfaceName ?? p.surface) || p.surface)}, proposal: ${js(p.id)} });`);
   lines.push(partner
     ? `    rwd.load({ charName: ${js(partner)} }); // Game Partner`
     : `    rwd.load();`);
   lines.push(`  }, [userId]);`);
   lines.push(`  useEffect(() => {`);
-  lines.push(`    // Grant only on REWARD_VERIFIED (server-verified play), never on EARNED_REWARD.`);
+  lines.push(`    // Grant on REWARD_VERIFIED (server-verified), never on EARNED_REWARD.`);
   lines.push(`    if (rwd.rewardVerified) grant({ ${grant}${grant ? ", " : ""}token: rwd.rewardToken });`);
   lines.push(`  }, [rwd.rewardVerified]);`);
-  lines.push(`  // no_fill (or not loaded yet): render nothing, today's path stays as it is.`);
+  lines.push(`  // no_fill or not loaded: render nothing; today's path is unchanged.`);
   lines.push(`  if (capped || !rwd.isLoaded || rwd.error?.code === "no_fill") return null;`);
   lines.push(...offerJsx(p, comp));
   lines.push(`}`);
-  lines.push(`// Min play ${p.simula.minPlaySec}s: configured on the unit (no RN load option for it; unverified).`);
-  lines.push(`// Requires <SimulaProvider apiKey={...}> at the app root. grant() is your server call (SSV).`);
+  lines.push(`// Min play ${p.simula.minPlaySec}s is a unit setting (no RN load option; unverified).`);
+  lines.push(`// Needs <SimulaProvider apiKey={...}> at the root; grant() is your server call.`);
   return lines.join("\n");
 }
 

@@ -60,7 +60,19 @@ export function normalizeStoryboard(p: Proposal, m: ProductModel): Story[] {
     ad: `${p.simula.minPlaySec}s sponsored game${p.simula.gamePartner ? ` with ${p.simula.gamePartner}` : ""}`,
     value: p.reward.amount != null && res ? `+${p.reward.amount} ${unitOf(res)}, right where they were` : p.reward.what,
   };
-  return PHASES.map(phase => by.get(phase) ?? { phase, screen: fallbackScreen[phase], counters: [], overlay: "none" as const, callouts: [], caption: fallbackCaption[phase] });
+  // Captions are at most 12 words (E5) whatever the proposer wrote.
+  return PHASES.map(phase => {
+    const s = by.get(phase) ?? { phase, screen: fallbackScreen[phase], counters: [], overlay: "none" as const, callouts: [], caption: fallbackCaption[phase] };
+    return { ...s, caption: clampWords(s.caption, 12) };
+  });
+}
+
+/** "10 credits" without repeating the amount when the proposer's text already states it. */
+export function rewardText(p: Proposal, m: ProductModel): string {
+  const what = oneLine(p.reward.what);
+  const res = resourceOf(m, p.reward.resource);
+  if (p.reward.amount == null || !res || what.includes(String(p.reward.amount))) return what;
+  return `${what} (${p.reward.amount} ${unitOf(res)})`;
 }
 
 /** Where "No thanks" lands: the screen under the offer (a new modal returns to what it was based on). */
@@ -114,7 +126,7 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
     const equiv = sinkEquivalent(m, res!.id, amount);
     out.push({
       stat: `1 view ≈ ${num(upv.min)}–${num(upv.max)} ${unit}`,
-      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} at list price; the reward is ${amount} ${unit}${equiv ? ` (${equiv})` : ""}${e.rewardToViewRatio != null ? `, ${e.rewardToViewRatio}× one view` : ""}.`,
+      text: `A completed US view is worth ${num(upv.min)}–${num(upv.max)} ${unit} at list price. The reward is ${amount} ${unit}${e.rewardToViewRatio != null ? ` (${e.rewardToViewRatio}× one view)` : ""}${equiv ? `, enough for ${equiv}` : ""}.`,
     });
   } else {
     out.push({
@@ -239,12 +251,13 @@ export interface JudgeChange { rounds: string[]; diffs: { field: string; before:
 export function judgeChanges(p: Proposal, cands: Candidates, j: Judgments): JudgeChange | null {
   const rs = roundsOf(j, p.id);
   if (!(rs.length > 1 || p.version > 1)) return null;
-  const rounds = rs.slice(0, -1).map(r => `Round ${r.round} (v${r.version}) ${r.verdict}${r.weighted != null ? ` ${r.weighted.toFixed(2)}` : ""}: ${clip(r.topConcern, 120)}${r.requiredChanges.length ? ` Required: ${clip(r.requiredChanges.join("; "), 160)}` : ""}`);
+  const stop = (x: string) => (x && !/[.!?…]$/.test(x) ? `${x}.` : x);
+  const rounds = rs.slice(0, -1).map(r => `Round ${r.round} (v${r.version}) ${r.verdict}${r.weighted != null ? ` ${r.weighted.toFixed(2)}` : ""}: ${stop(clip(r.topConcern, 120))}${r.requiredChanges.length ? ` Required: ${stop(clip(r.requiredChanges.join("; "), 160))}` : ""}`);
   const v1 = cands.proposals.filter(x => x.id === p.id && x.version < p.version).sort((a, b) => a.version - b.version)[0];
   const diffs: JudgeChange["diffs"] = [];
   if (v1) {
     const fields: [string, (x: Proposal) => string][] = [
-      ["trigger", x => x.trigger], ["eligibility", x => x.eligibility], ["reward", x => `${x.reward.amount ?? ""} ${x.reward.what}`],
+      ["trigger", x => x.trigger], ["eligibility", x => x.eligibility], ["reward", x => x.reward.amount != null && !x.reward.what.includes(String(x.reward.amount)) ? `${x.reward.amount} ${x.reward.what}` : x.reward.what],
       ["caps", x => `${x.caps.perDay}/day, ${x.caps.cooldownMin} min`], ["guard", x => x.cannibalizationGuard], ["offer", x => `${x.offer.title} / ${x.offer.cta}`],
     ];
     for (const [field, get] of fields) if (oneLine(get(v1)) !== oneLine(get(p))) diffs.push({ field, before: clip(get(v1), 90), after: clip(get(p), 90) });

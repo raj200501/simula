@@ -8,7 +8,7 @@ import type { DeviceInfo, NormElement, Observation, RawElement, Rect, Resource }
 import { ensureDir, mask, nowIso, parseNumber, sleep } from "../core/io.ts";
 import { isAdContainer, isAdLabel } from "./guards.ts";
 import { isWallText } from "./signals.ts";
-import { labelCounts, labelOf, shortType, signatureOf } from "./signature.ts";
+import { labelCounts, labelOf, overlapRatio, shortType, signatureOf } from "./signature.ts";
 
 export const BAND = 0.15;        // top/bottom 15% of the screen: app bars and tab bars (chrome)
 export const SHORT_LABEL = 24;   // short labels outside repeated groups are chrome (titles, buttons)
@@ -32,10 +32,29 @@ export const DEFAULT_TIMING: Timing = {
 // Exclusions (T2): text the explorer caused is never identity. Everything it typed, and the replies
 // it provoked, would otherwise turn every sent message into a "new" chat state.
 // ---------------------------------------------------------------------------------------------
-export interface Exclusions { exact: Set<string>; typed: string[] }
+export interface Exclusions { exact: Set<string>; typed: string[]; indicators: Indicator[] }
+
+/**
+ * A control that shows the current choice (a mode chip reading "Basic · 10", learned when it opened a
+ * picker). Its label is selection context (edge.context.selected), never identity: the same chat in
+ * another mode is the same state.
+ */
+export interface Indicator { type: string; identifier: string; rect: Rect }
 
 export function newExclusions(): Exclusions {
-  return { exact: new Set(), typed: [] };
+  return { exact: new Set(), typed: [], indicators: [] };
+}
+
+/** Same short type and resource id, and mostly the same place (a chip's width changes with its label). */
+export function isIndicator(e: Pick<RawElement, "type" | "identifier" | "rect">, inds: readonly Indicator[]): boolean {
+  return inds.some(i => i.type === shortType(e.type) && i.identifier === (e.identifier ?? "") && overlapRatio(i.rect, e.rect) >= 0.5);
+}
+
+const INPUT_TYPE = /edit|input|textfield|textarea|searchbox|textbox/i;
+
+/** A text field: its text is the user's (or a hint), so it is never identity. */
+export function isInputType(type: string): boolean {
+  return INPUT_TYPE.test(shortType(type));
 }
 
 export function excludeTyped(ex: Exclusions, s: string): void {
@@ -93,9 +112,11 @@ export function normalize(raw: RawElement[], info: DeviceInfo, ex: Exclusions): 
     .map(x => x.e);
   const groups = repeatedGroups(els, H);
   const ads = adFlags(els, W, H);
+  const inherited = inheritLabels(els, W, H).label;
   const ordinals = new Map<string, number>();
   return els.map((e, i) => {
-    const base = `${shortType(e.type)}|${e.identifier ?? ""}|${mask(labelOf(e))}`;
+    // the key carries the words a chip shows even when they live in a TextView inside it
+    const base = `${shortType(e.type)}|${e.identifier ?? ""}|${mask(labelOf(e) || inherited[i])}`;
     const n = ordinals.get(base) ?? 0;
     ordinals.set(base, n + 1);
     const el: NormElement = { ...e, id: `e${i + 1}`, key: `${base}|${n}`, chrome: false };
@@ -107,18 +128,53 @@ export function normalize(raw: RawElement[], info: DeviceInfo, ex: Exclusions): 
 }
 
 /**
- * Chrome rule (T2): top/bottom 15% band, or selected/checked, or a short label (<= 24 chars) that is
- * not in a repeated group. Never chrome: ads (they rotate), text the explorer caused (typed, replies),
- * and text longer than 40 chars (a message or a description is content wherever it sits).
+ * Chrome rule (T2): top/bottom 15% band, or selected, or a short label (<= 24 chars) that is not in a
+ * repeated group. Never chrome: ads (they rotate), text fields (their text is the user's), text the
+ * explorer caused (typed, replies), a control that shows the current choice (an indicator), and text
+ * longer than 40 chars (a message or a description is content wherever it sits). "Checked" alone is not
+ * identity: the same picker with another option ticked, or a switch flipped, is the same screen; the
+ * choice is recorded as edge context instead. A selected tab is identity (it switches the page).
  */
 function isChrome(e: NormElement, info: DeviceInfo, ex: Exclusions): boolean {
   const lab = labelOf(e);
-  if (e.ad || lab.length > LONG_TEXT) return false;
+  if (e.ad || isInputType(e.type) || isIndicator(e, ex.indicators)) return false;
   if (lab && isExcluded(ex, lab)) return false;
-  if (e.selected || e.checked) return true;
+  if (e.selected) return true;
+  if (lab.length > LONG_TEXT) return false;
   const H = info.heightPx;
   const inBand = e.rect.y + e.rect.h <= H * BAND || e.rect.y >= H * (1 - BAND);
   return inBand || (!e.group && lab.length > 0 && lab.length <= SHORT_LABEL);
+}
+
+/**
+ * Label inheritance (Jetpack Compose, React Native): a chip or an icon button is often an unlabeled
+ * clickable View whose words sit in a TextView (or a labelled icon) drawn inside it. An unlabeled,
+ * control-sized element - not a full-width bar or card, not a big layout - that holds 1-2 labelled
+ * elements takes their words as its label, and those elements become part of it (`owner`), so the control
+ * is one action, not one per text. A text field absorbs the hint drawn inside it the same way.
+ * Returns, per element, the inherited label ("" = none) and the index of the element that absorbed it (-1).
+ */
+export function inheritLabels(els: ReadonlyArray<Pick<RawElement, "type" | "text" | "label" | "rect">>, W: number, H: number): { label: string[]; owner: number[] } {
+  const label = els.map(() => "");
+  const owner = els.map(() => -1);
+  const inside = (outer: Rect, inner: Rect) => {
+    const w = Math.min(outer.x + outer.w, inner.x + inner.w) - Math.max(outer.x, inner.x);
+    const h = Math.min(outer.y + outer.h, inner.y + inner.h) - Math.max(outer.y, inner.y);
+    return w > 0 && h > 0 && (w * h) / Math.max(1, area(inner)) >= 0.9 && area(inner) < area(outer);
+  };
+  // smallest first: a chip inside a card claims its text before the card could
+  const order = els.map((_, i) => i).filter(i => !labelOf(els[i])).sort((a, b) => area(els[a].rect) - area(els[b].rect));
+  for (const i of order) {
+    const r = els[i].rect;
+    const input = isInputType(els[i].type);
+    if (!input && (r.w > 0.9 * W || area(r) > 0.25 * W * H)) continue; // a bar, a card, a layout
+    const kids = els.map((_, j) => j).filter(j => j !== i && labelOf(els[j]) && inside(r, els[j].rect));
+    if (!kids.length || kids.length > 2 || kids.some(j => owner[j] >= 0)) continue; // a layout around other controls
+    if (input && kids.some(j => isInputType(els[j].type))) continue;
+    for (const j of kids) owner[j] = i;
+    if (!input) label[i] = kids.sort((a, b) => els[a].rect.y - els[b].rect.y || els[a].rect.x - els[b].rect.x).map(j => labelOf(els[j])).join(" ");
+  }
+  return { label, owner };
 }
 
 /**
@@ -298,7 +354,7 @@ export async function observe(o: ObserveCtx, id: string, step: number, opts: Obs
     const seen = new Set(opts.before.texts);
     const extra = snap.els.filter(e => labelOf(e) && !seen.has(labelOf(e)) && replyLike(labelOf(e), e.type)).map(labelOf);
     if (extra.length) {
-      const ex2: Exclusions = { exact: new Set([...o.ex.exact, ...extra.map(s => mask(s, 200))]), typed: o.ex.typed };
+      const ex2: Exclusions = { exact: new Set([...o.ex.exact, ...extra.map(s => mask(s, 200))]), typed: o.ex.typed, indicators: o.ex.indicators };
       snap = snapshot(snap.raw, o.info, ex2, o.resources);
     }
   }

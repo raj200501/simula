@@ -74,7 +74,7 @@ ${css.slice(0, 16000)}
     // data-new on what it inserts, so here we only drop output that contains no markup at all.
     const html = raw ? fenced(raw, "html").trim() : "";
     if (/<[a-z]/i.test(html)) out.push({ id: job.id, html });
-    else trace("decision", { stage: "slides", proposal: p.id, entry: job.id, choice: "runtime-default", why: raw ? "model output unusable after sanitizing" : "stub: no fragment" });
+    else trace("decision", { stage: "slides", proposal: p.id, entry: job.id, choice: "runtime-default", why: raw ? "model output contained no markup" : "stub: no fragment" });
   }
   return out;
 }

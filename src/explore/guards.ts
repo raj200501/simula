@@ -7,9 +7,13 @@ import type { RawElement } from "../core/schema.ts";
 export const DESTRUCTIVE =
   /\b(log ?out|sign ?out|delete|remove account|deactivate|report|block|unsubscribe|cancel (my )?(subscription|plan|membership))\b/i;
 
-/** Surfaces that tell us nothing about the product's monetization, or that touch the user's device and data. */
+/**
+ * Surfaces that tell us nothing about the product's monetization, or that touch the user's device and data
+ * (the camera, the microphone, files). "Rate us" is not here: it only opens the store or a browser, which
+ * the explorer records as an external surface and leaves; it never acts inside another app.
+ */
 export const OUT_OF_SCOPE =
-  /\b(camera|gallery|photos?|upload|attach(ment)?|microphone|mic|voice|record(ing)?|share|rate us|review|privacy|terms|licen[cs]es?)\b/i;
+  /\b(camera|gallery|photos?|upload|attach(ment)?|microphone|mic|voice|audio|dictat(e|ion)|record(ing)?|share|privacy|terms|licen[cs]es?)\b/i;
 
 /** Fields a human fills in. The explorer never types credentials, codes, phone numbers or CAPTCHA answers. */
 export const CREDENTIALS =
@@ -39,7 +43,7 @@ type Guardable = { text?: string; label?: string; identifier?: string; ad?: bool
 export function guardReason(el: Guardable | undefined, intent: string, kind: string): string | undefined {
   if (el?.ad) return `${GUARD} ad (observe ads, never click them)`;
   // resource ids like "btn_logout" -> "btn logout" so word boundaries work
-  const idWords = (el?.identifier ?? "").split("/").pop()!.replace(/[_\-.]+/g, " ");
+  const idWords = (el?.identifier ?? "").split("/").pop()!.replace(/[_\-.]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2");
   const hay = [el?.text, el?.label, idWords, intent].filter(Boolean).join(" \n ");
   if (DESTRUCTIVE.test(hay)) return `${GUARD} destructive`;
   if (OUT_OF_SCOPE.test(hay)) return `${GUARD} out of scope`;

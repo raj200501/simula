@@ -1,29 +1,29 @@
 // The heuristic annotator: no model, same output shape as the LLM annotator. It is the annotator for
 // web crawls, the LLM call's deterministic stub (--llm stub), and the fallback when the model refuses
 // or fails. Everything here is a generic layout or vocabulary rule, never knowledge of one app.
-import type { DeviceInfo, NormElement, Observation, ScreenKind, State } from "../core/schema.ts";
+import type { DeviceInfo, NormElement, Observation, Rect, ScreenKind, State } from "../core/schema.ts";
 import type { Annotation } from "./annotate.ts";
-import { BAND, LONG_TEXT, SHORT_LABEL } from "./observe.ts";
-import { labelOf, shortType, templateSame, token } from "./signature.ts";
+import { BAND, LONG_TEXT, SHORT_LABEL, inheritLabels, isInputType } from "./observe.ts";
+import { labelOf, overlayOf, shortType, templateSame } from "./signature.ts";
 import { CORE_RE, MONEY_RE, signalKinds, type SignalKind } from "./signals.ts";
 
 export const DEFAULT_INPUT = "Hi! What happens next?";
 export const SEND_RE = /send|submit|arrow/i;
 
-const INPUT_TYPE = /edit|input|textfield|textarea|searchbox|textbox/i;
 const COUNTER_RE = /^\s*[\d,.]+\s*[A-Za-z]{2,}|[A-Za-z]+\s*[\d,.]+$/;
 const BALANCE_WORD = /\b(coins?|balance|credits?|gems?|tokens?|diamonds?|points?|wallet|energy|stars?)\b/i;
 const PRICE_RE = /[$€£¥₹]\s?\d/;
 const LOGIN_RE = /\b(sign ?in|log ?in|sign ?up|create (an )?account)\b|continue with (google|apple|facebook|email|phone)/i;
 const HUMAN_CHECK_RE = /captcha|not a robot|verify (that )?you('| a)re (a )?human|verification code|enter the code|confirm your phone/i;
 const LEGAL_RE = /\b(privacy|terms|licen[cs]es?|legal|about|help|faq)\b/i;
-const OVERLAY_KEEP = 0.6; // share of the previous screen still present when something opened on top of it
+const ICON_DP = [24, 72];  // an unlabeled square control this size in a bar is an icon button (menu, +, close)
 
 export function isInput(e: NormElement): boolean {
-  return INPUT_TYPE.test(shortType(e.type));
+  return isInputType(e.type);
 }
 
-const idWords = (e: NormElement) => ((e.identifier ?? "").split("/").pop() ?? "").replace(/[_\-.]+/g, " ");
+/** "app:id/btn_logout" -> "btn logout", "buttonAddComposer" -> "button Add Composer". */
+const idWords = (e: NormElement) => ((e.identifier ?? "").split("/").pop() ?? "").replace(/[_\-.]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2");
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 const sameRow = (a: NormElement, b: NormElement) =>
   Math.abs(a.rect.y + a.rect.h / 2 - (b.rect.y + b.rect.h / 2)) <= Math.max(b.rect.h, 48);
@@ -54,6 +54,9 @@ export function heuristicAnnotation(obs: Observation, ctx: HeuristicCtx): Annota
   const els = obs.elements;
   const overlay = overlayOf(obs, ctx.prev ?? null, info);
   const scope = overlay ?? els;
+  const inh = inheritLabels(els, info.widthPx, H);
+  const words = new Map(els.map((e, i) => [e.id, labelOf(e) || inh.label[i]]));
+  const absorbed = new Set(els.filter((_, i) => inh.owner[i] >= 0).map(e => e.id));
   const tabs = overlay ? [] : tabBar(els, info);
   const counterEls = els.filter(e => counterOf(e, info));
   const prices = scope.filter(e => PRICE_RE.test(labelOf(e)));
@@ -66,7 +69,7 @@ export function heuristicAnnotation(obs: Observation, ctx: HeuristicCtx): Annota
 
   let kind: ScreenKind;
   if (loginWall) kind = "login";
-  else if (overlay) kind = prices.length ? "paywall" : Math.min(...overlay.map(e => e.rect.y)) >= 0.4 * H ? "sheet" : "dialog";
+  else if (overlay) kind = prices.length ? "paywall" : overlayKind(overlay, H);
   else if (prices.length >= 2) kind = "store";
   else if (input && rows.length >= 1 && !tabs.length) kind = "chat";
   else if (tabs.length) kind = "tab";
@@ -87,7 +90,7 @@ export function heuristicAnnotation(obs: Observation, ctx: HeuristicCtx): Annota
     scrollable,
     loginWall,
     actions: [
-      ...actionsOf(scope, kind, tabs, new Set(counterEls.map(e => e.id)), info),
+      ...actionsOf(scope, kind, tabs, new Set(counterEls.map(e => e.id)), info, words, absorbed),
       ...(scrollable ? [{ el: null, intent: "scroll down to reveal more", kind: "scroll" as const, priority: 1 }] : []),
     ],
     counters: counterEls.map(e => ({ ...counterOf(e, info)!, el: e.id })),
@@ -110,27 +113,11 @@ const PURPOSE: Record<ScreenKind, string> = {
   other: "Screen",
 };
 
-/**
- * Something opened on top of the previous screen: most of the previous screen's elements are still there,
- * same token at the same place (a dimmed backdrop is invisible in the element list, so this is how an
- * overlay shows), and the new elements include at least two labels, one of them a button or short text.
- * Position matters: in apps without resource ids, two different screens share most token types.
- * Returns the overlay's own elements, or null.
- */
-function overlayOf(obs: Observation, prev: Observation | null, info: DeviceInfo): NormElement[] | null {
-  if (!prev?.elements.length) return null;
-  const screen = info.widthPx * info.heightPx;
-  const samePlace = (a: NormElement, b: NormElement) =>
-    token(a) === token(b) && Math.abs(a.rect.x - b.rect.x) <= 8 && Math.abs(a.rect.y - b.rect.y) <= 8;
-  const before = prev.elements.filter(e => e.rect.w * e.rect.h < 0.9 * screen); // root containers are always there
-  if (!before.length) return null;
-  const kept = before.filter(p => obs.elements.some(e => samePlace(e, p))).length;
-  if (kept / before.length < OVERLAY_KEEP) return null;
-  const added = obs.elements.filter(e => !prev.elements.some(p => samePlace(e, p)));
-  const labelled = added.filter(e => e.chrome && labelOf(e));
-  if (labelled.length < 2) return null;
-  if (!labelled.some(e => /button/i.test(e.type) || labelOf(e).length <= 16)) return null;
-  return added;
+/** A panel resting on the bottom edge is a sheet; one floating mid-screen is a dialog. */
+export function overlayKind(overlay: NormElement[], H: number): "sheet" | "dialog" {
+  const top = Math.min(...overlay.map(e => e.rect.y));
+  const bottom = Math.max(...overlay.map(e => e.rect.y + e.rect.h));
+  return top >= 0.4 * H && bottom >= 0.85 * H ? "sheet" : "dialog";
 }
 
 /** Bottom row of 3-5 same-type labelled items: a tab bar. */
@@ -147,7 +134,7 @@ function tabBar(els: NormElement[], info: DeviceInfo): NormElement[] {
 }
 
 /** Top-most prominent text: skips icons (label only), counters, prices, inputs and long content. */
-function nameOf(scope: NormElement[], info: DeviceInfo): string | undefined {
+export function nameOf(scope: NormElement[], info: DeviceInfo): string | undefined {
   return scope
     .filter(e => e.text && !e.ad && !isInput(e) && !counterOf(e, info) && !PRICE_RE.test(e.text)
       && e.text.trim().length >= 2 && e.text.trim().length <= LONG_TEXT)
@@ -160,9 +147,9 @@ function groupsOf(els: NormElement[]): Map<string, NormElement[]> {
   return m;
 }
 
-/** A small list of distinct short labels (settings rows, chips) is navigation: try every member. */
-function isNavGroup(members: NormElement[]): boolean {
-  const labels = members.map(m => labelOf(m).toLowerCase());
+/** A small list of distinct short labels (settings rows, suggestion chips) leads to distinct places: try every member. */
+function isNavGroup(members: NormElement[], words: ReadonlyMap<string, string>): boolean {
+  const labels = members.map(m => (words.get(m.id) ?? labelOf(m)).toLowerCase());
   return members.length <= 6 && labels.every(l => l && l.length <= SHORT_LABEL) && new Set(labels).size === labels.length;
 }
 
@@ -177,8 +164,7 @@ function pickRows(members: NormElement[], H: number): NormElement[] {
   return out;
 }
 
-function priorityOf(e: NormElement, tabIds: Set<string>, counterIds: Set<string>): { priority: number; why: string } {
-  const lab = labelOf(e);
+function priorityOf(e: NormElement, lab: string, tabIds: Set<string>, counterIds: Set<string>): { priority: number; why: string } {
   const hay = `${lab} ${idWords(e)}`;
   if (tabIds.has(e.id)) return e.selected ? { priority: 1, why: "current tab" } : { priority: 3, why: "tab: unexplored navigation" };
   if (counterIds.has(e.id)) return { priority: 3, why: "balance" };
@@ -188,26 +174,52 @@ function priorityOf(e: NormElement, tabIds: Set<string>, counterIds: Set<string>
   return { priority: 1, why: "" };
 }
 
+/** Unlabeled, icon-sized, square-ish, in the top or bottom bar: a menu, "+", close or overflow button. */
+function isIcon(e: NormElement, info: DeviceInfo): boolean {
+  const [lo, hi] = ICON_DP.map(d => d * info.density);
+  const { w, h, y } = e.rect;
+  const inBar = y + h <= info.heightPx * BAND || y >= info.heightPx * (1 - BAND);
+  return w >= lo && h >= lo && w <= hi && h <= hi && w / h >= 0.6 && w / h <= 1.6 && inBar;
+}
+
+function whereOf(r: Rect, info: DeviceInfo): string {
+  const cx = r.x + r.w / 2;
+  const col = cx < info.widthPx / 3 ? "left" : cx > (2 * info.widthPx) / 3 ? "right" : "centre";
+  return `${r.y + r.h / 2 < info.heightPx / 2 ? "top" : "bottom"}-${col}`;
+}
+
 /**
- * Every labelled element outside repeated groups, 2 members per repeated group (every member of a
- * navigation group), and a type-and-send action per text field (a spending "consume" on a chat).
+ * The candidate set is built by code, from every element that looks actionable: each labelled element
+ * (its own words, or the words drawn inside it) outside repeated groups, 2 members per repeated group
+ * (every member of a small group of distinct short labels: suggestion chips, settings rows), unlabeled
+ * icon buttons in the bars, and a type-and-send action per text field (a spending "consume" on a chat).
+ * Text drawn inside a control is part of that control, not a second action.
  */
-function actionsOf(scope: NormElement[], kind: ScreenKind, tabs: NormElement[], counterIds: Set<string>, info: DeviceInfo): Annotation["actions"] {
+function actionsOf(scope: NormElement[], kind: ScreenKind, tabs: NormElement[], counterIds: Set<string>, info: DeviceInfo,
+  words: ReadonlyMap<string, string>, absorbed: ReadonlySet<string>): Annotation["actions"] {
   const W = info.widthPx;
   const H = info.heightPx;
   const tabIds = new Set(tabs.map(t => t.id));
+  const wordsOf = (e: NormElement) => words.get(e.id) ?? labelOf(e);
   const picked = new Set<string>();
-  for (const members of groupsOf(scope.filter(e => !e.ad)).values()) {
-    const labelled = members.filter(m => labelOf(m) && !isInput(m));
-    for (const m of isNavGroup(members) ? labelled : pickRows(labelled, H)) picked.add(m.id);
+  for (const members of groupsOf(scope.filter(e => !e.ad && !absorbed.has(e.id))).values()) {
+    const labelled = members.filter(m => wordsOf(m) && !isInput(m));
+    for (const m of isNavGroup(labelled, words) ? labelled : pickRows(labelled, H)) picked.add(m.id);
   }
   const out: Annotation["actions"] = [];
   for (const e of scope) {
-    const lab = labelOf(e);
-    if (!lab || e.ad || isInput(e)) continue;
+    if (e.ad || isInput(e) || absorbed.has(e.id)) continue;
     if (e.rect.w * e.rect.h >= 0.9 * W * H) continue; // a root container, not a control
+    const lab = wordsOf(e);
+    if (!lab) {
+      if (isIcon(e, info)) {
+        const id = idWords(e).trim();
+        out.push({ el: e.id, intent: `tap the unlabeled icon at ${whereOf(e.rect, info)}${id ? ` (${id})` : ""}`, kind: "tap", priority: 1 });
+      }
+      continue;
+    }
     if (e.group && !picked.has(e.id)) continue;
-    const p = priorityOf(e, tabIds, counterIds);
+    const p = priorityOf(e, lab, tabIds, counterIds);
     out.push({ el: e.id, intent: `tap "${clip(lab, 40)}"${p.why ? ` (${p.why})` : ""}`, kind: "tap", priority: p.priority });
   }
   for (const e of scope.filter(x => isInput(x) && !x.ad)) {
@@ -234,9 +246,30 @@ function signalsOf(scope: NormElement[], all: NormElement[], counterEls: NormEle
   };
   for (const e of scope) {
     const lab = labelOf(e);
-    if (lab) for (const k of signalKinds(lab)) add(k, lab, e.id);
+    if (lab && !e.ad) for (const k of signalKinds(lab)) add(k, lab, e.id);
   }
-  for (const e of all) if (e.ad && labelOf(e)) add("ad", labelOf(e), e.id);
+  for (const ad of adUnits(all)) add("ad", ad.text, ad.el);
   for (const e of counterEls) add("balance", labelOf(e), e.id);
   return out;
+}
+
+const AD_MARK = /^(ad|ads|sponsored|adchoices|advertisement|promoted)$/i;
+const holds = (o: Rect, i: Rect) => i.x >= o.x - 2 && i.y >= o.y - 2 && i.x + i.w <= o.x + o.w + 2 && i.y + i.h <= o.y + o.h + 2;
+
+/**
+ * One ad per ad unit, not one per text inside it: the outermost ad-flagged element is the unit; its
+ * signal quotes the "Sponsored" marker if it has one, else its first words. Exported for tests.
+ */
+export function adUnits(els: NormElement[]): { el: string; text: string }[] {
+  const ads = els.filter(e => e.ad).sort((a, b) => b.rect.w * b.rect.h - a.rect.w * a.rect.h);
+  const units: { root: NormElement; members: NormElement[] }[] = [];
+  for (const e of ads) {
+    const u = units.find(x => holds(x.root.rect, e.rect));
+    if (u) u.members.push(e); else units.push({ root: e, members: [e] });
+  }
+  return units.map(u => {
+    const inReading = [...u.members].sort((a, b) => a.rect.y - b.rect.y || a.rect.x - b.rect.x);
+    const quote = inReading.find(m => AD_MARK.test(labelOf(m))) ?? inReading.find(m => labelOf(m));
+    return { el: u.root.id, text: quote ? labelOf(quote) : "ad" };
+  });
 }

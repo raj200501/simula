@@ -72,16 +72,19 @@ export function renderMarkdown(md: string): string {
   function list(): string {
     const baseIndent = indentOf(lines[i]);
     const ordered = /^\s*\d+[.)]\s/.test(lines[i]);
+    const sameKind = (l: string) => (ordered ? /^\s*\d+[.)]\s/ : /^\s*[-*+]\s/).test(l);
     const items: string[] = [];
     while (i < lines.length) {
       const l = lines[i];
       if (!l.trim()) {
-        // a blank line ends the list unless the next line continues it
-        if (i + 1 < lines.length && /^\s*([-*+]|\d+[.)])\s/.test(lines[i + 1]) && indentOf(lines[i + 1]) >= baseIndent) { i++; continue; }
+        // a blank line ends the list unless the next line continues it (same kind, or nested deeper)
+        const nx = lines[i + 1] ?? "";
+        if (/^\s*([-*+]|\d+[.)])\s/.test(nx) && (indentOf(nx) > baseIndent || (indentOf(nx) === baseIndent && sameKind(nx)))) { i++; continue; }
         break;
       }
       const ind = indentOf(l);
       const m = /^\s*([-*+]|\d+[.)])\s+(.*)$/.exec(l);
+      if (m && ind === baseIndent && !sameKind(l)) break; // a different list type starts a new list
       if (m && ind === baseIndent) { items.push(inline(m[2])); i++; continue; }
       if (m && ind > baseIndent) { items[items.length - 1] += list(); continue; }
       if (!m && ind > baseIndent && items.length) { items[items.length - 1] += " " + inline(l.trim()); i++; continue; }
