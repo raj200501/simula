@@ -2,6 +2,6 @@
   "id": "ooc",
   "package": "com.newai.ooc",
   "name": "OOC",
-  "profile": "deep",
+  "profile": "shallow",
   "login": "manual"
 }
