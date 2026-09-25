@@ -28,7 +28,7 @@ Rewarded ads work when they trade a short ad for something the user genuinely wa
 |---|---|
 | **Rewarded ad** | An ad the user *chooses* to watch or play in exchange for a reward. It must be opt-in, disclosed up front, granted only after completion, and free to decline. |
 | **eCPM** | Revenue per 1,000 ad views. A US rewarded view earns roughly $0.012–0.020. We cut that by 25% because non-game apps earn less. |
-| **Exchange rate** | What one completed ad view is worth *in the app's own units*, e.g. "1 view ≈ 6–11 credits". When the app shows no prices (Luzia's guests), it's measured against what a message costs to serve instead. Then the reward is sized so serving it costs at most about 60% of what the view earns at the low end: about 2 messages per view. |
+| **Exchange rate** | What one completed ad view is worth *in the app's own units*, e.g. "1 view ≈ 6–11 credits". When the app shows no prices, it's measured against what the reward costs to serve instead, and the reward is sized so serving it costs at most about 60% of what the view earns at the low end (about 2 messages per view for a guest chat). |
 | **Cannibalization** | The risk that free ad rewards stop people buying. The code checks whether a day of maximum ad rewards is worth more than the cheapest pack. |
 | **SSV / REWARD_VERIFIED** | Server-side verification. The reward is granted only when the ad network confirms the view. In Simula's SDK the event is `REWARD_VERIFIED`. |
 | **Product model** | One JSON file (`out/<app>/model/product-model.json`) holding screens, buttons, transitions, the economy, moments and flows. It's the only thing the later stages read. |
@@ -113,8 +113,8 @@ You don't have to fill these in by hand. `npm run report` writes **`out/luzia/NU
 
 **Luzia:**
 - screens and transitions explored, and why exploration stopped
-- the free-message cap it measured ("limit after N sends")
-- the exchange rate: 1 view ≈ N messages at cost to serve
+- whether it measured a cap ("limit after N sends"); in the final Luzia run it did not, and the walls it found are sign-up and subscription walls
+- what one view earns and what each reward costs to serve (the why-rail on each flow slide)
 
 **Proposals:**
 - SHIP / REVISE / REJECT counts

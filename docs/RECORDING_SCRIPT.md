@@ -33,7 +33,7 @@
 - "This is the output. One slide per recommended rewarded flow."
 - "Left to right: the app today, what we change, the offer, the ad, and what the user gets."
 - "Every screen here is our generated mock of the app, not a drawing."
-- "The numbers on the right are computed in code, never by the model. Luzia shows guests no prices, so one ad view is measured against what a free message costs to serve."
+- "The numbers on the right are computed in code, never by the model: what one ad view earns, and what the reward costs to serve."
 
 **Do:** Click **Open the clickable prototype**. In tab 2, click the new element (it has a dashed outline). Click **Play**, wait two seconds, then close it.
 
@@ -68,7 +68,7 @@
 - "Code keeps the frontier, decides when two screens are the same state, and stops when nothing new appears."
 - "Guard rails: it never logs out, never buys, and never taps an ad. It records ads and moves on."
 - "One special move: the drain probe. On a chat, it keeps sending messages until the app blocks it."
-- "That's how we measure what a message costs, and where the wall is. On Luzia it recorded the exact number: <limit after N sends, from trajectory.md or the model viewer>."
+- "That's how we measure what a message costs, and where the wall is. On Luzia, honestly: it sent guest messages and got replies, but no cap showed within the run, and on the emulator the probe struggled to get back to the chat. So Luzia's model is subscription- and sign-up-gated: six walls, all quoted from the screens."
 - "Everything it did, every failure and every recovery, is in this trajectory."
 
 ---
@@ -84,7 +84,7 @@
 - "Every quote must really appear on that screen. Every number must appear in a quote or in a measured counter change."
 - "Anything that doesn't verify is marked 'inferred', in orange."
 - "Code also computes the economics: price per unit, and the exchange rate. That's what one ad view is worth in the app's own currency."
-- "Luzia never shows a guest a price. So instead of list price, code measures one ad view against what a free message costs to serve: <say the line from the viewer, like '1 view ≈ 3.5–5.8 messages at cost to serve'>."
+- "Luzia never shows a guest a price, so there is no exchange rate at list price. Code measures each reward against what it costs to serve instead, and the judge rejects anything that costs more than a view earns. That is exactly why three Luzia ideas were rejected."
 - "And it lists what we did NOT explore, and why."
 
 ---
@@ -117,7 +117,7 @@
 - "Product change: we add a mechanic, like daily tasks, that creates a real value exchange."
 - "Each proposal is a typed patch to the model. So the mock can render it, and the judge can check it."
 - "The model never does the arithmetic. It states assumptions; code computes the economics."
-- "A note on your own Luzia slides: the out-of-free-messages moment you picked is the same one this system lands on. It gets there by measuring the cap, not by being told. To be fair, the knowledge base includes public rewarded patterns, yours among them. What the system adds is grounding them in the real UI, with measured numbers, and going past them: <name one SHIP idea that is not in your slides; the list is in out/luzia/NUMBERS.md>."
+- "A note on your own Luzia slides: you went after the out-of-free-messages moment. In this run the system didn't reach Luzia's message cap, so it went after the walls it did see: a task behind the subscription on the Services tab, and a daily quest on Chats Home. When the cap is measured, the same pipeline proposes the refill you showed; the fixture app and the tests show that path end to end."
 
 ---
 
@@ -199,11 +199,11 @@
 | Why not let the LLM drive mobile-mcp directly? | Cost, repeatability and safety. The frontier, state identity and guard rails are code; the model answers one question per new screen. A run can be replayed from cache. |
 | How do you decide two screens are the same state? | A signature of "chrome" tokens (short labels, top/bottom bands, selected tabs) that excludes anything the explorer typed or caused, plus a perceptual hash. Borderline cases ask the model: "same template, different content = same state". |
 | How do you know a price or a cost is real? | Verification in code. Every quote must appear on that observation, and every number must appear in a verified quote or a measured counter change. Anything else is marked "inferred" and shown in orange. |
-| Where does the exchange rate come from? | With prices: unit price from the cheapest to the priciest pack, and US rewarded eCPM ranges with a non-game haircut: "1 view ≈ X–Y credits". The reward is sized to about one cheapest action, far below a pack. Without prices (Luzia's guest cap): one view, net of platform share, divided by what a message costs to serve: "1 view ≈ 3.5–5.8 messages at cost to serve". The reward goes to the break-even midpoint. |
+| Where does the exchange rate come from? | With prices: unit price from the cheapest to the priciest pack, and US rewarded eCPM ranges with a non-game haircut: "1 view ≈ X–Y credits". The reward is sized to about one cheapest action, far below a pack. Without prices (a guest cap): one view, net of platform share, divided by what a message costs to serve: "1 view ≈ 3.5–5.8 messages at cost to serve". The reward goes to the break-even midpoint. |
 | What stops the proposer from doing "watch an ad for coins" ten times? | A code validator on the idea set: a case mix, at least 4 archetypes, reactive and proactive ideas, at least half beyond the baseline, and no duplicate (moment, reward). Violations go back once, verbatim. |
-| Why only 2 messages for a whole game? | Luzia shows guests no prices, so the only honest yardstick is cost to serve. One US view nets about $0.006 at the low end; a message costs about $0.0018 to serve (our assumption, stated in the deck). Two messages keep serving the reward under ~60% of what the view earns. The number is computed in code, and the judge's economics gate rejects anything bigger. With real COGS from Luzia the ceiling moves automatically. |
+| When a guest cap is measured, why is the refill only 2 messages? | With no prices shown, so the only honest yardstick is cost to serve. One US view nets about $0.006 at the low end; a message costs about $0.0018 to serve (our assumption, stated in the deck). Two messages keep serving the reward under ~60% of what the view earns. The number is computed in code, and the judge's economics gate rejects anything bigger. With real COGS from the app the ceiling moves automatically. |
 | Can the judge be gamed by the proposer? | The verdict is code: gates plus thresholds on scores. The reviser never sees the scores. The single-fault evaluation checks that each fault type is caught. The remaining risk is the shared model family; the fix is a different judge model. |
-| Luzia has no visible counter. How did you find the free-message cap? | The drain probe keeps sending the same message until a wall appears, counts the sends ("limit after N sends"), and a code pass turns that into a quota resource with a 1-unit cost and a wall. Sign-up walls reached by plain taps don't stop it. |
+| Luzia has no visible counter. Did you find the free-message cap? | Not in this run. The drain probe repeats a send until a wall appears and records "limit after N sends"; a code pass then turns that into a quota resource, a cost and a wall. On the emulator it sent guest messages and got replies, but getting back to the chat between sends was flaky, so no cap showed. I fixed the typing and navigation issues it hit (they're in the commit history), and a regression test covers the capped case end to end. |
 | What if an app has no currency at all? | The regime becomes "no-scarcity" and proposals must be product changes: daily tasks, sponsored sessions, cosmetics. The judge checks they don't take away anything free. |
 | How is the mock "generated", not hand-built? | Only the model directory goes in: one HTML call per screen, plus a fixed runtime driven by the model's edges and economy. `--model-dir` runs it from a copied model. |
 | What did you fix by hand? | Everything is in `HUMAN_LOG.md` and `trajectory.md`: sign-ins, the OOC block, and any `overrides.json` edits to the model. |
