@@ -139,8 +139,12 @@ async function typeAndSend(c: ActCtx, a: Action, hint?: Rect): Promise<ActResult
   }
   if (!focused) return { ok: false, reason: "the text field did not take the focus after tapping it (nothing typed)" };
   const before = await look(c);
-  await c.dev.typeText(text);
-  await sleep(c.timing.pollMs);
+  // a draft left in the field (a wall keeps it) already holds our text: send it rather than typing it twice
+  const draft = mask(labelOf(focused), 200).includes(mask(text, 200));
+  if (!draft) {
+    await c.dev.typeText(text);
+    await sleep(c.timing.pollMs);
+  }
   const els = await look(c);
   const typedField = refindField(els, field) ?? field;
   const pre = a.sendElKey ? findByKey(els, a.sendElKey) : undefined;

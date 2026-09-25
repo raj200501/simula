@@ -13,6 +13,10 @@ export function deltaE(a: string | undefined, b: string | undefined): number {
   return x && y ? de2000(x, y) : 100;
 }
 
+export function chroma(hex: string): number {
+  return oklch(hex)?.c ?? 0;
+}
+
 export function lightness(hex: string): number {
   return oklch(hex)?.l ?? 1;
 }

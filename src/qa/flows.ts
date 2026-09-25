@@ -6,6 +6,7 @@
 //   by a missing element points at that screen's fragment.
 import type { Browser, Page } from "playwright";
 import type { Edge, ProductModel } from "../core/schema.ts";
+import { edgeDeltas } from "../mock/roles.ts";
 import { launchBrowser, newMockPage, openMock, viewportOf } from "./render.ts";
 
 export interface FlowCheck { edge: string; from: string; to: string; el: string; ok: boolean; reason: string }
@@ -28,11 +29,7 @@ export function inScopeEdges(m: ProductModel): { test: Edge[]; skipped: { edge: 
   return { test, skipped };
 }
 
-const counterDeltas = (e: Edge) => {
-  const out = new Map<string, number>();
-  for (const f of e.effects) if (f.kind === "counter") out.set(f.resource, (out.get(f.resource) ?? 0) + f.delta);
-  return out;
-};
+const counterDeltas = (e: Edge) => new Map(edgeDeltas(e).map(d => [d.resource, d.delta]));
 
 async function checkEdge(page: Page, indexHtml: string, m: ProductModel, e: Edge): Promise<FlowCheck> {
   const base = { edge: e.id, from: e.from, to: e.to, el: e.el! };
@@ -56,7 +53,11 @@ async function checkEdge(page: Page, indexHtml: string, m: ProductModel, e: Edge
 
   const loc = page.locator(`[data-screen-layer="${e.from}"] [data-node="${e.el}"]`).first();
   if (!(await loc.count())) return fail(`element ${e.el} is not in the mock's ${e.from}`);
-  try { await loc.click({ force: true, timeout: 2000 }); } catch (err) { return fail(`click on ${e.el} failed: ${String((err as Error).message).split("\n")[0]}`); }
+  try {
+    // A text field is a type-and-send action: type, then Enter (the runtime sends from the composer).
+    if (await loc.evaluate(n => n.matches("input,textarea"))) { await loc.fill("QA message", { timeout: 2000 }); await loc.press("Enter"); }
+    else await loc.click({ force: true, timeout: 2000 });
+  } catch (err) { return fail(`tap on ${e.el} failed: ${String((err as Error).message).split("\n")[0]}`); }
 
   if (e.to.startsWith("ext:")) {
     const kind = m.externals.find(x => x.id === e.to)?.kind ?? e.to.slice(4);

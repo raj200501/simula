@@ -34,6 +34,21 @@ export function drawable(s: Screen, dev: DeviceDp): UiElement[] {
 /** A consume edge spends a counter: it carries a negative counter effect or is an observed limit hit. */
 export const isConsume = (e: Edge): boolean => !!e.limitHit || e.effects.some(f => f.kind === "counter" && f.delta < 0);
 
+/**
+ * What one traversal of an edge does to each counter. An edge taken repeatedly accumulates one counter
+ * effect per observed traversal, so the per-traversal delta is the most frequent one, not the sum.
+ */
+export function edgeDeltas(e: Edge): { resource: string; delta: number }[] {
+  const byRes = new Map<string, Map<number, number>>();
+  for (const f of e.effects) {
+    if (f.kind !== "counter" || !f.delta) continue;
+    const c = byRes.get(f.resource) ?? new Map<number, number>();
+    c.set(f.delta, (c.get(f.delta) ?? 0) + 1);
+    byRes.set(f.resource, c);
+  }
+  return [...byRes].map(([resource, c]) => ({ resource, delta: [...c].sort((a, b) => b[1] - a[1])[0][0] }));
+}
+
 /** Counter bindings shown on a screen: the screen's own bindings plus economy.resources[].shownOn. */
 export function counterBindings(s: Screen, m: ProductModel): { el: string; resource: string }[] {
   const out = new Map<string, string>();
@@ -62,6 +77,8 @@ export function chatParts(s: Screen, m: ProductModel): ChatParts | null {
   const byCount = new Map<string, number>();
   for (const e of consumes) byCount.set(e.el!, (byCount.get(e.el!) ?? 0) + e.seen);
   let send: string | undefined = [...byCount].sort((a, b) => b[1] - a[1])[0]?.[0];
+  // Type-and-send actions start at the input itself; the send control is then the one next to it.
+  if (send && send === composer?.id) send = undefined;
   if (!send) send = s.elements.find(e => e.role === "button" && /send|submit|arrow/i.test(`${textOf(e)} ${e.identifier ?? ""}`))?.id;
   if (!send && composer) {
     const cy = composer.rectDp.y + composer.rectDp.h / 2;
@@ -111,7 +128,11 @@ export function contextGroups(m: ProductModel): { groups: ContextGroup[]; initia
   }
   const initial: string[] = [];
   for (const g of groups) {
-    const shown = g.labels.find(l => g.screens.some(sid => m.screens.find(s => s.id === sid)?.elements.some(e => textOf(e) === l)))
+    // Screens where a mode is spent (consume edges) show the current mode best (the chip); a mode
+    // picker lists every option, so it only counts after them.
+    const spend = g.screens.filter(sid => m.edges.some(e => e.from === sid && isConsume(e)));
+    const order = [...spend, ...g.screens.filter(sid => !spend.includes(sid))];
+    const shown = order.map(sid => g.labels.find(l => m.screens.find(s => s.id === sid)?.elements.some(e => textOf(e) === l))).find(Boolean)
       ?? g.labels.find(l => m.screens.some(s => s.elements.some(e => e.flags?.selected && textOf(e) === l)));
     const bySeen = m.edges.filter(e => e.context.selected.some(l => g.labels.includes(l))).sort((a, b) => b.seen - a.seen)[0]?.context.selected.find(l => g.labels.includes(l));
     const pick = shown ?? bySeen ?? g.labels[0];

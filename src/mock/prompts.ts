@@ -3,7 +3,7 @@
 // ids (that breaks replay caching): assets are named by their model-relative path.
 import type { ProductModel, Screen } from "../core/schema.ts";
 import type { RenderHints } from "./measure.ts";
-import { chatParts, counterBindings, deviceDp, drawable, isOverlay, textOf } from "./roles.ts";
+import { chatParts, counterBindings, deviceDp, drawable, isOverlay } from "./roles.ts";
 
 const q = (s: string) => JSON.stringify(s.length > 80 ? s.slice(0, 77) + "..." : s);
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -156,5 +156,3 @@ export function parseFix(answer: string): { html: string; changelog: string[] } 
   const changelog = (cl ? cl[1] : "").split("\n").map(l => l.trim()).filter(l => l.startsWith("-")).map(l => l.replace(/^-\s*/, "")).slice(0, 8);
   return { html, changelog };
 }
-
-export { textOf };

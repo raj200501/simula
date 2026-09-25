@@ -18,7 +18,6 @@ body { min-height: 100vh; background: #E9EBEF; font-family: system-ui, -apple-sy
 .mock-layer:not(.mock-overlay-layer) { background: #FFFFFF; }
 .mock-layer > [data-screen-root] { position: relative; width: 100%; height: 100%; }
 [data-template]:not(template) { display: none !important; }
-.mock-layer.mock-chat-scrolled [data-mock-captured] { visibility: hidden; }
 
 /* Static Android-style status bar (the screens never draw one). */
 .mock-statusbar {

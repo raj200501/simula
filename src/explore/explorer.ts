@@ -93,6 +93,7 @@ interface Run {
   variants: Map<string, string[][]>; // extra signatures per state: scrolled views, sameAs pages, other looks
   anchors: Map<string, string[]>;    // overlay state -> tokens of what is on top (a screen without them is not it)
   parents: Map<string, string>;      // overlay state -> observation of the screen it opened over
+  openers: Map<string, NormElement>; // overlay state -> the control whose tap opened it (on that screen)
   obsIndex: Map<string, Observation>;
   cur: State;                 // where we are
   last: Observation;          // what we last saw there (baseline for the next diff)
@@ -144,6 +145,7 @@ export async function explore(c: StageCtx, dev: Device, o: ExploreOpts = {}): Pr
     variants: variantsFrom(g),
     anchors: new Map<string, string[]>(),
     parents: new Map<string, string>(),
+    openers: new Map<string, NormElement>(),
     obsIndex: new Map(g.observations.map(x => [x.id, x])),
     home: "",
     t0: Date.now(),
@@ -318,14 +320,13 @@ function eligible(a: Action, allowConsume: boolean): boolean {
 }
 
 const CONTROL = /button|switch|check|radio|tab|chip|toggle|spinner/i;
-const onControl = (a: Action) => !!a.elKey && CONTROL.test(a.elKey.split("|")[0]);
+/** Priority first; at equal priority an explicit control (button, switch, tab) outranks plain text. */
+const rank = (a: Action) => a.priority * 2 + (a.elKey && CONTROL.test(a.elKey.split("|")[0]) ? 1 : 0);
+const PLAIN_P1 = 2; // rank of a priority-1 tap on plain text: a title, a date, an avatar's initials
 
-/**
- * Highest priority first; then explicit controls (buttons, switches, tabs) before plain text; actions are
- * stored in reading order, so remaining ties go top to bottom.
- */
+/** Best rank first; actions are stored in reading order, so ties go top to bottom. */
 function nextAction(s: State, allowConsume: boolean): Action | undefined {
-  return s.actions.filter(a => eligible(a, allowConsume)).sort((x, y) => y.priority - x.priority || Number(onControl(y)) - Number(onControl(x)))[0];
+  return s.actions.filter(a => eligible(a, allowConsume)).sort((x, y) => rank(y) - rank(x))[0];
 }
 
 async function crawl(r: Run, co: CrawlOpts): Promise<StopReason> {
@@ -334,7 +335,8 @@ async function crawl(r: Run, co: CrawlOpts): Promise<StopReason> {
     const stop = shouldStop(r, co);
     if (stop) return stop;
     const a = nextAction(r.cur, allowConsume);
-    if (a) {
+    // plain text here is worth less than a real control or a higher priority elsewhere: go there first
+    if (a && !(rank(a) <= PLAIN_P1 && betterElsewhere(r, rank(a), allowConsume))) {
       r.idleMoves = 0;
       await step(r, r.cur, a, "crawl");
       continue;
@@ -380,8 +382,9 @@ async function step(r: Run, from: State, a: Action, phase: string): Promise<Step
     checkpoint(r);
     return { next: r.cur, fx: [], external: kind };
   }
-  learnFromChoice(r, from, obs); // an option picked on an overlay relabelled a control below it: a mode indicator
+  learnFromChoice(r, from, obs); // an option picked on an overlay relabelled the control that opened it: a mode indicator
   const next = await arrive(r, obs, { prev: before, prevState: from, scrollOf: a.kind === "scroll" ? from : undefined });
+  noteOpener(r, from, a, before, next);
   learnPicker(r, from, a, before, obs, next); // the control that opened a picker shows the current choice
   const fx = diffEffects(before, obs, boundKeys(r));
   // T2: only a consume that lands on a wall-like screen is a limit; a different state id is not enough
@@ -680,20 +683,28 @@ function learnPicker(r: Run, from: State, a: Action, before: Observation, after:
   addIndicator(r, el, `it opens a picker ("${next.name}")`, now ? [] : null);
 }
 
+/** Remember which control's tap opened an overlay (the only control a choice on it may relabel). */
+function noteOpener(r: Run, from: State, a: Action, before: Observation, next: State): void {
+  if (a.kind !== "tap" || !a.elKey || next.id === from.id || r.anchors.has(from.id) || !r.anchors.has(next.id) || r.openers.has(next.id)) return;
+  const el = findByKey(before.elements, a.elKey);
+  if (el) r.openers.set(next.id, el);
+}
+
 /**
  * Fallback for pickers whose options carry no checked state: picking an option on an overlay came back to
- * the screen it opened over with one or two of its controls relabelled ("Basic · 10" -> "Premium · 30").
+ * the screen it opened over with the control that opened it relabelled ("Basic · 10" -> "Premium · 30").
+ * Only that control: other changes (a draft left in the composer turning the mic into Send) are not a choice.
  */
 function learnFromChoice(r: Run, from: State, obs: Observation): void {
   const parent = r.parents.get(from.id);
   const base = parent ? r.obsIndex.get(parent) : undefined;
+  const opener = r.openers.get(from.id);
   const anchors = r.anchors.get(from.id);
-  if (!base || !anchors || anchors.every(t => obs.signature.includes(t))) return; // still on the overlay
-  if (!relabelOnly(base.signature, obs.signature)) return;
-  const changed = obs.elements.filter(e => e.chrome && labelOf(e) && !e.ad && !isInputType(e.type)
-    && base.elements.some(b => b.chrome && sameSpot(b, e) && labelOf(b) !== labelOf(e)));
-  if (!changed.length || changed.length > 2) return;
-  for (const e of changed) addIndicator(r, e, `an option picked on "${from.name}" relabelled it`, [obs]);
+  if (!base || !opener || !anchors || anchors.every(t => obs.signature.includes(t))) return; // still on the overlay
+  if (isIndicator(opener, r.ex.indicators) || !relabelOnly(base.signature, obs.signature)) return;
+  const now = obs.elements.find(e => labelOf(e) && !e.ad && !isInputType(e.type) && sameSpot(opener, e));
+  if (!now || labelOf(now) === labelOf(opener) || labelOf(now).length > SHORT_LABEL) return;
+  addIndicator(r, now, `picking an option on "${from.name}" relabelled the control that opened it`, [obs]);
 }
 
 /** Remember an indicator and re-derive every signature without its label (a mode is context, not identity). */
@@ -858,7 +869,11 @@ function reachable(r: Run, from: string, want: (s: State) => boolean): Reach[] {
   return out;
 }
 
-const topPriority = (s: State, allowConsume: boolean) => Math.max(-1, ...s.actions.filter(a => eligible(a, allowConsume)).map(a => a.priority));
+const topRank = (s: State, allowConsume: boolean) => Math.max(-1, ...s.actions.filter(a => eligible(a, allowConsume)).map(rank));
+
+function betterElsewhere(r: Run, than: number, allowConsume: boolean): boolean {
+  return reachable(r, r.cur.id, s => s.id !== r.cur.id && topRank(s, allowConsume) > than).length > 0;
+}
 
 function markUnreachable(r: Run, which: (s: State) => boolean, allowConsume: boolean, why: string): void {
   for (const s of r.g.states.filter(which)) for (const a of s.actions) {
@@ -867,13 +882,13 @@ function markUnreachable(r: Run, which: (s: State) => boolean, allowConsume: boo
 }
 
 /**
- * Travel to the reachable state with the highest-priority untried action; on ties, the least visited
- * one (breadth: a screen seen once before one seen twenty times), then the nearest.
+ * Travel to the reachable state with the best-ranked untried action; on ties, the least visited one
+ * (breadth: a screen seen once before one seen twenty times), then the nearest.
  */
 async function toFrontier(r: Run, allowConsume: boolean): Promise<"moved" | "retry" | "empty"> {
   const want = (s: State) => s.actions.some(a => eligible(a, allowConsume));
   const pick = () => reachable(r, r.cur.id, want)
-    .sort((x, y) => topPriority(y.state, allowConsume) - topPriority(x.state, allowConsume)
+    .sort((x, y) => topRank(y.state, allowConsume) - topRank(x.state, allowConsume)
       || x.state.visits - y.state.visits || x.path.length - y.path.length)[0];
   let target = pick();
   if (!target && r.cur.id !== r.home) {
@@ -884,8 +899,13 @@ async function toFrontier(r: Run, allowConsume: boolean): Promise<"moved" | "ret
     markUnreachable(r, want, allowConsume, "no known path from the launch screen");
     return "empty";
   }
-  if (!target.path.length) return "moved";
-  trace("info", { travel: target.state.id, via: target.path.map(e => e.id), why: `untried p${topPriority(target.state, allowConsume)} actions on ${target.state.id}` }, r.g.steps);
+  if (!target.path.length) {
+    // the best is here after all: take it rather than looping
+    const a = nextAction(r.cur, allowConsume);
+    if (a) await step(r, r.cur, a, "crawl");
+    return "moved";
+  }
+  trace("info", { travel: target.state.id, via: target.path.map(e => e.id), why: `untried rank-${topRank(target.state, allowConsume)} actions on ${target.state.id}` }, r.g.steps);
   if (await travel(r, target.path)) return "moved";
   const n = (r.travelFailures.get(target.state.id) ?? 0) + 1;
   r.travelFailures.set(target.state.id, n);

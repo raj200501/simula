@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 import type { Proposal, ProductModel, Screen } from "../core/schema.ts";
 import { ensureDir, escapeHtml, writeText } from "../core/io.ts";
 import { accentOf, fontFaces, onColor, stubDesignCss } from "./designCss.ts";
-import { contextGroups, counterBindings, deviceDp, initialCounters, isConsume, startScreen, textOf } from "./roles.ts";
+import { contextGroups, counterBindings, deviceDp, edgeDeltas, initialCounters, isConsume, startScreen } from "./roles.ts";
 import { sanitizeFragment } from "./sanitize.ts";
 import { imageScreenHtml, specRender } from "./specRender.ts";
 
@@ -64,7 +64,7 @@ export function mockData(m: ProductModel) {
     screens: m.screens.map(s => ({ id: s.id, name: s.name, kind: s.kind, render: s.render, parent: s.parent, inScope: s.inScope })),
     edges: m.edges.map(e => ({
       id: e.id, from: e.from, to: e.to, el: e.el, transition: e.transition, seen: e.seen, limitHit: !!e.limitHit, consume: isConsume(e),
-      deltas: e.effects.flatMap(f => (f.kind === "counter" ? [{ resource: f.resource, delta: f.delta }] : [])),
+      deltas: edgeDeltas(e),
       appeared: e.effects.flatMap(f => (f.kind === "appeared" ? [f.text] : [])),
       context: e.context.selected,
     })),
@@ -161,6 +161,3 @@ ${templates.join("\n")}
   writeText(indexFile, index);
   return indexFile;
 }
-
-/** Short human label for an element (used in prompts and reports). */
-export const elLabel = (s: Screen, id: string): string => textOf(s.elements.find(e => e.id === id) ?? {}) || id;

@@ -105,6 +105,18 @@ describe("mock: stub generation and runtime", () => {
     assert.equal(await ev("window.__mock.state()"), "s03");
   });
 
+  test("Enter in the composer sends like the Send control; tapping the composer only focuses it", async () => {
+    await open("?frame=0&screen=s03");
+    const composer = page.locator('[data-screen-layer="s03"] [data-role="composer"]');
+    await composer.click();
+    assert.equal(await ev("window.__mock.get('r1')"), 450, "focusing the input spends nothing");
+    await composer.fill("typed and entered");
+    await composer.press("Enter");
+    assert.equal(await ev("window.__mock.get('r1')"), 440);
+    assert.equal(await page.locator('[data-mock-message="user"]').last().innerText(), "typed and entered");
+    assert.equal(await composer.inputValue(), "", "composer cleared after sending");
+  });
+
   test("wall guard: a send the balance cannot pay for opens the out-of-credits sheet (s04)", async () => {
     await open("?frame=0&screen=s03");
     await ev("window.__mock.select(['Premium · 30'])");

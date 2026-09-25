@@ -56,21 +56,25 @@ export function hamming(a: string, b: string): number {
 }
 
 /**
- * "Same template, different content": identical structure (types + resource ids), and the labels that
- * differ are swaps - one item's words for another's (a title, an avatar's initials: at most 2) - with at
- * least as many labels unchanged, none of them a selected item or wall-like text. This is the heuristic
- * answer to the annotator's sameAs question (story A's detail or chat vs story B's).
+ * "Same template, different content": `seen` (an observation) is another look at `known` (a state) when
+ * the structure is identical (types + resource ids) and the labels that differ are swaps - one item's
+ * words for another's (a title, an avatar's initials, a mic that became Send) - or labels that are no
+ * longer on screen (a date separator scrolled away): at most 2 of each, with at least as many labels
+ * unchanged, none of them a selected item or wall-like text. Labels that appear on top of everything
+ * `known` shows are not another item: something opened (a sheet whose rows are too long to carry
+ * identity, a dialog) or a panel expanded. This is the heuristic answer to the annotator's sameAs question.
  */
-export function templateSame(a: string[], b: string[]): boolean {
-  const d = labelDiff(a, b);
+export function templateSame(known: string[], seen: string[]): boolean {
+  const d = labelDiff(known, seen);
   if (!d) return false;
   const diff = [...d.onlyA, ...d.onlyB];
   if (diff.some(t => t.endsWith("|sel") || isWallText(textOf(t)))) return false;
-  // labels only added (or only removed) is not another item on the template: something opened on top
-  // (a sheet whose rows are too long to carry identity, a dialog) or a panel expanded
-  if (d.onlyA.length !== d.onlyB.length) return false;
-  const kept = chromeTexts(a).filter(t => !d.onlyA.includes(t)).length;
-  return d.onlyA.length <= 1 || (d.onlyA.length <= 2 && kept >= d.onlyA.length);
+  const swaps = d.onlyB.length;                     // every new label must replace an old one
+  const gone = d.onlyA.length - swaps;              // old labels simply no longer shown
+  if (gone < 0) return false;
+  const kept = chromeTexts(known).filter(t => !d.onlyA.includes(t)).length;
+  if (swaps > 2 || gone > 2) return false;
+  return swaps + gone <= 1 || kept >= Math.max(swaps, gone);
 }
 
 /** Same skeleton (types + resource ids) on both sides: the chrome labels only on one side, else null. */

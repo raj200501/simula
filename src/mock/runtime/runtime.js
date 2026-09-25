@@ -389,13 +389,22 @@
     if (text === null) slot.innerHTML = '<span class="mock-typing" aria-label="typing"><i></i><i></i><i></i></span>';
     else slot.textContent = text;
     list.appendChild(node);
-    if (list.scrollHeight > list.clientHeight + 1 && !layer.classList.contains("mock-chat-scrolled")) {
-      // New messages overflow: the captured ones scroll away, the list starts from its top.
-      layer.classList.add("mock-chat-scrolled");
-      list.style.paddingTop = "8px";
-    }
-    list.scrollTop = list.scrollHeight;
+    scrollChat(layer, list);
     return node;
+  }
+
+  /**
+   * Keep the newest message in view. New bubbles live in the list and scroll inside it; the captured
+   * ones are drawn outside it, so they move up by the same amount and hide once they leave the list.
+   */
+  function scrollChat(layer, list) {
+    var over = Math.max(0, list.scrollHeight - list.clientHeight);
+    list.scrollTop = over;
+    var top = list.getBoundingClientRect().top;
+    layer.querySelectorAll("[data-mock-captured]").forEach(function (n) {
+      n.style.marginTop = -over + "px";
+      n.style.visibility = n.getBoundingClientRect().top < top - 1 ? "hidden" : "";
+    });
   }
 
   function chatSend(layer, screen, edge) {
@@ -439,15 +448,35 @@
     })[0] || null;
   }
 
+  /** Send from the composer: edges on the send control, else on the input itself (type-and-send). */
+  function sendFrom(layer, screen) {
+    var ids = ['[data-role="send"]', '[data-role="composer"]'].map(function (q) {
+      var n = layer.querySelector(q);
+      return n && n.getAttribute("data-node");
+    }).filter(Boolean);
+    for (var i = 0; i < ids.length; i++) {
+      var pe = proposalEdge(screen, ids[i]);
+      if (pe) { runProposalEdge(pe); return true; }
+      var e = chooseEdge(screen, ids[i]);
+      if (e) { runEdge(e, layer); return true; }
+    }
+    if (layer.querySelector('[data-role="messages"]')) { chatSend(layer, screen, null); return true; }
+    return false;
+  }
+
+  function runProposalEdge(pe) {
+    if (pe.to === "rwd") openRewarded("invite", pe.pid, pe);
+    else { applyDeltas(pe.effects); navigate(pe.to, transitionFor(pe.to)); }
+  }
+
+  /** Returns true when the click was handled; "focus" for text fields (typing, never an action). */
   function activate(screen, el, layer) {
     var node = nodeIn(layer, el);
+    if (node && node.matches('[data-role="composer"],input,textarea,[contenteditable="true"]')) return "focus";
+    if (node && node.matches('[data-role="send"]')) return sendFrom(layer, screen);
     var label = labelMatch(ownText(node));
     var pe = proposalEdge(screen, el);
-    if (pe) {
-      if (pe.to === "rwd") openRewarded("invite", pe.pid, pe);
-      else { applyDeltas(pe.effects); navigate(pe.to, transitionFor(pe.to)); }
-      return true;
-    }
+    if (pe) { runProposalEdge(pe); return true; }
     var e = chooseEdge(screen, el);
     if (e) {
       if (label) select([label]);
@@ -460,7 +489,6 @@
       select([cur === label ? g.labels[(g.labels.indexOf(label) + 1) % g.labels.length] : label]);
       return true;
     }
-    if (node && node.matches('[data-role="send"]') && layer.querySelector('[data-role="messages"]')) { chatSend(layer, screen, null); return true; }
     return false;
   }
 
@@ -475,14 +503,15 @@
     if (!top || !top.el.contains(ev.target)) return;
     var ids = candidates(ev, top.el);
     for (var i = 0; i < ids.length; i++) {
-      if (activate(top.id, ids[i], top.el)) { ev.preventDefault(); ev.stopPropagation(); return; }
+      var r = activate(top.id, ids[i], top.el);
+      if (r === "focus") return;
+      if (r) { ev.preventDefault(); ev.stopPropagation(); return; }
     }
   });
   screenEl.addEventListener("keydown", function (ev) {
     if (ev.key !== "Enter" || !ev.target.matches || !ev.target.matches('[data-role="composer"]')) return;
     var top = topLayer();
-    var send = top && top.el.querySelector('[data-role="send"]');
-    if (send && send.getAttribute("data-node")) { ev.preventDefault(); activate(top.id, send.getAttribute("data-node"), top.el); }
+    if (top && top.el.contains(ev.target)) { ev.preventDefault(); sendFrom(top.el, top.id); }
   });
 
   // ------------------------------------------------------------------ externals + toast
@@ -580,6 +609,7 @@
       }
       if (!el.getAttribute("data-node")) el.setAttribute("data-node", ne.id);
       el.setAttribute("data-new", "");
+      if (el.style.position === "absolute" && el.style.left && el.style.top) { root.appendChild(el); return; } // placed by its author
       var near = ne.near && nodeIn(layer, ne.near);
       var pos = near ? getComputedStyle(near).position : "";
       if (near && ne.place !== "overlay" && pos !== "absolute" && pos !== "fixed") {
@@ -656,6 +686,8 @@
     var top = topLayer();
     if (!sb || !top) return;
     var root = top.el.querySelector("[data-screen-root]");
+    // An image screen is a device screenshot: it already shows the real status bar.
+    sb.style.visibility = root && root.getAttribute("data-render") === "image" ? "hidden" : "";
     var c = root ? getComputedStyle(root).backgroundColor : "";
     var m = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/.exec(c);
     var dark = m && (m[4] === undefined || Number(m[4]) > 0.5) && (0.299 * m[1] + 0.587 * m[2] + 0.114 * m[3]) < 140;
@@ -691,7 +723,7 @@
   addEventListener("resize", function () { fit(); paintDebug(); });
 
   // ------------------------------------------------------------------ public API
-  window.__mock = {
+  var api = {
     go: go,
     state: function () { return current(); },
     get: function (r) { return S.counters[resId(r)]; },
@@ -701,13 +733,16 @@
     history: function () { return S.stack.slice(); },
     select: select, // extra: choose the mode context (e.g. ["Premium · 30"]) that disambiguates consume edges
   };
-  window.__appBack = back;
 
   // ------------------------------------------------------------------ boot
+  // The API is published only once the first screen is up (and a ?proposal patch applied), so a
+  // caller that waits for window.__mock can immediately go() to a screen the patch adds.
   function start() {
     fit();
     var first = P.screen && meta(P.screen) ? P.screen : M.start;
     go(first);
+    window.__mock = api;
+    window.__appBack = back;
     html.setAttribute("data-mock-ready", "1");
   }
   if (P.proposal) applyPatch(P.proposal).then(start, start);
