@@ -960,3 +960,7 @@
 {"ts":"2026-09-25T20:52:00.182Z","app":"aol","run":"sl0925-205159","stage":"slides","type":"decision","data":{"stage":"slides","ships":[],"why":"no final SHIP: the deck says so and lists every idea in the review table"}}
 {"ts":"2026-09-25T20:52:01.467Z","app":"aol","run":"sl0925-205159","stage":"slides","type":"info","data":{"stage":"slides","slides":6,"flowSlides":0,"deck":"slides/deck.html"}}
 {"ts":"2026-09-25T20:52:01.510Z","app":"aol","run":"sl0925-205159","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":1909,"llm":{"calls":0,"cached":0,"usd":0,"mode":"record"}}}
+{"ts":"2026-09-25T21:01:43.252Z","app":"aol","run":"sl0925-210143","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"record"}}
+{"ts":"2026-09-25T21:01:43.814Z","app":"aol","run":"sl0925-210143","stage":"slides","type":"decision","data":{"stage":"slides","ships":[],"why":"no final SHIP: the deck says so and lists every idea in the review table"}}
+{"ts":"2026-09-25T21:01:45.117Z","app":"aol","run":"sl0925-210143","stage":"slides","type":"info","data":{"stage":"slides","slides":6,"flowSlides":0,"deck":"slides/deck.html"}}
+{"ts":"2026-09-25T21:01:45.165Z","app":"aol","run":"sl0925-210143","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":1913,"llm":{"calls":0,"cached":0,"usd":0,"mode":"record"}}}

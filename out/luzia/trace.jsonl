@@ -8761,3 +8761,15 @@
 {"ts":"2026-09-25T20:51:33.104Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P1.gif"}}
 {"ts":"2026-09-25T20:51:36.988Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"info","data":{"stage":"slides","slides":10,"flowSlides":2,"deck":"slides/deck.html"}}
 {"ts":"2026-09-25T20:51:37.037Z","app":"luzia","run":"sl0925-205116","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":20853,"llm":{"calls":2,"cached":2,"usd":0,"mode":"record"}}}
+{"ts":"2026-09-25T21:01:01.644Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"record"}}
+{"ts":"2026-09-25T21:01:02.244Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"decision","data":{"stage":"slides","ships":["P1","P4"],"why":"every final SHIP gets a flow slide; REVISE is never promoted"}}
+{"ts":"2026-09-25T21:01:02.245Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"decision","data":{"stage":"slides","proposal":"P1","entry":"ne1","choice":"runtime-default","why":"no HTML base screen in the mock"}}
+{"ts":"2026-09-25T21:01:02.246Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"llm_call","data":{"purpose":"variant:P4:ns1","key":"e14f09c5689a074886afe987","cached":true,"usd":0}}
+{"ts":"2026-09-25T21:01:02.246Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"llm_call","data":{"purpose":"variant:P4:ne1","key":"c7d847779522883c63d82b6f","cached":true,"usd":0}}
+{"ts":"2026-09-25T21:01:02.246Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"decision","data":{"stage":"slides","proposal":"P4","entry":"ne2","choice":"runtime-default","why":"no HTML base screen in the mock"}}
+{"ts":"2026-09-25T21:01:02.246Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"decision","data":{"stage":"slides","proposal":"P4","entry":"ne3","choice":"runtime-default","why":"no HTML base screen in the mock"}}
+{"ts":"2026-09-25T21:01:06.048Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P1","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":3}}
+{"ts":"2026-09-25T21:01:09.774Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P4","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":1}}
+{"ts":"2026-09-25T21:01:17.308Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P1.gif"}}
+{"ts":"2026-09-25T21:01:20.740Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"info","data":{"stage":"slides","slides":10,"flowSlides":2,"deck":"slides/deck.html"}}
+{"ts":"2026-09-25T21:01:20.806Z","app":"luzia","run":"sl0925-210101","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":19162,"llm":{"calls":2,"cached":2,"usd":0,"mode":"record"}}}

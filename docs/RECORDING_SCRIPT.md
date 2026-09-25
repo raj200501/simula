@@ -10,7 +10,7 @@
    | Tab | File |
    |---|---|
    | 1 | `out/luzia/slides/deck.html`, scrolled to the first **flow** slide (slide 3) |
-   | 2 | `out/luzia/mock/index.html?proposal=P1` (the deck's "Open the clickable prototype" link) |
+   | 2 | `out/luzia/mock/index.html?proposal=P1&screen=s07` (the deck's "Open the clickable prototype" link; it opens on the changed screen) |
    | 3 | `out/index.html`, the report page |
    | 4 | `out/luzia/model/viewer.html` |
    | 5 | `out/luzia/qa/report.html` |

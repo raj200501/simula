@@ -1,6 +1,6 @@
 # Trajectory: aol
 
-Autonomous decisions: **76**. Human interventions: **3**. Autonomy ratio: **96.2%**.
+Autonomous decisions: **77**. Human interventions: **3**. Autonomy ratio: **96.3%**.
 
 ## Stage runs
 
@@ -16,6 +16,7 @@ Autonomous decisions: **76**. Human interventions: **3**. Autonomy ratio: **96.2
 | slides | sl0925-151738 | 19:17:38 | 19:17:39 | 4 | 0 |  |
 | human | manual | 19:26:58 | 19:26:58 | 1 | 0 |  |
 | slides | sl0925-205159 | 20:51:59 | 20:52:01 | 4 | 0 |  |
+| slides | sl0925-210143 | 21:01:43 | 21:01:45 | 4 | 0 |  |
 
 ## New states discovered over time
 

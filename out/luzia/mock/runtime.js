@@ -139,8 +139,9 @@
   // spec text: the label is the first quoted string in `change` ("Secondary button "▶ Play 15 s"…"),
   // else a five-word summary; the control kind (button / pill / card) comes from the words around it.
   function quotedIn(s) {
-    var out = [], re = /"([^"]{1,80})"|“([^”]{1,80})”|«([^»]{1,80})»/g, m;
-    while ((m = re.exec(s || ""))) out.push(clean(m[1] || m[2] || m[3]));
+    // double, curly and guillemet quotes; single quotes only around a phrase ('Play Now'), never an apostrophe
+    var out = [], re = /"([^"]{1,80})"|“([^”]{1,80})”|«([^»]{1,80})»|(?:^|[\s(])['‘]([^'‘’]{2,40})['’](?=[\s,.;:)!?]|$)/g, m;
+    while ((m = re.exec(s || ""))) out.push(clean(m[1] || m[2] || m[3] || m[4]));
     return out;
   }
   var SPEC_WORDS = /^(?:(?:one-time|dismissible|secondary|primary|inline|small|new|sponsored)\s+)*(?:button|pill|chip|badge|tag|card|row|task row|tile|banner|bubble|invitation bubble|character invitation bubble|link|cta|sheet|modal|screen|variant)\b[:\s]*/i;

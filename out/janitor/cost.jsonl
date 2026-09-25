@@ -57,3 +57,7 @@
 {"ts":"2026-09-25T20:51:38.542Z","app":"janitor","stage":"slides","purpose":"variant:P3:ne1","model":"gemini-3.8-flash","effort":"high","usd":0,"cached":true,"key":"122b5240d075cbcd1f33bca0"}
 {"ts":"2026-09-25T20:51:38.542Z","app":"janitor","stage":"slides","purpose":"variant:P2:ns1","model":"gemini-3.8-flash","effort":"high","usd":0,"cached":true,"key":"51ef1eb93bfb690d58107e97"}
 {"ts":"2026-09-25T20:51:38.543Z","app":"janitor","stage":"slides","purpose":"variant:P2:ne1","model":"gemini-3.8-flash","effort":"high","usd":0,"cached":true,"key":"d8ba722f9c79673b6e673764"}
+{"ts":"2026-09-25T21:01:22.295Z","app":"janitor","stage":"slides","purpose":"variant:P3:ns1","model":"gemini-3.8-flash","effort":"high","usd":0,"cached":true,"key":"24fe6f73c2fb24e194687e96"}
+{"ts":"2026-09-25T21:01:22.296Z","app":"janitor","stage":"slides","purpose":"variant:P3:ne1","model":"gemini-3.8-flash","effort":"high","usd":0,"cached":true,"key":"122b5240d075cbcd1f33bca0"}
+{"ts":"2026-09-25T21:01:22.296Z","app":"janitor","stage":"slides","purpose":"variant:P2:ns1","model":"gemini-3.8-flash","effort":"high","usd":0,"cached":true,"key":"51ef1eb93bfb690d58107e97"}
+{"ts":"2026-09-25T21:01:22.297Z","app":"janitor","stage":"slides","purpose":"variant:P2:ne1","model":"gemini-3.8-flash","effort":"high","usd":0,"cached":true,"key":"d8ba722f9c79673b6e673764"}

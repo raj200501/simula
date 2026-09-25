@@ -1,10 +1,10 @@
 {
   "stage": "slides",
   "app": "janitor",
-  "runId": "sl0925-205137",
-  "gitSha": "228956b",
-  "startedAt": "2026-09-25T20:51:37.989Z",
-  "finishedAt": "2026-09-25T20:51:58.651Z",
+  "runId": "sl0925-210121",
+  "gitSha": "1768b4c",
+  "startedAt": "2026-09-25T21:01:21.736Z",
+  "finishedAt": "2026-09-25T21:01:42.312Z",
   "status": "ok",
   "inputs": [
     {

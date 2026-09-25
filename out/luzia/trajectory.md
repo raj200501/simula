@@ -1,6 +1,6 @@
 # Trajectory: luzia
 
-Autonomous decisions: **624**. Human interventions: **20**. Autonomy ratio: **96.9%**.
+Autonomous decisions: **628**. Human interventions: **20**. Autonomy ratio: **96.9%**.
 
 ## Stage runs
 
@@ -34,6 +34,7 @@ Autonomous decisions: **624**. Human interventions: **20**. Autonomy ratio: **96
 | slides | sl0925-193252 | 19:32:52 | 19:33:49 | 20 | 1 |  |
 | slides | sl0925-194008 | 19:40:08 | 19:40:28 | 12 | 0 |  |
 | slides | sl0925-205116 | 20:51:16 | 20:51:37 | 12 | 0 |  |
+| slides | sl0925-210101 | 21:01:01 | 21:01:20 | 12 | 0 |  |
 
 ## New states discovered over time
 
