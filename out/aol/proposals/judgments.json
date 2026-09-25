@@ -1,0 +1,1375 @@
+{
+  "schema": "simula.judgments/1",
+  "app": "aol",
+  "rubricWeights": [
+    {
+      "criterion": "value-moment-fit",
+      "weight": 20
+    },
+    {
+      "criterion": "product-integrity",
+      "weight": 15
+    },
+    {
+      "criterion": "cannibalization-safety",
+      "weight": 15
+    },
+    {
+      "criterion": "unit-economics",
+      "weight": 10
+    },
+    {
+      "criterion": "reach",
+      "weight": 10
+    },
+    {
+      "criterion": "feasibility",
+      "weight": 10
+    },
+    {
+      "criterion": "specificity",
+      "weight": 10
+    },
+    {
+      "criterion": "frequency-fatigue",
+      "weight": 5
+    },
+    {
+      "criterion": "measurability",
+      "weight": 5
+    }
+  ],
+  "thresholds": {
+    "ship": 3.8,
+    "revise": 3,
+    "minCriterion": 3,
+    "maxRounds": 2
+  },
+  "rounds": [
+    {
+      "proposalId": "P1",
+      "version": 1,
+      "round": 0,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "economy item \"POST_WALL\" does not exist; new element \"ne1\" is placed near \"Sign Up to Post\", which is not an element on s05; storyboard today: callout node \"Sign Up to Post\" is not on s05 and not declared; storyboard value: callout node \"Sign Up to Post\" is not on s05 and not declared; evidence element \"Sign Up to Post\" is not on s05"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"One-Time Comment Post\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Proposal targets the comment section of a news app, which is SFW."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Reward is for posting a comment; no incentives for clicks, installs, or ratings."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Proposal uses gain framing: 'Watch a quick game to post instead'."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Uses a clear CTA 'Play Now' after the invitation."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "States 'Play a 15-second game with AOL News to post your comment'."
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Includes a 'No thanks' decline option."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Placed on the comment sign-up wall, not mid-stream."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Eligibility is restricted to non-signed-in users."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "Perfect moment: user wants to post, hits sign-up wall, offer provides the exact desired outcome.",
+          "score": 5
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "Native gate-bypass mechanic; does not degrade existing content.",
+          "score": 5
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "Gated strictly to non-signed-in guests, protecting the account conversion flow.",
+          "score": 5
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "COGS is 0; revenue is positive; reward is 1 post vs potential multiple posts by members.",
+          "score": 5
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Limited to users who reach the comment gate, which is a fraction of DAU.",
+          "score": 3
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Standard RWD implementation, but relies on a missing element ID for grounding.",
+          "score": 3
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "Uses app-specific nouns like 'AOL News', but element placement requires correction.",
+          "score": 4
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Strict caps: 3/day, 30m cooldown.",
+          "score": 5
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Includes primary metric, holdout design, and guardrails.",
+          "score": 5
+        }
+      ],
+      "weighted": 4.5,
+      "requiredChanges": [
+        "Correct the grounding: The proposal cites 'Sign Up to Post' as an element on s05, but it is not listed in the digest. Update the patch to target existing elements or a general container on s05.",
+        "Add draft persistence: Explicitly confirm that the comment draft is preserved while the user completes the ad."
+      ],
+      "topConcern": "The proposal assumes the existence of a 'Sign Up to Post' button on the Add Comment Page (s05) which is not in the provided screen element list.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: grounding (code)"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P1",
+      "version": 2,
+      "round": 1,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "economy item \"POST_WALL\" does not exist; storyboard today: callout node \"s05\" is not on s05 and not declared"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"One-Time Comment Post\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "AOL is a general news application adhering to brand safety and general audience content standards."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The reward is an in-app comment post action with no rewards for clicks, installs, or cash equivalents."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The proposal uses gain framing ('Post This Comment') without dark patterns, confirmshaming, or loss framing."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The user explicitly opts in by tapping 'Play Now' on the offer card."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The required action (15-second game) and reward (one comment post) are clearly stated before the ad starts."
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "An equally legible decline button ('No thanks') is provided, returning the user to the comment page without penalty."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "AOL is a news reader app with no streaming AI generation; the offer triggers at the comment sign-up wall boundary."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The offer is specifically targeted at non-signed-in guest users encountering the sign-up wall, not paying accounts."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "The proposal triggers exactly when the user hits the sign-up wall after typing a comment (m9), offering an immediate bypass to post that specific comment.",
+          "score": 5
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "The user's typed comment draft is saved in local state and restored upon verification, keeping the primary sign-up CTA intact without degrading core experience.",
+          "score": 4
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "Gated strictly to non-signed-in users hitting the wall (TAX-10 paywall-decline fallback), limited to 1 post per ad / 3 per day, with the primary sign-up CTA remaining the default.",
+          "score": 5
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "Code-computed COGS is $0.0000 (none), well below net revenue per view ($0.0090–$0.0150). Sizing is 1 comment post per view.",
+          "score": 5
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Reaches users attempting to comment (core interaction loop, m9), though comment wall hits represent a subset of total news feed readers.",
+          "score": 3
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Uses SIM-RWD with a button entry point, REWARD_VERIFIED, and local draft preservation, fitting standard SDK capabilities.",
+          "score": 4
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "References screen s05 (Add Comment Page), moment m9, and AOL News brand, though the economy item 'POST_WALL' is ungrounded.",
+          "score": 3
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Capped at 3 per day with a 30-minute cooldown, preventing ad fatigue and repeat prompting.",
+          "score": 4
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Defines primary metric 'Comments per DAU', guardrails for account conversion and D1 retention, and a 10% user holdout for 4 weeks.",
+          "score": 5
+        }
+      ],
+      "weighted": 4.3,
+      "requiredChanges": [
+        "Ground the economy item in the digest by replacing the ungrounded 'POST_WALL' identifier with a valid resource.",
+        "Fix the storyboard callout node reference for screen s05 to ensure it correctly maps to declared elements."
+      ],
+      "topConcern": "Grounding error in economy items ('POST_WALL' is not defined in the product digest) and storyboard node validation failure.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: grounding (code)"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P2",
+      "version": 1,
+      "round": 0,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "economy item \"ReaderPoints (new)\" does not exist"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Reader Loyalty Program\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The AOL app provides general news, entertainment, and local updates. The proposal uses the news feed and an optional rewards hub, which are safe, SFW environments."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The reward is 'ReaderPoints' which are in-app loyalty items with no cash value. No rewards for clicks, installs, or ratings are mentioned."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The proposal uses gain framing ('Daily Reader Bonus', 'progress toward your daily streak') and makes no mention of loss or hostage mechanics."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The proposal requires the user to proactively tap an entry button ('ne1') and then a 'Play Now' button in the hub ('ne3')."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The offer body explicitly states: 'Play a 15-second game with our news mascot to get 50 Reader Points toward your daily streak.'"
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The proposal includes a 'No thanks' button, and because it is a proactive hub, dismissing it returns the user to the News Feed ('s13') without penalty."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The offer is triggered from a proactive 'Reader Rewards' button in the navigation header ('ne1') and a loyalty hub, not during reading or comment flow."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The eligibility is explicitly restricted to 'Logged-in non-premium users'."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "The proposal offers 'ReaderPoints', which are not tied to any existing AOL user need (like saving articles or bypassing a limit). They are a generic loyalty currency.",
+          "score": 2
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "The mechanic is a classic loyalty hub. It is non-interruptive and additive, fitting the news feed environment well.",
+          "score": 5
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "The points have no cash value and are not a substitute for a subscription or premium content, posing no IAP cannibalization risk.",
+          "score": 5
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "There is no COGS for points. The reward is a symbolic currency, and the ad revenue is net positive.",
+          "score": 5
+        },
+        {
+          "criterion": "reach",
+          "evidence": "The entry button is in the main navigation of the News Feed Home ('s13'), which is high-reach for DAU.",
+          "score": 4
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Introducing a loyalty points system and a persistent hub ('ns1') requires significant backend architecture changes to track streak state and point balances.",
+          "score": 2
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "The proposal uses generic 'ReaderPoints'. It lacks connection to AOL-specific nouns or features, such as 'Saved Articles' or 'Local Headlines'.",
+          "score": 2
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "The proposal correctly specifies a daily cap (3/day) and a cooldown (60 mins), which is appropriate for preventing fatigue.",
+          "score": 5
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "The proposal defines primary (DAU retention) and guardrail (feed scroll depth) metrics, plus a user-level holdout.",
+          "score": 5
+        }
+      ],
+      "weighted": 3.7,
+      "requiredChanges": [
+        "Define the utility of 'ReaderPoints' to make them relevant to AOL. For example, allow points to be redeemed for an 'ad-free browsing hour' or 'increased saved article capacity' instead of just a generic currency.",
+        "Improve specificity by integrating the loyalty loop with existing AOL nouns. For example, streak progression could offer 'Exclusive local headlines' or badges for specific categories (e.g., 'Sports Fan').",
+        "Specify the backend technical feasibility for maintaining persistent streak state and point balances across sessions for logged-in users."
+      ],
+      "topConcern": "The lack of specific utility for 'ReaderPoints' makes the reward feel generic and disconnected from user needs in the AOL app, potentially leading to low engagement despite high reach.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: grounding (code)",
+        "value-moment-fit scored 2 (< 3)",
+        "feasibility scored 2 (< 3)",
+        "specificity scored 2 (< 3)",
+        "weighted 3.7 < 3.8"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P2",
+      "version": 2,
+      "round": 1,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "economy item \"ReaderPoints (new)\" does not exist; economy item \"SavedArticles\" does not exist; economy item \"AdFreePass (new)\" does not exist"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Reader Loyalty Program\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "AOL is a general-purpose news app; the news feed is inherently suitable for a broad audience."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The reward is for attention (watching an ad/playing a mini-game), not for clicking ads, installing, or rating."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The reward is framed as a positive loyalty program; no hostage or 'support us' language is used."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The user must tap the 'Play Now' CTA to begin, which is compliant."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The offer card clearly states the reward (50 Reader Points) and the action required (15-second game play)."
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The 'No thanks' button ensures users can decline without any negative consequence."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The offer is accessed proactively via a badge, never mid-stream."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Eligibility is explicitly limited to logged-in non-premium users."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "This is a proactive loyalty hub (archetype TAX-9). It lacks the high-intent 'moment of need' found in other rewarded archetypes like consumable refills.",
+          "score": 3
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "The loyalty program is a standard industry pattern that feels native to news apps; it doesn't interrupt reading or degrade existing content.",
+          "score": 4
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "The reward of 'ad-free browsing hours' can cannibalize subscription revenue if ad-free reading is a core paid benefit. It requires strict time-boxing.",
+          "score": 3
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "COGS is near zero (0). Revenue is ~$0.012 per view. 50 points for 1 hour of ad-free time is a reasonable value exchange.",
+          "score": 4
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Triggered via News Feed Home (s13), the core loop of the AOL app.",
+          "score": 5
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Requires backend implementation for streak tracking, points, and account persistence, which is a moderate effort.",
+          "score": 3
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "References News Feed Home (s13), saved articles feature, and uses AOL branding elements.",
+          "score": 4
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "3 per day limit is appropriate for a news app loyalty program.",
+          "score": 4
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Proposal includes DAU retention as the primary KPI and a user-level randomized holdout.",
+          "score": 4
+        }
+      ],
+      "weighted": 3.65,
+      "requiredChanges": [
+        "Strictly time-box the ad-free reward (e.g., 60 minutes) to ensure it does not replace the value of a permanent ad-free subscription tier.",
+        "Add a 'Learn more' or 'Get Premium for always ad-free' link on the redemption screen to create a clear upsell path alongside the ad-earned time.",
+        "Define the redemption cost for 'extra saved article capacity' to ensure it does not devalue the app's core utility.",
+        "Ensure the streak logic handles offline state gracefully before attempting to sync points."
+      ],
+      "topConcern": "Cannibalization of ad-free subscription value: giving 'ad-free browsing' as a rewarded ad output risks making the core paid tier redundant; it must be clearly time-boxed and marketed as a 'sample' or 'boost' rather than a replacement.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: grounding (code)",
+        "weighted 3.65 < 3.8"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P3",
+      "version": 1,
+      "round": 0,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "economy item \"PremiumAccess\" does not exist"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Premium Insights\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+        },
+        {
+          "gate": "structure",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "surface s01 is also the first-value screen: eligibility must exclude the first session"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "s01 is Home News Feed displaying standard news and top stories like 'Top Stories' and 'Entertainment'."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Reward is '1 Premium Deep-Dive Article' via SIM-RWD; no clicks, installs, or cash-like items are incentivized."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Offer uses standard copy: 'Play a 15-second game to access this in-depth investigative article.' with 'No thanks' decline."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Requires explicit tap on CTA 'Play Now'."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "States exact reward ('1 Premium Deep-Dive Article') and required action ('Play a 15-second game')."
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Provides an equally legible decline option 'No thanks' returning the user to the feed with no penalty."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Triggered only when the user taps an article in the feed marked 'Premium Insight'."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Eligibility explicitly restricted to 'Non-subscribing users.'"
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "Proposal: 'User taps an article in the feed marked 'Premium Insight'.'; unlocks an in-depth article. Fits TAX-3 content unlock, though AOL currently has no scarce items.",
+          "score": 3
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "Proposal adds 'Premium' labels to articles on s01 and locks them behind ads. In a free news app with no prior paywalls, gating news content introduces new friction.",
+          "score": 3
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "Proposal: 'No paid subscription exists currently to cannibalize; this builds the habit for future monetization.' Rate-limited to 3 per day.",
+          "score": 4
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "Cost to serve per view is $0.0000; US view earns $0.0090–$0.0150. COGS is well below net revenue per view.",
+          "score": 4
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Triggered by tapping premium articles in the Home News Feed (s01), reaching users browsing curated news.",
+          "score": 3
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Maps to SIM-RWD with button entry, 15s play, and REWARD_VERIFIED, but requires introducing a new product mechanic and elements.",
+          "score": 3
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "References s01 and element e38, but introduces an economy item 'PremiumAccess' that does not exist in the baseline product model.",
+          "score": 2
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Caps set to 3 per day with a 30-minute cooldown.",
+          "score": 4
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Primary metric 'Rewarded engagement rate', guardrails (Article CTR, Retention, Session depth), and a 10% user-level holdout for 4 weeks.",
+          "score": 5
+        }
+      ],
+      "weighted": 3.3,
+      "requiredChanges": [
+        "Exclude the first session from showing rewarded offers on s01 to comply with first-value flow rules.",
+        "Clearly define the product change mechanics for introducing gated premium content into a traditionally free news reader without harming user trust.",
+        "Properly ground and define the new economy item in the product change specification."
+      ],
+      "topConcern": "Gating news articles behind rewarded ads in a free news reader app (AOL regime: no-scarcity) risks frustrating users who expect free, unhindered access to news headlines and articles.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: grounding (code)",
+        "fixable gate failed: structure (code)",
+        "specificity scored 2 (< 3)",
+        "weighted 3.3 < 3.8"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P3",
+      "version": 2,
+      "round": 1,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "economy item \"PremiumAccess\" does not exist"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Premium Insights\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Proposal targets investigative deep-dive articles in a news feed; surface is SFW."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Reward is access to a specific premium article, not for clicks or installs."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Proposal introduces an additive tier; no existing free content is removed."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Uses modal ns1 with a distinct 'Play Now' button."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Body text clearly states: 'Play a 15-second game to access this in-depth investigative article.'"
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Offer includes a 'No thanks' button as an equally legible decline option."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Triggered upon navigation (tapping an article), not mid-reading."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Proposal explicitly targets returning non-subscribing users."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "Triggering the reward exactly when the user expresses intent by tapping a 'Premium' article is a high-intent match.",
+          "score": 4
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "The model is additive ('zero free content removed'), preserving the integrity of the existing news feed.",
+          "score": 4
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "The 'wait or watch' model is rate-limited (3/day) and additive, avoiding subscription cannibalization.",
+          "score": 4
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "COGS is near zero (content), and revenue per view is positive; well within limits.",
+          "score": 5
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Reach is limited to the volume of 'Premium' articles created; could be low if content is sparse.",
+          "score": 3
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Uses standard SIM-RWD; requires new backend support for gating specific content, which is a moderate engineering task.",
+          "score": 4
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "Uses AOL nouns like 'Home News Feed' and 'AOL News' as game partner, but the core mechanics are standard.",
+          "score": 3
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Includes a 3-per-day cap and 30-minute cooldown, preventing over-exposure.",
+          "score": 5
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Explicit KPIs, guardrails, and a user-level holdout plan provided.",
+          "score": 5
+        }
+      ],
+      "weighted": 4,
+      "requiredChanges": [
+        "Grounding: Update proposal to acknowledge that 'PremiumAccess' is a new, non-existent resource, requiring infrastructure to track and gate specific premium content.",
+        "Editorial Strategy: Clarify how 'Premium' articles will be curated or distinguished in the feed to ensure they are high-value enough to justify the ad break."
+      ],
+      "topConcern": "The lack of existing infrastructure (economy, content gating) to support the proposed Premium tier requires significant backend work that is not yet detailed.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: grounding (code)"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P3",
+      "version": 3,
+      "round": 2,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "economy item \"PremiumAccess\" does not exist"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Premium Insights\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The proposal targets s01 (Home News Feed) displaying general news headlines such as 'Top Stories' and lifestyle news."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "Reward is '1 Premium Deep-Dive Article' (editorial content), with no rewards for clicks, installs, or cash."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The offer uses gain framing ('Play a 15-second game to access this in-depth investigative article') with no dark patterns."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The offer overlay features a clear primary CTA button 'Play Now' for SIM-RWD."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Body explicitly states: 'Play a 15-second game to access this in-depth investigative article.'"
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Decline option is clearly provided as 'No thanks' on the offer modal."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "AOL is a news reading app with no streaming AI response; offers trigger when tapping a premium article."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Eligibility is restricted to returning non-subscribing users after session 1 ('Returning non-subscribing users after session 1')."
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "Proposal maps to TAX-3 (Content unlock) where tapping a premium article triggers an ad-unlock offer, fitting the moment of content desire.",
+          "score": 4
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "Additive premium tier where all existing free articles remain unblocked and ad-accessible as they are today.",
+          "score": 4
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "Access is strictly rate-limited to 3 premium articles per day, and content is additive to an app with no pre-existing subscription tier.",
+          "score": 4
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "Code-computed cost to serve is $0.0000 (none), well below net revenue per view ($0.0090–$0.0150).",
+          "score": 5
+        },
+        {
+          "criterion": "reach",
+          "evidence": "Triggers on article taps in the core Home News Feed loop (s01).",
+          "score": 4
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "Maps to SIM-RWD unit with button entry, a 15-second min play time, and standard modal screen patch.",
+          "score": 4
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "AOL is a zero-scarcity news feed app; the proposal introduces an ungrounded 'PremiumAccess' economy item and 'Premium' badges not present in the digest.",
+          "score": 2
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Explicit per-day cap of 3 and 30-minute cooldown.",
+          "score": 5
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Names rewarded engagement rate as primary metric, guardrails, and a 10% user-level holdout for 4 weeks.",
+          "score": 4
+        }
+      ],
+      "weighted": 3.95,
+      "requiredChanges": [
+        "Ground the proposal in AOL's existing product model or provide a clearer justification for introducing a brand-new paywalled premium content tier in a zero-scarcity news app.",
+        "Align the economy resource naming with existing digest items or properly substantiate the new mechanic's infrastructure."
+      ],
+      "topConcern": "AOL is a traditional ad-supported news reader with no existing scarcity model or subscription tier, making the introduction of a paywalled 'PremiumAccess' infrastructure a significant and speculative product change.",
+      "verdict": "REJECT",
+      "reasons": [
+        "fixable gate failed: grounding (code)",
+        "specificity scored 2 (< 3)",
+        "still REVISE after round 2"
+      ],
+      "judgedBy": "llm"
+    }
+  ],
+  "final": [
+    {
+      "proposalId": "P1",
+      "version": 2,
+      "verdict": "REJECT",
+      "weighted": 4.3,
+      "summary": "REJECT after 1 revision: revision stalled (weighted -0.2, below +0.2) with the same gate failures. Top concern: Grounding error in economy items ('POST_WALL' is not defined in the product digest) and storyboard node validation failure."
+    },
+    {
+      "proposalId": "P2",
+      "version": 2,
+      "verdict": "REJECT",
+      "weighted": 3.65,
+      "summary": "REJECT after 1 revision: revision stalled (weighted -0.05, below +0.2) with the same gate failures. Top concern: Cannibalization of ad-free subscription value: giving 'ad-free browsing' as a rewarded ad output risks making the core paid tier redundant; it must be clearly time-boxed and marketed as a 'sample' or 'boost' rather than a replacement."
+    },
+    {
+      "proposalId": "P3",
+      "version": 3,
+      "verdict": "REJECT",
+      "weighted": 3.95,
+      "summary": "REJECT after 2 revisions: fixable gate failed: grounding (code); specificity scored 2 (< 3); still REVISE after round 2. Top concern: AOL is a traditional ad-supported news reader with no existing scarcity model or subscription tier, making the introduction of a paywalled 'PremiumAccess' infrastructure a significant and speculative product change."
+    }
+  ]
+}

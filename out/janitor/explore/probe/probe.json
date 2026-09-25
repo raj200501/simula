@@ -1,0 +1,67 @@
+{
+  "app": "janitor",
+  "fg": "com.janitor.ai",
+  "inApp": true,
+  "device": {
+    "widthPx": 1080,
+    "heightPx": 2400,
+    "density": 2.625,
+    "statusBarPx": 0,
+    "navBarPx": 0,
+    "kind": "android"
+  },
+  "elements": 82,
+  "labelled": 70,
+  "labelledActionable": 68,
+  "numbers": [
+    "24h",
+    "24h",
+    "1 / 15",
+    "1 / 15",
+    "5",
+    "5",
+    "0",
+    "0",
+    "3",
+    "3",
+    "122.1k",
+    "45.5k"
+  ],
+  "counters": [],
+  "secsPerObserve": 0.57,
+  "screenshot": "/Users/rajkashikar/simula/out/janitor/explore/probe/probe.png",
+  "deviceFile": "/Users/rajkashikar/simula/config/device.json",
+  "checks": [
+    {
+      "name": "the app is in the foreground",
+      "pass": true,
+      "detail": "com.janitor.ai"
+    },
+    {
+      "name": "at least 3 elements after normalizing",
+      "pass": true,
+      "detail": "82 elements"
+    },
+    {
+      "name": "at least 10 labelled actionable elements",
+      "pass": true,
+      "detail": "68 labelled actionables"
+    },
+    {
+      "name": "a balance or other number is readable as text",
+      "pass": true,
+      "detail": "24h, 24h, 1 / 15"
+    },
+    {
+      "name": "insets known",
+      "pass": false,
+      "detail": "status 0px, nav 0px"
+    },
+    {
+      "name": "one observation under 10 s",
+      "pass": true,
+      "detail": "0.57s"
+    }
+  ],
+  "go": true
+}

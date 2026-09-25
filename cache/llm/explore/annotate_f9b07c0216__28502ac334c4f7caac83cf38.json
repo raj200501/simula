@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:f9b07c0216",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Favorites Page",
+  "kind": "page",
+  "purpose": "Displays the user's saved favorite messages.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e3",
+    "intent": "Go back to previous screen",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1965,
+  "output": 130,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:31:08.523Z"
+}

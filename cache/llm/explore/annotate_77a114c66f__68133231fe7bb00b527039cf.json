@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:77a114c66f",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Create Image Sheet",
+  "kind": "sheet",
+  "purpose": "Users can type a prompt to create an AI painting.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Type prompt for image creation",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "A futuristic city",
+    "sendEl": "e11"
+   },
+   {
+    "el": "e11",
+    "intent": "Generate the image",
+    "kind": "consume",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2096,
+  "output": 198,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:53.490Z"
+}

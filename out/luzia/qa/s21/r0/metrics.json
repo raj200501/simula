@@ -1,0 +1,15 @@
+{
+  "screen": "s21",
+  "round": 0,
+  "kept": true,
+  "by": "initial",
+  "composite": 0.4972,
+  "iou": 0.2498,
+  "ssim": 0.5801,
+  "text": 0.625,
+  "color": 0.6985,
+  "pixelDiff": 0.7481,
+  "elements": 10,
+  "missing": 0,
+  "mustFix": 1
+}

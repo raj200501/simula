@@ -1,0 +1,33 @@
+{
+  "designCss": "llm",
+  "screens": [
+    {
+      "screen": "s01",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s02",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s07",
+      "generatedBy": "llm",
+      "attempts": 2,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s13",
+      "generatedBy": "llm",
+      "attempts": 2,
+      "coverage": 1,
+      "violations": []
+    }
+  ]
+}

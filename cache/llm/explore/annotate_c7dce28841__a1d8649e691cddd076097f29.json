@@ -1,0 +1,81 @@
+{
+ "purpose": "annotate:c7dce28841",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Chats Home",
+  "kind": "tab",
+  "purpose": "Main chat and navigation hub for the AI assistant app.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e4",
+    "intent": "Open subscription/upsell page",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e6",
+    "intent": "Open settings",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e13",
+    "intent": "Open Chat options",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e16",
+    "intent": "Open Ideas",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e19",
+    "intent": "Open Apps",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e23",
+    "intent": "Switch to Ideas tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e24",
+    "intent": "Switch to Services tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e25",
+    "intent": "Switch to Apps tab",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Try Luzia",
+    "el": "e4"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2712,
+  "output": 456,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:29:33.984Z"
+}

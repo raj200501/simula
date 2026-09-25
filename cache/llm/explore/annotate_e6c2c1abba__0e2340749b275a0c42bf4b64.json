@@ -1,0 +1,69 @@
+{
+ "purpose": "annotate:e6c2c1abba",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s29",
+  "name": "Beat Maker",
+  "kind": "page",
+  "purpose": "Create and save looping musical beats using a grid pattern and tempo controls.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e10",
+    "intent": "Toggle pause or play for the beat loop",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e12",
+    "intent": "Clear the beat grid",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e13",
+    "intent": "Open saved beats modal",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e15",
+    "intent": "Save the current beat",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e19",
+    "intent": "Remove last bar from timeline",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e20",
+    "intent": "Add a bar to timeline",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e160",
+    "intent": "Close the My beats dialog",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 7660,
+  "output": 398,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:18:55.924Z"
+}

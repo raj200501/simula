@@ -1,0 +1,133 @@
+{
+ "purpose": "breadth-retry",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Watch a full-screen interstitial ad before starting any character chat.",
+   "Watch an ad to remove all ads across the platform for one day.",
+   "Watch an ad to unlock 1 month of unlimited Janitor Plus subscription."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "User hits the memory limit on long chats and watches an ad to unlock temporary extended context",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "User dismisses the memory paywall and is offered a time-boxed session pass of Janitor Plus features",
+    "viable": true
+   },
+   {
+    "moment": "m3",
+    "exchange": "User closes the main subscription paywall and can watch an ad for a frontier model feature sample",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "User views the billing or account menu and engages with a proactive daily credit hub",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "First value discovery screen on launch; ads are strictly prohibited here by policy and safety rules",
+    "viable": false
+   },
+   {
+    "moment": "m6",
+    "exchange": "User views character details before starting a chat and can watch an ad for a session priority boost",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Extended Context Unlock",
+    "case": "existing",
+    "archetype": "TAX-1",
+    "moment": "m1",
+    "reward": "1 hour of 5x context memory",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Paywall-Decline Session Pass",
+    "case": "existing",
+    "archetype": "TAX-10",
+    "moment": "m2",
+    "reward": "30 minutes of Janitor+ premium features",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Frontier Model Swipe Refill",
+    "case": "existing",
+    "archetype": "TAX-4",
+    "moment": "m4",
+    "reward": "5 frontier model swipes",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Priority Routing Pass",
+    "case": "existing",
+    "archetype": "TAX-4",
+    "moment": "m6",
+    "reward": "Priority routing for the next chat session",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Daily Character Quest Hub",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m4",
+    "reward": "Daily check-in credits for frontier swipes",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Sponsored Regeneration Pass",
+    "case": "product-change",
+    "archetype": "TAX-6",
+    "moment": "m6",
+    "reward": "1 free frontier reply regeneration",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Subscription Feature Sampling",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m3",
+    "reward": "1-hour trial of Janitor Plus",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Character Badge Rental",
+    "case": "product-change",
+    "archetype": "TAX-13",
+    "moment": "m6",
+    "reward": "Temporary golden username badge for 24 hours",
+    "beyondBaseline": true
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "Directly targets the core scarce resource (memory context) at the exact moment of need when hitting the paywall wall, maximizing opt-in intent without interrupting active roleplay."
+   },
+   {
+    "index": 4,
+    "why": "Introduces a proactive daily habit loop in the account drawer, creating predictable, non-interruptive inventory and long-term retention without cannibalizing core subscriptions."
+   },
+   {
+    "index": 6,
+    "why": "Provides a clean paywall-decline fallback that captures non-converting users with a time-boxed sampling of Janitor Plus features, proving value and driving future upgrade conversion."
+   }
+  ]
+ },
+ "usage": {
+  "input": 39124,
+  "output": 1066,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3072
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:57:03.887Z"
+}

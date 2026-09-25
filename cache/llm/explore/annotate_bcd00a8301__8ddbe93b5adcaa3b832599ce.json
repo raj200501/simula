@@ -1,0 +1,65 @@
+{
+ "purpose": "annotate:bcd00a8301",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s19",
+  "name": "Settings",
+  "kind": "page",
+  "purpose": "This screen allows users to configure app preferences, contact support, and access account settings or subscription upgrades.",
+  "inScope": false,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e9",
+    "intent": "Go to upgrade page",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e14",
+    "intent": "Change theme settings",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e23",
+    "intent": "Toggle Toki preference",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e32",
+    "intent": "Contact support",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "out of scope"
+   },
+   {
+    "el": "e41",
+    "intent": "Open account and data settings",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "out of scope"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Upgrade to Luzia+",
+    "el": "e12"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3101,
+  "output": 369,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:17:04.726Z"
+}

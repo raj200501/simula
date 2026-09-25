@@ -1,0 +1,111 @@
+{
+ "purpose": "judge-cal:neg-loss-framing",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal surfaces on Chats Home, which is a standard app surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The proposal rewards task completion (playing a game) and does not incentivize clicks, installs, or ratings."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": false,
+    "evidence": "The offer text explicitly states: 'Watch now or lose your chat history: your conversations are deleted in 24 hours unless you play a 15-second game.' This is a hostage/loss framing dark pattern."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard shows an explicit CTA 'Play task' to initiate the experience."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer discloses the action (15-second game) and the reward (30 minutes of Upgrade to Luzia+)."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer text includes a 'Close' button to decline."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is a badge on the Chats Home screen, not an interruptive ad."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to non-payers only."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "It uses a daily tasks hub, which is a proactive surface. It lacks the urgency of a 'moment-of-need' trigger.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer uses a hostage-style 'lose your chat history' threat which is a severe violation of user trust.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Granting 30 minutes of the core subscription ('Luzia+') daily for just 3 tasks is overly generous and risks devaluing the paid tier.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The proposal has zero COGS and generates positive revenue. The sizing is aggressive, but mathematically viable in isolation.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Chats Home is the core loop surface, ensuring high reach.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps well to the SIM-RWD unit and uses existing screen structures.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal uses app-specific nouns like 'Chats Home' and 'Upgrade to Luzia+'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 tasks per day, which is reasonable.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "KPIs and a holdout strategy are explicitly defined.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the 'lose your chat history' hostage-style copy immediately. Use a positive frame like 'Unlock deep reasoning mode for 30 minutes'.",
+   "Reduce the generosity of the reward. Granting the core subscription ('Luzia+') is high-risk for cannibalization. Consider granting a limited number of 'deep reasoning' responses instead of a time-boxed subscription session.",
+   "Ensure the task completion animation and grant flow clearly distinguish the reward from the actual paid subscription."
+  ],
+  "topConcern": "The use of loss framing ('lose your chat history') to force engagement is a severe dark pattern that violates basic trust principles and will lead to user churn and negative reviews."
+ },
+ "usage": {
+  "input": 42461,
+  "output": 1019,
+  "cacheRead": 40424,
+  "cacheWrite": 0,
+  "thoughts": 843
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:43.231Z"
+}

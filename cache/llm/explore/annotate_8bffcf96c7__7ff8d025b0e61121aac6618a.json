@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:8bffcf96c7",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Character Detail Page",
+  "kind": "page",
+  "purpose": "View character profile, description and start a chat.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e3",
+    "intent": "Close profile",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1833,
+  "output": 129,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:50:07.036Z"
+}

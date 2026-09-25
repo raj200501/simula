@@ -1,0 +1,35 @@
+{
+ "purpose": "annotate:4a3a2d916a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Home",
+  "kind": "chat",
+  "purpose": "This screen is the main AI chat interface where users can converse with Luzia, ask questions, or select prompt suggestions.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e21",
+    "intent": "Type a message to the AI chat",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi!",
+    "sendEl": "e23"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2468,
+  "output": 174,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:04:35.438Z"
+}

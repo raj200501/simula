@@ -1,0 +1,100 @@
+{
+ "purpose": "gap:r1",
+ "model": "gemini-3.8-flash",
+ "effort": "high",
+ "parsed": {
+  "checklist": [
+   {
+    "item": "currency or balance",
+    "found": false,
+    "evidence": "No virtual currency, coin balance, or token counter is displayed in the graph or resources."
+   },
+   {
+    "item": "earn source",
+    "found": false,
+    "evidence": "No rewarded tasks, daily bonuses, or currency earning mechanisms were found."
+   },
+   {
+    "item": "spend cost per action",
+    "found": false,
+    "evidence": "Actions such as sending messages or generating images did not display any credit or token cost."
+   },
+   {
+    "item": "wall (a limit is reached)",
+    "found": false,
+    "evidence": "No message limit, generation quota, or blocking paywall has been triggered yet."
+   },
+   {
+    "item": "store and prices",
+    "found": false,
+    "evidence": "No in-app store, price catalog, or subscription SKU pricing has been uncovered."
+   },
+   {
+    "item": "subscription",
+    "found": true,
+    "evidence": "Signals show upsell 'Try Luzia' in s01 and 'To enjoy Luzia+ you need to create an ac' in s07 referring to Luzia+."
+   },
+   {
+    "item": "check-in or tasks",
+    "found": false,
+    "evidence": "No daily check-in or engagement tasks system was found."
+   },
+   {
+    "item": "ads",
+    "found": false,
+    "evidence": "No advertisement placements or rewarded video units have been observed."
+   },
+   {
+    "item": "entitlements (what paying unlocks)",
+    "found": false,
+    "evidence": "The exact list of features unlocked by Luzia+ has not been shown on a subscription or features page."
+   }
+  ],
+  "targets": [
+   {
+    "state": "s01",
+    "action": "a01_12",
+    "scroll": false,
+    "input": null,
+    "why": "Top-right header icon may open the user account or Luzia+ subscription details."
+   },
+   {
+    "state": "s01",
+    "action": "a01_11",
+    "scroll": false,
+    "input": null,
+    "why": "Switching to the Apps tab may reveal premium AI tools or subscription-gated features."
+   },
+   {
+    "state": "s01",
+    "action": "a01_16",
+    "scroll": true,
+    "input": null,
+    "why": "Scrolling down on the home tab can uncover promotional banners, store links, or Luzia+ details."
+   },
+   {
+    "state": "s03",
+    "action": "a03_10",
+    "scroll": false,
+    "input": null,
+    "why": "Attempting photo animation may hit a feature wall or display Luzia+ upgrade entitlements."
+   },
+   {
+    "state": "s03",
+    "action": "a03_9",
+    "scroll": false,
+    "input": null,
+    "why": "Trying the photo editing feature could expose generation limits, costs, or paywalls."
+   }
+  ]
+ },
+ "usage": {
+  "input": 3947,
+  "output": 783,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2917
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:32:36.851Z"
+}

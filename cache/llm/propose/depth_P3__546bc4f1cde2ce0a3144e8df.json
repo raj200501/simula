@@ -1,0 +1,220 @@
+{
+ "purpose": "depth:P3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Premium Insights Unlock",
+  "oneLiner": "Unlock exclusive in-depth news analysis by playing a quick game.",
+  "case": "product-change",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m1",
+    "m3"
+   ],
+   "economy": [
+    "PremiumAccess"
+   ],
+   "newMechanic": {
+    "name": "Premium Insights",
+    "description": "Curated in-depth investigative journalism articles which are locked behind an ad-watch gate.",
+    "whyNeeded": "To provide high-quality gated content as a new ad-supported product tier, creating a value-exchange for non-paying users.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s01",
+  "trigger": "User taps an article in the feed marked 'Premium Insight'.",
+  "eligibility": "Non-subscribing users.",
+  "offer": {
+   "title": "Unlock Premium Insight",
+   "body": "Play a 15-second game to access this in-depth investigative article.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL News",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 Premium Deep-Dive Article",
+   "resource": "PremiumAccess",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Content access is rate-limited to 3 articles per day. No paid subscription exists currently to cannibalize; this builds the habit for future monetization.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Rewarded engagement rate",
+   "guardrails": [
+    "Article CTR",
+    "Retention",
+    "Session depth"
+   ],
+   "holdout": "10% user-level holdout for 4 weeks."
+  },
+  "precedents": [
+   "TAX-3",
+   "EX-SERIAL"
+  ],
+  "risks": [
+   "Low ad fill rate in certain geographies.",
+   "Potential user friction if premium labels are not clearly distinguished from free articles."
+  ],
+  "evidence": [
+   {
+    "obs": "s01",
+    "el": "e22",
+    "quote": "Top Stories"
+   },
+   {
+    "obs": "s02",
+    "el": "e38",
+    "quote": "Tiffani Thiessen says a former resident still live"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "modal",
+     "change": "Modal to unlock premium content for the user."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne_premium_tag",
+     "in": "s01",
+     "near": "e38",
+     "place": "after",
+     "change": "Add 'Premium' label to selected articles."
+    },
+    {
+     "id": "ne_play",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Play button to initiate rewarded ad."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s01",
+     "el": "ne_premium_tag",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne_play",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "PremiumAccess",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "PremiumAccess",
+      "lt": 3
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s01",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e38",
+      "text": "User browses normal articles in the Home News Feed."
+     }
+    ],
+    "caption": "The Home News Feed displays standard news content."
+   },
+   {
+    "phase": "change",
+    "screen": "s01",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne_premium_tag",
+      "text": "A new 'Premium' tag identifies exclusive in-depth insights."
+     }
+    ],
+    "caption": "Curated premium articles are introduced to the feed."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne_play",
+      "text": "Play a quick game to unlock this premium content."
+     }
+    ],
+    "caption": "An overlay invites the user to play for access."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne_play",
+      "text": "The user plays the branded mini-game with AOL News."
+     }
+    ],
+    "caption": "A 15-second mini-game engagement."
+   },
+   {
+    "phase": "value",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "PremiumAccess",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e12",
+      "text": "Article unlocked successfully."
+     }
+    ],
+    "caption": "Content is now unlocked and readable."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35200,
+  "output": 1598,
+  "cacheRead": 22820,
+  "cacheWrite": 0,
+  "thoughts": 2360
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:16:13.019Z"
+}

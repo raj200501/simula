@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v3",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets Chats Home (s01), which is a standard SFW chat interface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is +10 AI Usage Quota actions (r3), an in-app resource, with no incentives for clicks, installs, or cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses gain framing ('Play a 15-second sponsored game to get +10 bonus...') with a clear decline option ('Not today')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps an explicit CTA ('Play to unlock') before the ad plays."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The required action (15-second game) and reward (+10 bonus AI Usage Quota actions) are clearly stated."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining via 'Not today' leaves the app fully usable at the pre-offer state with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered at the start of a session on Chats Home; explicitly specifies 'never mid-reply'."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Explicitly eligibility-restricted to non-payers and never shown to subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets AI Usage Quota (r3) at the session start on Chats Home (s01) when quota is low.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal uses a native dismissible chip on Chats Home (s01) with game partner Luzia, preserving flow.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-payers, capped at 1 per day, keeping Luzia+ as the permanent unlimited option with a holdout.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve the reward ($0.0180) exceeds net revenue per view ($0.0063 at the low end), making unit economics upside down.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Chats Home (s01) is the core loop hub with high daily reach.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with standard patch elements (ne1 on s01).",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like Chats Home (s01), AI Usage Quota (r3), and Game Partner Luzia.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strictly capped at 1 per day (perDay: 1).",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics, guardrails, and a 10% user-level holdout.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward size from +10 to +3 or +4 actions (or use a cheaper model tier) so that the cost to serve ($0.0180) is well below net revenue per view ($0.0063-$0.0150).",
+   "Ensure that on Chats Home (s01), the offer is strictly suppressed during the absolute first session launch (m22) to respect first-value guardrails."
+  ],
+  "topConcern": "Unit economics are upside down because the cost to serve 10 text actions ($0.0180) exceeds the net revenue per completed view ($0.0063 at the low end)."
+ },
+ "usage": {
+  "input": 42616,
+  "output": 1079,
+  "cacheRead": 32333,
+  "cacheWrite": 0,
+  "thoughts": 2400
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:19:02.798Z"
+}

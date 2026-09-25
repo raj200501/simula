@@ -1,0 +1,1587 @@
+{
+  "schema": "simula.revisions/1",
+  "app": "aol",
+  "proposals": [
+    {
+      "id": "P1",
+      "version": 1,
+      "title": "Unlock Commenting",
+      "oneLiner": "Allow non-signed-in users to post a single comment after playing a game.",
+      "case": "product-change",
+      "archetype": "TAX-10",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m9"
+        ],
+        "economy": [
+          "POST_WALL"
+        ],
+        "newMechanic": {
+          "name": "One-Time Comment Post",
+          "description": "Allows a guest user to bypass the mandatory sign-up wall to post exactly one comment by watching a rewarded ad.",
+          "whyNeeded": "Comment sections thrive on volume; many users want to participate but churn at the sign-up gate.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s05",
+      "trigger": "User taps 'Sign Up to Post' or initiates a comment on s05",
+      "eligibility": "Non-signed-in users on the Add Comment Page.",
+      "offer": {
+        "title": "Post This Comment",
+        "body": "Play a 15-second game with AOL News to post your comment without signing up.",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL News",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "One comment post",
+        "resource": "POST_LIMIT",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "The offer is gated specifically to users who hit the sign-up wall. The main 'Sign Up to Post' call-to-action remains primary, and the reward is strictly limited to one post, incentivizing sign-up for long-term participation.",
+      "assumptions": {
+        "engagedShare": 0.1,
+        "viewsPerEngager": 1,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Comments per DAU",
+        "guardrails": [
+          "Paid account conversion rate",
+          "D1 retention"
+        ],
+        "holdout": "10% user holdout for 4 weeks"
+      },
+      "precedents": [
+        "TAX-10",
+        "EX-UTIL",
+        "POL-9"
+      ],
+      "risks": [
+        "Users may find the ad wall frustrating compared to a seamless sign-up.",
+        "One-off comments may be lower quality than member comments."
+      ],
+      "evidence": [
+        {
+          "obs": "s05",
+          "el": "Sign Up to Post",
+          "quote": "Sign Up to Post",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "modal",
+            "change": "Rewarded interstitial invitation for playing a mini-game to unlock posting."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s05",
+            "near": "Sign Up to Post",
+            "place": "before",
+            "change": "Add a text button: 'Watch a quick game to post instead'"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s05",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "POST_LIMIT",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "POST_LIMIT",
+              "lt": 1
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "Sign Up to Post",
+              "text": "User must sign up to join the conversation."
+            }
+          ],
+          "caption": "Currently, commenting is blocked by a mandatory sign-up wall."
+        },
+        {
+          "phase": "change",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New: Option to unlock posting via an ad."
+            }
+          ],
+          "caption": "We add an alternative path: watch a game to post."
+        },
+        {
+          "phase": "offer",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Offer: Post this comment for 15s of play."
+            }
+          ],
+          "caption": "The user opts in to the game."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ns1",
+              "text": "Game Partner: AOL News."
+            }
+          ],
+          "caption": "User plays the 15-second mini-game."
+        },
+        {
+          "phase": "value",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "Sign Up to Post",
+              "text": "Post button is now enabled."
+            }
+          ],
+          "caption": "User posts their comment successfully."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.1,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.1,
+          "arpdauUsd": 0.0012,
+          "annualPer1mDauUsd": 438000,
+          "label": "Scenario, not a forecast: 10% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P1",
+      "version": 2,
+      "title": "Unlock Commenting with Game Play",
+      "oneLiner": "Allow non-signed-in users to post a single comment after playing a game.",
+      "case": "product-change",
+      "archetype": "TAX-10",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m9"
+        ],
+        "economy": [
+          "POST_WALL"
+        ],
+        "newMechanic": {
+          "name": "One-Time Comment Post",
+          "description": "Allows a guest user to bypass the mandatory sign-up wall to post exactly one comment by watching a rewarded ad. The app preserves the user's typed comment in local state during the ad flow and restores it upon REWARD_VERIFIED.",
+          "whyNeeded": "Comment sections thrive on volume; many users want to participate but churn at the sign-up gate.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s05",
+      "trigger": "User initiates a comment on s05 and triggers the sign-up wall. The app saves the current draft to local storage and restores it on REWARD_VERIFIED [ANTI-5].",
+      "eligibility": "Non-signed-in users on the Add Comment Page (s05) who encounter the sign-up wall.",
+      "offer": {
+        "title": "Post This Comment",
+        "body": "Play a 15-second game with AOL News to post your comment without signing up.",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL News",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "One comment post",
+        "resource": "POST_LIMIT",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "The offer is gated specifically to users who hit the sign-up wall. The primary 'Sign Up to Post' CTA remains the default. The reward is limited to a single post, ensuring users who want a long-term voice still have a clear incentive to sign up. Draft persistence ensures the comment text is preserved [ANTI-5].",
+      "assumptions": {
+        "engagedShare": 0.1,
+        "viewsPerEngager": 1,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Comments per DAU",
+        "guardrails": [
+          "Paid account conversion rate",
+          "D1 retention"
+        ],
+        "holdout": "10% user holdout for 4 weeks"
+      },
+      "precedents": [
+        "TAX-10",
+        "EX-UTIL",
+        "POL-9"
+      ],
+      "risks": [
+        "Users may find the ad wall frustrating compared to a seamless sign-up.",
+        "One-off comments may be lower quality than member comments."
+      ],
+      "evidence": [
+        {
+          "obs": "s05",
+          "quote": "m9 [desire] on s05 (Add Comment Page), reach=core-loop: User attempts to post a comment on an article and hits the sign-up wall.",
+          "verified": false
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "modal",
+            "change": "Rewarded interstitial invitation for playing a mini-game to unlock posting."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s05",
+            "place": "after",
+            "change": "Add a text button: 'Watch a quick game to post instead'"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s05",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "POST_LIMIT",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "POST_LIMIT",
+              "lt": 1
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "s05",
+              "text": "User is blocked by sign-up wall when attempting to post."
+            }
+          ],
+          "caption": "Currently, commenting is blocked by a mandatory sign-up wall."
+        },
+        {
+          "phase": "change",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New: Option to unlock posting via an ad."
+            }
+          ],
+          "caption": "We add an alternative path: watch a game to post."
+        },
+        {
+          "phase": "offer",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Offer: Post this comment for 15s of play."
+            }
+          ],
+          "caption": "The user opts in to the game; comment is saved."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ns1",
+              "text": "Game Partner: AOL News."
+            }
+          ],
+          "caption": "User plays the 15-second mini-game."
+        },
+        {
+          "phase": "value",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Post button enabled; draft restored."
+            }
+          ],
+          "caption": "User posts their comment successfully."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.1,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.1,
+          "arpdauUsd": 0.0012,
+          "annualPer1mDauUsd": 438000,
+          "label": "Scenario, not a forecast: 10% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P2",
+      "version": 1,
+      "title": "Daily News Reader Streak",
+      "oneLiner": "Turn daily news reading into rewards with a streak tracker and bonus Reader Points.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m6"
+        ],
+        "economy": [
+          "ReaderPoints (new)"
+        ],
+        "newMechanic": {
+          "name": "Reader Loyalty Program",
+          "description": "Daily reading streak tracking and rewarded point collection for user engagement.",
+          "whyNeeded": "News apps lack inherent scarcity; this creates a habit loop for daily retention and unlocks rewarded ad inventory that complements organic reading.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s13",
+      "trigger": "Proactive entry via the daily streak badge on the News Feed Home screen.",
+      "eligibility": "Logged-in non-premium users.",
+      "offer": {
+        "title": "Daily Reader Bonus",
+        "body": "Play a 15-second game with our news mascot to get 50 Reader Points toward your daily streak.",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL News Mascot",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "50 Reader Points",
+        "resource": "ReaderPoints",
+        "amount": 50,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 60
+      },
+      "cannibalizationGuard": "Points are cosmetic/loyalty based and carry no cash value, ensuring no IAP cannibalization. The streak reinforces habit and increases feed value.",
+      "assumptions": {
+        "engagedShare": 0.2,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 0
+      },
+      "kpis": {
+        "primary": "Daily Active Users (DAU) retention",
+        "guardrails": [
+          "Average daily sessions",
+          "Feed scroll depth"
+        ],
+        "holdout": "10% user-level random holdout for 4 weeks"
+      },
+      "precedents": [
+        "TAX-9",
+        "EX-DUO",
+        "AI-3"
+      ],
+      "risks": [
+        "Users may ignore the task if Reader Points aren't perceived as valuable.",
+        "Potential for low engagement if the mini-game is not fun."
+      ],
+      "evidence": [
+        {
+          "obs": "s13",
+          "el": "e14",
+          "quote": "Home",
+          "verified": true
+        },
+        {
+          "obs": "s13",
+          "el": "e11",
+          "quote": "Access your saved articles",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "sheet",
+            "change": "Daily Reader Rewards hub containing a progress tracker and the rewarded entry button."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s13",
+            "near": "e14",
+            "place": "after",
+            "change": "Reader Rewards button for daily streak tracking."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Daily streak progress banner displaying current streak."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "Watch ad button for 50 Reader Points."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s13",
+            "el": "ne1",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne3",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "ReaderPoints",
+                "delta": 50
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s13",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e14",
+              "text": "User browses news as usual with no loyalty program."
+            }
+          ],
+          "caption": "AOL News Feed today shows standard news content."
+        },
+        {
+          "phase": "change",
+          "screen": "s13",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New Reader Rewards entry button added to the top navigation."
+            }
+          ],
+          "caption": "The Daily Reader Streak mechanic introduces the Reader Rewards button."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne3",
+              "text": "Button to trigger the rewarded task flow."
+            }
+          ],
+          "caption": "User opens the Rewards Hub and is invited to play to earn points."
+        },
+        {
+          "phase": "ad",
+          "screen": "s13",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "e46",
+              "text": "15-second mini-game with the news mascot."
+            }
+          ],
+          "caption": "The user watches and plays a brief rewarded mini-game."
+        },
+        {
+          "phase": "value",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 50
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Points updated, streak progressed."
+            }
+          ],
+          "caption": "ReaderPoints are granted upon successful verification."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.3,
+          "arpdauUsd": 0.0036,
+          "annualPer1mDauUsd": 1314000,
+          "label": "Scenario, not a forecast: 20% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P2",
+      "version": 2,
+      "title": "Daily News Reader Streak",
+      "oneLiner": "Turn daily news reading into rewards with a streak tracker and Reader Points redeemable for ad-free time and saved articles.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m6"
+        ],
+        "economy": [
+          "ReaderPoints (new)",
+          "SavedArticles",
+          "AdFreePass (new)"
+        ],
+        "newMechanic": {
+          "name": "Reader Loyalty Program",
+          "description": "Daily reading streak tracking and rewarded point collection backed by the signed-in AOL account cloud database for cross-session persistence.",
+          "whyNeeded": "News apps lack inherent scarcity; this creates a habit loop for daily retention and unlocks rewarded ad inventory that complements organic reading while offering tangible utility like ad-free browsing hours.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s13",
+      "trigger": "Proactive entry via the daily streak badge on the News Feed Home screen.",
+      "eligibility": "Logged-in AOL account non-premium users.",
+      "offer": {
+        "title": "Earn Reader Points",
+        "body": "Play a 15-second game with AOL to earn 50 Reader Points. Redeem points for an ad-free browsing hour or extra saved article capacity.",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "50 Reader Points",
+        "resource": "ReaderPoints",
+        "amount": 50,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 60
+      },
+      "cannibalizationGuard": "ReaderPoints are earned through attention and redeemed for utility like ad-free time or saved article capacity rather than direct cash, preserving IAP while leveraging cloud-synced account state.",
+      "assumptions": {
+        "engagedShare": 0.2,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 0
+      },
+      "kpis": {
+        "primary": "Daily Active Users (DAU) retention",
+        "guardrails": [
+          "Average daily sessions",
+          "Feed scroll depth",
+          "Paid subscription conversion"
+        ],
+        "holdout": "10% user-level random holdout for 4 weeks"
+      },
+      "precedents": [
+        "TAX-9",
+        "EX-DUO",
+        "AI-3",
+        "TAX-2",
+        "TAX-7"
+      ],
+      "risks": [
+        "Users may ignore tasks if point redemption thresholds are set too high.",
+        "Cloud sync latency for streak persistence across devices."
+      ],
+      "evidence": [
+        {
+          "obs": "s13",
+          "el": "e14",
+          "quote": "Home",
+          "verified": true
+        },
+        {
+          "obs": "s13",
+          "el": "e11",
+          "quote": "Access your saved articles",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "sheet",
+            "change": "Daily Reader Rewards hub containing cloud-synced streak tracking, redemption options for ad-free browsing and saved articles, and the rewarded entry button."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s13",
+            "near": "e14",
+            "place": "after",
+            "change": "Reader Rewards button for daily streak tracking."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Daily streak progress banner displaying cloud-synced streak state."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "Watch ad button for 50 Reader Points."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s13",
+            "el": "ne1",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne3",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "ReaderPoints",
+                "delta": 50
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s13",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e14",
+              "text": "User browses news as usual with no loyalty program."
+            }
+          ],
+          "caption": "AOL News Feed today shows standard news content."
+        },
+        {
+          "phase": "change",
+          "screen": "s13",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New Reader Rewards entry button added to navigation."
+            }
+          ],
+          "caption": "Reader Rewards button added to News Feed Home."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne3",
+              "text": "Button to trigger the rewarded task flow."
+            }
+          ],
+          "caption": "User opens Rewards Hub and is invited to play."
+        },
+        {
+          "phase": "ad",
+          "screen": "s13",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "e46",
+              "text": "15-second mini-game with AOL partner."
+            }
+          ],
+          "caption": "User watches a quick mini-game with AOL."
+        },
+        {
+          "phase": "value",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "ReaderPoints",
+              "value": 50
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Points updated, streak progressed."
+            }
+          ],
+          "caption": "Points granted upon verified reward completion."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.3,
+          "arpdauUsd": 0.0036,
+          "annualPer1mDauUsd": 1314000,
+          "label": "Scenario, not a forecast: 20% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P3",
+      "version": 1,
+      "title": "Premium Insights Unlock",
+      "oneLiner": "Unlock exclusive in-depth news analysis by playing a quick game.",
+      "case": "product-change",
+      "archetype": "TAX-3",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m1",
+          "m3"
+        ],
+        "economy": [
+          "PremiumAccess"
+        ],
+        "newMechanic": {
+          "name": "Premium Insights",
+          "description": "Curated in-depth investigative journalism articles which are locked behind an ad-watch gate.",
+          "whyNeeded": "To provide high-quality gated content as a new ad-supported product tier, creating a value-exchange for non-paying users.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s01",
+      "trigger": "User taps an article in the feed marked 'Premium Insight'.",
+      "eligibility": "Non-subscribing users.",
+      "offer": {
+        "title": "Unlock Premium Insight",
+        "body": "Play a 15-second game to access this in-depth investigative article.",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL News",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Premium Deep-Dive Article",
+        "resource": "PremiumAccess",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "Content access is rate-limited to 3 articles per day. No paid subscription exists currently to cannibalize; this builds the habit for future monetization.",
+      "assumptions": {
+        "engagedShare": 0.3,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Rewarded engagement rate",
+        "guardrails": [
+          "Article CTR",
+          "Retention",
+          "Session depth"
+        ],
+        "holdout": "10% user-level holdout for 4 weeks."
+      },
+      "precedents": [
+        "TAX-3",
+        "EX-SERIAL"
+      ],
+      "risks": [
+        "Low ad fill rate in certain geographies.",
+        "Potential user friction if premium labels are not clearly distinguished from free articles."
+      ],
+      "evidence": [
+        {
+          "obs": "s01",
+          "el": "e22",
+          "quote": "Top Stories",
+          "verified": true
+        },
+        {
+          "obs": "s02",
+          "el": "e38",
+          "quote": "Tiffani Thiessen says a former resident still live",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "modal",
+            "change": "Modal to unlock premium content for the user."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne_premium_tag",
+            "in": "s01",
+            "near": "e38",
+            "place": "after",
+            "change": "Add 'Premium' label to selected articles."
+          },
+          {
+            "id": "ne_play",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Play button to initiate rewarded ad."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s01",
+            "el": "ne_premium_tag",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne_play",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "PremiumAccess",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "PremiumAccess",
+              "lt": 3
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e38",
+              "text": "User browses normal articles in the Home News Feed."
+            }
+          ],
+          "caption": "The Home News Feed displays standard news content."
+        },
+        {
+          "phase": "change",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne_premium_tag",
+              "text": "A new 'Premium' tag identifies exclusive in-depth insights."
+            }
+          ],
+          "caption": "Curated premium articles are introduced to the feed."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne_play",
+              "text": "Play a quick game to unlock this premium content."
+            }
+          ],
+          "caption": "An overlay invites the user to play for access."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne_play",
+              "text": "The user plays the branded mini-game with AOL News."
+            }
+          ],
+          "caption": "A 15-second mini-game engagement."
+        },
+        {
+          "phase": "value",
+          "screen": "s03",
+          "counters": [
+            {
+              "resource": "PremiumAccess",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "Article unlocked successfully."
+            }
+          ],
+          "caption": "Content is now unlocked and readable."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.3,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.45,
+          "arpdauUsd": 0.0054,
+          "annualPer1mDauUsd": 1971000,
+          "label": "Scenario, not a forecast: 30% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P3",
+      "version": 2,
+      "title": "Premium Insights Unlock",
+      "oneLiner": "Unlock exclusive in-depth news analysis by playing a quick game.",
+      "case": "product-change",
+      "archetype": "TAX-3",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m1",
+          "m3"
+        ],
+        "economy": [
+          "PremiumAccess"
+        ],
+        "newMechanic": {
+          "name": "Premium Insights",
+          "description": "Exclusive investigative deep-dive articles added as an additive tier on top of the complete existing free news catalog, with zero free content removed.",
+          "whyNeeded": "To provide high-quality gated content as a new ad-supported product tier, creating a value-exchange for non-paying users without harming trust.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s01",
+      "trigger": "Returning user (session 2+) taps an article in the feed marked 'Premium Insight'.",
+      "eligibility": "Returning non-subscribing users after session 1.",
+      "offer": {
+        "title": "Unlock Premium Insight",
+        "body": "Play a 15-second game to access this in-depth investigative article.",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL News",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Premium Deep-Dive Article",
+        "resource": "PremiumAccess",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "Content access is rate-limited to 3 articles per day. All existing free news articles remain fully accessible without ads or restrictions; this introduces purely additive premium content.",
+      "assumptions": {
+        "engagedShare": 0.3,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Rewarded engagement rate",
+        "guardrails": [
+          "Article CTR",
+          "Retention",
+          "Session depth"
+        ],
+        "holdout": "10% user-level holdout for 4 weeks."
+      },
+      "precedents": [
+        "TAX-3",
+        "EX-SERIAL"
+      ],
+      "risks": [
+        "Low ad fill rate in certain geographies.",
+        "Potential user friction if premium labels are not clearly distinguished from free articles."
+      ],
+      "evidence": [
+        {
+          "obs": "s01",
+          "el": "e22",
+          "quote": "Top Stories",
+          "verified": true
+        },
+        {
+          "obs": "s02",
+          "el": "e38",
+          "quote": "Tiffani Thiessen says a former resident still live",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "modal",
+            "change": "Modal to unlock premium content for the user."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne_premium_tag",
+            "in": "s01",
+            "near": "e38",
+            "place": "after",
+            "change": "Add 'Premium' label to selected articles."
+          },
+          {
+            "id": "ne_play",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Play button to initiate rewarded ad."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s01",
+            "el": "ne_premium_tag",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne_play",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "PremiumAccess",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "PremiumAccess",
+              "lt": 3
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e38",
+              "text": "User browses normal articles in the Home News Feed."
+            }
+          ],
+          "caption": "The Home News Feed displays standard news content."
+        },
+        {
+          "phase": "change",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne_premium_tag",
+              "text": "A new 'Premium' tag identifies exclusive in-depth insights."
+            }
+          ],
+          "caption": "Curated premium articles are introduced to the feed."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne_play",
+              "text": "Play a quick game to unlock this content."
+            }
+          ],
+          "caption": "An overlay invites the user to play for access."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne_play",
+              "text": "The user plays the branded mini-game with AOL News."
+            }
+          ],
+          "caption": "A 15-second mini-game engagement runs."
+        },
+        {
+          "phase": "value",
+          "screen": "s03",
+          "counters": [
+            {
+              "resource": "PremiumAccess",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "Article unlocked successfully."
+            }
+          ],
+          "caption": "Content is now unlocked and readable."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.3,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.45,
+          "arpdauUsd": 0.0054,
+          "annualPer1mDauUsd": 1971000,
+          "label": "Scenario, not a forecast: 30% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P3",
+      "version": 3,
+      "title": "Premium Insights Unlock",
+      "oneLiner": "Unlock exclusive in-depth news analysis by playing a quick game.",
+      "case": "product-change",
+      "archetype": "TAX-3",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m1",
+          "m3"
+        ],
+        "economy": [
+          "PremiumAccess"
+        ],
+        "newMechanic": {
+          "name": "Premium Insights",
+          "description": "An additive tier of exclusive investigative deep-dive articles, marked with a distinctive 'Premium' badge. Access requires a new content-gating backend infrastructure that tracks individual 'PremiumAccess' entitlements per user.",
+          "whyNeeded": "To establish a value-exchange for high-quality journalism, creating a premium ad-supported tier without removing any existing free content.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s01",
+      "trigger": "Returning user (session 2+) taps an article in the feed tagged as 'Premium'.",
+      "eligibility": "Returning non-subscribing users after session 1.",
+      "offer": {
+        "title": "Unlock Premium Insight",
+        "body": "Play a 15-second game to access this in-depth investigative article.",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL News",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Premium Deep-Dive Article",
+        "resource": "PremiumAccess",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "Access is rate-limited to 3 premium articles per day via ad-unlocking. All existing free articles remain completely unblocked and ad-accessible as they are today; premium content is strictly additive.",
+      "assumptions": {
+        "engagedShare": 0.3,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Rewarded engagement rate",
+        "guardrails": [
+          "Article CTR",
+          "Retention",
+          "Session depth"
+        ],
+        "holdout": "10% user-level holdout for 4 weeks to monitor IAP conversion impact if subscriptions are introduced."
+      },
+      "precedents": [
+        "TAX-3",
+        "EX-SERIAL"
+      ],
+      "risks": [
+        "Low ad fill rate in certain geographies.",
+        "Editorial dependency on producing high-value investigative content."
+      ],
+      "evidence": [
+        {
+          "obs": "s01",
+          "el": "e22",
+          "quote": "Top Stories",
+          "verified": true
+        },
+        {
+          "obs": "s02",
+          "el": "e38",
+          "quote": "Tiffani Thiessen says a former resident still live",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "modal",
+            "change": "Modal displaying a preview and the ad-unlock offer for premium investigative content."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne_premium_tag",
+            "in": "s01",
+            "near": "e38",
+            "place": "after",
+            "change": "Add visual 'Premium' badge to tagged high-value investigative articles in the feed."
+          },
+          {
+            "id": "ne_play_cta",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Play button trigger for SIM-RWD ad unit."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s01",
+            "el": "ne_premium_tag",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne_play_cta",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "PremiumAccess",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "PremiumAccess",
+              "lt": 3
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e38",
+              "text": "User browses normal articles in the Home News Feed."
+            }
+          ],
+          "caption": "The Home News Feed displays standard news content."
+        },
+        {
+          "phase": "change",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne_premium_tag",
+              "text": "A new 'Premium' badge distinguishes high-value deep-dives."
+            }
+          ],
+          "caption": "Curated Premium Insights are tagged in the news feed."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne_play_cta",
+              "text": "Play to unlock this premium content."
+            }
+          ],
+          "caption": "An overlay invites the user to play a short game for access."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne_play_cta",
+              "text": "User interacts with AOL News game partner."
+            }
+          ],
+          "caption": "A 15-second branded mini-game engagement runs."
+        },
+        {
+          "phase": "value",
+          "screen": "s03",
+          "counters": [
+            {
+              "resource": "PremiumAccess",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "Premium article content is displayed."
+            }
+          ],
+          "caption": "Content is unlocked and readable post-verification."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.3,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.45,
+          "arpdauUsd": 0.0054,
+          "annualPer1mDauUsd": 1971000,
+          "label": "Scenario, not a forecast: 30% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    }
+  ]
+}

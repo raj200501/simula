@@ -1,0 +1,44 @@
+{
+ "purpose": "annotate:87870b1aba",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Subscription Info",
+  "kind": "chat",
+  "purpose": "This screen shows a chat conversation explaining the benefits and subscription options for Luzia+.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e32",
+    "intent": "Ask another question about the subscription",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Where is the subscription?",
+    "sendEl": "e35"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Luzia+ offers:"
+   },
+   {
+    "kind": "price",
+    "text": "It’s available as a weekly or monthly subscription, with a free trial for new users."
+   }
+  ]
+ },
+ "usage": {
+  "input": 2913,
+  "output": 239,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T16:38:40.702Z"
+}

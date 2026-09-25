@@ -1,0 +1,26 @@
+{
+  "stage": "understand",
+  "app": "aol",
+  "runId": "un0925-151001",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T19:10:01.778Z",
+  "finishedAt": "2026-09-25T19:10:36.789Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "explore/ex0925-150140/graph.json",
+      "sha256": "329ef1f9a02969a6b4897eb5c6b28ee367f339995bcc7927cd2dfab426907132"
+    }
+  ],
+  "outputs": [
+    "model/product-model.json",
+    "model/digest.md",
+    "model/viewer.html"
+  ],
+  "llm": {
+    "calls": 1,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

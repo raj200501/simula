@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AOL: rewarded flows</title>
+<style>
+@font-face{font-family:"Deck Display";src:url("fonts/montserrat.woff2") format("woff2");font-weight:100 900;font-display:block}
+@font-face{font-family:"Deck Text";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--accent:#C6161E;--accent-ink:#FFFFFF;--accent-soft:rgba(198,22,30,0.1);--accent-line:rgba(198,22,30,0.28);--ink:#0F172A;--muted:#64748B;--body:#334155;--line:#E2E8F0;--soft:#F1F5F9;--ship:#047857;--revise:#B45309;--reject:#B91C1C;--display:"Deck Display","Deck Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:#D9DCE1}
+body{font-family:"Deck Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01"}
+@page{size:1920px 1080px;margin:0}
+.slide{position:relative;width:1920px;height:1080px;overflow:hidden;padding:52px 64px 64px;margin:24px auto;box-shadow:0 6px 28px rgba(17,24,39,.12);zoom:var(--z,1);
+  background:radial-gradient(1100px 760px at -6% -12%,rgba(198,22,30,0.1),transparent 62%),radial-gradient(1200px 820px at 106% 112%,rgba(96,165,250,.13),transparent 64%),#FBFCFE}
+@media print{html,body{background:#fff}.slide{margin:0;box-shadow:none;zoom:1;break-after:page;page-break-after:always}.slide:last-of-type{break-after:auto;page-break-after:auto}}
+a{color:inherit}
+.kicker{font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kicker b{color:var(--ink);font-weight:700}
+h1{font-family:var(--display);font-size:54px;line-height:1.1;margin:12px 0 0;font-weight:800;letter-spacing:-.02em;max-width:1640px;color:var(--ink)}
+h1 em{font-style:normal;color:var(--accent)}
+h1.lead{font-size:62px}
+h1.claim{font-size:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:1792px}
+h1.h2{font-size:40px}
+.sub{font-size:22px;line-height:1.45;color:var(--muted);margin:14px 0 0;max-width:1500px}
+.sub.one{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:1792px;margin-top:12px;font-size:21px}
+.foot{position:absolute;left:64px;right:64px;bottom:24px;display:flex;justify-content:space-between;font-size:14px;color:#94A3B8}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:14px;font-weight:650;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.badge.ship{background:#ECFDF5;color:var(--ship);border-color:#A7F3D0;font-weight:800;letter-spacing:.04em}
+.stat-k{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat-v{font-family:var(--display);font-size:34px;font-weight:800;margin-top:8px;letter-spacing:-.015em;color:var(--ink)}
+/* phones, markers, elbows */
+.phone{background:#0B0D12;box-shadow:inset 0 0 0 1.5px #2B2F38,0 30px 50px -22px rgba(15,23,42,.5),0 12px 22px -12px rgba(15,23,42,.28)}
+.screen{position:relative;overflow:hidden;background:#fff}
+.screen img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.zoom{position:absolute;z-index:3;overflow:hidden;background:#fff;border-radius:14px;box-shadow:0 0 0 2.5px #fff,0 0 0 4px var(--accent),0 18px 34px -14px rgba(15,23,42,.55)}
+.zoom-crop{position:absolute;overflow:hidden;border-radius:8px}
+.zoom img{position:absolute;max-width:none;display:block}
+.zoom-link{position:absolute;left:0;top:0;z-index:3;overflow:visible;pointer-events:none}
+.ring{position:absolute;border:2px solid var(--accent);border-radius:9px;box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 0 6px rgba(198,22,30,0.18)}
+.pin{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:#fff;color:var(--accent);font-size:11.5px;font-weight:800;line-height:16px;text-align:center;border:2px solid var(--accent);box-shadow:0 2px 6px rgba(15,23,42,.28)}
+.pin[data-kind="new"]{width:40px;margin-left:-20px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:10px;letter-spacing:.08em;border-color:#fff}
+.mk{position:absolute;width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-size:19px;font-weight:800;display:grid;place-items:center;box-shadow:0 0 0 4px #fff,0 6px 14px -4px rgba(198,22,30,0.55);z-index:2}
+.mk.sm{position:static;width:26px;height:26px;font-size:13px;box-shadow:none;display:inline-grid;margin-right:10px;vertical-align:middle}
+.mk.xs{position:static;width:22px;height:22px;font-size:12px;box-shadow:none;display:inline-grid;flex:none}
+.elbow{position:absolute;overflow:visible}
+.ph{position:absolute;left:36px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.cap-block{position:absolute;left:-14px}
+.cap{font-size:19px;line-height:1.32;font-weight:750;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:-.012em}
+.cap.long{font-size:17.5px}
+.decline{display:flex;gap:8px;align-items:flex-start;margin-top:10px;font-size:14.5px;line-height:1.35;color:var(--body)}
+.decline .ret{flex:none;width:20px;height:20px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:12px;display:grid;place-items:center;margin-top:0}
+.noshot{display:grid;place-items:center;background:var(--soft);border:2px dashed var(--line);border-radius:28px;color:var(--muted);font-size:15px}
+/* recommendation */
+.cards{display:grid;gap:28px;margin-top:40px}
+.card{display:flex;gap:30px;align-items:center;text-decoration:none;background:#fff;border-radius:26px;padding:26px 28px;box-shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(15,23,42,.28);border:1px solid #EEF2F7}
+.strip{display:flex;align-items:center;gap:4px;flex:none}
+.mini-arrow{display:flex}
+.card-k{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;align-items:center}
+.card h3{font-family:var(--display);font-size:28px;line-height:1.18;margin:14px 0 10px;font-weight:800;letter-spacing:-.015em}
+.card h3 em{font-style:normal;color:var(--accent)}
+.cards.n3 .card h3,.cards.n4 .card h3{font-size:25px}
+.cards.n1 .card h3{font-size:40px}
+.card-why{list-style:none;margin:26px 0 0;padding:22px 0 0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.card-why .stat{font-family:var(--display);font-size:24px;font-weight:800;color:var(--accent);letter-spacing:-.015em;white-space:nowrap}
+.card-why p{font-size:15.5px;line-height:1.45;color:var(--body);margin:6px 0 0}
+.card p{font-size:17px;line-height:1.45;color:var(--body);margin:0 0 16px}
+.none{margin-top:40px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px 36px;font-size:24px;line-height:1.45;max-width:1500px}
+.none p{margin:0 0 14px}
+.band{position:absolute;left:64px;right:64px;bottom:74px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
+.panel{background:rgba(255,255,255,.78);border:1px solid #E8EDF4;border-radius:22px;padding:22px 28px 24px;position:relative;overflow:hidden}
+.panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent)}
+.panel .stat-v{color:var(--accent)}
+.band p{font-size:17px;line-height:1.45;color:var(--body);margin:10px 0 0;max-width:820px}
+/* money today */
+.money{position:relative;margin-top:44px}
+.m-col{position:absolute;top:0}
+.scr{font-size:15px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.facts{list-style:none;margin:0;padding:0;font-size:16px;line-height:1.38;color:var(--body)}
+.facts li{margin-top:5px;padding-left:14px;position:relative}
+.facts li::before{content:"";position:absolute;left:0;top:.58em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.facts li.more{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:absolute;left:64px;right:64px;bottom:70px}
+.tiles.t3{position:static;grid-template-columns:repeat(3,1fr);margin:10px 0 18px}
+.tile{background:rgba(255,255,255,.8);border:1px solid #E8EDF4;border-radius:18px;padding:16px 20px}
+.tile p{font-size:17px;line-height:1.4;margin:8px 0 0;color:var(--ink)}
+/* flow */
+.stage{position:absolute;left:64px}
+.f-col{position:absolute}
+.trigger{position:absolute;top:0}
+.trig-arrow{position:absolute;left:0;top:0;overflow:visible}
+.trig-label{position:absolute;left:-40px;right:-40px;display:flex;gap:10px;align-items:flex-start;justify-content:center}
+.trig-label .t{flex:none;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:7px;margin-top:1px}
+.trig-label p{margin:0;font-size:16px;line-height:1.35;font-weight:600;color:var(--ink);max-width:470px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rail{position:absolute;right:64px;width:300px;display:flex;flex-direction:column;gap:16px}
+.rail h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 0;font-weight:700}
+.why{list-style:none;margin:0;padding:0}
+.why li{padding:16px 0 18px;border-top:1px solid var(--line)}
+.why li:first-child{border-top:0;padding-top:4px}
+.why .stat{font-family:var(--display);font-size:24px;white-space:nowrap;font-weight:800;line-height:1.15;letter-spacing:-.015em;color:var(--accent)}
+.why .txt{font-size:15.5px;line-height:1.45;color:var(--body);margin-top:6px}
+.proto{display:block;text-align:center;background:var(--accent);color:var(--accent-ink);padding:14px 16px;border-radius:14px;font-weight:750;text-decoration:none;font-size:17px;box-shadow:0 10px 22px -12px rgba(198,22,30,0.8)}
+.fine{font-size:13px;line-height:1.45;color:var(--muted);margin:0}
+/* details */
+.details{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:40px;margin-top:24px}
+.kv{margin-bottom:16px}
+.kv h4,.lbl{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.kv p{font-size:16.5px;line-height:1.42;margin:0}
+.kv ul{margin:0;padding-left:18px;font-size:15.5px;line-height:1.4}
+.btn{display:inline-block;margin-top:8px;background:var(--accent);color:var(--accent-ink);font-size:14px;font-weight:700;padding:5px 12px;border-radius:999px}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.frames{list-style:none;margin:2px 0 0;padding:0}
+.frames>li{margin-bottom:8px}
+.fr-h{display:flex;gap:8px;align-items:baseline;font-size:15px;line-height:1.35}
+.fr-h .mk.xs{align-self:flex-start;margin-top:-1px}
+.fr-h b{white-space:nowrap}
+.fr-c{color:var(--body)}
+.legend{list-style:none;padding:0 0 0 30px;margin:3px 0 0;font-size:14px;line-height:1.3;color:var(--body)}
+.legend li{display:flex;gap:6px;margin-top:3px}
+.legend .d{flex:none;min-width:18px;height:18px;padding:0 3px;border-radius:9px;background:#fff;border:1.5px solid var(--accent);color:var(--accent);font-size:10.5px;font-weight:800;display:grid;place-items:center}
+.legend .d.new{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-size:9px;letter-spacing:.06em;padding:0 5px}
+.legend .d.off{background:none;border:2px solid #CBD5E1;min-width:12px;width:12px;height:12px;margin:3px 3px 0}
+table{border-collapse:collapse;width:100%}
+.econ td{font-size:15px;padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.econ td:last-child{text-align:right;font-weight:650;padding-left:12px}
+.flags{margin:8px 0 0;padding-left:18px;font-size:14px;color:var(--revise)}
+.scenario{border:2px dashed #CBD5E1;border-radius:14px;padding:12px 16px;margin-bottom:16px;background:rgba(255,255,255,.6)}
+.scenario .tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--revise)}
+.sc-row{display:flex;gap:24px;margin-top:6px}
+.sc-row b{display:block;font-size:22px}
+.sc-row span{font-size:13px;color:var(--muted)}
+.scenario p{font-size:13.5px;line-height:1.35;color:var(--muted);margin:8px 0 0}
+.code{background:#0F172A;color:#E2E8F0;border-radius:14px;padding:14px 16px;font:11.5px/1.42 ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;white-space:pre-wrap;word-break:break-word;margin:0;max-height:600px;overflow:hidden}
+.code .c{color:#94A3B8}
+/* ideas */
+.ideas{margin-top:26px;font-size:18px;background:rgba(255,255,255,.7);border-radius:14px}
+.ideas th{text-align:left;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding:10px 12px}
+.ideas td{border-bottom:1px solid var(--line);padding:13px 12px;vertical-align:top;line-height:1.35}
+.ideas td.id{color:var(--muted);width:60px}
+.ideas td.num,.small td.num{text-align:right;font-variant-numeric:tabular-nums}
+.case{font-size:14px;color:var(--muted);margin-top:3px}
+.v{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.05em;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.v-ship{background:#ECFDF5;color:var(--ship)}.v-revise{background:#FFFBEB;color:var(--revise)}.v-reject{background:#FEF2F2;color:var(--reject)}.v-not-judged{background:var(--soft);color:var(--muted)}
+.also{font-size:16px;line-height:1.4;color:var(--body);margin:14px 0 0}
+/* appendix */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:30px}
+.method{margin:0;padding-left:22px;font-size:18px;line-height:1.45}
+.method li{margin-bottom:12px}
+.small{font-size:15px}
+.small th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding:7px 8px}
+.small td{border-bottom:1px solid var(--line);padding:7px 8px}
+.small tfoot td{font-weight:750;border-bottom:none}
+.lim{font-size:18px;line-height:1.45;padding-left:20px;margin:0}
+.lim li{margin-bottom:10px}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px}
+.quad h3{margin:0 0 8px;font-size:22px;font-family:var(--display);font-weight:800}
+.quad ul{margin:0;padding-left:20px;font-size:17px;line-height:1.45}
+</style>
+</head><body>
+<section class="slide " id="recommendation">
+<div class="kicker"><b>AOL</b> · Rewarded ads recommendation</div>
+<h1 class="lead">No rewarded flow for AOL is ready to ship yet.</h1>
+<p class="sub">Nothing below is promoted from a weaker verdict: only SHIP proposals become flows.</p>
+<div class="none"><p>We reviewed 3 ideas: 0 ship, 0 need revision, 3 rejected.</p><p>No idea cleared the judge's bar (weighted score ≥ 3.8 with every criterion ≥ 3 and every gate passed), so there is no flow to show. “Ideas we rejected, and why” lists what each one would need.</p></div>
+<div class="band">
+<div class="panel"><div class="stat-k">Exchange rate</div><div class="stat-v">Not computable</div>
+<p>No priced packs observed: unit prices, action costs and exchange rate are unavailable.</p></div>
+<div class="panel"><div class="stat-k">Cheapest pack</div><p>No priced pack was observed, so there is no paid path to cannibalize in currency terms.</p></div></div>
+<div class="foot"><span>AOL · rewarded flows · generated from the product model</span><span>1 / 6</span></div></section>
+<section class="slide " id="money-today">
+<div class="kicker"><b>AOL</b> · Today</div>
+<h1>How AOL <em>makes money today</em></h1>
+<p class="sub">Monetizes primarily through native and display advertisements (such as Taboola advertising units) embedded within news feeds and article pages. Real screens from the app; prices and costs as observed.</p>
+<div class="money" style="height:642px"><div class="m-col" style="left:34px;width:212px"><div class="noshot" style="width:212px;height:452px">No screen</div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">1</span><span class="ph" style="top:454px">Earn</span>
+<div class="cap-block" style="top:492px;width:343px"><ul class="facts"><li>Not observed</li></ul></div></div><div class="m-col" style="left:389px;width:212px"><div class="noshot" style="width:212px;height:452px">No screen</div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">2</span><span class="ph" style="top:454px">Balance</span>
+<div class="cap-block" style="top:492px;width:343px"><ul class="facts"><li>Not observed</li></ul></div></div><div class="m-col" style="left:744px;width:212px"><div class="noshot" style="width:212px;height:452px">No screen</div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">3</span><span class="ph" style="top:454px">Spend</span>
+<div class="cap-block" style="top:492px;width:343px"><ul class="facts"><li>Not observed</li></ul></div></div><div class="m-col" style="left:1099px;width:212px"><div class="noshot" style="width:212px;height:452px">No screen</div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">4</span><span class="ph" style="top:454px">Hit the wall</span>
+<div class="cap-block" style="top:492px;width:343px"><ul class="facts"><li>Not observed</li></ul></div></div><div class="m-col" style="left:1454px;width:212px"><div class="noshot" style="width:212px;height:452px">No screen</div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">5</span><span class="ph" style="top:454px">Buy</span>
+<div class="cap-block" style="top:492px;width:343px"><ul class="facts"><li>Not observed</li></ul></div></div></div>
+<div class="tiles"><div class="tile"><div class="stat-k">Price per unit</div><p>No priced packs observed</p></div><div class="tile"><div class="stat-k">Free every day</div><p>No daily free source observed</p></div><div class="tile"><div class="stat-k">Cheapest pack</div><p>None observed</p></div><div class="tile"><div class="stat-k">Ads today</div><p>Banner and native sponsored recommendations (Taboola) appear frequently throughout the news feed and article view pages.</p></div></div>
+<div class="foot"><span>AOL · rewarded flows · generated from the product model</span><span>2 / 6</span></div></section>
+<section class="slide " id="ideas-1">
+<div class="kicker"><b>AOL</b> · Review</div>
+<h1>Ideas we rejected, and why</h1>
+<p class="sub">Every candidate the judge scored, with its final verdict. Only SHIP becomes a flow; REVISE is never promoted. Weighted score out of 5.</p>
+<table class="ideas"><thead><tr><th>ID</th><th>Idea</th><th>Verdict</th><th>Score</th><th>Why</th></tr></thead><tbody><tr><td class="id">P1</td><td><b>Unlock Commenting with Game Play</b><div class="case">Product change</div></td><td><span class="v v-reject">REJECT</span></td>
+<td class="num">4.30</td><td>REJECT after 1 revision: revision stalled (weighted -0.2, below +0.2) with the same gate failures. Top concern: Grounding error in economy items (&#39;POST_WALL&#39; is not…</td></tr><tr><td class="id">P3</td><td><b>Premium Insights Unlock</b><div class="case">Product change</div></td><td><span class="v v-reject">REJECT</span></td>
+<td class="num">3.95</td><td>REJECT after 2 revisions: fixable gate failed: grounding (code); specificity scored 2 (&lt; 3); still REVISE after round 2. Top concern: AOL is a traditional ad-supported…</td></tr><tr><td class="id">P2</td><td><b>Daily News Reader Streak</b><div class="case">Product change</div></td><td><span class="v v-reject">REJECT</span></td>
+<td class="num">3.65</td><td>REJECT after 1 revision: revision stalled (weighted -0.05, below +0.2) with the same gate failures. Top concern: Cannibalization of ad-free subscription value: giving…</td></tr></tbody></table>
+<p class="also"><b>Brainstormed, not developed:</b> Ad-Free Reading Hour · Saved Articles Capacity · AI News Summary Boost · Offline Reading Refill · Sponsored Brand Topic</p>
+<p class="also"><b>Obvious baseline the proposer had to go beyond:</b> Insert more native recommendation units into the Home Feed feed. · Show full-screen interstitial ads between article clicks. · Add more persistent banner ads in article detail views.</p>
+<div class="foot"><span>AOL · rewarded flows · generated from the product model</span><span>3 / 6</span></div></section>
+<section class="slide " id="appendix-method">
+<div class="kicker"><b>AOL</b> · Appendix</div>
+<h1>Method and mock fidelity</h1>
+<div class="two"><div><ol class="method"><li><b>Explore.</b> 60 steps, 17 states, 58 edges, 1 external surface in 8 min; stopped: budget steps. 72 actions deliberately not explored.</li><li><b>Understand.</b> 17 screens in the product model; 8 claims verified against on-screen text, 0 inferred. Synthesized by llm.</li><li><b>Mock + QA.</b> 33% of screens rebuilt in HTML; 22/22 navigation flows pass.</li><li><b>Propose.</b> 8 ideas, 3 developed into typed proposals (patch, storyboard, assumptions). Generated by llm.</li><li><b>Judge.</b> 7 judgment rounds for 3 proposals: code gates first, then a rubric scored by llm; the verdict is computed in code (ship ≥ 3.8, every criterion ≥ 3, ≤ 2 rounds).</li><li><b>Slides.</b> Every frame is a screenshot of the patched mock driven through its runtime API; callouts sit on measured DOM positions; numbers come from economics code.</li></ol></div>
+<div><h4 class="lbl">QA fidelity (mock vs the real screenshots)</h4>
+<div class="tiles t3"><div class="tile"><div class="stat-k">Mean composite</div><div class="stat-v">0.77</div></div>
+<div class="tile"><div class="stat-k">Flow pass rate</div><div class="stat-v">100%</div></div>
+<div class="tile"><div class="stat-k">HTML screens</div><div class="stat-v">33%</div></div></div>
+<table class="small"><thead><tr><th>Screen</th><th>Render</th><th>Composite</th><th>Rounds</th><th>Must-fix</th></tr></thead><tbody><tr><td>Home News Feed</td><td>html</td><td class="num">0.73</td><td class="num">1</td><td class="num">0</td></tr><tr><td>Home News Feed</td><td>html</td><td class="num">0.79</td><td class="num">1</td><td class="num">1</td></tr><tr><td>Article Details</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Conversation Screen</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Add Comment Page</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Sign In Screen</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Home News Feed</td><td>html</td><td class="num">0.65</td><td class="num">1</td><td class="num">1</td></tr><tr><td>Home News Feed</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Saved Articles</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Search Suggestions</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Account Menu Sidebar</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>No Contacts</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr></tbody></table></div></div>
+<div class="foot"><span>AOL · rewarded flows · generated from the product model</span><span>4 / 6</span></div></section>
+<section class="slide " id="appendix-cost">
+<div class="kicker"><b>AOL</b> · Appendix</div>
+<h1>Cost and limitations</h1>
+<div class="two"><div><h4 class="lbl">Model spend for this app (from cost.jsonl)</h4>
+<table class="small"><thead><tr><th>Stage</th><th>Live calls</th><th>Cached</th><th>Tokens in</th><th>Tokens out</th><th>USD</th></tr></thead>
+<tbody><tr><td>explore</td><td class="num">29</td><td class="num">0</td><td class="num">114.0k</td><td class="num">8.5k</td><td class="num">$0</td></tr><tr><td>understand</td><td class="num">1</td><td class="num">0</td><td class="num">20.1k</td><td class="num">1.4k</td><td class="num">$0</td></tr><tr><td>mock</td><td class="num">7</td><td class="num">0</td><td class="num">56.7k</td><td class="num">95.4k</td><td class="num">$0</td></tr><tr><td>qa</td><td class="num">4</td><td class="num">0</td><td class="num">41.3k</td><td class="num">61.1k</td><td class="num">$0</td></tr><tr><td>propose</td><td class="num">8</td><td class="num">0</td><td class="num">404.7k</td><td class="num">30.4k</td><td class="num">$0</td></tr><tr><td>judge</td><td class="num">7</td><td class="num">0</td><td class="num">415.4k</td><td class="num">18.9k</td><td class="num">$0</td></tr></tbody>
+<tfoot><tr><td>Total</td><td class="num">56</td><td class="num">0</td><td class="num">1.1M</td><td class="num">215.8k</td><td class="num">$0</td></tr></tfoot></table>
+<p class="fine">Gemini free tier: calls cost $0; tokens are still logged. Models: gemini-3.5-flash-lite, gemini-3.1-flash-lite. Cached calls replay from disk at no cost.</p></div>
+<div><h4 class="lbl">Limitations</h4><ul class="lim"><li>Explored on an Android emulator (logged-in account); 72 actions left unexplored by guard rails or scope, listed in the model viewer.</li><li>0 product-model claims inferred rather than observed; the economy review is the human checkpoint for them.</li><li>Revenue per view uses KB eCPM ranges with a non-game haircut; some constants are inferred. ARPDAU appears only as a labelled scenario.</li><li>The ad in the frames is simulated by the mock; real fill, creatives and completion rates vary by market.</li><li>The judge is a separate call of the same model family as the proposer; its single-fault calibration table is in judge-eval.md.</li></ul></div></div>
+<div class="foot"><span>AOL · rewarded flows · generated from the product model</span><span>5 / 6</span></div></section>
+<section class="slide " id="appendix-scale">
+<div class="kicker"><b>AOL</b> · Appendix</div>
+<h1>How this runs across hundreds of apps</h1>
+<div class="quad"><div class="tile"><h3>Storage and versioning</h3><ul><li>Screenshots, element lists and HTML are content-addressed blobs; artifact JSON references them by hash.</li><li>A model version is keyed by package, version code and a UI fingerprint of the core flows, which also catches over-the-air updates.</li><li>A diff between two model versions (screens, walls, prices, offers) is itself a sales signal.</li></ul></div><div class="tile"><h3>When to re-explore</h3><ul><li>Daily store version poll; weekly no-LLM smoke replay of the core flows and the path to the wall.</li><li>Drift above 10% or any price change triggers an incremental re-explore from the known graph (about 20% of first-run cost).</li><li>A new ad format re-runs only propose and judge.</li></ul></div><div class="tile"><h3>Where humans review</h3><ul><li>App onboarding and login (15 min); economy review, the highest-leverage step (10 min).</li><li>Deck approval before any customer sees it (15–30 min); exception queue for blocked apps.</li><li>Monthly judge audit against labelled outcomes.</li></ul></div><div class="tile"><h3>Cost and sales fit</h3><ul><li>Prospect scan without a mock ≈ $5 of model calls; full pitch pack ≈ $20–25 plus 45–60 min of human review.</li><li>The deck, clickable prototype and sizing sheet attach to the CRM deal; each SHIP&#39;s integration snippet becomes the implementation ticket.</li><li>Post-launch opt-in, completion and IAP guardrails flow back to recalibrate economics and the judge.</li></ul></div></div>
+<div class="foot"><span>AOL · rewarded flows · generated from the product model</span><span>6 / 6</span></div></section>
+<script>
+// Fit 1920px slides to the window on screen; print (PDF/PNG export) always renders at 1:1.
+(function () { function fit() { var z = Math.min(1, (window.innerWidth - 32) / 1920); document.documentElement.style.setProperty("--z", String(z)); } fit(); window.addEventListener("resize", fit); })();
+</script>
+</body></html>

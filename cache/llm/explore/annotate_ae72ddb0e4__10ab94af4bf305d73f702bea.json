@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:ae72ddb0e4",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Photo Edit Sheet",
+  "kind": "sheet",
+  "purpose": "Select photo source for editing.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Attach photo from gallery",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e6",
+    "intent": "Take photo with camera",
+    "kind": "tap",
+    "priority": 2,
+    "skip": "camera"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2032,
+  "output": 177,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:36.186Z"
+}

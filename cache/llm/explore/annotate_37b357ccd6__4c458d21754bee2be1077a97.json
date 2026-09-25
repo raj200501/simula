@@ -1,0 +1,57 @@
+{
+ "purpose": "annotate:37b357ccd6",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Ideas Feed",
+  "kind": "page",
+  "purpose": "Displays a grid of creative prompts and ideas for generating images and media.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e16",
+    "intent": "View Vogue fashion editorial idea details",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e7",
+    "intent": "Filter by Style",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e49",
+    "intent": "Switch to Chat tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e51",
+    "intent": "Switch to Services tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e52",
+    "intent": "Switch to Apps tab",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 4012,
+  "output": 303,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:06:14.811Z"
+}

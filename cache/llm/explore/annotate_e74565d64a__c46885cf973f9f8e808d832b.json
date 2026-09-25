@@ -1,0 +1,47 @@
+{
+ "purpose": "annotate:e74565d64a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "AI Chat Home",
+  "kind": "chat",
+  "purpose": "The main chat interface of the Luzia AI assistant where users can prompt the AI or use suggested quick actions.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e18",
+    "intent": "Type a prompt to the AI assistant",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e21"
+   },
+   {
+    "el": "e8",
+    "intent": "Select prompt suggestion: Create an image",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e4",
+    "intent": "Open side navigation menu",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2484,
+  "output": 258,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:30:31.333Z"
+}

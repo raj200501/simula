@@ -1,0 +1,57 @@
+{
+ "purpose": "annotate:c778b7b450",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Attach and Mode Sheet",
+  "kind": "sheet",
+  "purpose": "Provides attachment options and reasoning mode selection for the AI chat.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Take a photo to attach",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e6",
+    "intent": "Attach existing photos",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e7",
+    "intent": "Attach files",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "Toggle deep reasoning mode",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e2",
+    "intent": "Dismiss sheet",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2258,
+  "output": 295,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T16:35:12.288Z"
+}

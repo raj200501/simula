@@ -1,0 +1,14 @@
+{
+  "screen": "s09",
+  "round": 1,
+  "stop": "round-cap",
+  "composite": 0.7697,
+  "iou": 0.9796,
+  "ssim": 0.3476,
+  "text": 1,
+  "color": 0.6998,
+  "pixelDiff": 0.5856,
+  "elements": 34,
+  "missing": 0,
+  "mustFix": 0
+}

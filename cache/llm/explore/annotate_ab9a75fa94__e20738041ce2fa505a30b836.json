@@ -1,0 +1,57 @@
+{
+ "purpose": "annotate:ab9a75fa94",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s03",
+  "name": "Article Details",
+  "kind": "page",
+  "purpose": "Display news article content with embedded ads.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Go back to previous screen",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e15",
+    "intent": "Ignore ad",
+    "kind": "tap",
+    "priority": 3,
+    "skip": "ad"
+   },
+   {
+    "el": "e49",
+    "intent": "Open comments",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e50",
+    "intent": "Adjust font size",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "Smart tool storage for less Ad · TEMU"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3843,
+  "output": 295,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:08:45.302Z"
+}

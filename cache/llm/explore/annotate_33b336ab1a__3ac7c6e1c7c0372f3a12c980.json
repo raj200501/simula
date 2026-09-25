@@ -1,0 +1,39 @@
+{
+ "purpose": "annotate:33b336ab1a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Doodle Page",
+  "kind": "page",
+  "purpose": "Displays a doodle app or feature page.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e4",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e5",
+    "intent": "Add to Home screen",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1964,
+  "output": 168,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:18:25.749Z"
+}

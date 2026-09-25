@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:29189ff941",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Explore Characters",
+  "kind": "page",
+  "purpose": "Discover and select AI characters to chat with.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e33",
+    "intent": "Open character chat or details",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e35",
+    "intent": "Open character chat or details",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e7",
+    "intent": "Filter by limited only",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e13",
+    "intent": "View hidden gems",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 4353,
+  "output": 256,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:49:10.332Z"
+}

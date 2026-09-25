@@ -1,0 +1,25 @@
+{
+  "stage": "propose",
+  "app": "luzia",
+  "runId": "pr0925-141402",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:14:02.868Z",
+  "finishedAt": "2026-09-25T18:25:57.443Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "b3cc3f56c4d2f9f7dd411d1a15bbb7e6244377ee94da1d18fc0d7191bdf3f162"
+    }
+  ],
+  "outputs": [
+    "proposals/candidates.json",
+    "proposals/candidates.md"
+  ],
+  "llm": {
+    "calls": 0,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

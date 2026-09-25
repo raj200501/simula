@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-no-decline",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposed surface is the Services Tab (s06) and the trigger follows the Create Account Sheet (s07), both of which are core application surfaces."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The proposal rewards a 15-second game interaction and does not offer cash, gift cards, or incentivize ad clicks/installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer is framed as a benefit for a sample and does not threaten loss of existing content."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the CTA 'Play to try'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states: 'Play a 15-second game to try 30 minutes of Upgrade to Luzia+ now.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": false,
+    "evidence": "The offer definition explicitly sets \"decline\": \"\", omitting a working decline control despite the storyboard caption suggesting one exists."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on the Services Tab after the user has dismissed the Create Account Sheet, which is a natural boundary."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to guests who just declined the account sheet, excluding payers and subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer triggers immediately after the user interacts with the 'Upgrade to Luzia+' paywall, which is the exact moment of need.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The ad does not degrade free features and the paid path remains the primary and dominant choice.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The offer is a 30-minute time-boxed sample for guests only, gated behind a paywall decline, which effectively segments users.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero, and revenue is solid for a non-game; the reward is a time-limited sample.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger occurs for any guest hitting the paywall, which is frequent per m1 and m2.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD units with standard callback verification.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal references specific app elements: 'Create Account Sheet', 'Services Tab', and 'Upgrade to Luzia+'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal includes a 1/day cap, but the lack of a decline button constitutes a dark pattern/nagging behavior.",
+    "score": 2
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes conversion guardrails, holdout, and success metrics.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Add an explicit, functional decline ('No thanks') button to the offer UI.",
+   "Ensure the decline button returns the user directly to the Services Tab without penalty or nag screens."
+  ],
+  "topConcern": "The proposal lacks a mandatory, working decline option (as indicated by the empty string in the offer definition), which violates mandatory policy and creates a negative user experience."
+ },
+ "usage": {
+  "input": 42366,
+  "output": 989,
+  "cacheRead": 36381,
+  "cacheWrite": 0,
+  "thoughts": 1746
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:44.633Z"
+}

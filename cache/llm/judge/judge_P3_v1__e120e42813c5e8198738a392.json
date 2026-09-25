@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Surface s04 is the Janitor Plus subscription paywall, which is SFW and safe."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal rewards a 15-second mini-game view, not clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "No loss or hostage framing is used; it offers a positive sampling path ('Try Janitor Plus Free')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User explicitly opts in via the 'Play Now' CTA button on the trial offer modal."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The exact reward (1-hour trial of Janitor Plus features) and required action (15-second game) are stated before the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "An equally legible decline button ('No Thanks') is provided, leaving the user free to dismiss."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered when a free user taps 'Not now' on the subscription paywall, not during a streaming response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted strictly to non-paying free users who dismiss the paywall."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal triggers right when declining the paywall (m3), offering a 1-hour trial of the exact features just declined.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Feels native, offering a time-boxed trial of premium features on paywall decline without removing free value.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Strictly gated to paywall decliners, time-boxed to 1 hour, and capped at once per day.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0090) exceeds net revenue per view ($0.0063) at the low end, flagging a margin deficit.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on paywall dismissal (m3), reaching users who encounter and decline the subscription paywall.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD with an invitation entry point and standard reward verification.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References the Janitor Plus paywall and screen s04, though flagged for an economy resource mapping issue.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped strictly at once per day with a 1440-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metrics, guardrails, and a 20% user-level randomized holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Resize the reward COGS or adjust the model tier to ensure cost-to-serve ($0.0090) does not exceed net revenue per view ($0.0063) at the low end.",
+   "Correct the economy resource grounding for the plan entitlement in the proposal patch."
+  ],
+  "topConcern": "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end, making the unit economics margin-negative."
+ },
+ "usage": {
+  "input": 35121,
+  "output": 1022,
+  "cacheRead": 32241,
+  "cacheWrite": 0,
+  "thoughts": 3049
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:57:54.302Z"
+}

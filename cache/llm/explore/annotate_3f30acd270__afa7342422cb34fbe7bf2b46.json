@@ -1,0 +1,39 @@
+{
+ "purpose": "annotate:3f30acd270",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s02",
+  "name": "Toki Chat",
+  "kind": "chat",
+  "purpose": "A chat interface for interacting with the AI assistant Toki.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e15",
+    "tapPoint": {
+     "x": 200,
+     "y": 860
+    },
+    "intent": "Type a message to the AI assistant",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hello!",
+    "sendEl": "e18"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2421,
+  "output": 191,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:26:11.043Z"
+}

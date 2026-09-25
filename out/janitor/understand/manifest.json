@@ -1,0 +1,26 @@
+{
+  "stage": "understand",
+  "app": "janitor",
+  "runId": "un0925-145237",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:52:37.560Z",
+  "finishedAt": "2026-09-25T18:53:03.812Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "explore/ex0925-144731/graph.json",
+      "sha256": "bc2e9f93111b0ac2ded85570165d51831e57d11afaaaaf6006a8294323614d00"
+    }
+  ],
+  "outputs": [
+    "model/product-model.json",
+    "model/digest.md",
+    "model/viewer.html"
+  ],
+  "llm": {
+    "calls": 1,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

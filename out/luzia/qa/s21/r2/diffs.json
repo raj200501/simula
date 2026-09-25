@@ -1,0 +1,338 @@
+{
+  "worst": [
+    {
+      "node": "e4",
+      "role": "image",
+      "severity": 0.00611,
+      "mustFix": false,
+      "phrase": "e4: bg #000000 vs #FFBB33; text '★' vs 'Add button'"
+    },
+    {
+      "node": "e10",
+      "role": "button",
+      "severity": 0.00516,
+      "mustFix": false,
+      "phrase": "e10: 29dp too far right; bg #000000 vs #FFFFFF"
+    },
+    {
+      "node": "e7",
+      "role": "image",
+      "severity": 0.00312,
+      "mustFix": false,
+      "phrase": "e7: text '🕒' vs 'Add button'"
+    }
+  ],
+  "mustFix": [],
+  "elements": [
+    {
+      "id": "e1",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#333333",
+      "bgMock": "#333333",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e2",
+      "role": "button",
+      "areaFrac": 0.6933333333333334,
+      "missing": false,
+      "iou": 0.9987721827407775,
+      "want": "Close sheet",
+      "got": "Close sheet",
+      "textScore": 1,
+      "bgOrig": "#333333",
+      "bgMock": "#333333",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 633.9
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 633.9
+      },
+      "unbound": null
+    },
+    {
+      "id": "e3",
+      "role": "button",
+      "areaFrac": 0.005785493827160494,
+      "missing": false,
+      "iou": 0.9740265455316282,
+      "want": "Favorite messages",
+      "got": "Favorite messages",
+      "textScore": 1,
+      "bgOrig": "#664400",
+      "bgMock": "#654300",
+      "dE": 0.3686656473619341,
+      "colorScore": 0.9815667176319033,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 60.2,
+        "y": 661.3,
+        "w": 124.2,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 60.2,
+        "y": 661.3,
+        "w": 124.2,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e4",
+      "role": "image",
+      "areaFrac": 0.000648533950617284,
+      "missing": false,
+      "iou": 0.9643631948619422,
+      "want": "Add button",
+      "got": "★",
+      "textScore": 0,
+      "bgOrig": "#FFBB33",
+      "bgMock": "#000000",
+      "dE": 75.90377533776723,
+      "colorScore": 0,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 32.4,
+        "y": 662.1,
+        "w": 15.6,
+        "h": 15.6
+      },
+      "got_rect": {
+        "x": 32.4,
+        "y": 662.1,
+        "w": 15.6,
+        "h": 15.6
+      },
+      "unbound": null
+    },
+    {
+      "id": "e5",
+      "role": "button",
+      "areaFrac": 0.014921296296296297,
+      "missing": false,
+      "iou": 0.9786470402065923,
+      "want": "Organize your thoughts",
+      "got": "Organize your thoughts",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 705.9,
+        "w": 223.2,
+        "h": 25.1
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 705.9,
+        "w": 223.2,
+        "h": 25.1
+      },
+      "unbound": null
+    },
+    {
+      "id": "e6",
+      "role": "button",
+      "areaFrac": 0.03535185185185185,
+      "missing": false,
+      "iou": 0.9859775500189987,
+      "want": "Sign up to start saving your favorite messages. It's quick, easy, and free!",
+      "got": "Sign up to start saving your favorite messages. It's quick, easy, and free!",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 747,
+        "w": 379.4,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 747,
+        "w": 379.4,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e7",
+      "role": "image",
+      "areaFrac": 0.0006805555555555556,
+      "missing": false,
+      "iou": 0.958709431355159,
+      "want": "Add button",
+      "got": "🕒",
+      "textScore": 0,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 790.1,
+        "w": 16,
+        "h": 16
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 790.1,
+        "w": 16,
+        "h": 16
+      },
+      "unbound": null
+    },
+    {
+      "id": "e8",
+      "role": "button",
+      "areaFrac": 0.0014351851851851852,
+      "missing": false,
+      "iou": 0.9571438770937583,
+      "want": "2 mins",
+      "got": "2 mins",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 48,
+        "y": 790.5,
+        "w": 35.4,
+        "h": 15.2
+      },
+      "got_rect": {
+        "x": 48,
+        "y": 790.5,
+        "w": 35.4,
+        "h": 15.2
+      },
+      "unbound": null
+    },
+    {
+      "id": "e9",
+      "role": "container",
+      "areaFrac": 0.04841666666666666,
+      "missing": false,
+      "iou": 0.9842313563267888,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 816.4,
+        "w": 379.4,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 816.4,
+        "w": 379.4,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e10",
+      "role": "button",
+      "areaFrac": 0.0030671296296296297,
+      "missing": false,
+      "iou": 0.3174827842949523,
+      "want": "Sign up",
+      "got": "Sign up",
+      "textScore": 1,
+      "bgOrig": "#FFFFFF",
+      "bgMock": "#000000",
+      "dE": 100,
+      "colorScore": 0,
+      "dxDp": 29,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 177.1,
+        "y": 830.1,
+        "w": 57.1,
+        "h": 20.2
+      },
+      "got_rect": {
+        "x": 206.1,
+        "y": 830.1,
+        "w": 57.1,
+        "h": 20.2
+      },
+      "unbound": null
+    }
+  ]
+}

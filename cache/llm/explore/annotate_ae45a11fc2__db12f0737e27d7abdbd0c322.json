@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:ae45a11fc2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Contact Us Sheet",
+  "kind": "sheet",
+  "purpose": "Provides support options for contacting the app team.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e7",
+    "intent": "Select problem option",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2125,
+  "output": 129,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:20:03.001Z"
+}

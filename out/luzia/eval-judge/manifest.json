@@ -1,0 +1,24 @@
+{
+  "stage": "eval-judge",
+  "app": "luzia",
+  "runId": "ev0925-151958",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T19:19:58.029Z",
+  "finishedAt": "2026-09-25T19:21:29.775Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "b3cc3f56c4d2f9f7dd411d1a15bbb7e6244377ee94da1d18fc0d7191bdf3f162"
+    }
+  ],
+  "outputs": [
+    "proposals/judge-eval.md"
+  ],
+  "llm": {
+    "calls": 12,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

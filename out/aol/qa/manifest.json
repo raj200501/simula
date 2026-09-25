@@ -1,0 +1,29 @@
+{
+  "stage": "qa",
+  "app": "aol",
+  "runId": "qa0925-151248",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T19:12:48.404Z",
+  "finishedAt": "2026-09-25T19:15:38.186Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "a4e23c7ca84e24952fbe44f73dc5380b126a91f8799e1bf3d6306d87cdb5ad10"
+    },
+    {
+      "path": "mock/index.html",
+      "sha256": "3b25d48fa8732dd648cf04f42246983ef6d6137486ea2bc98a07ca990163d39d"
+    }
+  ],
+  "outputs": [
+    "qa/summary.json",
+    "qa/report.html"
+  ],
+  "llm": {
+    "calls": 4,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

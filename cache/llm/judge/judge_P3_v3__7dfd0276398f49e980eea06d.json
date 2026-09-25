@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P3:v3",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Surface s04 is the standard Janitor Plus subscription paywall, which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards a 1-hour trial of Janitor Plus features upon completing a 15-second game; no clicks/installs/cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Offer uses clean copy 'Try Janitor Plus Free' with explicit decline 'No Thanks'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps 'Play Now' CTA after viewing the prompt."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Body text states: 'Play a quick 15-second game to unlock 1 hour of premium memory.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes 'No Thanks' button which returns the user without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered upon dismissing the paywall (s04), not during active chat streaming."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly restricted to 'Non-paying free users who dismiss the subscription paywall'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The user just hit the paywall (m3, s04) expressing interest in Janitor Plus features. Offering a 1-hour trial right at paywall dismissal (TAX-10 fallback) perfectly matches the moment of desire.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Appends a trial offer to the paywall dismissal (ne1 on s04), preserving the user's journey and adding additive sampling value without taking away free features.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Strictly gated to non-payers who decline the paywall (m3), time-boxed to just 1 hour, capped at once per day, and backed by a 20% holdout with non-inferiority guardrails.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code computes cost to serve per view as $0.0018, which is well below the US net revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Paywall views (m3) occur whenever free users encounter upgrade prompts or limits, reaching a substantial share of engaged free users daily.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD unit with invitation entry point and standard REWARD_VERIFIED callback, mapping cleanly to existing Simula SDK capabilities.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Targets screen s04 ('Janitor Plus Paywall'), references Janitor Plus entitlement (of1), and uses app-specific context (premium memory, priority routing).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at once per day (perDay: 1, cooldownMin: 1440), preventing nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies primary metrics, guardrails (3% non-inferiority, retention), and a 20% user-level randomized holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None; proposal is exceptionally well-structured, targeting paywall decliners with tight time-boxing and robust holdout testing."
+ },
+ "usage": {
+  "input": 35092,
+  "output": 1050,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3112
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:59:25.878Z"
+}

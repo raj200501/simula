@@ -1,0 +1,29 @@
+{
+  "stage": "qa",
+  "app": "janitor",
+  "runId": "qa0925-145505",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:55:05.294Z",
+  "finishedAt": "2026-09-25T18:56:28.533Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "c66070a99632d73d5b2a7decfdefd72f931131770b7696aab1cddc5e940c665e"
+    },
+    {
+      "path": "mock/index.html",
+      "sha256": "85fd2500842b74a5a7df00a7a6fe5aa13f7b2a2f65cd38e6818937dbdec56969"
+    }
+  ],
+  "outputs": [
+    "qa/summary.json",
+    "qa/report.html"
+  ],
+  "llm": {
+    "calls": 3,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P2:ne1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne1\" class=\"scrim\" style=\"position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 1000;\">\n  <div class=\"modal\" style=\"background: linear-gradient(135deg, #1A1730 0%, #0F0D1F 100%); border: 1px solid var(--c-border); border-radius: var(--r-lg); padding: 28px 24px; width: 90%; max-width: 380px; color: var(--c-text); position: relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);\">\n    <button aria-label=\"Close\" style=\"position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--c-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center;\">\n      <svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line></svg>\n    </button>\n    <div style=\"width: 48px; height: 48px; background: var(--c-accent); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; color: var(--c-on-accent); margin-bottom: 20px;\">\n      <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n        <rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"2\"></rect>\n        <path d=\"M6 12h4m-2-2v4\"></path>\n        <circle cx=\"15\" cy=\"11\" r=\"1\" fill=\"currentColor\"></circle>\n        <circle cx=\"18\" cy=\"13\" r=\"1\" fill=\"currentColor\"></circle>\n      </svg>\n    </div>\n    <h2 style=\"font-size: 20px; font-weight: 700; color: var(--c-text); margin: 0 0 8px 0; line-height: 1.3;\">Unlock Free Frontier Swipes</h2>\n    <p style=\"font-size: 14px; color: var(--c-muted); margin: 0 0 24px 0; line-height: 1.5;\">Play a 15-second mini-game with Janitor AI for <b>+3 frontier swipes</b></p>\n    <button type=\"button\" style=\"width: 100%; height: 48px; background: var(--c-accent); color: var(--c-on-accent); font-size: 15px; font-weight: 600; border-radius: var(--r-md); border: none; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;\">Play Now</button>\n    <button type=\"button\" style=\"width: 100%; height: 48px; background: transparent; color: var(--c-muted); font-size: 15px; font-weight: 500; border-radius: var(--r-md); border: 1px solid var(--c-border); cursor: pointer; display: flex; align-items: center; justify-content: center;\">No Thanks</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 9828,
+  "output": 975,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 8008
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:01:24.055Z"
+}

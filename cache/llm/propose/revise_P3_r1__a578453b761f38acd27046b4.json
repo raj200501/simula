@@ -1,0 +1,221 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Subscription Feature Sampling via Rewarded Ad",
+  "oneLiner": "Offer a 1-hour trial of Janitor Plus when users dismiss the paywall after a rewarded mini-game.",
+  "case": "product-change",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m3"
+   ],
+   "economy": [
+    "of1",
+    "w1",
+    "plan"
+   ],
+   "newMechanic": {
+    "name": "Paywall-Decline Trial Pass",
+    "description": "A 1-hour time-boxed trial of Janitor Plus features offered to free users immediately upon declining the subscription paywall.",
+    "whyNeeded": "Provides an accessible sampling path for price-sensitive users who decline the upfront subscription paywall, converting attention into upgrade intent.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s04",
+  "trigger": "When a free user taps 'Not now' to dismiss the Janitor Plus paywall (moment m3).",
+  "eligibility": "Non-paying free users who dismiss the subscription paywall, capped at once per day.",
+  "offer": {
+   "title": "Try Janitor Plus Free",
+   "body": "Play a quick 15-second game to unlock 1 hour of premium memory.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Janitor",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1-hour trial of Janitor Plus features",
+   "resource": "of1",
+   "amount": null,
+   "duration": "1 hour",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "Gated strictly to users who decline the paywall; time-boxed to 1 hour; permanently distinct from full monthly subscription entitlement.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU and subscription conversion rate among paywall decliners",
+   "guardrails": [
+    "Paid subscription conversion non-inferiority within 3%",
+    "D7/D30 user retention",
+    "Ad completion rate >= 95%"
+   ],
+   "holdout": "20% user-level randomized holdout running for 28 days to measure net revenue impact."
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-DUO",
+   "TRIG-5",
+   "TAX-10"
+  ],
+  "risks": [
+   "Risk of temporary cannibalization if trial duration is too long",
+   "Potential ad fill variations across international regions"
+  ],
+  "evidence": [
+   {
+    "obs": "s04",
+    "el": "e12",
+    "quote": "Not now"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s04",
+     "kind": "modal",
+     "change": "Trial offer confirmation modal shown upon tapping 'Not now' on the Janitor Plus paywall."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s04",
+     "near": "e12",
+     "place": "after",
+     "change": "Button inviting user to watch a rewarded mini-game for a 1-hour trial."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s04",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [
+      {
+       "resource": "of1",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s04",
+    "counters": [
+     {
+      "resource": "of1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e12",
+      "text": "User taps 'Not now' on paywall"
+     }
+    ],
+    "caption": "User declines the Janitor Plus subscription paywall."
+   },
+   {
+    "phase": "change",
+    "screen": "s04",
+    "counters": [
+     {
+      "resource": "of1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New trial offer button appears"
+     }
+    ],
+    "caption": "App introduces a rewarded sampling offer upon paywall decline."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "of1",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Clear disclosure of 1-hour trial"
+     }
+    ],
+    "caption": "User sees clear opt-in prompt with working decline."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "of1",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "15-second partner mini-game"
+     }
+    ],
+    "caption": "User completes the voluntary 15-second rewarded mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "of1",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e6",
+      "text": "1-hour trial active"
+     }
+    ],
+    "caption": "Reward verified and 1-hour trial unlocked successfully."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35715,
+  "output": 1657,
+  "cacheRead": 30453,
+  "cacheWrite": 0,
+  "thoughts": 3736
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:58:13.918Z"
+}

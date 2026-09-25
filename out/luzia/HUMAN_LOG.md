@@ -1,0 +1,2 @@
+- 2026-09-25T18:47:29.959Z luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: /Users/rajkashikar/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
+- 2026-09-25T18:47:31.014Z luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 

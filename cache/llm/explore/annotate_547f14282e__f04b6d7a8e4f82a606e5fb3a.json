@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:547f14282e",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "Chat Home",
+  "kind": "chat",
+  "purpose": "Main chat interface with the AI assistant Luzia.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Send a message to the AI",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e10"
+   },
+   {
+    "el": "e4",
+    "intent": "Open menu",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2015,
+  "output": 200,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T06:15:19.369Z"
+}

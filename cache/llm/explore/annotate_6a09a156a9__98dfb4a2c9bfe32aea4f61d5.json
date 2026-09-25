@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:6a09a156a9",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s10",
+  "name": "Search Suggestions",
+  "kind": "page",
+  "purpose": "Provides search query suggestions as the user types in the search bar.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Close search",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e12",
+    "intent": "Type search query",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "weather"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2562,
+  "output": 186,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:05:39.990Z"
+}

@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P3:ne1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "text": "<div data-new=\"ne1\" style=\"position:absolute; left:43px; top:730px; width:325.3px; padding:20px; background:#1A1730; border:1px solid var(--c-border); border-radius:var(--r-lg); z-index:100; box-shadow:0 8px 32px rgba(0,0,0,0.3)\">\n  <div style=\"display:flex; align-items:center; gap:16px; margin-bottom:16px\">\n    <div style=\"width:52px; height:52px; background:var(--c-accent); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--c-on-accent)\">\n      <svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n        <path d=\"M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z\"/>\n        <path d=\"M9 10h1M15 10h1M9 14h6\"/>\n      </svg>\n    </div>\n    <div style=\"flex:1\">\n      <div style=\"font-weight:bold; color:var(--c-on-accent); font-size:16px; margin-bottom:4px\">Try Janitor Plus Free</div>\n      <div style=\"font-size:14px; color:var(--c-muted); line-height:1.4\">Play a quick 15-second game to unlock <b>1 hour of premium memory.</b></div>\n    </div>\n  </div>\n  <div style=\"width:100%; height:48px; background:var(--c-accent); border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; font-weight:600; color:var(--c-on-accent); cursor:pointer; margin-bottom:12px; font-size:16px\">Play Now</div>\n  <div style=\"text-align:center; font-size:14px; color:var(--c-muted); cursor:pointer; opacity:0.8\">No Thanks</div>\n</div>",
+ "usage": {
+  "input": 4411,
+  "output": 608,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4498
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:00:02.830Z"
+}

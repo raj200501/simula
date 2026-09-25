@@ -1,0 +1,35 @@
+{
+ "purpose": "annotate:1c90822dbd",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s08",
+  "name": "AI Chat Interface",
+  "kind": "chat",
+  "purpose": "This screen provides a chat interface to interact with the Luzia AI assistant.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e21",
+    "intent": "Ask the AI a question",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi!",
+    "sendEl": "e24"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2508,
+  "output": 163,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:30:50.406Z"
+}

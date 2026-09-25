@@ -1,0 +1,50 @@
+{
+ "purpose": "annotate:680cfbfcfb",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Teacher Profile",
+  "kind": "modal",
+  "purpose": "Displays character profile and prompts user to sign up to customize response styles.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e9",
+    "intent": "View favorite messages",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "Sign up",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Sign up to adjust my response style and make our chats even more yours. It's quick, easy, and free!"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2194,
+  "output": 261,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:27:28.880Z"
+}

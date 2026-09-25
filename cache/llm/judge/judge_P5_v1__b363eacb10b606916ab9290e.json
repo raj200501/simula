@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P5:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal uses the AI character 'Explain quantum physics simply.' for the game partner, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 30 minutes of 'Upgrade to Luzia+' access, not a click, install, or rating."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer appears after a decline, offering a sample rather than punishing the user."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard includes an opt-in card with 'Play to try' and 'No thanks' buttons."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer text explicitly states 'Play a 15-second game to try 30 minutes of Upgrade to Luzia+ now.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer card contains a 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered on the Services Tab only after the account sheet is dismissed."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Proposal explicitly limits eligibility to 'Guests who just declined the account sheet'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer triggers immediately after the user declines the account sheet (m2), precisely when they are at a wall, providing a sample of the missed entitlement.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal is native, offering a sample of the very feature just blocked. It does not degrade free services.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "High safety: gated to decliners, capped at once a day, and time-boxed (30 mins). It uses sampling to drive future subscription value.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero, while revenue per view is positive ($0.009-$0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Targeting decliners of the account wall is a significant part of the guest user journey, though less than 100% of DAU.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD units with standard SSV and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses Luzia specific terms: 'Upgrade to Luzia+', 'Services Tab', 'Explain quantum physics simply.', 'Create Account Sheet'.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at once per day, avoiding nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Planned metrics include subscription conversion rates, D7 retention, and a 10% intent-to-treat user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None, the proposal is well-designed and aligns with the knowledge base."
+ },
+ "usage": {
+  "input": 42546,
+  "output": 931,
+  "cacheRead": 40426,
+  "cacheWrite": 0,
+  "thoughts": 1031
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:18:36.308Z"
+}

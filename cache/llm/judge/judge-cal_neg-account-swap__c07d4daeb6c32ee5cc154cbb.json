@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-account-swap",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets Settings (s19), which is an SFW content page."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal rewards viewing a 15-second game and does not incentivize clicks, installs, or cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses gain framing without dark patterns or loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User opts in explicitly via the Play to try CTA button."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The reward and required action are stated prior to the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "An equally legible decline button No thanks is provided with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Offer is placed on Settings (s19), away from any streaming AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly excludes subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal triggers on Upgrade to Luzia+ (r1, w1), but the reward text defines it as View Favorite messages without an account for today, mixing account access (r2) with subscription features, violating the rule that accounts/sign-ups cannot be replaced by ads.",
+    "score": 1
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal attempts to use a rewarded ad to bypass account creation and grant account-only features, violating the core rule that ads never stand in for signing up.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Attempting to bypass account walls and subscription requirements via ads creates high cannibalization risk for account sign-ups and paid subscriptions.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.0000 and revenue per view is $0.0090-$0.0150, satisfying unit economics bounds.",
+    "score": 3
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings (s19) is a frequent hub accessed by users, though the trigger requires hitting the upgrade upsell.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD with button entry and REWARD_VERIFIED callback.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References s19, e10, r1, w1, and m23, though it conflates subscription r1 with account features.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Daily cap of 2 and 60-minute cooldown properly bound frequency.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Names primary conversion metric, guardrails, and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the reward granting account-only features (View Favorite messages) or bypassing account creation, as accounts are required and cannot be replaced by ads per procedure rule 8.",
+   "Align the reward consistently with the trigger: if triggered by Luzia+ Subscription walls (r1), grant a valid time-boxed feature entitlement rather than mixing up account access."
+  ],
+  "topConcern": "The proposal attempts to use a rewarded ad to bypass account creation and access account-only features (View Favorite messages), violating the rule that ads can never stand in for signing up or account creation."
+ },
+ "usage": {
+  "input": 42296,
+  "output": 1028,
+  "cacheRead": 32330,
+  "cacheWrite": 0,
+  "thoughts": 4109
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:21:29.774Z"
+}

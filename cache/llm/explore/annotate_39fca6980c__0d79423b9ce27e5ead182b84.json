@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:39fca6980c",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Character Profile Settings",
+  "kind": "modal",
+  "purpose": "View character profile details and prompt the user to sign up to adjust response styles.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e20",
+    "intent": "Sign up to adjust response style",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2269,
+  "output": 140,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T06:15:10.658Z"
+}

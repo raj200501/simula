@@ -1,0 +1,20 @@
+{
+  "stage": "explore",
+  "app": "aol",
+  "runId": "ex0925-150140",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T19:01:40.182Z",
+  "finishedAt": "2026-09-25T19:10:01.757Z",
+  "status": "ok",
+  "stopReason": "budget_steps",
+  "inputs": [],
+  "outputs": [
+    "explore/ex0925-150140/graph.json"
+  ],
+  "llm": {
+    "calls": 29,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

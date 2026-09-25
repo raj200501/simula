@@ -1,0 +1,57 @@
+{
+  "app": "aol",
+  "fg": "com.aol.mobile.aolapp",
+  "inApp": true,
+  "device": {
+    "widthPx": 1080,
+    "heightPx": 2400,
+    "density": 2.625,
+    "statusBarPx": 0,
+    "navBarPx": 0,
+    "kind": "android"
+  },
+  "elements": 79,
+  "labelled": 36,
+  "labelledActionable": 23,
+  "numbers": [
+    "11h ago",
+    "16h ago"
+  ],
+  "counters": [],
+  "secsPerObserve": 0.66,
+  "screenshot": "/Users/rajkashikar/simula/out/aol/explore/probe/probe.png",
+  "deviceFile": "/Users/rajkashikar/simula/config/device.json",
+  "checks": [
+    {
+      "name": "the app is in the foreground",
+      "pass": true,
+      "detail": "com.aol.mobile.aolapp"
+    },
+    {
+      "name": "at least 3 elements after normalizing",
+      "pass": true,
+      "detail": "79 elements"
+    },
+    {
+      "name": "at least 10 labelled actionable elements",
+      "pass": true,
+      "detail": "23 labelled actionables"
+    },
+    {
+      "name": "a balance or other number is readable as text",
+      "pass": true,
+      "detail": "11h ago, 16h ago"
+    },
+    {
+      "name": "insets known",
+      "pass": false,
+      "detail": "status 0px, nav 0px"
+    },
+    {
+      "name": "one observation under 10 s",
+      "pass": true,
+      "detail": "0.66s"
+    }
+  ],
+  "go": true
+}

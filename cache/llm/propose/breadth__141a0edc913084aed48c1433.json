@@ -1,0 +1,133 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Interstitial ads triggered between every chat session.",
+   "Banner ads placed permanently at the bottom of the character search and navigation screens.",
+   "Offer a flat 50% discount on the Janitor+ annual subscription in exchange for watching a series of ads."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Ad for extra memory context capacity.",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "Ad to bypass the wall for a short period.",
+    "viable": true
+   },
+   {
+    "moment": "m3",
+    "exchange": "Ad for a 1-hour trial of Janitor+ benefits.",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Ad for extra monthly frontier model swipes.",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "None (first value).",
+    "viable": false
+   },
+   {
+    "moment": "m6",
+    "exchange": "Ad for a boosted 'Frontier model' reply.",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Extended Memory Refill",
+    "case": "existing",
+    "archetype": "TAX-1",
+    "moment": "m1",
+    "reward": "1 hour of 5x context memory",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Frontier Swipe Boost",
+    "case": "existing",
+    "archetype": "TAX-1",
+    "moment": "m4",
+    "reward": "5 extra monthly frontier model swipes",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Janitor+ Paywall Fallback",
+    "case": "existing",
+    "archetype": "TAX-10",
+    "moment": "m3",
+    "reward": "2 hours of Janitor+ premium access",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Daily Login Rewards Hub",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m5",
+    "reward": "Daily streak credits redeemable for swipes",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Sponsored Model Regeneration",
+    "case": "product-change",
+    "archetype": "TAX-4",
+    "moment": "m6",
+    "reward": "1 frontier model reply regeneration",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Priority Access Pass",
+    "case": "existing",
+    "archetype": "TAX-4",
+    "moment": "m1",
+    "reward": "1 hour of priority routing for faster replies",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Golden Badge Rental",
+    "case": "product-change",
+    "archetype": "TAX-13",
+    "moment": "m6",
+    "reward": "Temporary 24-hour golden badge",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Subscription Feature Sampling",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m2",
+    "reward": "30 minutes of priority routing and extended memory",
+    "beyondBaseline": true
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "High-intent reactive trigger that directly solves the memory limitation wall without cannibalizing the main subscription."
+   },
+   {
+    "index": 3,
+    "why": "Proactive daily engagement loop that drives retention and creates a predictable inventory for ads outside the subscription path."
+   },
+   {
+    "index": 4,
+    "why": "Product change that allows non-paying users to sample frontier models, increasing the value perception of the Janitor+ tier."
+   }
+  ]
+ },
+ "usage": {
+  "input": 38534,
+  "output": 977,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1925
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:56:46.041Z"
+}

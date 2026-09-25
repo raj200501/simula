@@ -1,0 +1,35 @@
+{
+ "purpose": "annotate:e74565d64a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Chat Home",
+  "kind": "chat",
+  "purpose": "This is the main chat screen of the AI assistant Luzia, where users can send messages or choose predefined tasks like creating images or editing photos.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e18",
+    "intent": "Type a message to the AI assistant",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e21"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2353,
+  "output": 179,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T06:15:04.860Z"
+}

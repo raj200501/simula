@@ -1,0 +1,1 @@
+- 2026-09-25T19:26:58.014Z Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.

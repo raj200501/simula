@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-ent-tasks",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal uses the Chats Home surface, which is a general chat interface, not flagged as NSFW or sensitive."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a 15-second sponsored game (SIM-RWD), not for clicking ads or installing apps."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a positive 'Daily tasks' incentive without using loss framing or dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap 'Play task' on the daily tasks sheet to start."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal clearly states: 'Play three 15-second sponsored games today to unlock 30 minutes of Upgrade to Luzia+'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The user has a 'Close' option on the daily tasks sheet and can return to Chats Home without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is a proactive hub (Chats Home), not an interruption to an ongoing conversation or response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly set to 'Non-payers only'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward provides a 'taste' of the Luzia+ subscription. While powerful, it is a proactive hub rather than a reactive fix at the exact moment of a cap hit (e.g., reactive refill).",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The design is very native, adding a task list proactively without disrupting core chat flows or existing free utility.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is time-boxed (30 minutes) and capped daily (3 tasks for 1 use), which is safer than permanent capacity. It gates only to non-payers.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Revenue per view ($0.009-$0.015) vs 30 minutes of access. The cost to serve is within reason for 3 impressions per daily unlock.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is on the core Chats Home tab, ensuring high daily visibility for the entire user base.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses the standard SIM-RWD unit and existing app navigation structure.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Excellent use of Luzia's own screen names ('Chats Home'), terminology ('Luzia+', 'Custom Bestie'), and economy.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily cap of 3 tasks and a 5-minute cooldown between offers prevents nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric (Tasks per DAU), guardrails, and a user-level holdout are defined.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None; the proposal is shippable as designed."
+ },
+ "usage": {
+  "input": 42454,
+  "output": 960,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1723
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:38.158Z"
+}

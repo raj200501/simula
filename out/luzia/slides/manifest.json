@@ -1,0 +1,29 @@
+{
+  "stage": "slides",
+  "app": "luzia",
+  "runId": "sl0925-152130",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T19:21:30.303Z",
+  "finishedAt": "2026-09-25T19:23:20.550Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "proposals/candidates.json",
+      "sha256": "0610b84bab5dab247654d5e7f33300972d7b6d1533320ea2f316c9838d0ee3d3"
+    },
+    {
+      "path": "proposals/judgments.json",
+      "sha256": "73e32863faa7a5a7ef890f23d643f46703e9ffa598b7bf27b8c0f4c44006bd64"
+    }
+  ],
+  "outputs": [
+    "slides/deck.html",
+    "slides/deck.pdf"
+  ],
+  "llm": {
+    "calls": 4,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "judge",
+  "app": "janitor",
+  "runId": "ju0925-145731",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:57:31.654Z",
+  "finishedAt": "2026-09-25T18:59:25.894Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "proposals/candidates.json",
+      "sha256": "2571d0719697b7d73581fc5c7b23d0dcf4cf9f60fcfcd9baad08fcf9bd787a3f"
+    }
+  ],
+  "outputs": [
+    "proposals/judgments.json",
+    "proposals/judgments.md",
+    "proposals/candidates.json",
+    "proposals/revisions.json"
+  ],
+  "llm": {
+    "calls": 13,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

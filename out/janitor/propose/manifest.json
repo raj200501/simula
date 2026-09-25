@@ -1,0 +1,25 @@
+{
+  "stage": "propose",
+  "app": "janitor",
+  "runId": "pr0925-145628",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:56:28.551Z",
+  "finishedAt": "2026-09-25T18:57:31.629Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "c66070a99632d73d5b2a7decfdefd72f931131770b7696aab1cddc5e940c665e"
+    }
+  ],
+  "outputs": [
+    "proposals/candidates.json",
+    "proposals/candidates.md"
+  ],
+  "llm": {
+    "calls": 5,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

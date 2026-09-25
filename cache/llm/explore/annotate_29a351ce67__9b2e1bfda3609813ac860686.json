@@ -1,0 +1,69 @@
+{
+ "purpose": "annotate:29a351ce67",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Virtual Pet Page",
+  "kind": "page",
+  "purpose": "Interact with a virtual pet named Toki through feeding, playing, sleeping, and cleaning actions.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e7",
+    "intent": "Open chat interface with Toki",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e9",
+    "intent": "Feed the virtual pet",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e10",
+    "intent": "Play with the virtual pet",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e13",
+    "intent": "Put the virtual pet to sleep",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e14",
+    "intent": "Clean the virtual pet",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [
+   {
+    "name": "coins",
+    "unit": "coins",
+    "el": "e4"
+   }
+  ],
+  "signals": [
+   {
+    "kind": "balance",
+    "text": "0",
+    "el": "e4"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2180,
+  "output": 380,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:26:01.609Z"
+}

@@ -1,0 +1,111 @@
+{
+ "purpose": "judge-cal:pos-ent-decline",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets general users for an AI assistant app and utilizes only standard chat surfaces."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal uses a standard SIM-RWD unit for a game, not for clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The fallback card 'Not ready yet?' is helpful, not confirmshaming or loss-focused."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The CTA is 'Play to try' with a 'No thanks' decline button."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states: 'Play a 15-second game to try 30 minutes of Upgrade to Luzia+ now.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining is a clear 'No thanks' button that returns the user to the services tab."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on the Services Tab after the Create Account Sheet is dismissed; it does not occur mid-conversation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility criteria explicitly excludes payers and subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal treats the 'Upgrade to Luzia+' subscription entitlement as a generic currency, which triggers the penalty for specificity and fit; it should instead anchor to specific, limited-use features like 'Deep reasoning mode'.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer is placed non-intrusively on the Services Tab as a fallback after a paywall decline, respecting the user's flow.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "It is gated to guests/non-payers and limits the exposure to once per day, but granting the full 'Luzia+' experience is a high cannibalization risk for the core subscription.",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero, and the revenue per view is well-aligned with the offer.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Services Tab is a core surface with high reach (m18).",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to the SIM-RWD unit with minimal engineering required.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal uses specific app terminology like 'Luzia+' and the 'Services Tab' (s06), but loses specificity points because the reward is defined as the subscription itself.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strictly limited to once per day.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes clear holdout design and primary/guardrail metrics.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Change the reward from the entire 'Upgrade to Luzia+' subscription to a specific, feature-based benefit (e.g., '3 Deep Reasoning Mode replies' or '30 minutes of Deep Reasoning Mode').",
+   "Update all storyboard phases and UI copy to refer to the specific feature instead of the 'Luzia+' subscription tier.",
+   "Refine the one-liner to clearly state the specific feature being sampled to avoid confusion with a full subscription trial."
+  ],
+  "topConcern": "The proposal grants the 'Upgrade to Luzia+' subscription itself as a reward bucket, which devalues the paid offering and triggers the 'entitlements are not currencies' policy penalty; it must instead sample specific, metered features."
+ },
+ "usage": {
+  "input": 42385,
+  "output": 1059,
+  "cacheRead": 36381,
+  "cacheWrite": 0,
+  "thoughts": 1718
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:25.597Z"
+}

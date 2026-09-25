@@ -1,0 +1,59 @@
+{
+ "purpose": "annotate:3cf3b4c38a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Animate Tool",
+  "kind": "tab",
+  "purpose": "This screen allows users to select or upload images and animate them using popular templates or text descriptions.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Switch to Create tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e6",
+    "intent": "Switch to Edit tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e16",
+    "intent": "Upload photo to animate",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e18",
+    "intent": "Select popular template Clapping",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e30",
+    "intent": "Describe idea to animate",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "A futuristic city",
+    "sendEl": "e31"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2645,
+  "output": 332,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:08:48.928Z"
+}

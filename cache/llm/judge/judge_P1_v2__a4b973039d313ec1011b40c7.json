@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "More memory for long chats. Keep more of the story in context, get faster replies"
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a 15-second game to get 30 minutes of enhanced context memory."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a 15-second game to get 30 minutes of enhanced context memory."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Play Now / No Thanks"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game to get 30 minutes of enhanced context memory."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: No Thanks"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "When the user hits the memory wall trying to continue a long chat without Janitor Plus."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-paying free users hitting the memory context limit."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal: When the user hits the memory wall trying to continue a long chat without Janitor Plus. / Digest s03: More memory for long chats. Keep more of the story in context, get faster replies",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal: Time-boxed to 30 minutes on a lightweight cached model... Janitor Plus subscription remains the permanent option. / Digest s03: More memory for long chats.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Proposal: Time-boxed to 30 minutes on a lightweight cached model, rate-limited to 3 times per day, and gated to non-payers only; Janitor Plus subscription remains the permanent, un-interrupted option.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Economics: Cost to serve per view: $0.0054 (text-cheap x 3). / Proposal: cogs: text-cheap, cogsUnitsPerView: 3.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Digest: moments m1 reach=frequent (\"Access advanced chat memory and priority\" is blocked).",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Proposal: unit: SIM-RWD, entry: button, surface: s03.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal references screen s03, offer of1, wall w1, and memory context limits from the digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Proposal: perDay: 3, cooldownMin: 30.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposal: kpis: { primary: Rewarded ad ARPDAU and total ad revenue, guardrails: [...], holdout: A 10% user-level randomized holdout... }.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the patch and storyboard resource reference from the ungrounded resource 'memory_access' to a valid economy item or resource.",
+   "Verify observation reference alignments for 'm1' in the proposal evidence structure."
+  ],
+  "topConcern": "The proposal references an ungrounded resource 'memory_access' in its patch and storyboard counters, which requires correction."
+ },
+ "usage": {
+  "input": 34940,
+  "output": 1021,
+  "cacheRead": 32239,
+  "cacheWrite": 0,
+  "thoughts": 2076
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:58:13.256Z"
+}

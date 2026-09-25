@@ -1,0 +1,14 @@
+{
+  "screen": "s10",
+  "round": 1,
+  "stop": "round-cap",
+  "composite": 0.5743,
+  "iou": 0.4244,
+  "ssim": 0.3057,
+  "text": 1,
+  "color": 0.7468,
+  "pixelDiff": 0.2557,
+  "elements": 36,
+  "missing": 0,
+  "mustFix": 0
+}

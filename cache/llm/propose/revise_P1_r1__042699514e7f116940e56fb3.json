@@ -1,0 +1,195 @@
+{
+ "purpose": "revise:P1:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Unlock Commenting with Game Play",
+  "oneLiner": "Allow non-signed-in users to post a single comment after playing a game.",
+  "case": "product-change",
+  "archetype": "TAX-10",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m9"
+   ],
+   "economy": [
+    "POST_WALL"
+   ],
+   "newMechanic": {
+    "name": "One-Time Comment Post",
+    "description": "Allows a guest user to bypass the mandatory sign-up wall to post exactly one comment by watching a rewarded ad. The app preserves the user's typed comment in local state during the ad flow and restores it upon REWARD_VERIFIED.",
+    "whyNeeded": "Comment sections thrive on volume; many users want to participate but churn at the sign-up gate.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s05",
+  "trigger": "User initiates a comment on s05 and triggers the sign-up wall. The app saves the current draft to local storage and restores it on REWARD_VERIFIED [ANTI-5].",
+  "eligibility": "Non-signed-in users on the Add Comment Page (s05) who encounter the sign-up wall.",
+  "offer": {
+   "title": "Post This Comment",
+   "body": "Play a 15-second game with AOL News to post your comment without signing up.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL News",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "One comment post",
+   "resource": "POST_LIMIT",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "The offer is gated specifically to users who hit the sign-up wall. The primary 'Sign Up to Post' CTA remains the default. The reward is limited to a single post, ensuring users who want a long-term voice still have a clear incentive to sign up. Draft persistence ensures the comment text is preserved [ANTI-5].",
+  "assumptions": {
+   "engagedShare": 0.1,
+   "viewsPerEngager": 1,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Comments per DAU",
+   "guardrails": [
+    "Paid account conversion rate",
+    "D1 retention"
+   ],
+   "holdout": "10% user holdout for 4 weeks"
+  },
+  "precedents": [
+   "TAX-10",
+   "EX-UTIL",
+   "POL-9"
+  ],
+  "risks": [
+   "Users may find the ad wall frustrating compared to a seamless sign-up.",
+   "One-off comments may be lower quality than member comments."
+  ],
+  "evidence": [
+   {
+    "obs": "s05",
+    "el": null,
+    "quote": "m9 [desire] on s05 (Add Comment Page), reach=core-loop: User attempts to post a comment on an article and hits the sign-up wall."
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "modal",
+     "change": "Rewarded interstitial invitation for playing a mini-game to unlock posting."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s05",
+     "near": null,
+     "place": "after",
+     "change": "Add a text button: 'Watch a quick game to post instead'"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s05",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "POST_LIMIT",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "POST_LIMIT",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "s05",
+      "text": "User is blocked by sign-up wall when attempting to post."
+     }
+    ],
+    "caption": "Currently, commenting is blocked by a mandatory sign-up wall."
+   },
+   {
+    "phase": "change",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New: Option to unlock posting via an ad."
+     }
+    ],
+    "caption": "We add an alternative path: watch a game to post."
+   },
+   {
+    "phase": "offer",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Offer: Post this comment for 15s of play."
+     }
+    ],
+    "caption": "The user opts in to the game; comment is saved."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ns1",
+      "text": "Game Partner: AOL News."
+     }
+    ],
+    "caption": "User plays the 15-second mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Post button enabled; draft restored."
+     }
+    ],
+    "caption": "User posts their comment successfully."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35611,
+  "output": 1587,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3027
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:16:56.458Z"
+}

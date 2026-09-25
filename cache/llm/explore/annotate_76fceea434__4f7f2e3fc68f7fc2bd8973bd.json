@@ -1,0 +1,26 @@
+{
+ "purpose": "annotate:76fceea434",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Splash Screen",
+  "kind": "other",
+  "purpose": "Displays the app logo during startup.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1833,
+  "output": 83,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:31:09.861Z"
+}

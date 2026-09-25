@@ -1,0 +1,15 @@
+{
+  "screen": "s03",
+  "round": 1,
+  "kept": false,
+  "by": "llm",
+  "composite": 0.4778,
+  "iou": 0.4315,
+  "ssim": 0.1244,
+  "text": 0.6333,
+  "color": 0.8451,
+  "pixelDiff": 0.5821,
+  "elements": 60,
+  "missing": 6,
+  "mustFix": 10
+}

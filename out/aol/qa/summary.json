@@ -1,0 +1,163 @@
+{
+  "screens": [
+    {
+      "id": "s01",
+      "name": "Home News Feed",
+      "render": "html",
+      "composite": 0.7347,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s01/best.png"
+    },
+    {
+      "id": "s02",
+      "name": "Home News Feed",
+      "render": "html",
+      "composite": 0.794,
+      "rounds": 1,
+      "mustFix": 1,
+      "best": "s02/best.png"
+    },
+    {
+      "id": "s03",
+      "name": "Article Details",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s04",
+      "name": "Conversation Screen",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s05",
+      "name": "Add Comment Page",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s06",
+      "name": "Sign In Screen",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s07",
+      "name": "Home News Feed",
+      "render": "html",
+      "composite": 0.6506,
+      "rounds": 1,
+      "mustFix": 1,
+      "best": "s07/best.png"
+    },
+    {
+      "id": "s08",
+      "name": "Home News Feed",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s09",
+      "name": "Saved Articles",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s10",
+      "name": "Search Suggestions",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s11",
+      "name": "Account Menu Sidebar",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s12",
+      "name": "No Contacts",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s13",
+      "name": "News Feed Home",
+      "render": "html",
+      "composite": 0.9015,
+      "rounds": 1,
+      "mustFix": 1,
+      "best": "s13/best.png"
+    },
+    {
+      "id": "s14",
+      "name": "Home Feed",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s15",
+      "name": "Article Detail Page",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s16",
+      "name": "Article Ad View",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s17",
+      "name": "Font Size Sheet",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    }
+  ],
+  "flow": {
+    "total": 22,
+    "passed": 22,
+    "failures": []
+  },
+  "htmlShare": 0.333
+}

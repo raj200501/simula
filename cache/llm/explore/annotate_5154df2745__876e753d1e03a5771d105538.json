@@ -1,0 +1,46 @@
+{
+ "purpose": "annotate:5154df2745",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Search Characters",
+  "kind": "page",
+  "purpose": "Search and filter AI characters by tags and categories.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Type search query",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "goth"
+   },
+   {
+    "el": "e47",
+    "intent": "Open character detail",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e9",
+    "intent": "Filter by Fictional",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 4646,
+  "output": 224,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:50:56.566Z"
+}

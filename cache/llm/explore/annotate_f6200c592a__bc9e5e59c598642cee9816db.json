@@ -1,0 +1,45 @@
+{
+ "purpose": "annotate:f6200c592a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Photo Idea Sheet",
+  "kind": "sheet",
+  "purpose": "Displays options to attach or take a photo for a selected AI photo generation idea.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e7",
+    "intent": "Attach a photo from gallery",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e8",
+    "intent": "Take a photo with camera",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e13",
+    "intent": "Generate the image with the selected idea",
+    "kind": "consume",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2157,
+  "output": 225,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:06:26.008Z"
+}

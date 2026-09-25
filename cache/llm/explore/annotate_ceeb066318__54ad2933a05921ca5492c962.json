@@ -1,0 +1,47 @@
+{
+ "purpose": "annotate:ceeb066318",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Chat Screen",
+  "kind": "chat",
+  "purpose": "A chat interface with an AI assistant named Luzia where users can converse and generate images.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e20",
+    "intent": "Type a message to the AI",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi!",
+    "sendEl": "e23"
+   },
+   {
+    "el": "e5",
+    "intent": "Start a new chat",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e6",
+    "intent": "Search chat history",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2593,
+  "output": 244,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:30:04.402Z"
+}

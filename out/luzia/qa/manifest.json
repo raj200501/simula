@@ -1,0 +1,29 @@
+{
+  "stage": "qa",
+  "app": "luzia",
+  "runId": "qa0925-140405",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:04:05.937Z",
+  "finishedAt": "2026-09-25T18:14:02.333Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "b3cc3f56c4d2f9f7dd411d1a15bbb7e6244377ee94da1d18fc0d7191bdf3f162"
+    },
+    {
+      "path": "mock/index.html",
+      "sha256": "f6018e0ec4ca762fc968f2e58cbcf5548899c2ff86ebb26289b2a83ff088823b"
+    }
+  ],
+  "outputs": [
+    "qa/summary.json",
+    "qa/report.html"
+  ],
+  "llm": {
+    "calls": 11,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

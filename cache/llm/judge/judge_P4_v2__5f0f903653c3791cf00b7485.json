@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "SFW surface on Chats Home with an educational game partner."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards a 15-second game play, no clicks, installs, cash or gift cards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Gain framing for 30 minutes of time-boxed access with a clear decline option."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Play to unlock CTA, opt-in per instance."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second sponsored game to get 30 minutes of Account Access (Adjust AI response style)."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option Not today leaves the app fully usable."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Offered at the start of the first session of the day on Chats Home, never mid-reply."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-payers only, suppressed for subscribers and recent purchasers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Account Access is an account-level entitlement rather than a consumable, and offering it at session start rather than at the feature wall mismatches user intent. Score: 2.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "An ad cannot stand in for creating an account; account-only features require an account first per rule 8. Score: 2.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Time-boxed to 30 minutes, restricted to non-payers, with holdout planned. Score: 4.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS $0.0054 is below net revenue per view ($0.0090-$0.0150). Score: 4.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Offered on Chats Home which is frequently visited. Score: 3.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD on s01 with an added chip. Score: 4.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References s01 and Account Access, but violates entitlement/account rules. Score: 2.",
+    "score": 2
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 1 per day. Score: 4.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Named primary metric, guardrails, and 10% user-level holdout. Score: 5.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Move the reward away from account-bound features like Account Access to consumable resources or post-decline sampling.",
+   "Ensure account creation remains the required first path for account-only features."
+  ],
+  "topConcern": "Account-only features (such as Account Access and Adjust AI response style) require a user account and cannot be bypassed or rewarded directly via ads."
+ },
+ "usage": {
+  "input": 42523,
+  "output": 658,
+  "cacheRead": 16166,
+  "cacheWrite": 0,
+  "thoughts": 2666
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:18:31.352Z"
+}

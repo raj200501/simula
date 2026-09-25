@@ -1,0 +1,29 @@
+{
+  "stage": "slides",
+  "app": "aol",
+  "runId": "sl0925-151738",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T19:17:38.617Z",
+  "finishedAt": "2026-09-25T19:17:39.760Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "proposals/candidates.json",
+      "sha256": "4c2f8b469bb0e67a27a3c47bbbc9f5975099b24e726529465e9d933262618d43"
+    },
+    {
+      "path": "proposals/judgments.json",
+      "sha256": "9e2d39f5f626d6e2fc0cb1cbec355aa01fc15c01ee69f48e295d8357bedb9301"
+    }
+  ],
+  "outputs": [
+    "slides/deck.html",
+    "slides/deck.pdf"
+  ],
+  "llm": {
+    "calls": 0,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

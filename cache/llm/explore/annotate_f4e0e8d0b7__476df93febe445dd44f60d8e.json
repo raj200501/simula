@@ -1,0 +1,48 @@
+{
+ "purpose": "annotate:f4e0e8d0b7",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Janitor Plus Paywall",
+  "kind": "paywall",
+  "purpose": "Promote the Janitor+ subscription offering premium features like longer memory, priority routing, and a golden badge.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e10",
+    "intent": "View Janitor+ subscription plans",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e12",
+    "intent": "Dismiss the subscription modal",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "A better way to chat."
+   },
+   {
+    "kind": "lock",
+    "text": "Golden checkmark next to your username"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2171,
+  "output": 249,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:48:53.644Z"
+}

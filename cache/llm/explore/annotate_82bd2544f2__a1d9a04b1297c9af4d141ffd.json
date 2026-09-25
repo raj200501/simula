@@ -1,0 +1,64 @@
+{
+ "purpose": "annotate:82bd2544f2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s16",
+  "name": "Article Ad View",
+  "kind": "page",
+  "purpose": "Displays an article page with an advertisement and next article recommendations.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e10",
+    "intent": "Go back to previous screen",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e17",
+    "intent": "Ignore test ad",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   },
+   {
+    "el": "e30",
+    "intent": "View next suggested article",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e35",
+    "intent": "View comments",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e36",
+    "intent": "Change font size",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "ADVERTISEMENT",
+    "el": "e16"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3351,
+  "output": 347,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:09:36.208Z"
+}

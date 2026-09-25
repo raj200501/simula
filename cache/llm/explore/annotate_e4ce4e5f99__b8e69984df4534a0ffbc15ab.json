@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:e4ce4e5f99",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s02",
+  "name": "Elias AI Chat",
+  "kind": "chat",
+  "purpose": "This screen allows the user to chat with the AI assistant Elias.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e23",
+    "intent": "Send a message to Elias",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e26"
+   },
+   {
+    "el": "e14",
+    "intent": "Select conversation suggestion Beat a bad day",
+    "kind": "consume",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2710,
+  "output": 211,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:25:47.014Z"
+}

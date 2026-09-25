@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:0051fbddcf",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Blocked Content Screen",
+  "kind": "page",
+  "purpose": "Manage blocked tags, creators, and characters.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e3",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2208,
+  "output": 128,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:52:19.391Z"
+}

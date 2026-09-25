@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:71c71dcb3d",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Create Account Sheet",
+  "kind": "sheet",
+  "purpose": "The user is prompted to create an account to access services like bookings, shopping, and reminders.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e7",
+    "intent": "Continue with Google",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "login wall"
+   },
+   {
+    "el": "e9",
+    "intent": "Dismiss sheet with Maybe later",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2057,
+  "output": 191,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:07:40.069Z"
+}

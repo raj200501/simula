@@ -1,0 +1,39 @@
+{
+ "purpose": "annotate:1a5df81d53",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Character Details",
+  "kind": "page",
+  "purpose": "View detailed information and reviews for a specific AI character before starting a chat.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e4",
+    "intent": "Go back to the previous screen",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e18",
+    "intent": "Start chatting with the character",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 3005,
+  "output": 180,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:50:01.956Z"
+}

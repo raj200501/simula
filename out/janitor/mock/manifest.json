@@ -1,0 +1,24 @@
+{
+  "stage": "mock",
+  "app": "janitor",
+  "runId": "mo0925-145303",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:53:03.831Z",
+  "finishedAt": "2026-09-25T18:55:05.271Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "c66070a99632d73d5b2a7decfdefd72f931131770b7696aab1cddc5e940c665e"
+    }
+  ],
+  "outputs": [
+    "mock/index.html"
+  ],
+  "llm": {
+    "calls": 6,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

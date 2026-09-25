@@ -1,0 +1,172 @@
+{
+ "purpose": "revise:P1:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Try Deep reasoning for a game",
+  "oneLiner": "Where Deep reasoning on Attachment and Mode Sheet needs Luzia+ Subscription, a 15-second game unlocks 1 hour of Deep reasoning.",
+  "case": "existing",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m14",
+    "m9"
+   ],
+   "economy": [
+    "r1",
+    "w5"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s27",
+  "trigger": "A user opens the Attachment and Mode Sheet and taps Deep reasoning, which requires Luzia+ Subscription; the offer appears after the current response finishes.",
+  "eligibility": "Signed-in non-subscribers from their second session on; never subscribers [TRIG-2] [CANN-4].",
+  "offer": {
+   "title": "Try Deep reasoning",
+   "body": "Play a 15-second game to unlock 1 hour of Deep reasoning.",
+   "cta": "Play to try",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 hour of Deep reasoning",
+   "resource": "r1",
+   "amount": null,
+   "duration": "1 hour",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Luzia+ Subscription stays the only permanent way to access Deep reasoning; a sample is 1 hour of Deep reasoning, 2 a day, and expires visibly. Non-payers only; capped per day; the grant screen repeats the paid option; a remote-config kill switch rolls it back if paid conversion drops [CANN-4].",
+  "assumptions": {
+   "engagedShare": 0.1,
+   "viewsPerEngager": 1,
+   "cogs": "text-premium",
+   "cogsUnitsPerView": 10
+  },
+  "kpis": {
+   "primary": "Sample opt-ins per eligible DAU and later Luzia+ Subscription conversion against the holdout",
+   "guardrails": [
+    "Pack / subscription conversion per DAU non-inferior to holdout within -3% relative [MEAS-5]",
+    "D7 retention and sessions per DAU",
+    "Declines followed by churn; ad-related complaints"
+   ],
+   "holdout": "10% user-level holdout never sees the offer for 4 weeks (intent-to-treat) [MEAS-5]"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-MUSIC",
+   "CANN-1"
+  ],
+  "risks": [
+   "Sampling deep reasoning can substitute for buying Luzia+: keep it time-boxed to 1 hour."
+  ],
+  "evidence": [
+   {
+    "obs": "o0183",
+    "el": "e15",
+    "quote": "Deep reasoning"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s27",
+     "near": "e15",
+     "place": "after",
+     "change": "Chip Try Deep reasoning: play 15 s"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s27",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s27",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "Deep reasoning requires Luzia+ Subscription"
+     }
+    ],
+    "caption": "Deep reasoning requires Luzia+ Subscription today."
+   },
+   {
+    "phase": "change",
+    "screen": "s27",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "NEW: try Deep reasoning"
+     }
+    ],
+    "caption": "A sample chip appears next to the Deep reasoning option."
+   },
+   {
+    "phase": "offer",
+    "screen": "s27",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Game and sample disclosed"
+     }
+    ],
+    "caption": "Play to try or No thanks; nothing else changes."
+   },
+   {
+    "phase": "ad",
+    "screen": "s27",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "A 15-second game with Luzia; unlock on REWARD_VERIFIED."
+   },
+   {
+    "phase": "value",
+    "screen": "s27",
+    "counters": [],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Unlocked"
+     }
+    ],
+    "caption": "1 hour of Deep reasoning unlocked."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43054,
+  "output": 1349,
+  "cacheRead": 30824,
+  "cacheWrite": 0,
+  "thoughts": 2554
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:19:46.522Z"
+}

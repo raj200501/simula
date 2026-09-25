@@ -1,0 +1,47 @@
+{
+ "purpose": "annotate:8d8531358c",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Contact Us Support",
+  "kind": "page",
+  "purpose": "This screen allows users to select support topics to contact customer service.",
+  "inScope": false,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e3",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e6",
+    "intent": "Select chats and messages issue",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "support/help screen"
+   },
+   {
+    "el": "e16",
+    "intent": "Select subscription and payments issue",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "support/help screen"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2653,
+  "output": 241,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:20:54.682Z"
+}

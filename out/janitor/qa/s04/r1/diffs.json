@@ -1,0 +1,460 @@
+{
+  "worst": [
+    {
+      "node": "e1",
+      "role": "container",
+      "severity": 0.07828,
+      "mustFix": false,
+      "phrase": "e1: bg #040508 vs #0E121D"
+    },
+    {
+      "node": "e2",
+      "role": "button",
+      "severity": 0.00314,
+      "mustFix": true,
+      "phrase": "e2: text '×' vs 'Close subscription announcement'"
+    },
+    {
+      "node": "e8",
+      "role": "list-item",
+      "severity": 0.00172,
+      "mustFix": false,
+      "phrase": "e8: text '✓ Generous monthly swipes with our fron…' vs 'Generous monthly swipes with our fronti…'"
+    },
+    {
+      "node": "e7",
+      "role": "list-item",
+      "severity": 0.001,
+      "mustFix": false,
+      "phrase": "e7: text '✓ Priority routing for faster replies' vs 'Priority routing for faster replies'"
+    },
+    {
+      "node": "e9",
+      "role": "list-item",
+      "severity": 0.00093,
+      "mustFix": false,
+      "phrase": "e9: text '🎖 Golden checkmark next to your userna…' vs 'Golden checkmark next to your username'"
+    },
+    {
+      "node": "e6",
+      "role": "list-item",
+      "severity": 0.0009,
+      "mustFix": false,
+      "phrase": "e6: text '✓ 5× context for better memory' vs '5× context for better memory'"
+    }
+  ],
+  "mustFix": [
+    {
+      "node": "e2",
+      "role": "button",
+      "severity": 0.00314,
+      "mustFix": true,
+      "phrase": "e2: text '×' vs 'Close subscription announcement'"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e1",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#0E121D",
+      "bgMock": "#040508",
+      "dE": 6.257967798054815,
+      "colorScore": 0.6871016100972592,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e2",
+      "role": "button",
+      "areaFrac": 0.0030559413580246914,
+      "missing": false,
+      "iou": 0.973422377925898,
+      "want": "Close subscription announcement",
+      "got": "×",
+      "textScore": 0,
+      "bgOrig": "#050C2C",
+      "bgMock": "#050C2C",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 334.9,
+        "y": 202.7,
+        "w": 33.9,
+        "h": 33.9
+      },
+      "got_rect": {
+        "x": 334.9,
+        "y": 202.7,
+        "w": 33.9,
+        "h": 33.9
+      },
+      "unbound": null
+    },
+    {
+      "id": "e3",
+      "role": "button",
+      "areaFrac": 0.005324074074074074,
+      "missing": false,
+      "iou": 0.9839655914650406,
+      "want": "JANITOR+ IS HERE",
+      "got": "JANITOR+ IS HERE",
+      "textScore": 1,
+      "bgOrig": "#091035",
+      "bgMock": "#091035",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 148.6,
+        "y": 256.4,
+        "w": 114.3,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 148.6,
+        "y": 256.4,
+        "w": 114.3,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e4",
+      "role": "button",
+      "areaFrac": 0.036753086419753084,
+      "missing": false,
+      "iou": 0.994395782180579,
+      "want": "A better way to chat.",
+      "got": "A better way to chat.",
+      "textScore": 1,
+      "bgOrig": "#081036",
+      "bgMock": "#081036",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 118.5,
+        "y": 282.3,
+        "w": 174.5,
+        "h": 79.2
+      },
+      "got_rect": {
+        "x": 118.5,
+        "y": 282.3,
+        "w": 174.5,
+        "h": 79.2
+      },
+      "unbound": null
+    },
+    {
+      "id": "e5",
+      "role": "list-item",
+      "areaFrac": 0.0573287037037037,
+      "missing": false,
+      "iou": 0.9943937207635907,
+      "want": "Longer memory, priority routing, smarter swipes, and your golden badge are now available in janitor+.",
+      "got": "Longer memory, priority routing, smarter swipes, and your golden badge are now available in janitor+.",
+      "textScore": 1,
+      "bgOrig": "#09143B",
+      "bgMock": "#09143B",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 43,
+        "y": 369.9,
+        "w": 325.3,
+        "h": 66.3
+      },
+      "got_rect": {
+        "x": 43,
+        "y": 369.9,
+        "w": 325.3,
+        "h": 66.3
+      },
+      "unbound": null
+    },
+    {
+      "id": "e6",
+      "role": "list-item",
+      "areaFrac": 0.015387345679012347,
+      "missing": false,
+      "iou": 0.9773598852295969,
+      "want": "5× context for better memory",
+      "got": "✓ 5× context for better memory",
+      "textScore": 0.9642857142857143,
+      "bgOrig": "#14224C",
+      "bgMock": "#14224C",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 77,
+        "y": 458.7,
+        "w": 292.2,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 77,
+        "y": 458.7,
+        "w": 292.2,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e7",
+      "role": "list-item",
+      "areaFrac": 0.015387345679012347,
+      "missing": false,
+      "iou": 0.9770144560288527,
+      "want": "Priority routing for faster replies",
+      "got": "✓ Priority routing for faster replies",
+      "textScore": 0.9714285714285714,
+      "bgOrig": "#1B234C",
+      "bgMock": "#1B234D",
+      "dE": 0.26481109831595295,
+      "colorScore": 0.9867594450842023,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 77,
+        "y": 490.3,
+        "w": 292.2,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 77,
+        "y": 490.3,
+        "w": 292.2,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e8",
+      "role": "list-item",
+      "areaFrac": 0.030774691358024693,
+      "missing": false,
+      "iou": 0.9883000659632375,
+      "want": "Generous monthly swipes with our frontier models",
+      "got": "✓ Generous monthly swipes with our frontier models",
+      "textScore": 0.9791666666666666,
+      "bgOrig": "#121C44",
+      "bgMock": "#121B44",
+      "dE": 0.4699365764382573,
+      "colorScore": 0.9765031711780872,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 77,
+        "y": 521.9,
+        "w": 292.2,
+        "h": 39.6
+      },
+      "got_rect": {
+        "x": 77,
+        "y": 521.9,
+        "w": 292.2,
+        "h": 39.6
+      },
+      "unbound": null
+    },
+    {
+      "id": "e9",
+      "role": "list-item",
+      "areaFrac": 0.015387345679012347,
+      "missing": false,
+      "iou": 0.9782989272359768,
+      "want": "Golden checkmark next to your username",
+      "got": "🎖 Golden checkmark next to your username",
+      "textScore": 0.961038961038961,
+      "bgOrig": "#05123D",
+      "bgMock": "#05123D",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 77,
+        "y": 573.3,
+        "w": 292.2,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 77,
+        "y": 573.3,
+        "w": 292.2,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e10",
+      "role": "button",
+      "areaFrac": 0.04480864197530864,
+      "missing": false,
+      "iou": 0.9901372976415299,
+      "want": "See janitor+",
+      "got": "See janitor+",
+      "textScore": 1,
+      "bgOrig": "#B693F2",
+      "bgMock": "#B795F2",
+      "dE": 0.562803660397722,
+      "colorScore": 0.9718598169801139,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 43,
+        "y": 615.6,
+        "w": 325.3,
+        "h": 51.8
+      },
+      "got_rect": {
+        "x": 43,
+        "y": 615.6,
+        "w": 325.3,
+        "h": 51.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e11",
+      "role": "button",
+      "areaFrac": 0.004436728395061728,
+      "missing": false,
+      "iou": 0.9713613567456071,
+      "want": "See janitor+",
+      "got": "See janitor+",
+      "textScore": 1,
+      "bgOrig": "#AF89F0",
+      "bgMock": "#AF89F0",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 161.9,
+        "y": 630.1,
+        "w": 87.6,
+        "h": 19
+      },
+      "got_rect": {
+        "x": 161.9,
+        "y": 630.1,
+        "w": 87.6,
+        "h": 19
+      },
+      "unbound": null
+    },
+    {
+      "id": "e12",
+      "role": "button",
+      "areaFrac": 0.03031172839506173,
+      "missing": false,
+      "iou": 0.9842082767429984,
+      "want": "Not now",
+      "got": "Not now",
+      "textScore": 1,
+      "bgOrig": "#06133B",
+      "bgMock": "#05133B",
+      "dE": 0.18722294777198042,
+      "colorScore": 0.9906388526114009,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 43,
+        "y": 678.1,
+        "w": 325.3,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 43,
+        "y": 678.1,
+        "w": 325.3,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e13",
+      "role": "button",
+      "areaFrac": 0.002748456790123457,
+      "missing": false,
+      "iou": 0.9688500997278499,
+      "want": "Not now",
+      "got": "Not now",
+      "textScore": 1,
+      "bgOrig": "#05123C",
+      "bgMock": "#05123C",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 179.4,
+        "y": 685.7,
+        "w": 52.2,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 179.4,
+        "y": 685.7,
+        "w": 52.2,
+        "h": 19.8
+      },
+      "unbound": null
+    }
+  ]
+}

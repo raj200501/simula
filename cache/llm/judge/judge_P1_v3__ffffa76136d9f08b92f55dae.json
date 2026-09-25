@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P1:v3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets the memory paywall screen (s03), which is a standard SFW monetization surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 30 minutes of enhanced context memory, an in-app utility, not cash or gift cards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a gain (unlocking 30 minutes) rather than threatening a loss or using dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal states: 'Play a 15-second game to get 30 minutes...'"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal clearly states: 'Play a 15-second game to get 30 minutes of enhanced context memory.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer screen includes a clear 'No Thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is placed on the memory paywall screen (s03), not mid-conversation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal eligibility specifies 'Non-paying free users hitting the memory context limit.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the exact moment of friction (the memory wall) where the user is blocked, fitting the need for enhanced memory perfectly.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "It uses a Game Partner (Willson Wáng) which feels native to the character-based roleplay platform and does not interrupt any active chat streams.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is time-boxed (30 minutes), rate-limited (3 per day), and gated to non-paying users. It clearly positions Janitor Plus as the permanent, uninterrupted option.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view ($0.0054) is comfortably below the net revenue per view ($0.0036–$0.0096), making it a sustainable model.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggering on the memory paywall (s03) is a core loop interaction point, ensuring significant visibility among frequent users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to the SIM-RWD unit with an existing entry point on s03, requiring minimal engineering lift.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the app's specific nouns: 'Janitor Plus', 's03' (the memory paywall), and character 'Willson Wáng'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal includes explicit daily caps (3) and a 30-minute cooldown, ensuring a non-intrusive experience.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a robust measurement plan: primary KPIs, guardrails, and a 10% user-level holdout over 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None. The proposal is robust and well-grounded."
+ },
+ "usage": {
+  "input": 34936,
+  "output": 997,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1938
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:58:36.636Z"
+}

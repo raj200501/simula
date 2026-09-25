@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Targeting SFW character roleplay exploration and general chat memory wall on s03."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Grants 1 hour of context memory with no rewards for clicks, installs, or cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses positive gain framing: Play a 15-second game to get 1 hour of context memory."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User explicitly opts in via the Play Now button after seeing the offer disclosure."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "States the exact reward (1 hour of context memory) and required action (15-second game) prior to the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes a visible No Thanks button that returns the user to s03 without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered at the memory limit wall s03 rather than during a streaming response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Explicitly restricted to non-paying free users hitting the memory context limit."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Hits the memory wall s03/w1 and unlocks 1 hour of 5x context memory as a time-boxed entitlement matching immediate user need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Preserves user flow at paywall decline, targets non-payers only, and maintains core app experience without quality degradation.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-payers, time-boxed to 1 hour, capped at 3 per day, keeping Janitor Plus as the permanent option.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve the reward ($0.0180) exceeds net revenue per view ($0.0063) at the low end.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered at the frequent memory limit wall m1/w1 encountered by free users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD unit, button entry, and existing screen s03.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Cites screen s03, wall w1, and game partner character Willson Wáng from the digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes explicit caps of 3 per day and a 30-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary ARPDAU metric, three guardrails, and a 10% user-level holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward cost to serve (by utilizing a cheaper model tier or smaller context scope) so that COGS stays well below net revenue per view ($0.0063).",
+   "Fix patch resource references for context_memory_1h and daily_reward_count to align with valid schema."
+  ],
+  "topConcern": "The cost to serve 1 hour of 5x context memory ($0.0180) exceeds net revenue per view ($0.0063), resulting in negative unit economics."
+ },
+ "usage": {
+  "input": 35014,
+  "output": 1027,
+  "cacheRead": 16120,
+  "cacheWrite": 0,
+  "thoughts": 2398
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:57:43.416Z"
+}

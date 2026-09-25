@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P3:v3",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal uses Chats Home (s01) and game partner Luzia, keeping interactions SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal rewards completing a 15-second sponsored game, explicitly avoiding rewards for clicks, installs, or cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses gain framing ('Play a 15-second sponsored game to get 1 image generation credit') without dark patterns or hostage framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User explicitly opts in by tapping the task sheet and selecting 'Play task'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The reward (1 image generation credit) and required action (15-second sponsored game) are clearly stated before the ad starts."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining is free via a clear 'Close' button that returns the user to Chats Home with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is triggered via a badge on Chats Home (s01), never interrupting a streaming AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly restricts the offer to non-payers only and never shows it to subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal offers image generation credits via a daily task hub (TAX-9) on Chats Home, well-aligned with proactive engagement.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Native badge and sheet integration on Chats Home with Luzia as game partner, preserving flow and input.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-payers, capped at 3 per day, and protected by a holdout and remote-config kill switch.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve the image generation credit ($0.0250) exceeds net revenue per view ($0.0063 at the low end), failing unit economics.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered via a badge on Chats Home (s01), the core loop hub visited frequently by users.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to Simula SIM-RWD unit, invitation entry, Luzia game partner, and REWARD_VERIFIED grant.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses Luzia app nouns from digest (Chats Home s01, image generation credit r3, Luzia).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 per day with a 5-minute cooldown and clean decline option.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary tasks-per-DAU metric, subscription non-inferiority guardrails, and a 10% user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Switch the reward to a zero-COGS or lower-cost item (such as priority queue, cosmetics, or cheaper model messages) or increase required views per reward, to resolve the unit economics deficit where COGS ($0.0250) exceeds net revenue per view."
+  ],
+  "topConcern": "Cost to serve the image generation credit ($0.0250) exceeds net revenue per view ($0.0063 at the low end)."
+ },
+ "usage": {
+  "input": 42742,
+  "output": 1051,
+  "cacheRead": 32334,
+  "cacheWrite": 0,
+  "thoughts": 3100
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:19:00.736Z"
+}

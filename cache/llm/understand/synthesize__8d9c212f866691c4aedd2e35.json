@@ -1,0 +1,166 @@
+{
+ "purpose": "synthesize",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "brief": {
+   "oneLiner": "An AI character roleplay and exploration platform offering custom chat scenarios, community-created bots, and subscription perks.",
+   "audience": "Fans of AI chatbot roleplay, creative writing, anime, and fictional character interactions.",
+   "coreLoop": [
+    "Browse or search for AI characters and chat scenarios",
+    "View character details and reviews",
+    "Start a chat and interact with the selected character"
+   ],
+   "howItMakesMoney": "Through the Janitor Plus subscription tier, which unlocks enhanced memory context, priority routing, monthly model swipes, and a golden username badge.",
+   "whatIsScarce": [
+    "Chat context memory",
+    "Model reply speed",
+    "Frontier model swipes"
+   ],
+   "adsToday": "None observed during exploration.",
+   "openQuestions": [
+    "What are the specific monthly pricing tiers and exact swipe quotas for Janitor Plus?",
+    "Are there token-based consumables or is token count purely informational?"
+   ]
+  },
+  "economy": {
+   "resources": [],
+   "sinks": [],
+   "sources": [],
+   "offers": [
+    {
+     "id": "of1",
+     "kind": "subscription",
+     "label": "Janitor Plus",
+     "priceText": "See janitor+",
+     "priceUsd": null,
+     "grants": {
+      "resource": null,
+      "amount": null,
+      "period": "monthly",
+      "entitlements": [
+       "5x context for better memory",
+       "Priority routing for faster replies",
+       "Generous monthly swipes with our frontier models",
+       "Golden checkmark next to your username"
+      ]
+     },
+     "screen": "s03",
+     "evidence": [
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "5× context for better memory"
+      },
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "Priority routing for faster replies"
+      },
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "Generous monthly swipes with our frontier models"
+      },
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "Golden checkmark next to your username"
+      }
+     ]
+    }
+   ],
+   "walls": [
+    {
+     "id": "w1",
+     "edge": "g0010",
+     "resource": null,
+     "blockedIntent": "Access advanced chat memory and priority features",
+     "shows": "s03",
+     "offers": [
+      "of1"
+     ],
+     "declineEdge": "g0015",
+     "evidence": [
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "More memory for\nlong chats."
+      }
+     ]
+    }
+   ],
+   "entitlements": [
+    {
+     "plan": "Janitor Plus",
+     "benefits": [
+      "5x context for better memory",
+      "Priority routing for faster replies",
+      "Generous monthly swipes with our frontier models",
+      "Golden checkmark next to your username"
+     ],
+     "evidence": [
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "5× context for better memory"
+      },
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "Priority routing for faster replies"
+      },
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "Generous monthly swipes with our frontier models"
+      },
+      {
+       "obs": "o0014",
+       "el": null,
+       "quote": "Golden checkmark next to your username"
+      }
+     ]
+    }
+   ],
+   "ads": []
+  },
+  "flowNames": [
+   {
+    "flow": "f1",
+    "name": "App Navigation & Character Discovery",
+    "goal": "Allow users to navigate between profile drawers, settings, search, and character exploration."
+   }
+  ],
+  "extraMoments": [
+   {
+    "type": "desire",
+    "screen": "s09",
+    "edge": "g0042",
+    "resource": null,
+    "description": "User views character details and reviews before initiating a chat.",
+    "evidence": [
+     {
+      "obs": "o0049",
+      "el": null,
+      "quote": "Willson Wáng"
+     },
+     {
+      "obs": "o0049",
+      "el": null,
+      "quote": "723.2k"
+     }
+    ]
+   }
+  ]
+ },
+ "usage": {
+  "input": 20193,
+  "output": 1191,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:53:03.761Z"
+}

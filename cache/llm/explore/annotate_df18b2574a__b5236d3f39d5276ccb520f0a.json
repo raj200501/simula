@@ -1,0 +1,52 @@
+{
+ "purpose": "annotate:df18b2574a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Home News Feed",
+  "kind": "tab",
+  "purpose": "Displays top local headlines and news articles with integrated advertisements.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e43",
+    "intent": "Read news article",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e19",
+    "intent": "Switch to Sports tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e52",
+    "intent": "Ad banner observed",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "TEMU · Ad",
+    "el": "e52"
+   }
+  ]
+ },
+ "usage": {
+  "input": 5287,
+  "output": 262,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:03:54.714Z"
+}

@@ -1,0 +1,792 @@
+{
+  "schema": "simula.candidates/1",
+  "app": "janitor",
+  "baseline": [
+    "Watch a full-screen interstitial ad before starting any character chat.",
+    "Watch an ad to remove all ads across the platform for one day.",
+    "Watch an ad to unlock 1 month of unlimited Janitor Plus subscription."
+  ],
+  "momentSweep": [
+    {
+      "moment": "m1",
+      "exchange": "User hits the memory limit on long chats and watches an ad to unlock temporary extended context",
+      "viable": true
+    },
+    {
+      "moment": "m2",
+      "exchange": "User dismisses the memory paywall and is offered a time-boxed session pass of Janitor Plus features",
+      "viable": true
+    },
+    {
+      "moment": "m3",
+      "exchange": "User closes the main subscription paywall and can watch an ad for a frontier model feature sample",
+      "viable": true
+    },
+    {
+      "moment": "m4",
+      "exchange": "User views the billing or account menu and engages with a proactive daily credit hub",
+      "viable": true
+    },
+    {
+      "moment": "m5",
+      "exchange": "First value discovery screen on launch; ads are strictly prohibited here by policy and safety rules",
+      "viable": false
+    },
+    {
+      "moment": "m6",
+      "exchange": "User views character details before starting a chat and can watch an ad for a session priority boost",
+      "viable": true
+    }
+  ],
+  "ideas": [
+    {
+      "title": "Extended Context Unlock",
+      "case": "existing",
+      "archetype": "TAX-1",
+      "moment": "m1",
+      "reward": "1 hour of 5x context memory",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Paywall-Decline Session Pass",
+      "case": "existing",
+      "archetype": "TAX-10",
+      "moment": "m2",
+      "reward": "30 minutes of Janitor+ premium features",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Frontier Model Swipe Refill",
+      "case": "existing",
+      "archetype": "TAX-4",
+      "moment": "m4",
+      "reward": "5 frontier model swipes",
+      "beyondBaseline": false
+    },
+    {
+      "title": "Priority Routing Pass",
+      "case": "existing",
+      "archetype": "TAX-4",
+      "moment": "m6",
+      "reward": "Priority routing for the next chat session",
+      "beyondBaseline": false
+    },
+    {
+      "title": "Daily Character Quest Hub",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "moment": "m4",
+      "reward": "Daily check-in credits for frontier swipes",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Sponsored Regeneration Pass",
+      "case": "product-change",
+      "archetype": "TAX-6",
+      "moment": "m6",
+      "reward": "1 free frontier reply regeneration",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Subscription Feature Sampling",
+      "case": "product-change",
+      "archetype": "TAX-2",
+      "moment": "m3",
+      "reward": "1-hour trial of Janitor Plus",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Character Badge Rental",
+      "case": "product-change",
+      "archetype": "TAX-13",
+      "moment": "m6",
+      "reward": "Temporary golden username badge for 24 hours",
+      "beyondBaseline": true
+    }
+  ],
+  "selected": [
+    {
+      "index": 0,
+      "why": "Directly targets the core scarce resource (memory context) at the exact moment of need when hitting the paywall wall, maximizing opt-in intent without interrupting active roleplay."
+    },
+    {
+      "index": 4,
+      "why": "Introduces a proactive daily habit loop in the account drawer, creating predictable, non-interruptive inventory and long-term retention without cannibalizing core subscriptions."
+    },
+    {
+      "index": 6,
+      "why": "Provides a clean paywall-decline fallback that captures non-converting users with a time-boxed sampling of Janitor Plus features, proving value and driving future upgrade conversion."
+    }
+  ],
+  "proposals": [
+    {
+      "id": "P1",
+      "version": 3,
+      "title": "Extended Context Unlock",
+      "oneLiner": "Watch a quick game partner session to unlock 30 minutes of enhanced context memory.",
+      "case": "existing",
+      "archetype": "TAX-1",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m1"
+        ],
+        "economy": [
+          "of1",
+          "w1"
+        ]
+      },
+      "surface": "s03",
+      "trigger": "When the user hits the memory wall trying to continue a long chat without Janitor Plus.",
+      "eligibility": "Non-paying free users hitting the memory context limit.",
+      "offer": {
+        "title": "Unlock Memory Boost",
+        "body": "Play a 15-second game to get 30 minutes of enhanced context memory.",
+        "cta": "Play Now",
+        "decline": "No Thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "Willson Wáng",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "30 minutes of enhanced context memory",
+        "duration": "30 minutes",
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "Time-boxed to 30 minutes on a lightweight cached model, rate-limited to 3 times per day, and gated to non-payers only; Janitor Plus subscription remains the permanent, un-interrupted option.",
+      "assumptions": {
+        "engagedShare": 0.35,
+        "viewsPerEngager": 1.5,
+        "cogs": "text-cheap",
+        "cogsUnitsPerView": 3
+      },
+      "kpis": {
+        "primary": "Rewarded ad ARPDAU and total ad revenue",
+        "guardrails": [
+          "Janitor Plus subscription conversion non-inferiority within -3%",
+          "D7 and D30 user retention stability",
+          "Session length and chat engagement stability"
+        ],
+        "holdout": "A 10% user-level randomized holdout running for 28 days to measure net ARPU impact."
+      },
+      "precedents": [
+        "TAX-1",
+        "TAX-2",
+        "EX-DUO"
+      ],
+      "risks": [
+        "Temporary memory unlock may slightly reduce immediate paywall views if overused",
+        "Requires stable rewarded ad fill rates in chat utility flows"
+      ],
+      "evidence": [
+        {
+          "obs": "m1",
+          "el": "e5",
+          "quote": "Keep more of the story in context, get faster repl",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s03",
+            "kind": "modal",
+            "change": "Rewarded ad invitation modal for context unlock"
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s03",
+            "near": "e5",
+            "place": "after",
+            "change": "Rewarded ad trigger button for 30-minute context unlock"
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Mini-game invite kit and play button"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s03",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "of1",
+                "delta": 1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s03",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e5",
+              "text": "Paywall blocks advanced memory"
+            }
+          ],
+          "caption": "Free users hit the paywall when needing extended context memory."
+        },
+        {
+          "phase": "change",
+          "screen": "s03",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Tap to unlock via ad"
+            }
+          ],
+          "caption": "Add an opt-in rewarded ad button below the wall."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Play 15s for 30m access"
+            }
+          ],
+          "caption": "Play a 15-second game to unlock 30 minutes memory."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Playing with Game Partner"
+            }
+          ],
+          "caption": "Complete the quick mini-game with your character partner."
+        },
+        {
+          "phase": "value",
+          "screen": "s03",
+          "counters": [
+            {
+              "resource": "of1",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e5",
+              "text": "30m memory unlocked"
+            }
+          ],
+          "caption": "Thirty minutes of enhanced context memory is now unlocked."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.0054,
+        "scenario": {
+          "engagedShare": 0.35,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.525,
+          "arpdauUsd": 0.0063,
+          "annualPer1mDauUsd": 2299500,
+          "label": "Scenario, not a forecast: 35% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P2",
+      "version": 2,
+      "title": "Daily Character Quest Hub",
+      "oneLiner": "Earn daily check-in rewards and frontier model swipes by completing character quests via rewarded mini-games.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m4"
+        ],
+        "economy": [
+          "of1",
+          "w1"
+        ],
+        "newMechanic": {
+          "name": "Daily Character Quest Hub",
+          "description": "A proactive hub on the profile screen where users complete daily tasks and check-ins with characters to earn frontier swipe credits.",
+          "whyNeeded": "Janitor Plus gating frontier swipes leaves non-payers with limited access; a proactive quest hub creates predictable, non-interruptive rewarded inventory.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s02",
+      "trigger": "When the user views their profile and taps the new daily quest hub entry after onboarding.",
+      "eligibility": "Non-paying users.",
+      "offer": {
+        "title": "Unlock Free Frontier Swipes",
+        "body": "Play a 15-second mini-game with Janitor AI to claim your daily check-in reward.",
+        "cta": "Play Now",
+        "decline": "No Thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor AI",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "Daily frontier swipe credits",
+        "resource": "frontier_swipes",
+        "amount": 3,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "Restricted to non-payers, capped at 3 daily completions, and sized well below Janitor Plus monthly entitlements.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1.5,
+        "cogs": "text-cheap",
+        "cogsUnitsPerView": 2
+      },
+      "kpis": {
+        "primary": "Rewarded ad ARPDAU and daily active engagement rate",
+        "guardrails": [
+          "Paid subscription conversion non-inferiority within -3%",
+          "D7 and D30 retention stability"
+        ],
+        "holdout": "User-level 10% holdout test running for 28 days."
+      },
+      "precedents": [
+        "TAX-9",
+        "AI-3",
+        "EX-DUO",
+        "POL-8"
+      ],
+      "risks": [
+        "Low risk of subscription cannibalization if daily rewards remain modest compared to Janitor Plus benefits.",
+        "Ad fill rates in non-US regions."
+      ],
+      "evidence": [
+        {
+          "obs": "s02",
+          "el": "e21",
+          "quote": "Upgrade to Janitor Plus",
+          "verified": true
+        },
+        {
+          "obs": "s03",
+          "el": "e9",
+          "quote": "Everything in Free, plus:",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s02",
+            "kind": "sheet",
+            "change": "Add a Daily Character Quest Hub section to the profile screen."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s02",
+            "near": "e21",
+            "place": "after",
+            "change": "Daily Character Quest Hub button"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s02",
+            "el": "ne1",
+            "to": "ns1",
+            "effects": [
+              {
+                "resource": "frontier_swipes",
+                "delta": 3
+              }
+            ],
+            "guard": {
+              "resource": "frontier_swipes",
+              "lt": 10
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "frontier_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e21",
+              "text": "Upgrade to Janitor Plus only"
+            }
+          ],
+          "caption": "Profile shows subscription upsell with no free daily reward option."
+        },
+        {
+          "phase": "change",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "frontier_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Daily Character Quest Hub"
+            }
+          ],
+          "caption": "Add a proactive Daily Character Quest Hub to the profile."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "frontier_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Play 15s to get frontier swipes"
+            }
+          ],
+          "caption": "User taps quest and sees clear opt-in disclosure."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "frontier_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Mini-game with Janitor AI"
+            }
+          ],
+          "caption": "User plays the 15-second mini-game with Game Partner."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "frontier_swipes",
+              "value": 3
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "+3 frontier swipes granted"
+            }
+          ],
+          "caption": "Reward verified and credited instantly to user account."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.0036,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.375,
+          "arpdauUsd": 0.0045,
+          "annualPer1mDauUsd": 1642500,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P3",
+      "version": 3,
+      "title": "Subscription Feature Sampling via Rewarded Ad",
+      "oneLiner": "Offer a 1-hour trial of Janitor Plus when users dismiss the paywall after a rewarded mini-game.",
+      "case": "product-change",
+      "archetype": "TAX-2",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m3"
+        ],
+        "economy": [
+          "of1",
+          "w1"
+        ],
+        "newMechanic": {
+          "name": "Paywall-Decline Trial Pass",
+          "description": "A 1-hour time-boxed trial of Janitor Plus features offered to free users immediately upon declining the subscription paywall.",
+          "whyNeeded": "Provides an accessible sampling path for price-sensitive users who decline the upfront subscription paywall, converting attention into upgrade intent.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s04",
+      "trigger": "When a free user taps 'Not now' to dismiss the Janitor Plus paywall (moment m3).",
+      "eligibility": "Non-paying free users who dismiss the subscription paywall, capped at once per day.",
+      "offer": {
+        "title": "Try Janitor Plus Free",
+        "body": "Play a quick 15-second game to unlock 1 hour of premium memory.",
+        "cta": "Play Now",
+        "decline": "No Thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1-hour trial of Janitor Plus features",
+        "resource": "of1",
+        "duration": "1 hour",
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "Gated strictly to users who decline the paywall; time-boxed to 1 hour; permanently distinct from full monthly subscription entitlement.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1,
+        "cogs": "text-cheap",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Rewarded ARPDAU and subscription conversion rate among paywall decliners",
+        "guardrails": [
+          "Paid subscription conversion non-inferiority within 3%",
+          "D7/D30 user retention",
+          "Ad completion rate >= 95%"
+        ],
+        "holdout": "20% user-level randomized holdout running for 28 days to measure net revenue impact."
+      },
+      "precedents": [
+        "TAX-2",
+        "EX-DUO",
+        "TRIG-5",
+        "TAX-10"
+      ],
+      "risks": [
+        "Risk of temporary cannibalization if trial duration is too long",
+        "Potential ad fill variations across international regions"
+      ],
+      "evidence": [
+        {
+          "obs": "s04",
+          "el": "e12",
+          "quote": "Not now",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s04",
+            "kind": "modal",
+            "change": "Trial offer confirmation modal shown upon tapping 'Not now' on the Janitor Plus paywall."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s04",
+            "near": "e12",
+            "place": "after",
+            "change": "Button inviting user to watch a rewarded mini-game for a 1-hour trial."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s04",
+            "el": "ne1",
+            "to": "ns1",
+            "effects": [
+              {
+                "resource": "of1",
+                "delta": 1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "of1",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "User taps 'Not now' on paywall"
+            }
+          ],
+          "caption": "User declines the Janitor Plus subscription paywall."
+        },
+        {
+          "phase": "change",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "of1",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New trial offer button appears"
+            }
+          ],
+          "caption": "App introduces a rewarded sampling offer upon paywall decline."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "of1",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Clear disclosure of 1-hour trial"
+            }
+          ],
+          "caption": "User sees clear opt-in prompt with working decline."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "of1",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "15-second partner mini-game"
+            }
+          ],
+          "caption": "User completes the voluntary 15-second rewarded mini-game."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "of1",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e6",
+              "text": "1-hour trial active"
+            }
+          ],
+          "caption": "Reward verified and 1-hour trial unlocked successfully."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.0018,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.25,
+          "arpdauUsd": 0.003,
+          "annualPer1mDauUsd": 1095000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    }
+  ],
+  "generatedBy": "llm"
+}

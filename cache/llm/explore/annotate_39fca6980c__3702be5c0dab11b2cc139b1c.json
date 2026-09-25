@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:39fca6980c",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s20",
+  "name": "Profile Sign Up",
+  "kind": "sheet",
+  "purpose": "Prompting user to sign up to customize response styles and save favorite messages.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e20",
+    "intent": "Sign up",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2349,
+  "output": 138,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:16:54.867Z"
+}

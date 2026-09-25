@@ -1,0 +1,201 @@
+{
+ "purpose": "revise:P1:r2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Extended Context Unlock",
+  "oneLiner": "Watch a quick game partner session to unlock 30 minutes of enhanced context memory.",
+  "case": "existing",
+  "archetype": "TAX-1",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m1"
+   ],
+   "economy": [
+    "of1",
+    "w1"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s03",
+  "trigger": "When the user hits the memory wall trying to continue a long chat without Janitor Plus.",
+  "eligibility": "Non-paying free users hitting the memory context limit.",
+  "offer": {
+   "title": "Unlock Memory Boost",
+   "body": "Play a 15-second game to get 30 minutes of enhanced context memory.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Willson Wáng",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "30 minutes of enhanced context memory",
+   "resource": null,
+   "amount": null,
+   "duration": "30 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Time-boxed to 30 minutes on a lightweight cached model, rate-limited to 3 times per day, and gated to non-payers only; Janitor Plus subscription remains the permanent, un-interrupted option.",
+  "assumptions": {
+   "engagedShare": 0.35,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 3
+  },
+  "kpis": {
+   "primary": "Rewarded ad ARPDAU and total ad revenue",
+   "guardrails": [
+    "Janitor Plus subscription conversion non-inferiority within -3%",
+    "D7 and D30 user retention stability",
+    "Session length and chat engagement stability"
+   ],
+   "holdout": "A 10% user-level randomized holdout running for 28 days to measure net ARPU impact."
+  },
+  "precedents": [
+   "TAX-1",
+   "TAX-2",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Temporary memory unlock may slightly reduce immediate paywall views if overused",
+   "Requires stable rewarded ad fill rates in chat utility flows"
+  ],
+  "evidence": [
+   {
+    "obs": "m1",
+    "el": "e5",
+    "quote": "Keep more of the story in context, get faster repl"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s03",
+     "kind": "modal",
+     "change": "Rewarded ad invitation modal for context unlock"
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s03",
+     "near": "e5",
+     "place": "after",
+     "change": "Rewarded ad trigger button for 30-minute context unlock"
+    },
+    {
+     "id": "ne2",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Mini-game invite kit and play button"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s03",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "of1",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e5",
+      "text": "Paywall blocks advanced memory"
+     }
+    ],
+    "caption": "Free users hit the paywall when needing extended context memory."
+   },
+   {
+    "phase": "change",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tap to unlock via ad"
+     }
+    ],
+    "caption": "Add an opt-in rewarded ad button below the wall."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Play 15s for 30m access"
+     }
+    ],
+    "caption": "Play a 15-second game to unlock 30 minutes memory."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Playing with Game Partner"
+     }
+    ],
+    "caption": "Complete the quick mini-game with your character partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "of1",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e5",
+      "text": "30m memory unlocked"
+     }
+    ],
+    "caption": "Thirty minutes of enhanced context memory is now unlocked."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35526,
+  "output": 1461,
+  "cacheRead": 30441,
+  "cacheWrite": 0,
+  "thoughts": 2596
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:58:25.791Z"
+}

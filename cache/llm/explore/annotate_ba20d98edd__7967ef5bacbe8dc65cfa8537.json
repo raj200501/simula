@@ -1,0 +1,47 @@
+{
+ "purpose": "annotate:ba20d98edd",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Contact Us Sheet",
+  "kind": "sheet",
+  "purpose": "Provides a form for users to contact support regarding chats and messages.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Type issue description",
+    "kind": "type-send",
+    "priority": 0,
+    "input": "Bug in chat",
+    "sendEl": "e8"
+   },
+   {
+    "el": "e8",
+    "intent": "Send contact message",
+    "kind": "consume",
+    "priority": 0
+   },
+   {
+    "el": "e4",
+    "intent": "Close sheet",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1989,
+  "output": 236,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:20:59.415Z"
+}

@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Daily tasks and mini-games with AI personas like Elias are SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The proposal offers an in-app reward (Account Access/usage) and explicitly forbids incentivized clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a proactive task sheet; no hostage framing or dark patterns are identified."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must open the sheet and tap \"Play task\" to trigger the game."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal states: \"Play a 15-second sponsored game to get 15 minutes of Account Access\"."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes a \"Close\" button on the sheet."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The tasks are triggered from a proactive sheet on the Chats Home, not during a conversation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility rules explicitly exclude subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The user is offered a way to unlock a desired feature (Account Access), but this feature is gated by account creation, creating a path mismatch.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal attempts to grant account-only features via ads, which undermines the signup wall and the value of account creation.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Granting account-level entitlements (Account Access) replaces the primary conversion funnel (Sign up free).",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0027) is well below the net revenue (estimated ~$0.0075+ after haircut).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The surface is a tab on Chats Home (core loop).",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD and existing screens.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like 'Chats Home', 'Account Access', and specific personas like 'Explain quantum physics simply.'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 tasks per day.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a 10% user-level holdout and clear metrics.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Do not offer 'Account Access' or any entitlement that requires an account (Adjust AI response style, Save favorite messages) as a reward. Account-only features are never rewards.",
+   "Change the reward to a feature usage that does not gate identity or account creation. For example, offer '1 image generation credit' or '1 deep reasoning mode usage' if those can be decoupled from the full account entitlement, or offer cosmetic rewards.",
+   "Ensure the reward does not replace the 'Sign up free' value proposition."
+  ],
+  "topConcern": "The proposal offers account-locked entitlements ('Account Access') as an ad reward, which directly cannibalizes the signup funnel and violates the policy against using ads to bypass account-gated features."
+ },
+ "usage": {
+  "input": 42727,
+  "output": 1007,
+  "cacheRead": 24256,
+  "cacheWrite": 0,
+  "thoughts": 1993
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:18:25.874Z"
+}
