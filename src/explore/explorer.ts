@@ -39,10 +39,10 @@ import {
   shortType, signatureOf, skeletonOf, type CounterEffect,
 } from "./signature.ts";
 import { annotate, toActions, toSignals, type Annotation, type AnnotateOut } from "./annotate.ts";
-import { heuristicAnnotation, isInput } from "./heuristic.ts";
+import { heuristicAnnotation, isBalanceText, isInput } from "./heuristic.ts";
 import { perform, type ActResult } from "./act.ts";
 import { classifyForeground, escapeExternal, isInApp, isLauncherPackage } from "./externals.ts";
-import { GATE_RE, LIMIT_MESSAGE_RE, WALL_KINDS, isWallText } from "./signals.ts";
+import { GATE_RE, LIMIT_MESSAGE_RE, WALL_KINDS } from "./signals.ts";
 import { applyGapTargets, gapCheck } from "./gap.ts";
 
 export { probe, type ProbeReport } from "./probe.ts";
@@ -436,20 +436,22 @@ const boundKeys = (r: Run) => new Set(r.g.resources.flatMap(x => x.bindings.map(
 const repObs = (r: Run, s: State) => r.obsIndex.get(s.obs[0]);
 
 /**
- * T2 wall test for an action that spends: where it landed (an overlay, a new screen, another chat) is a wall
- * only if it shows that the spending was blocked - a limit, price or upsell signal the from-state did not
- * have, or an account/payment gate ("create an account to keep chatting", a login wall). A sheet that asks
- * for a photo, a result page, a rating prompt are where the action leads, not walls. Never a wall: the same
- * state (a message in the chat itself is checked separately), or the same template with controls
- * relabelled (a mode switch, another item) unless it now says "limit". A signal on an element the
- * from-state already had (the same mode chip reading "Premium · 30") is not new evidence.
+ * T2 wall test for an action that spends: where it landed is a wall only if it shows that the spending was
+ * blocked: a limit signal the from-state did not have ("out of credits", "free messages used"), an account
+ * gate ("create an account to keep chatting", a login wall), or - anywhere but a chat - new price or
+ * upsell evidence (a paywall sheet or page). A sheet that asks for a photo, a result page, or a chat that
+ * shows its mode chip ("Premium · 30", reached by a "Start chat" the annotator called spending) are where
+ * the action leads, not walls. Never a wall: the same state (a message in the chat itself is checked
+ * separately), or the same template with controls relabelled (a mode switch, another item) unless it now
+ * says "limit". A signal on an element the from-state already had (the same mode chip) is not new evidence.
  */
 export function isWall(from: State, next: State, o: WallObs = {}): boolean {
   if (next.id === from.id) return false;
   const fresh = newWallSignals(from, next, o);
   if (fresh.some(s => s.kind === "limit")) return true;
   if (relabelOnly(from.signature, next.signature)) return false;
-  return fresh.length > 0 || next.loginWall || gateTexts(from, next, o).length > 0;
+  if (next.loginWall || gateTexts(from, next, o).length > 0) return true;
+  return fresh.length > 0 && next.kind !== "chat";
 }
 
 /**
@@ -464,7 +466,7 @@ function gateTexts(from: State, next: State, o: WallObs): string[] {
   const now = o.after ?? o.nextObs;
   const had = new Set([...(was?.texts ?? []), ...from.signals.map(s => s.text), from.name]);
   const shown = now ? now.texts : [...next.signals.map(s => s.text), next.name];
-  return shown.filter(t => !had.has(t) && (GATE_RE.test(t) || LIMIT_MESSAGE_RE.test(t) || isWallText(t)));
+  return shown.filter(t => !had.has(t) && (GATE_RE.test(t) || LIMIT_MESSAGE_RE.test(t)));
 }
 
 function newWallSignals(from: State, next: State, o: WallObs): Signal[] {
@@ -647,6 +649,11 @@ function registerCounters(r: Run, st: State, ann: Annotation, obs: Observation):
   for (const k of ann.counters) {
     const el = obs.elements.find(e => e.id === k.el);
     if (!el || !k.name.trim()) continue;
+    // a balance is a standalone number and unit, not a mode name with its price ("Basic · 10", "Premium 30")
+    if (!isBalanceText(labelOf(el)) || isIndicator(el, r.ex.indicators)) {
+      trace("info", { counter: "rejected", el: el.key, text: labelOf(el), why: "a price or mode label, not a balance" }, r.g.steps);
+      continue;
+    }
     let res = r.g.resources.find(x => resourceName(x.name) === resourceName(k.name));
     if (!res) {
       res = { id: `r${r.g.resources.length + 1}`, name: k.name.trim().toLowerCase(), unit: k.unit.trim() || k.name.trim(), bindings: [] };
@@ -883,13 +890,33 @@ function actionOf(g: ExploreGraph, e: GraphEdge): Action | undefined {
   return g.states.find(s => s.id === e.from)?.actions.find(a => a.id === e.action);
 }
 
-/** Edges we can replay: in-app taps and BACKs that have not failed more than they worked, plus walls. */
+/**
+ * Edges we can replay: in-app taps and BACKs that have not failed more than they worked, plus walls (a
+ * consume edge that hit a wall is safe to replay: the wall blocks the spend), plus a control the annotator
+ * called spending ("Start chat") that led to another screen, has no text field to fill, and never lowered a
+ * counter: navigation, as far as anything showed.
+ */
 function travelable(g: ExploreGraph, e: GraphEdge): boolean {
   if (e.to.startsWith("ext:") || e.to === e.from || e.failures > e.seen) return false;
   const a = actionOf(g, e);
   if (!a || a.status === "skipped") return false;
-  // a consume edge that hit a wall is safe to replay: the wall blocks the spend
-  return a.kind === "tap" || a.kind === "back" || (a.kind === "consume" && !!e.limitHit);
+  if (a.kind === "tap" || a.kind === "back" || (a.kind === "consume" && !!e.limitHit)) return true;
+  return a.kind === "consume" && !onInput(a) && !hasField(g, e.from) && !spent(g, e.from, a.id);
+}
+
+/** The action's element is a text field (its key starts with the element's short type). */
+const onInput = (a: Action) => !!a.elKey && isInputType(a.elKey.split("|")[0]);
+
+/** The state shows a text field: a spending control there may fill it (a prompt) before it acts. */
+function hasField(g: ExploreGraph, state: string): boolean {
+  const s = g.states.find(x => x.id === state);
+  const rep = s && g.observations.find(o => o.id === s.obs[0]);
+  return !!rep?.elements.some(e => isInputType(e.type));
+}
+
+/** Some traversal of this action lowered a counter. */
+function spent(g: ExploreGraph, state: string, action: string): boolean {
+  return g.edges.some(e => e.from === state && e.action === action && counterEffects(e.effects).some(f => f.delta < 0 && !f.resource.startsWith("auto:")));
 }
 
 function reachable(r: Run, from: string, want: (s: State) => boolean): Reach[] {
@@ -1168,7 +1195,10 @@ function drainTargets(r: Run): DrainTarget[] {
   const g = r.g;
   const out: DrainTarget[] = [];
   for (const s of g.states) {
+    // a send on a text field, a control that fills one (Generate under a prompt), or a control that was
+    // seen to lower a counter; never a "Claim" or "Start chat" the annotator merely called spending
     const acts = s.actions.filter(a => a.kind === "consume" && a.status !== "skipped"
+      && (onInput(a) || hasField(g, s.id) || spent(g, s.id, a.id))
       && g.edges.some(e => e.from === s.id && e.action === a.id && !e.to.startsWith("ext:"))
       && !g.edges.some(e => e.from === s.id && e.action === a.id && e.limitHit));
     if (!acts.length) continue;

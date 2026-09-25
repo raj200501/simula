@@ -360,8 +360,11 @@ export async function observe(o: ObserveCtx, id: string, step: number, opts: Obs
   let snap = opts.mode === "content" && opts.before
     ? await settleContent(o.dev, look, o.timing, labelCounts(opts.before.elements), s => isExcluded(o.ex, s))
     : await settleUi(o.dev, look, o.timing);
-  if (opts.excludeAppeared && opts.before) {
-    // T2: the reply we just provoked is conversation, not identity (wall text and buttons stay)
+  // T2: the reply we just provoked is conversation, not identity (wall text and buttons stay). Only while
+  // the screen mostly stayed: a spending tap that navigated ("Start chat") shows a new screen, whose words are
+  // its identity, not a reply.
+  const stayed = (b: Observation) => !b.texts.length || b.texts.filter(t => snap.texts.includes(t)).length / b.texts.length >= 0.5;
+  if (opts.excludeAppeared && opts.before && stayed(opts.before)) {
     const seen = new Set(opts.before.texts);
     const extra = snap.els.filter(e => labelOf(e) && !seen.has(labelOf(e)) && replyLike(labelOf(e), e.type)).map(labelOf);
     if (extra.length) {

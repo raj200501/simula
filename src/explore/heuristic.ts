@@ -35,10 +35,25 @@ const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…`
 const sameRow = (a: NormElement, b: NormElement) =>
   Math.abs(a.rect.y + a.rect.h / 2 - (b.rect.y + b.rect.h / 2)) <= Math.max(b.rect.h, 48);
 
+const RATE_RE = /[\/·•|]|\bper\b|\beach\b|\bmsgs?\b|\bmessages?\b|\bx\s?\d|\d\s?x\b/i;
+
+/**
+ * A balance reads as a standalone amount: "450", "450 credits", "Coins 120", "Balance: 1,250". Not a mode
+ * name with its price ("Basic · 10", "Premium 30"), a rate ("10 credits/msg", "30 per message") or a price.
+ * The word before a number must itself be balance vocabulary; any word may follow it as the unit.
+ */
+export function isBalanceText(text: string): boolean {
+  const t = text.trim();
+  if (!t || PRICE_RE.test(t) || RATE_RE.test(t) || (t.match(/\d[\d,.]*/g) ?? []).length !== 1) return false;
+  if (/^[\d.,]+\s*[\p{L}\p{So}]*\s*$/u.test(t)) return true;                         // 450, 450 credits, 120 💎
+  const lead = /^([\p{L}]+):?\s*[\d.,]+\s*$/u.exec(t);                                  // Coins 120, Balance: 450
+  return !!lead && BALANCE_WORD.test(lead[1]);
+}
+
 /** A balance or quota shown as a number: "450 credits", "Coins 120", or a number in a balance-labelled element. */
 export function counterOf(e: NormElement, info: DeviceInfo): { name: string; unit: string } | null {
   const t = labelOf(e);
-  if (!t || !/\d/.test(t) || t.length > SHORT_LABEL || e.group || e.ad) return null;
+  if (!t || !/\d/.test(t) || t.length > SHORT_LABEL || e.group || e.ad || !isBalanceText(t)) return null;
   if (PRICE_RE.test(t) || /tab|switch|check|radio/i.test(e.type)) return null;
   const inTop = e.rect.y + e.rect.h <= info.heightPx * BAND;
   const described = `${e.label ?? ""} ${idWords(e)}`;

@@ -27,8 +27,8 @@ export function signalKinds(text: string): SignalKind[] {
 export const LIMIT_MESSAGE_RE =
   /free messages?|messages? left|no more messages|message limit|daily limit|limit reached|reached (your|the) (daily |free |message )?limit|out of (free )?(messages|credits|coins|tokens|gems)|run out of|(sign ?up|log ?in|create (an |your )?account|upgrade|subscribe) to (continue|keep|send|chat)|come back (later|tomorrow)|try again (later|tomorrow)|insufficient|not enough (credits|coins|gems|tokens|messages)/i;
 
-/** An account or payment gate: what a guest meets when the free allowance ends. */
-export const GATE_RE = /(sign ?up|sign ?in|log ?in|create (an |your )?account|register|subscribe|upgrade)/i;
+/** An account gate: what a guest meets when the free allowance ends (upgrade/subscribe are upsell signals). */
+export const GATE_RE = /\b(sign ?up|sign ?in|log ?in|create (an |your )?account|register)\b/i;
 
 /** Signals that make a screen reached by spending look like a wall (BUILD_SPEC T2). */
 export const WALL_KINDS: ReadonlySet<SignalKind> = new Set<SignalKind>(["limit", "price", "upsell"]);

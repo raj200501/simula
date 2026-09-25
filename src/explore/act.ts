@@ -118,8 +118,53 @@ export async function perform(c: ActCtx, a: Action, hint?: Rect): Promise<ActRes
     }
     case "type-send":
     case "consume":
-      return typeAndSend(c, a, hint);
+      return spend(c, a, hint);
   }
+}
+
+/**
+ * An action that types or spends. On a text field: type, check that it landed, send. On anything else - a
+ * "Claim", "Start chat" or "Generate" button that the annotator called spending - it is a tap (the action
+ * keeps its kind, so its effects and walls still count as spending); when the control belongs to a prompt
+ * field (on its row, or just above it) that is empty, the field gets the action's text first, so the tap
+ * has something to act on.
+ */
+async function spend(c: ActCtx, a: Action, hint?: Rect): Promise<ActResult> {
+  if (!a.elKey && a.tapPoint) return perform(c, { ...a, kind: "tap" }, hint);
+  const el = a.elKey ? await locate(c, a.elKey, hint) : undefined;
+  if (!el) return { ok: false, reason: a.kind === "type-send" || !a.elKey ? "input field not found" : "element not found on screen" };
+  if (isInput(el)) return typeAndSend(c, a, el);
+  const veto = el.key !== a.elKey ? guardReason(el, labelOf(el), "tap") : undefined;
+  if (veto) return { ok: false, reason: `${veto} (the element found in its place)`, skip: true };
+  const field = companionField(await look(c), el);
+  const text = a.input?.trim() || DEFAULT_INPUT;
+  let typed: string | undefined;
+  if (field && !(field.text ?? "").trim()) {
+    const filled = await fillField(c, field, text);
+    if (!filled.ok) return filled;
+    typed = text;
+  }
+  const target = typed ? findByKey(await look(c), el.key, el.rect) ?? el : el;
+  const t = await tapElement(c, target);
+  if (!t.ok) return t;
+  const name = labelOf(el) || el.identifier || shortType(el.type);
+  return { ok: true, typed, note: typed ? `filled its prompt field, then tapped "${name}"` : `tapped "${name}" (a spending control, not a text field)` };
+}
+
+/**
+ * The text field a control acts on: on the control's row (a Send next to a composer), or just above it and
+ * overlapping it horizontally (a "Generate" button under a prompt field). Exported for tests.
+ */
+export function companionField(els: NormElement[], control: NormElement): NormElement | undefined {
+  const cy = (e: NormElement) => e.rect.y + e.rect.h / 2;
+  const xOverlap = (f: NormElement) => Math.min(f.rect.x + f.rect.w, control.rect.x + control.rect.w) - Math.max(f.rect.x, control.rect.x);
+  const onRow = (f: NormElement) => Math.abs(cy(f) - cy(control)) <= Math.max(f.rect.h, 48);
+  const above = (f: NormElement) => {
+    const gap = control.rect.y - (f.rect.y + f.rect.h);
+    return gap >= -8 && gap <= Math.max(3 * f.rect.h, 400) && xOverlap(f) > 0;
+  };
+  return els.filter(f => f !== control && isInput(f) && (onRow(f) || above(f)))
+    .sort((x, y) => Math.abs(cy(x) - cy(control)) - Math.abs(cy(y) - cy(control)))[0];
 }
 
 /** The typed text is in the field: its own text, or a text drawn inside its rect (Compose draws it apart). */
@@ -130,18 +175,14 @@ function landedIn(els: NormElement[], field: NormElement, text: string): boolean
 }
 
 /**
- * T7: tap the field, type (never ENTER: it is a newline in chat apps), then check that the text landed in
- * that field - many devices (Compose apps under mobile-mcp) never report which field has the focus, so the
- * check is on the result. If the text went elsewhere or nowhere, press BACK (hides the keyboard) and fail:
- * never send what did not land in the field. If the tap visibly gave the focus to another field (it opened
- * a profile sheet), nothing is typed at all. Then look again, because many composers only show Send once
- * there is text: Send = a control on the field's row named send/submit/arrow, else the rightmost control on
- * that row that appeared with the typing, else ENTER. Finally check that the field cleared.
+ * Tap the field, type (never ENTER: it is a newline in chat apps), then check that the text landed in that
+ * field - many devices (Compose apps under mobile-mcp) never report which field has the focus, so the check
+ * is on the result. If the text went elsewhere or nowhere, press BACK (hides the keyboard) and fail: never
+ * send what did not land in the field. If the tap visibly gave the focus to another field (it opened a
+ * profile sheet), nothing is typed at all. A draft already holding the text is not typed twice.
+ * On success, `before` is the screen just before typing (to see what the typing made appear).
  */
-async function typeAndSend(c: ActCtx, a: Action, hint?: Rect): Promise<ActResult> {
-  const text = a.input?.trim() || DEFAULT_INPUT;
-  const field = a.elKey ? await locate(c, a.elKey, hint) : undefined;
-  if (!field) return { ok: false, reason: "input field not found" };
+async function fillField(c: ActCtx, field: NormElement, text: string): Promise<{ ok: true; before: NormElement[] } | { ok: false; reason: string }> {
   const tapped = await tapElement(c, field);
   if (!tapped.ok) return tapped;
   await sleep(c.timing.pollMs);
@@ -150,7 +191,6 @@ async function typeAndSend(c: ActCtx, a: Action, hint?: Rect): Promise<ActResult
   if (focused.length && !focused.some(e => overlapRatio(e.rect, field.rect) >= 0.5)) {
     return { ok: false, reason: "tapping the field gave the focus to another text field (nothing typed)" };
   }
-  // a draft left in the field (a wall keeps it) already holds our text: send it rather than typing it twice
   if (!landedIn(before, field, text)) {
     await c.dev.typeText(text);
     await sleep(c.timing.pollMs);
@@ -159,6 +199,19 @@ async function typeAndSend(c: ActCtx, a: Action, hint?: Rect): Promise<ActResult
     await c.dev.back();
     return { ok: false, reason: "the typed text did not land in the field (pressed BACK to hide the keyboard; nothing sent)" };
   }
+  return { ok: true, before };
+}
+
+/**
+ * T7: fill the field (fillField), then look again, because many composers only show Send once there is
+ * text: Send = a control on the field's row named send/submit/arrow, else the rightmost control on that row
+ * that appeared with the typing, else ENTER. Finally check that the field cleared.
+ */
+async function typeAndSend(c: ActCtx, a: Action, field: NormElement): Promise<ActResult> {
+  const text = a.input?.trim() || DEFAULT_INPUT;
+  const filled = await fillField(c, field, text);
+  if (!filled.ok) return filled;
+  const before = filled.before;
   const els = await look(c);
   const typedField = refindField(els, field) ?? field;
   const pre = a.sendElKey ? findByKey(els, a.sendElKey) : undefined;
