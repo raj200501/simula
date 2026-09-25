@@ -11,7 +11,7 @@ import { ensureDir, nowIso, writeText } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
 import { dhashOf, newExclusions, normalize, textsOf } from "./observe.ts";
 import { heuristicAnnotation } from "./heuristic.ts";
-import { toActions } from "./annotate.ts";
+import { guardReason } from "./guards.ts";
 import { isInApp } from "./externals.ts";
 import { labelOf, signatureOf } from "./signature.ts";
 
@@ -53,7 +53,9 @@ export async function probe(c: StageCtx, dev: Device, o: { deviceFile?: string }
     signature: signatureOf(els), dhash: await dhashOf(shot), scrollIndex: 0, counters: [], texts: textsOf(els),
   };
   const ann = heuristicAnnotation(obs, { info });
-  const actions = toActions(ann.actions, obs, 0, { withBack: false }).filter(a => a.status !== "skipped" && a.elKey);
+  // every labelled element the explorer could tap (not only the 2-per-list sample it would try)
+  const screen = info.widthPx * info.heightPx;
+  const actionable = els.filter(e => labelOf(e) && !e.ad && e.rect.w * e.rect.h < 0.9 * screen && !guardReason(e, labelOf(e), "tap"));
   const byId = new Map(els.map(e => [e.id, e]));
   const counters = ann.counters.map(k => ({ name: k.name, text: labelOf(byId.get(k.el) ?? {}) }));
   const numbers = els.map(labelOf).filter(t => /\d/.test(t)).slice(0, 12);
@@ -62,7 +64,7 @@ export async function probe(c: StageCtx, dev: Device, o: { deviceFile?: string }
   const checks = [
     { name: "the app is in the foreground", pass: inApp, detail: fg },
     { name: "at least 3 elements after normalizing", pass: els.length >= 3, detail: `${els.length} elements` },
-    { name: "at least 10 labelled actionable elements", pass: actions.length >= 10, detail: `${actions.length} labelled actionables` },
+    { name: "at least 10 labelled actionable elements", pass: actionable.length >= 10, detail: `${actionable.length} labelled actionables` },
     { name: "a balance or other number is readable as text", pass: counters.length > 0 || numbers.length > 0, detail: counters.map(k => `${k.name}: "${k.text}"`).join(", ") || numbers.slice(0, 3).join(", ") || "none" },
     { name: "insets known", pass: info.kind === "web" || (info.statusBarPx > 0 && info.navBarPx > 0), detail: `status ${info.statusBarPx}px, nav ${info.navBarPx}px` },
     { name: "one observation under 10 s", pass: secs < 10, detail: `${secs}s` },
@@ -73,7 +75,7 @@ export async function probe(c: StageCtx, dev: Device, o: { deviceFile?: string }
   writeText(deviceFile, JSON.stringify({ widthPx: info.widthPx, heightPx: info.heightPx, density: info.density, statusBarPx: info.statusBarPx, navBarPx: info.navBarPx }, null, 2) + "\n");
   const report: ProbeReport = {
     app: c.app.id, fg, inApp, device: info, elements: els.length, labelled: els.filter(e => labelOf(e)).length,
-    labelledActionable: actions.length, numbers, counters, secsPerObserve: secs, screenshot: shot, deviceFile, checks, go,
+    labelledActionable: actionable.length, numbers, counters, secsPerObserve: secs, screenshot: shot, deviceFile, checks, go,
   };
   writeText(path.join(dir, "probe.json"), JSON.stringify(report, null, 2) + "\n");
   trace("info", { probe: { go, elements: report.elements, labelledActionable: report.labelledActionable, counters, secs } });

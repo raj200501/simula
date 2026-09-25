@@ -3,19 +3,19 @@
 // Every claim carries evidence {obs, el?, quote}; verify.ts checks it afterwards.
 // The stub is the no-key path: a deterministic extraction from counters, effects and on-screen
 // texts that yields a genuinely usable economy (it is what `npm run demo` and the tests run).
+import path from "node:path";
 import sharp from "sharp";
 import { z } from "zod";
 import { AdPlacement, Brief, EconomyResource, MomentType, Offer, Source, type Action, type Economy, type Edge, type Evidence, type Flow, type GraphEdge, type Observation, type Screen } from "../core/schema.ts";
 import { json, type Img } from "../core/llm.ts";
 import { MODELS } from "../core/config.ts";
-import { canonical, escapeHtml, sha256 } from "../core/io.ts";
+import { canonical, sha256 } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
 import type { Compiled } from "./compile.ts";
 import { isConsume } from "./flows.ts";
 import type { ExtraMoment } from "./moments.ts";
 import { redactText } from "./redact.ts";
 import { numbersIn } from "./verify.ts";
-import path from "node:path";
 
 export interface Draft {
   brief: Brief;
@@ -91,11 +91,13 @@ class Ctx {
   allWords(): string[] { return this.words.flatMap(r => r.words); }
 }
 
-const mode = (xs: number[]) => {
-  const n = new Map<number, number>();
+/** Most common value; ties go to the first seen (Map keeps insertion order and sort is stable). */
+function mostCommon<T>(xs: T[]): T {
+  const n = new Map<T, number>();
   xs.forEach(x => n.set(x, (n.get(x) ?? 0) + 1));
-  return [...n].sort((a, b) => b[1] - a[1])[0][0]; // Map keeps insertion order, so ties go to the first seen
-};
+  return [...n].sort((a, b) => b[1] - a[1])[0][0];
+}
+const mode = (xs: number[]) => mostCommon(xs);
 
 // ------------------------------------------------------------------------------------------------
 // Stub: deterministic extraction
@@ -276,7 +278,7 @@ function offers(x: Ctx): OfferT[] {
   for (const o of found) {
     if (o.grants.resource || o.grants.amount == null || o.kind === "subscription") continue;
     const sib = found.filter(k => k.screen === o.screen && k.grants.resource).map(k => k.grants.resource!);
-    o.grants.resource = sib.length ? mode(sib.map((_, i) => i)) !== undefined ? sib[0] : undefined : currencies.length === 1 ? currencies[0].id : undefined;
+    o.grants.resource = sib.length ? mostCommon(sib) : currencies.length === 1 ? currencies[0].id : undefined;
     if (o.grants.resource && o.kind === "one-off") o.kind = "pack";
   }
   const resName = (id?: string) => (id ? cm.graph.resources.find(r => r.id === id)?.name ?? "" : "");
@@ -453,7 +455,6 @@ export function graphText(cm: Compiled, flows: Flow[]): string {
   const L: string[] = [];
   const q = (t: string) => JSON.stringify(redactText(t).slice(0, 80));
   const name = (id: string) => cm.screens.find(s => s.id === id)?.name ?? id;
-  const res = (id: string) => g.resources.find(r => r.id === id)?.name ?? id;
   L.push(`APP ${g.app.name}; device ${Math.round(g.device.widthPx / d)}x${Math.round(g.device.heightPx / d)} dp; launch screen ${cm.launch}`);
   L.push("", "SCREENS (id [kind] name, visits: purpose; then visible texts per observation id)");
   for (const s of cm.screens) {
@@ -496,7 +497,6 @@ export function graphText(cm: Compiled, flows: Flow[]): string {
     L.push("", "FLOWS (name each: flowNames[].flow = id)");
     for (const f of flows) L.push(`${f.id} [${f.kind}] ${f.steps.map(s => `${name(s.screen)}${s.note ? ` (${s.note})` : ""}`).join(" -> ")}`);
   }
-  void res;
   return L.join("\n");
 }
 
@@ -551,19 +551,42 @@ function fromLlm(o: LlmOut): Draft {
   };
 }
 
+/** The stub's answer in the LLM's output shape, so both paths go through the same mapping. */
+function toLlm(d: Draft): LlmOut {
+  const n = <T>(v: T | undefined): T | null => v ?? null;
+  const lev = (xs: Evidence[]) => xs.map(k => ({ obs: k.obs, el: n(k.el), quote: k.quote ?? "" }));
+  const e = d.economy;
+  return {
+    brief: d.brief,
+    economy: {
+      resources: e.resources.map(r => ({ id: r.id, name: r.name, unit: r.unit, kind: r.kind, shownOn: r.shownOn, observedValues: r.observedValues, resets: n(r.resets), evidence: lev(r.evidence) })),
+      sinks: e.sinks.map(k => ({ id: k.id, resource: k.resource, amount: k.amount, action: k.action, edges: k.edges, context: n(k.context), evidence: lev(k.evidence) })),
+      sources: e.sources.map(k => ({ id: k.id, resource: k.resource, amount: k.amount, cadence: k.cadence, how: k.how, screen: n(k.screen), evidence: lev(k.evidence) })),
+      offers: e.offers.map(k => ({ id: k.id, kind: k.kind, label: k.label, priceText: k.priceText, priceUsd: k.priceUsd, screen: k.screen, evidence: lev(k.evidence),
+        grants: { resource: n(k.grants.resource), amount: n(k.grants.amount), period: n(k.grants.period), entitlements: k.grants.entitlements ?? [] } })),
+      walls: e.walls.map(k => ({ id: k.id, edge: n(k.edge), resource: n(k.resource), blockedIntent: k.blockedIntent, shows: k.shows, offers: k.offers, declineEdge: n(k.declineEdge), evidence: lev(k.evidence) })),
+      entitlements: e.entitlements.map(k => ({ plan: k.plan, benefits: k.benefits, evidence: lev(k.evidence) })),
+      ads: e.ads.map(k => ({ format: k.format, screen: k.screen, el: n(k.el), evidence: lev(k.evidence) })),
+    },
+    flowNames: d.flowNames,
+    extraMoments: d.extraMoments.map(m => ({ type: m.type, screen: m.screen, edge: n(m.edge), resource: n(m.resource), description: m.description, evidence: lev(m.evidence) })),
+  };
+}
+
 export async function synthesize(cm: Compiled, flows: Flow[]): Promise<Draft> {
   const prompt = graphText(cm, flows);
   const { imgs, shas } = await keyImages(cm);
   let stubbed = false;
-  const stub = (): LlmOut => { stubbed = true; return {} as LlmOut; };
   try {
     const out = await json({
       stage: "understand", purpose: "synthesize", model: MODELS.main, effort: "high", maxTokens: 32000,
       system: SYSTEM, prompt, images: imgs, schema: LlmOut,
+      // Images are downscaled locally (bytes may differ across machines), so the key uses the
+      // prompt hash and the ORIGINAL screenshot shas instead.
       cacheKey: { prompt: sha256(canonical({ SYSTEM, prompt })), images: shas },
-      stub,
+      stub: () => { stubbed = true; return toLlm(stubDraft(cm, flows)); },
     });
-    if (!stubbed) return fromLlm(out);
+    return { ...fromLlm(out), by: stubbed ? "stub" : "llm" };
   } catch (e) {
     trace("failure", { where: "understand:synthesize", error: String((e as Error).message ?? e).slice(0, 300) });
     trace("recovery", { how: "heuristic (stub) synthesis of the economy from counters, effects and on-screen texts" });
@@ -571,4 +594,3 @@ export async function synthesize(cm: Compiled, flows: Flow[]): Promise<Draft> {
   return stubDraft(cm, flows);
 }
 
-void escapeHtml;
