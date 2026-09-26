@@ -1,0 +1,504 @@
+{
+  "worst": [
+    {
+      "node": "e5",
+      "role": "list-item",
+      "severity": 0.15681,
+      "mustFix": false,
+      "phrase": "e5: bg #343434 vs #000000"
+    },
+    {
+      "node": "e2",
+      "role": "button",
+      "severity": 0.12137,
+      "mustFix": false,
+      "phrase": "e2: bg #141414 vs #333333"
+    },
+    {
+      "node": "e1",
+      "role": "container",
+      "severity": 0.12129,
+      "mustFix": false,
+      "phrase": "e1: bg #141414 vs #333333"
+    },
+    {
+      "node": "e11",
+      "role": "button",
+      "severity": 0.00738,
+      "mustFix": false,
+      "phrase": "e11: 41dp too high; bg #333333 vs #000000"
+    },
+    {
+      "node": "e9",
+      "role": "text",
+      "severity": 0.00571,
+      "mustFix": false,
+      "phrase": "e9: 13dp too high; text '' vs 'Attach Photos'"
+    },
+    {
+      "node": "e12",
+      "role": "button",
+      "severity": 0.00569,
+      "mustFix": false,
+      "phrase": "e12: 41dp too high; bg #333333 vs #000000"
+    },
+    {
+      "node": "e10",
+      "role": "text",
+      "severity": 0.00566,
+      "mustFix": false,
+      "phrase": "e10: 13dp too high; text '' vs 'Take Photo'"
+    },
+    {
+      "node": "e14",
+      "role": "button",
+      "severity": 0.0056,
+      "mustFix": false,
+      "phrase": "e14: 9dp too far left; 18dp too wide; 3dp too tall; bg #000000 vs #363636"
+    },
+    {
+      "node": "e4",
+      "role": "text",
+      "severity": 0.00341,
+      "mustFix": false,
+      "phrase": "e4: text '' vs 'Drag handle'"
+    }
+  ],
+  "mustFix": [],
+  "elements": [
+    {
+      "id": "e1",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#333333",
+      "bgMock": "#141414",
+      "dE": 9.6986522271267,
+      "colorScore": 0.515067388643665,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e2",
+      "role": "button",
+      "areaFrac": 0.6741666666666667,
+      "missing": false,
+      "iou": 0.9994518996586592,
+      "want": "Close sheet",
+      "got": "Close sheet",
+      "textScore": 1,
+      "bgOrig": "#333333",
+      "bgMock": "#141414",
+      "dE": 9.6986522271267,
+      "colorScore": 0.515067388643665,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 616.4
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 616.4
+      },
+      "unbound": null
+    },
+    {
+      "id": "e3",
+      "role": "button",
+      "areaFrac": 0.0061736111111111115,
+      "missing": false,
+      "iou": 0.9807062108087695,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 182.1,
+        "y": 616.4,
+        "w": 48,
+        "h": 48.4
+      },
+      "got_rect": {
+        "x": 182.1,
+        "y": 616.4,
+        "w": 48,
+        "h": 48.4
+      },
+      "unbound": null
+    },
+    {
+      "id": "e4",
+      "role": "text",
+      "areaFrac": 0.00044560185185185187,
+      "missing": false,
+      "iou": 0.861845419035404,
+      "want": "Drag handle",
+      "got": "",
+      "textScore": 0,
+      "bgOrig": "#CBCBCB",
+      "bgMock": "#CBCBCB",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0.2,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 185.9,
+        "y": 638.5,
+        "w": 40,
+        "h": 4.2
+      },
+      "got_rect": {
+        "x": 186.1,
+        "y": 638.5,
+        "w": 40,
+        "h": 4.2
+      },
+      "unbound": null
+    },
+    {
+      "id": "e5",
+      "role": "list-item",
+      "areaFrac": 0.22748148148148148,
+      "missing": false,
+      "iou": 0.9960263206457652,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#343434",
+      "dE": 13.70718400080821,
+      "colorScore": 0.3146407999595895,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 664.8,
+        "w": 379.4,
+        "h": 225.5
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 664.8,
+        "w": 379.4,
+        "h": 225.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e6",
+      "role": "button",
+      "areaFrac": 0.01768672839506173,
+      "missing": false,
+      "iou": 0.9770308312574976,
+      "want": "Vogue fashion editorial",
+      "got": "Vogue fashion editorial",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#010101",
+      "dE": 0.1571244190200757,
+      "colorScore": 0.9921437790489962,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 664.8,
+        "w": 239.2,
+        "h": 27.8
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 664.8,
+        "w": 239.2,
+        "h": 27.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e7",
+      "role": "list-item",
+      "areaFrac": 0.039456018518518515,
+      "missing": false,
+      "iou": 0.9906492517774921,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#353535",
+      "dE": 0.32281648961343423,
+      "colorScore": 0.9838591755193283,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 716.6,
+        "w": 185.5,
+        "h": 80
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 716.6,
+        "w": 185.5,
+        "h": 80
+      },
+      "unbound": null
+    },
+    {
+      "id": "e8",
+      "role": "list-item",
+      "areaFrac": 0.03953703703703704,
+      "missing": false,
+      "iou": 0.9889495857360961,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#343434",
+      "dE": 0.6450121833638428,
+      "colorScore": 0.9677493908318079,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 209.5,
+        "y": 716.6,
+        "w": 185.9,
+        "h": 80
+      },
+      "got_rect": {
+        "x": 209.5,
+        "y": 716.6,
+        "w": 185.9,
+        "h": 80
+      },
+      "unbound": null
+    },
+    {
+      "id": "e9",
+      "role": "text",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.31873501939023624,
+      "want": "Attach Photos",
+      "got": "",
+      "textScore": 0,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": -12.7,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 96.8,
+        "y": 744.8,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 96.8,
+        "y": 732.1,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e10",
+      "role": "text",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.31939873694772136,
+      "want": "Take Photo",
+      "got": "",
+      "textScore": 0,
+      "bgOrig": "#282828",
+      "bgMock": "#353535",
+      "dE": 4.146370082325658,
+      "colorScore": 0.7926814958837171,
+      "dxDp": -0.3,
+      "dyDp": -12.7,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 290.7,
+        "y": 744.8,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 290.4,
+        "y": 732.1,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e11",
+      "role": "button",
+      "areaFrac": 0.004418981481481481,
+      "missing": false,
+      "iou": 0,
+      "want": "Attach Photos",
+      "got": "Attach Photos",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#333333",
+      "dE": 13.38902543285007,
+      "colorScore": 0.3305487283574965,
+      "dxDp": 0.6,
+      "dyDp": -40.5,
+      "dwDp": -1.2,
+      "dhDp": -0.5,
+      "target": {
+        "x": 61.3,
+        "y": 804.6,
+        "w": 94.9,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 61.9,
+        "y": 764.1,
+        "w": 93.8,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e12",
+      "role": "button",
+      "areaFrac": 0.0034074074074074076,
+      "missing": false,
+      "iou": 0,
+      "want": "Take Photo",
+      "got": "Take Photo",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#333333",
+      "dE": 13.38902543285007,
+      "colorScore": 0.3305487283574965,
+      "dxDp": -0.3,
+      "dyDp": -40.5,
+      "dwDp": 0.6,
+      "dhDp": -0.5,
+      "target": {
+        "x": 265.9,
+        "y": 804.6,
+        "w": 73.1,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 265.6,
+        "y": 764.1,
+        "w": 73.7,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e13",
+      "role": "list-item",
+      "areaFrac": 0.04841666666666666,
+      "missing": false,
+      "iou": 0.9839580458356045,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 832.4,
+        "w": 379.4,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 832.4,
+        "w": 379.4,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e14",
+      "role": "button",
+      "areaFrac": 0.005786651234567901,
+      "missing": false,
+      "iou": 0.749918910784483,
+      "want": "Slay the cover",
+      "got": "Slay the cover",
+      "textScore": 1,
+      "bgOrig": "#363636",
+      "bgMock": "#000000",
+      "dE": 14.3447879797632,
+      "colorScore": 0.28276060101184,
+      "dxDp": -9.3,
+      "dyDp": -1.2,
+      "dwDp": 18.2,
+      "dhDp": 2.8,
+      "target": {
+        "x": 152,
+        "y": 846.1,
+        "w": 107.8,
+        "h": 20.2
+      },
+      "got_rect": {
+        "x": 142.7,
+        "y": 844.9,
+        "w": 126,
+        "h": 23
+      },
+      "unbound": null
+    }
+  ]
+}

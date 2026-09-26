@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v3",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets screen s21 (Favorite messages), which is an SFW surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal rewards 5 bonus chat messages via a 15-s game with Luzia; no clicks, installs, or cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Offer copy uses gain framing ('Play a quick game... for 5 bonus messages') with no dark patterns or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Uses SIM-RWD with an explicit CTA 'Play Now' and a button entry point."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer title 'Get Bonus Messages' and body clearly state the reward and required action prior to viewing."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Provides an equally legible decline button 'No Thanks' that returns the user without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered after dismissing the signup wall on s21, not during an AI text stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Guard restricts eligibility to guest users who do not have account access (r2 < 1)."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets s21 (Favorite messages wall) and offers bonus messages (r3). While s21 is an account signup wall for saving messages rather than a direct quota cap, offering a refill fallback is a reasonable engagement moment.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal preserves user flow, uses an in-world game partner ('Luzia'), and operates on an SFW surface without degrading core functionality.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to guest users (r2 < 1), grants temporary usage quota (r3) rather than permanent account access (r2), and is capped at 1 per day.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Economics code flags: Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end due to 5 text-cheap messages.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Targeting users hitting the Favorite messages wall (m5, reach=frequent) captures a recurring friction point.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD unit, button entry, and resource r3 with a clean patch adding ne1 to s21.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific screen s21 ('Favorite messages'), resource r3, and gamePartner 'Luzia'.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps usage explicitly at perDay: 1 and cooldownMin: 60.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary conversion metric, guardrails, and a 5% user-level holdout for 30 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward size from 5 messages to 2–3 messages (or switch to an ultra-cheap model) so that the cost to serve ($0.0090) does not exceed net revenue per view ($0.0063).",
+   "Ensure the reward more closely aligns with the wall's specific blocked feature on s21 (e.g., temporary message saving or preview slot) or frame the quota refill clearly."
+  ],
+  "topConcern": "The cost to serve 5 bonus messages ($0.0090) exceeds net revenue per view ($0.0063) at the low end, resulting in negative unit economics."
+ },
+ "usage": {
+  "input": 42515,
+  "output": 822,
+  "cacheRead": 32332,
+  "cacheWrite": 0,
+  "thoughts": 3023
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:32:05.479Z"
+}

@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3.6-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "surface: s21 (Favorite messages sheet), which is an SFW content management surface in Luzia."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "oneLiner: 'Watch a quick game partner session to unlock favorite message saving without immediate account signup.' Reward is in-app access."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "offer: {'title': 'Unlock Favorite Messages', 'body': 'Play a 15-second game with Luzia to save your favorite messages for 72 hours.', 'cta': 'Play Now', 'decline': 'No Thanks'}"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: 'Play Now', simula: {'unit': 'SIM-RWD', 'entry': 'button'}"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "body: 'Play a 15-second game with Luzia to save your favorite messages for 72 hours.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: 'No Thanks', which dismisses the sheet freely without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "trigger: 'When guest users tap to save favorite messages on the Favorite Messages page and hit the account signup wall.'"
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility: 'Non-signed-up users (guests) encountering the favorite messages wall.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal offers an ad on s21 directly beside the account sign-up button ('Add Simula rewarded offer button alongside the sign-up button on the Favorite messages sheet.'). An ad cannot stand in for creating an account on a sign-up wall, and patch uses delta 1 for entitlement resource r2 (Account Access). Per rules 7 and 8, treating entitlements as currency and substituting account creation with an ad caps value-moment-fit at 1.",
+    "score": 1
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal places a rewarded ad button directly on the account creation wall ('Add Simula rewarded offer button alongside the sign-up button'). This bypasses the natural account creation funnel and corrupts entitlement logic by granting account access via ad views.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The offer is restricted to guests and time-boxed ('Access is time-boxed to 72 hours and restricted to guests'). However, offering it directly on the free signup sheet risks cannibalizing free account creation.",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code derived numbers: 'Cost to serve per view: $0.0000 (none x 0). One completed US view earns $0.0090–$0.0150'. Zero COGS and positive ad margin per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Digest indicates 'm5 [wall] on s21 (Favorite messages), reach=frequent'. Favorite message sheet is frequently visited when guest users interact with message saving.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Proposal uses SIM-RWD unit but defines patch effect as 'resource: r2, delta: 1'. Granting Account Access as a +1 currency increment is structurally invalid in the app backend economy.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal cites s21, r2, and Luzia. However, per rule 7, treating entitlement r2 (Account Access) as a consumable currency (+1 delta) forfeits specificity credit for that noun.",
+    "score": 2
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly bounded with 'perDay: 3, cooldownMin: 15'.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary KPI ('Rewarded ad ARPDAU'), signup conversion guardrail ('Free account signup conversion rate'), and a '5% user-level holdout for 28 days'.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Do not offer rewarded ads directly on the sign-up wall as an alternative to creating an account; account creation must remain the primary action on the wall.",
+   "Reframe the trigger to occur only after the user declines or dismisses the account signup wall (e.g. post-decline sampling).",
+   "Fix the reward state model so it grants a temporary feature unlock rather than attempting to increment entitlement r2 ('Account Access') as a +1 currency delta."
+  ],
+  "topConcern": "The proposal attempts to place a rewarded ad option directly on the free account sign-up wall as an alternative to creating an account, and treats the 'Account Access' entitlement as a consumable currency (+1 delta). An ad must never stand in for account creation, and entitlements cannot be incremented like currency."
+ },
+ "usage": {
+  "input": 42680,
+  "output": 1337,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2929
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:53:50.115Z"
+}

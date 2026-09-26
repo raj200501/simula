@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:f421609aed",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Camera Permission Dialog",
+  "kind": "dialog",
+  "purpose": "Informs the user that camera permissions were denied and suggests going to settings.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Dismiss the dialog",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e4",
+    "intent": "Go to settings",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "leads to system settings"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1965,
+  "output": 187,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:10:52.681Z"
+}

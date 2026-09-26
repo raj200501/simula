@@ -1,0 +1,357 @@
+{
+  "screens": [
+    {
+      "id": "s01",
+      "name": "Chats Home",
+      "render": "html",
+      "composite": 0.797,
+      "rounds": 1,
+      "mustFix": 5,
+      "best": "s01/best.png"
+    },
+    {
+      "id": "s02",
+      "name": "Custom Bestie Signup Sheet",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s03",
+      "name": "Ideas Feed",
+      "render": "html",
+      "composite": 0.624,
+      "rounds": 1,
+      "mustFix": 10,
+      "best": "s03/best.png"
+    },
+    {
+      "id": "s04",
+      "name": "Ideas Feed",
+      "render": "html",
+      "composite": 0.7918,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s04/best.png"
+    },
+    {
+      "id": "s05",
+      "name": "Photo Idea Sheet",
+      "render": "html",
+      "composite": 0.5677,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s05/best.png"
+    },
+    {
+      "id": "s06",
+      "name": "Services Tab",
+      "render": "html",
+      "composite": 0.8581,
+      "rounds": 1,
+      "mustFix": 4,
+      "best": "s06/best.png"
+    },
+    {
+      "id": "s07",
+      "name": "Create Account Sheet",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s08",
+      "name": "Apps Catalog",
+      "render": "html",
+      "composite": 0.8254,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s08/best.png"
+    },
+    {
+      "id": "s09",
+      "name": "Animate Tool Screen",
+      "render": "html",
+      "composite": 0.7697,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s09/best.png"
+    },
+    {
+      "id": "s10",
+      "name": "Image Creation Hub",
+      "render": "html",
+      "composite": 0.5743,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s10/best.png"
+    },
+    {
+      "id": "s11",
+      "name": "Photoedit Screen",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s12",
+      "name": "Attach Photos",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s13",
+      "name": "Painting",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s14",
+      "name": "99%",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s15",
+      "name": "Beat maker",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s16",
+      "name": "Luzia",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s17",
+      "name": "Creativity",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s18",
+      "name": "Luzia",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s19",
+      "name": "Settings",
+      "render": "html",
+      "composite": 0.5894,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s19/best.png"
+    },
+    {
+      "id": "s20",
+      "name": "Luzia",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s21",
+      "name": "Favorite messages",
+      "render": "html",
+      "composite": 0.8207,
+      "rounds": 2,
+      "mustFix": 0,
+      "best": "s21/best.png"
+    },
+    {
+      "id": "s22",
+      "name": "Favorites Page",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s23",
+      "name": "Login Screen",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s24",
+      "name": "Response Style Signup",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s25",
+      "name": "Theme Settings",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s26",
+      "name": "Chat History",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s27",
+      "name": "Attachment and Mode Sheet",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s28",
+      "name": "Doodle Page",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s29",
+      "name": "Beat Maker",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s30",
+      "name": "Beat Maker Interface",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s31",
+      "name": "Beat Maker Chat",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s32",
+      "name": "Beat Maker Interface",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s33",
+      "name": "Contact Us Sheet",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s34",
+      "name": "Contact Us Support",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s35",
+      "name": "Contact Us Sheet",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s36",
+      "name": "Teacher Chat",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s37",
+      "name": "Rename Thread Dialog",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s38",
+      "name": "Splash Screen",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    }
+  ],
+  "flow": {
+    "total": 135,
+    "passed": 134,
+    "failures": [
+      {
+        "edge": "g0035",
+        "reason": "expected s14 after tapping e34, got s10"
+      }
+    ]
+  },
+  "htmlShare": 0.333
+}

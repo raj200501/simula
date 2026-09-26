@@ -1,0 +1,14 @@
+{
+  "screen": "s07",
+  "round": 0,
+  "stop": "plateau",
+  "composite": 0.6506,
+  "iou": 0.4347,
+  "ssim": 0.561,
+  "text": 0.8553,
+  "color": 0.9357,
+  "pixelDiff": 0.2027,
+  "elements": 89,
+  "missing": 0,
+  "mustFix": 1
+}

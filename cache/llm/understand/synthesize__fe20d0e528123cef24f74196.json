@@ -1,0 +1,325 @@
+{
+ "purpose": "synthesize",
+ "model": "gemini-3.8-flash",
+ "effort": "high",
+ "parsed": {
+  "brief": {
+   "oneLiner": "CreditChat is an AI character roleplay chat platform where users spend credits per message to interact with virtual characters in standard or high-fidelity models.",
+   "audience": "Enthusiasts of AI character chats, digital companions, and interactive sci-fi or mystery roleplay.",
+   "coreLoop": [
+    "Select an AI character with a distinct backstory and genre on the home screen",
+    "Interact with the bot using text messages in either Basic or Premium mode",
+    "Spend credits to send messages and keep the conversation going",
+    "Claim daily free credits or buy credit coin packs when balances run low"
+   ],
+   "howItMakesMoney": "Monetizes through native sponsored advertisements displayed in the Home feed and microtransactions for tiered credit consumable packs.",
+   "whatIsScarce": [
+    "Credits"
+   ],
+   "adsToday": "Native sponsored card placement on the Home tab.",
+   "openQuestions": [
+    "Does the daily check-in have a consecutive streak bonus, or is it flat every day?",
+    "Is there a credit refund or automated message retry if a message generation fails?"
+   ]
+  },
+  "economy": {
+   "resources": [
+    {
+     "id": "r1",
+     "name": "Credits",
+     "unit": "credits",
+     "kind": "currency",
+     "shownOn": [
+      {
+       "screen": "s01",
+       "el": "e1"
+      },
+      {
+       "screen": "s03",
+       "el": "e3"
+      },
+      {
+       "screen": "s04",
+       "el": "e3"
+      }
+     ],
+     "observedValues": [
+      450,
+      740,
+      10
+     ],
+     "resets": null,
+     "evidence": [
+      {
+       "obs": "o0001",
+       "el": "e1",
+       "quote": "450 credits"
+      },
+      {
+       "obs": "o0021",
+       "el": "e1",
+       "quote": "740 credits"
+      }
+     ]
+    }
+   ],
+   "sinks": [
+    {
+     "id": "k1",
+     "resource": "r1",
+     "amount": 10,
+     "action": "Send Basic chat message",
+     "edges": [
+      "g0004"
+     ],
+     "context": "Basic mode",
+     "evidence": [
+      {
+       "obs": "o0005",
+       "el": "e9",
+       "quote": "Basic 10 credits per message · Quick, friendly replies"
+      }
+     ]
+    },
+    {
+     "id": "k2",
+     "resource": "r1",
+     "amount": 30,
+     "action": "Send Premium chat message",
+     "edges": [],
+     "context": "Premium mode",
+     "evidence": [
+      {
+       "obs": "o0005",
+       "el": "e10",
+       "quote": "Premium 30 credits per message · Longer, smarter replies"
+      }
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "id": "src1",
+     "resource": "r1",
+     "amount": 300,
+     "cadence": "daily",
+     "how": "Claim daily check-in",
+     "screen": "s01",
+     "evidence": [
+      {
+       "obs": "o0001",
+       "el": "e11",
+       "quote": "+300 credits"
+      },
+      {
+       "obs": "o0001",
+       "el": "e17",
+       "quote": "Claim"
+      }
+     ]
+    },
+    {
+     "id": "src2",
+     "resource": "r1",
+     "amount": 1000,
+     "cadence": "purchase",
+     "how": "Purchase credit pack",
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": "e3",
+       "quote": "1,000 credits $1.39"
+      }
+     ]
+    },
+    {
+     "id": "src3",
+     "resource": "r1",
+     "amount": 2000,
+     "cadence": "purchase",
+     "how": "Purchase credit pack",
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": "e4",
+       "quote": "2,000 credits Popular $2.89"
+      }
+     ]
+    },
+    {
+     "id": "src4",
+     "resource": "r1",
+     "amount": 5000,
+     "cadence": "purchase",
+     "how": "Purchase credit pack",
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": "e5",
+       "quote": "5,000 credits Best value $7.09"
+      }
+     ]
+    }
+   ],
+   "offers": [
+    {
+     "id": "of1",
+     "kind": "pack",
+     "label": "1,000 credits",
+     "priceText": "$1.39",
+     "priceUsd": 1.39,
+     "grants": {
+      "resource": "r1",
+      "amount": 1000,
+      "period": null,
+      "entitlements": []
+     },
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": "e3",
+       "quote": "1,000 credits $1.39"
+      }
+     ]
+    },
+    {
+     "id": "of2",
+     "kind": "pack",
+     "label": "2,000 credits Popular",
+     "priceText": "$2.89",
+     "priceUsd": 2.89,
+     "grants": {
+      "resource": "r1",
+      "amount": 2000,
+      "period": null,
+      "entitlements": []
+     },
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": "e4",
+       "quote": "2,000 credits Popular $2.89"
+      }
+     ]
+    },
+    {
+     "id": "of3",
+     "kind": "pack",
+     "label": "5,000 credits Best value",
+     "priceText": "$7.09",
+     "priceUsd": 7.09,
+     "grants": {
+      "resource": "r1",
+      "amount": 5000,
+      "period": null,
+      "entitlements": []
+     },
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": "e5",
+       "quote": "5,000 credits Best value $7.09"
+      }
+     ]
+    }
+   ],
+   "walls": [],
+   "entitlements": [
+    {
+     "plan": "Free plan",
+     "benefits": [
+      "Standard free tier access to the AI messaging engine as a guest user"
+     ],
+     "evidence": [
+      {
+       "obs": "o0039",
+       "el": "e4",
+       "quote": "Free plan"
+      }
+     ]
+    }
+   ],
+   "ads": [
+    {
+     "format": "native",
+     "screen": "s01",
+     "el": "e20",
+     "evidence": [
+      {
+       "obs": "o0001",
+       "el": "e20",
+       "quote": "Sponsored"
+      },
+      {
+       "obs": "o0001",
+       "el": "e22",
+       "quote": "BrightBank"
+      },
+      {
+       "obs": "o0001",
+       "el": "e23",
+       "quote": "Get 3% back on groceries this month."
+      }
+     ]
+    }
+   ]
+  },
+  "flowNames": [
+   {
+    "flow": "f1",
+    "name": "Send basic chat message",
+    "goal": "Engage in active text communication with an AI bot persona, utilizing credits on a per-response basis under the standard chat model"
+   },
+   {
+    "flow": "f2",
+    "name": "Onboarding checkin and store discovery",
+    "goal": "Claim the daily welcome gift of free credits, review basic user profile information, and check credit package values in the shop"
+   }
+  ],
+  "extraMoments": [
+   {
+    "type": "desire",
+    "screen": "s04",
+    "edge": "g0002",
+    "resource": "r1",
+    "description": "User views chat model settings and encounters an upsell opportunity showcasing Premium's enhanced intelligence at an increased credit rate.",
+    "evidence": [
+     {
+      "obs": "o0005",
+      "el": "e10",
+      "quote": "Premium 30 credits per message · Longer, smarter replies"
+     }
+    ]
+   },
+   {
+    "type": "desire",
+    "screen": "s02",
+    "edge": null,
+    "resource": "r1",
+    "description": "User reviews chat details before launching a conversation, where the explicit transaction costs are surfaced.",
+    "evidence": [
+     {
+      "obs": "o0003",
+      "el": "e9",
+      "quote": "Messages cost credits: Basic 10, Premium 30"
+     }
+    ]
+   }
+  ]
+ },
+ "usage": {
+  "input": 12835,
+  "output": 2479,
+  "cacheRead": 9813,
+  "cacheWrite": 0,
+  "thoughts": 6860
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:36:47.863Z"
+}

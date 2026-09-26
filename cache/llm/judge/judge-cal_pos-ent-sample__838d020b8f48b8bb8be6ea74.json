@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:pos-ent-sample",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets settings and upsell surfaces in the Luzia app, which are standard SFW navigation and monetization points."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a 15-second game; there are no incentives for clicks, installs, or ratings."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a 'Play to try' approach with a clear 'No thanks' option, avoiding dark patterns or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap 'Play to try' to initiate the rewarded experience."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer explicitly discloses: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The decline option is 'No thanks', which returns the user to the settings screen without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears as a chip in settings/upsell, not during a streaming response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility criteria explicitly exclude subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer is placed on the settings page (m23). While frequent, it is an exploratory upsell moment rather than a moment of immediate need like being blocked by a wall (e.g., m1 or m3).",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The integration is via a non-intrusive chip on the settings page. It is highly native and preserves the user's flow.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is a 30-minute time-boxed sample of features, capped at twice daily. It maintains the paid subscription as the primary unlimited path.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "With zero COGS and net revenue per view at $0.009–$0.015, this is highly efficient.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings (m23/m19) is a frequently visited surface, though it lacks the high-intent triggers of wall-blocking moments.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to the rewarded ad unit (SIM-RWD). Implementation is straightforward via patching settings.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References 'Upgrade to Luzia+', 'Settings', and 'Luzia' app nouns correctly. Leverages the identified monetization flow.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at 2 per day with a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes conversion metrics, a specific guardrail (-3%), and a randomized holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Refine the reward description: avoid naming the subscription plan ('Upgrade to Luzia+') as the reward. Instead, name the specific premium features being sampled (e.g., '30 minutes of deep reasoning mode').",
+   "Clarify trigger location: the proposal mentions m23 (Login Screen/Upsell) and m1 (Create Account Sheet), but the patch and storyboard focus on s19 (Settings). Harmonize these to be consistent or explicit about multi-surface deployment."
+  ],
+  "topConcern": "The proposal refers to the reward as '30 minutes of Upgrade to Luzia+', which conflates the subscription tier name with the functionality, violating the guideline that entitlements should be defined by their features, not the plan name."
+ },
+ "usage": {
+  "input": 42294,
+  "output": 1104,
+  "cacheRead": 36380,
+  "cacheWrite": 0,
+  "thoughts": 1037
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:25.649Z"
+}

@@ -1,0 +1,20 @@
+{
+  "stage": "explore",
+  "app": "luzia",
+  "runId": "ex0925-130556",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T17:05:56.362Z",
+  "finishedAt": "2026-09-25T17:32:02.146Z",
+  "status": "ok",
+  "stopReason": "budget_steps",
+  "inputs": [],
+  "outputs": [
+    "explore/ex0925-130556/graph.json"
+  ],
+  "llm": {
+    "calls": 36,
+    "cached": 3,
+    "usd": 0,
+    "mode": "record"
+  }
+}

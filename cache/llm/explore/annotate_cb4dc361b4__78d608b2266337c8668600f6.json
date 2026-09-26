@@ -1,0 +1,52 @@
+{
+ "purpose": "annotate:cb4dc361b4",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Starship Galley Chat",
+  "kind": "chat",
+  "purpose": "The user chats with an AI character in a sci-fi setting, consuming message credits.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e7",
+    "intent": "Send a message to the AI character",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hello!"
+   },
+   {
+    "el": "e3",
+    "intent": "Open mode or model selection",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [
+   {
+    "name": "credits",
+    "unit": "credits",
+    "el": "e3"
+   }
+  ],
+  "signals": [
+   {
+    "kind": "balance",
+    "text": "Basic · 10",
+    "el": "e3"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2003,
+  "output": 269,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:13.490Z"
+}

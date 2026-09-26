@@ -1,0 +1,15 @@
+{
+  "screen": "s10",
+  "round": 0,
+  "kept": true,
+  "by": "initial",
+  "composite": 0.532,
+  "iou": 0.3811,
+  "ssim": 0.2895,
+  "text": 1,
+  "color": 0.6309,
+  "pixelDiff": 0.2875,
+  "elements": 36,
+  "missing": 0,
+  "mustFix": 0
+}

@@ -1,0 +1,1 @@
+- 2026-09-25T19:17:40.435Z OOC closes itself ~0.8 s after launch on the Google Play emulator (AppSecurity Kill Process D11001); recorded as blocked, not bypassed

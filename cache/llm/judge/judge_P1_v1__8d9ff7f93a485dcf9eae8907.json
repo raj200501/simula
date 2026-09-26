@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Surface s03 (Starship Galley Chat) is a SFW sci-fi comedy cooking chat."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is +50 credits (r1) via a 15-second game partner mini-game with no clicks or installs incentivized."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Body states 'Play a quick 15-second game to earn 50 free credits right now' using gain framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "CTA button is clearly labeled 'Play Now' for explicit user opt-in."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer body explicitly states 'Play a quick 15-second game to earn 50 free credits'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Offer includes an equally legible decline button 'No thanks'."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger occurs when message credits are exhausted while chatting at zero balance boundary."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly restricts the offer to non-paying users with balance below message cost."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Trigger fires exactly when credits run out during chat (m1), offering credits to continue conversation.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Appears at zero-balance boundary on s03, preserves user input and flow using SIM-RWD mini-game.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying users, capped at 3 per day, and reward is small relative to store packs.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code flags that reward cost ($0.0090) exceeds net revenue per view ($0.0063) at the low end and reward value is 4.6x view revenue.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Core loop moment m1 on s03 hits free users frequently when message credits run out.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD unit with button entry, SSV verification, and modal patch.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns and IDs from digest: r1 credits, k1 basic mode (10 credits), s03 Starship Galley Chat.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit caps set to 3 per day and 30 minutes cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric (Rewarded ARPDAU), guardrails (paid conversion, D7, session length), and 10% holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce reward amount from 50 credits to 15-20 credits to ensure reward COGS remains below net revenue per view and list-price value exchange alignment."
+  ],
+  "topConcern": "Unit economics margin violation: reward cost to serve exceeds net revenue per view at the low end, and reward value is 4.6x view revenue."
+ },
+ "usage": {
+  "input": 31802,
+  "output": 699,
+  "cacheRead": 16094,
+  "cacheWrite": 0,
+  "thoughts": 2996
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:51:45.992Z"
+}

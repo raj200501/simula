@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:197c406f51",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Custom Bestie Signup",
+  "kind": "sheet",
+  "purpose": "Prompts the user to sign up to personalize their custom bestie AI character.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Sign up",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1977,
+  "output": 136,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:25:51.788Z"
+}

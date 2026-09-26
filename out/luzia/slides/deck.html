@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luzia: rewarded flows</title>
+<style>
+@font-face{font-family:"Deck Display";src:url("fonts/montserrat.woff2") format("woff2");font-weight:100 900;font-display:block}
+@font-face{font-family:"Deck Text";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--accent:#5173F1;--accent-ink:#111827;--accent-soft:rgba(81,115,241,0.1);--accent-line:rgba(81,115,241,0.28);--ink:#0F172A;--muted:#64748B;--body:#334155;--line:#E2E8F0;--soft:#F1F5F9;--ship:#047857;--revise:#B45309;--reject:#B91C1C;--display:"Deck Display","Deck Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:#D9DCE1}
+body{font-family:"Deck Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01"}
+@page{size:1920px 1080px;margin:0}
+.slide{position:relative;width:1920px;height:1080px;overflow:hidden;padding:52px 64px 64px;margin:24px auto;box-shadow:0 6px 28px rgba(17,24,39,.12);zoom:var(--z,1);
+  background:radial-gradient(1100px 760px at -6% -12%,rgba(81,115,241,0.1),transparent 62%),radial-gradient(1200px 820px at 106% 112%,rgba(96,165,250,.13),transparent 64%),#FBFCFE}
+@media print{html,body{background:#fff}.slide{margin:0;box-shadow:none;zoom:1;break-after:page;page-break-after:always}.slide:last-of-type{break-after:auto;page-break-after:auto}}
+a{color:inherit}
+.kicker{font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kicker b{color:var(--ink);font-weight:700}
+h1{font-family:var(--display);font-size:54px;line-height:1.1;margin:12px 0 0;font-weight:800;letter-spacing:-.02em;max-width:1640px;color:var(--ink)}
+h1 em{font-style:normal;color:var(--accent)}
+h1.lead{font-size:62px}
+h1.claim{font-size:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:1792px}
+h1.h2{font-size:40px}
+.sub{font-size:22px;line-height:1.45;color:var(--muted);margin:14px 0 0;max-width:1500px}
+.sub.one{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:1792px;margin-top:12px;font-size:21px}
+.foot{position:absolute;left:64px;right:64px;bottom:24px;display:flex;justify-content:space-between;font-size:14px;color:#94A3B8}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:14px;font-weight:650;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.badge.ship{background:#ECFDF5;color:var(--ship);border-color:#A7F3D0;font-weight:800;letter-spacing:.04em}
+.stat-k{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat-v{font-family:var(--display);font-size:34px;font-weight:800;margin-top:8px;letter-spacing:-.015em;color:var(--ink)}
+/* phones, markers, elbows */
+.phone{background:#0B0D12;box-shadow:inset 0 0 0 1.5px #2B2F38,0 30px 50px -22px rgba(15,23,42,.5),0 12px 22px -12px rgba(15,23,42,.28)}
+.screen{position:relative;overflow:hidden;background:#fff}
+.screen img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.zoom{position:absolute;z-index:3;overflow:hidden;background:#fff;border-radius:14px;box-shadow:0 0 0 2.5px #fff,0 0 0 4px var(--accent),0 18px 34px -14px rgba(15,23,42,.55)}
+.zoom-crop{position:absolute;overflow:hidden;border-radius:8px}
+.zoom img{position:absolute;max-width:none;display:block}
+.zoom-link{position:absolute;left:0;top:0;z-index:3;overflow:visible;pointer-events:none}
+.ring{position:absolute;border:2px solid var(--accent);border-radius:9px;box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 0 6px rgba(81,115,241,0.18)}
+.pin{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:#fff;color:var(--accent);font-size:11.5px;font-weight:800;line-height:16px;text-align:center;border:2px solid var(--accent);box-shadow:0 2px 6px rgba(15,23,42,.28)}
+.pin[data-kind="new"]{width:40px;margin-left:-20px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:10px;letter-spacing:.08em;border-color:#fff}
+.mk{position:absolute;width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-size:19px;font-weight:800;display:grid;place-items:center;box-shadow:0 0 0 4px #fff,0 6px 14px -4px rgba(81,115,241,0.55);z-index:2}
+.mk.sm{position:static;width:26px;height:26px;font-size:13px;box-shadow:none;display:inline-grid;margin-right:10px;vertical-align:middle}
+.mk.xs{position:static;width:22px;height:22px;font-size:12px;box-shadow:none;display:inline-grid;flex:none}
+.elbow{position:absolute;overflow:visible}
+.ph{position:absolute;left:36px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.cap-block{position:absolute;left:-14px}
+.cap{font-size:19px;line-height:1.32;font-weight:750;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:-.012em}
+.cap.long{font-size:17.5px}
+.decline{display:flex;gap:8px;align-items:flex-start;margin-top:10px;font-size:14.5px;line-height:1.35;color:var(--body)}
+.decline .ret{flex:none;width:20px;height:20px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:12px;display:grid;place-items:center;margin-top:0}
+.noshot{display:grid;place-items:center;background:var(--soft);border:2px dashed var(--line);border-radius:28px;color:var(--muted);font-size:15px}
+/* recommendation */
+.cards{display:grid;gap:28px;margin-top:40px}
+.card{display:flex;gap:30px;align-items:center;text-decoration:none;background:#fff;border-radius:26px;padding:26px 28px;box-shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(15,23,42,.28);border:1px solid #EEF2F7}
+.strip{display:flex;align-items:center;gap:4px;flex:none}
+.mini-arrow{display:flex}
+.card-k{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;align-items:center}
+.card h3{font-family:var(--display);font-size:28px;line-height:1.18;margin:14px 0 10px;font-weight:800;letter-spacing:-.015em}
+.card h3 em{font-style:normal;color:var(--accent)}
+.cards.n3 .card h3,.cards.n4 .card h3{font-size:25px}
+.cards.n1 .card h3{font-size:40px}
+.card-why{list-style:none;margin:26px 0 0;padding:22px 0 0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.card-why .stat{font-family:var(--display);font-size:24px;font-weight:800;color:var(--accent);letter-spacing:-.015em;white-space:nowrap}
+.card-why p{font-size:15.5px;line-height:1.45;color:var(--body);margin:6px 0 0}
+.card p{font-size:17px;line-height:1.45;color:var(--body);margin:0 0 16px}
+.none{margin-top:40px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:32px 36px;font-size:24px;line-height:1.45;max-width:1500px}
+.none p{margin:0 0 14px}
+.band{position:absolute;left:64px;right:64px;bottom:74px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
+.panel{background:rgba(255,255,255,.78);border:1px solid #E8EDF4;border-radius:22px;padding:22px 28px 24px;position:relative;overflow:hidden}
+.panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent)}
+.panel .stat-v{color:var(--accent)}
+.band p{font-size:17px;line-height:1.45;color:var(--body);margin:10px 0 0;max-width:820px}
+/* money today */
+.money{position:relative;margin-top:44px}
+.m-col{position:absolute;top:0}
+.scr{font-size:15px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.facts{list-style:none;margin:0;padding:0;font-size:16px;line-height:1.38;color:var(--body)}
+.facts li{margin-top:5px;padding-left:14px;position:relative}
+.facts li::before{content:"";position:absolute;left:0;top:.58em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.facts li.more{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:absolute;left:64px;right:64px;bottom:70px}
+.tiles.t3{position:static;grid-template-columns:repeat(3,1fr);margin:10px 0 18px}
+.tile{background:rgba(255,255,255,.8);border:1px solid #E8EDF4;border-radius:18px;padding:16px 20px}
+.tile p{font-size:17px;line-height:1.4;margin:8px 0 0;color:var(--ink)}
+/* flow */
+.stage{position:absolute;left:64px}
+.f-col{position:absolute}
+.trigger{position:absolute;top:0}
+.trig-arrow{position:absolute;left:0;top:0;overflow:visible}
+.trig-label{position:absolute;left:-40px;right:-40px;display:flex;gap:10px;align-items:flex-start;justify-content:center}
+.trig-label .t{flex:none;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:7px;margin-top:1px}
+.trig-label p{margin:0;font-size:16px;line-height:1.35;font-weight:600;color:var(--ink);max-width:470px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rail{position:absolute;right:64px;width:300px;display:flex;flex-direction:column;gap:16px}
+.rail h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 0;font-weight:700}
+.why{list-style:none;margin:0;padding:0}
+.why li{padding:16px 0 18px;border-top:1px solid var(--line)}
+.why li:first-child{border-top:0;padding-top:4px}
+.why .stat{font-family:var(--display);font-size:24px;white-space:nowrap;font-weight:800;line-height:1.15;letter-spacing:-.015em;color:var(--accent)}
+.why .txt{font-size:15.5px;line-height:1.45;color:var(--body);margin-top:6px}
+.proto{display:block;text-align:center;background:var(--accent);color:var(--accent-ink);padding:14px 16px;border-radius:14px;font-weight:750;text-decoration:none;font-size:17px;box-shadow:0 10px 22px -12px rgba(81,115,241,0.8)}
+.fine{font-size:13px;line-height:1.45;color:var(--muted);margin:0}
+/* details */
+.details{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:40px;margin-top:24px}
+.kv{margin-bottom:16px}
+.kv h4,.lbl{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.kv p{font-size:16.5px;line-height:1.42;margin:0}
+.kv ul{margin:0;padding-left:18px;font-size:15.5px;line-height:1.4}
+.btn{display:inline-block;margin-top:8px;background:var(--accent);color:var(--accent-ink);font-size:14px;font-weight:700;padding:5px 12px;border-radius:999px}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.frames{list-style:none;margin:2px 0 0;padding:0}
+.frames>li{margin-bottom:8px}
+.fr-h{display:flex;gap:8px;align-items:baseline;font-size:15px;line-height:1.35}
+.fr-h .mk.xs{align-self:flex-start;margin-top:-1px}
+.fr-h b{white-space:nowrap}
+.fr-c{color:var(--body)}
+.legend{list-style:none;padding:0 0 0 30px;margin:3px 0 0;font-size:14px;line-height:1.3;color:var(--body)}
+.legend li{display:flex;gap:6px;margin-top:3px}
+.legend .d{flex:none;min-width:18px;height:18px;padding:0 3px;border-radius:9px;background:#fff;border:1.5px solid var(--accent);color:var(--accent);font-size:10.5px;font-weight:800;display:grid;place-items:center}
+.legend .d.new{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-size:9px;letter-spacing:.06em;padding:0 5px}
+.legend .d.off{background:none;border:2px solid #CBD5E1;min-width:12px;width:12px;height:12px;margin:3px 3px 0}
+table{border-collapse:collapse;width:100%}
+.econ td{font-size:15px;padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.econ td:last-child{text-align:right;font-weight:650;padding-left:12px}
+.flags{margin:8px 0 0;padding-left:18px;font-size:14px;color:var(--revise)}
+.scenario{border:2px dashed #CBD5E1;border-radius:14px;padding:12px 16px;margin-bottom:16px;background:rgba(255,255,255,.6)}
+.scenario .tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--revise)}
+.sc-row{display:flex;gap:24px;margin-top:6px}
+.sc-row b{display:block;font-size:22px}
+.sc-row span{font-size:13px;color:var(--muted)}
+.scenario p{font-size:13.5px;line-height:1.35;color:var(--muted);margin:8px 0 0}
+.code{background:#0F172A;color:#E2E8F0;border-radius:14px;padding:14px 16px;font:11.5px/1.42 ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;white-space:pre-wrap;word-break:break-word;margin:0;max-height:600px;overflow:hidden}
+.code .c{color:#94A3B8}
+/* ideas */
+.ideas{margin-top:26px;font-size:18px;background:rgba(255,255,255,.7);border-radius:14px}
+.ideas th{text-align:left;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding:10px 12px}
+.ideas td{border-bottom:1px solid var(--line);padding:13px 12px;vertical-align:top;line-height:1.35}
+.ideas td.id{color:var(--muted);width:60px}
+.ideas td.num,.small td.num{text-align:right;font-variant-numeric:tabular-nums}
+.case{font-size:14px;color:var(--muted);margin-top:3px}
+.v{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.05em;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.v-ship{background:#ECFDF5;color:var(--ship)}.v-revise{background:#FFFBEB;color:var(--revise)}.v-reject{background:#FEF2F2;color:var(--reject)}.v-not-judged{background:var(--soft);color:var(--muted)}
+.also{font-size:16px;line-height:1.4;color:var(--body);margin:14px 0 0}
+/* appendix */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:30px}
+.method{margin:0;padding-left:22px;font-size:18px;line-height:1.45}
+.method li{margin-bottom:12px}
+.small{font-size:15px}
+.small th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding:7px 8px}
+.small td{border-bottom:1px solid var(--line);padding:7px 8px}
+.small tfoot td{font-weight:750;border-bottom:none}
+.lim{font-size:18px;line-height:1.45;padding-left:20px;margin:0}
+.lim li{margin-bottom:10px}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px}
+.quad h3{margin:0 0 8px;font-size:22px;font-family:var(--display);font-weight:800}
+.quad ul{margin:0;padding-left:20px;font-size:17px;line-height:1.45}
+</style>
+</head><body>
+<section class="slide " id="recommendation">
+<div class="kicker"><b>Luzia</b> · Rewarded ads recommendation</div>
+<h1 class="lead">Let users <em>play a short game for a reward</em>.</h1>
+<p class="sub">Add one opt-in rewarded flow to Luzia that trades a short sponsored game for something users already value. We reviewed 5 ideas: 1 ship, 0 need revision, 4 rejected.</p>
+<div class="cards n1" style="grid-template-columns:repeat(1,1fr)"><a class="card" href="#flow-P5"><div class="strip"><div class="phone" style="width:200px;padding:6px;border-radius:30px"><div class="screen" style="height:418px;border-radius:24px"><img src="img/P5-2-change.png" alt="What changed: s09"></div></div><div class="mini-arrow"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M8 5l6 6-6 6" stroke="#A3ACBA" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="phone" style="width:200px;padding:6px;border-radius:30px"><div class="screen" style="height:418px;border-radius:24px"><img src="img/P5-3-offer.png" alt="Offer: s09"></div></div><div class="mini-arrow"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M8 5l6 6-6 6" stroke="#A3ACBA" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="phone" style="width:200px;padding:6px;border-radius:30px"><div class="screen" style="height:418px;border-radius:24px"><img src="img/P5-5-value.png" alt="Value received: s09"></div></div></div><div class="card-body">
+<div class="card-k"><span class="mk sm">1</span>Flow 1 · slide 3</div><h3>Play for <em>1 Fast-Track Animation Credit</em></h3><p>Users can play a quick Simula game with Luzia to earn Fast-Track Credits that bypass the animation processing queue during peak hours.</p>
+<div class="badges"><span class="badge ship">SHIP</span><span class="badge ">Score 4.70 / 5 (ship ≥ 3.8)</span><span class="badge ">Product change</span></div>
+<ul class="card-why"><li><div class="stat">$0.009–$0.015 per view</div><p>Earned per completed US view; the reward costs ≈ $0 to serve.</p></li><li><div class="stat">Paid path untouched</div><p>Standard generation remains fully free and functional.</p></li><li><div class="stat">≤ 5 a day</div><p>Opt-in only, at least 10 min apart; nothing plays unless the user taps.</p></li></ul></div></a></div>
+<div class="band">
+<div class="panel"><div class="stat-k">One completed view earns</div><div class="stat-v">$0.009–$0.015</div>
+<p>US rewarded eCPM after a non-game haircut, about $0.0063 net at the low end. The app shows no prices, so there is no exchange rate in its own units; every reward on these slides costs less than that to serve. In LATAM a view earns $0.0015–$0.003.</p></div>
+<div class="panel"><div class="stat-k">Cheapest pack</div><p>No priced pack was observed, so there is no paid path to cannibalize in currency terms.</p></div></div>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>1 / 8</span></div></section>
+<section class="slide " id="money-today">
+<div class="kicker"><b>Luzia</b> · Today</div>
+<h1>How Luzia <em>makes money today</em></h1>
+<p class="sub">The app monetizes through a premium subscription model (&#39;Luzia+&#39;) that unlocks advanced features, and through a free signup that provides access to core customization… Real screens from the app; prices and costs as observed.</p>
+<div class="money" style="height:642px"><div class="m-col" style="left:34px;width:212px"><div class="phone" style="width:212px;padding:8px;border-radius:32px"><div class="screen" style="height:436px;border-radius:24px"><img src="img/model-s23.png" alt="Login Screen"></div></div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">1</span><span class="ph" style="top:454px">Earn</span>
+<div class="cap-block" style="top:492px;width:343px"><div class="scr">Login Screen</div><ul class="facts"><li>Account, once: Sign up for account access</li><li>Plan, purchase: Upgrade to Luzia+</li></ul></div></div><div class="m-col" style="left:389px;width:212px"><div class="phone" style="width:212px;padding:8px;border-radius:32px"><div class="screen" style="height:436px;border-radius:24px"><img src="img/model-s07.png" alt="Create Account Sheet"></div></div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">2</span><span class="ph" style="top:454px">Balance</span>
+<div class="cap-block" style="top:492px;width:343px"><div class="scr">Create Account Sheet</div><ul class="facts"><li>Luzia+ Subscription (entitlement), shown on Create Account Sheet…</li><li>Account Access (entitlement), shown on Login Screen</li><li class="more">+1 more</li></ul></div></div><div class="m-col" style="left:744px;width:212px"><div class="noshot" style="width:212px;height:452px">No screen</div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">3</span><span class="ph" style="top:454px">Spend</span>
+<div class="cap-block" style="top:492px;width:343px"><ul class="facts"><li>Not observed</li></ul></div></div><div class="m-col" style="left:1099px;width:212px"><div class="phone" style="width:212px;padding:8px;border-radius:32px"><div class="screen" style="height:436px;border-radius:24px"><img src="img/model-s07.png" alt="Create Account Sheet"></div></div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">4</span><span class="ph" style="top:454px">Hit the wall</span>
+<div class="cap-block" style="top:492px;width:343px"><div class="scr">Create Account Sheet</div><ul class="facts"><li>“Create Account Sheet” stops “Upgrade to Luzia+” when Luzia+…</li><li>“Response Style Signup” stops “Adjust response style” when Account…</li><li class="more">+4 more</li></ul></div></div><div class="m-col" style="left:1454px;width:212px"><div class="phone" style="width:212px;padding:8px;border-radius:32px"><div class="screen" style="height:436px;border-radius:24px"><img src="img/model-s07.png" alt="Create Account Sheet"></div></div>
+<svg class="elbow" style="left:-34px;top:183px" width="34" height="286" viewBox="0 0 34 286" aria-hidden="true"><path d="M20 279H13Q6 279 6 272V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:442px">5</span><span class="ph" style="top:454px">Buy</span>
+<div class="cap-block" style="top:492px;width:343px"><div class="scr">Create Account Sheet</div><ul class="facts"><li>Luzia+ Subscription: N/A (subscription)</li><li>Free Signup: free (trial)</li><li class="more">+2 more</li></ul></div></div></div>
+<div class="tiles"><div class="tile"><div class="stat-k">Price per unit</div><p>No priced packs observed</p></div><div class="tile"><div class="stat-k">Free every day</div><p>No daily free source observed</p></div><div class="tile"><div class="stat-k">Cheapest pack</div><p>None observed</p></div><div class="tile"><div class="stat-k">Ads today</div><p>No ads were observed during this exploration.</p></div></div>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>2 / 8</span></div></section>
+<section class="slide flow" id="flow-P5">
+<div class="kicker"><b>Luzia</b> · Flow 1 of 1 · P5 · surface: Animate Tool Screen</div>
+<h1 class="claim" style="font-size:60px">Play for <em>1 Fast-Track Animation Credit</em></h1>
+<p class="sub one">Users can play a quick Simula game with Luzia to earn Fast-Track Credits that bypass the animation processing queue during peak hours.</p>
+<div class="stage" style="top:232px;width:1448px;height:758px"><div class="f-col" data-phase="today" style="left:34px;top:92px;width:241px">
+<div class="phone" style="width:241px;padding:8px;border-radius:36px"><div class="screen" style="height:500px;border-radius:28px"><img src="img/P5-1-today.png" alt="Today: s09"><span class="ring" style="left:22.34%;top:30.47%;width:55.43%;height:1.91%"></span><span class="pin" title="Users upload their picture and pick an animation style." style="left:73.07%;top:28.25%">A</span></div></div>
+<svg class="elbow" style="left:-34px;top:158px" width="34" height="375" viewBox="0 0 34 375" aria-hidden="true"><path d="M20 368H13Q6 368 6 361V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:506px">1</span><span class="ph" style="top:518px">Today</span>
+<div class="cap-block" style="top:556px;width:281px"><div class="cap">Users currently choose animation styles.</div></div></div><div class="f-col" data-phase="change" style="left:327px;top:92px;width:241px">
+<div class="phone" style="width:241px;padding:8px;border-radius:36px"><div class="screen" style="height:500px;border-radius:28px"><img src="img/P5-2-change.png" alt="What changed: s09"><span class="ring" style="left:30.66%;top:9.41%;width:40.77%;height:3.28%"></span><span class="ring" style="left:3.89%;top:35.01%;width:96.11%;height:28.51%"></span><span class="pin" data-kind="new" title="Displays the user&#39;s current Fast-Track credits." style="left:80.81%;top:11.05%">NEW</span><span class="pin" data-kind="new" title="Allows triggering a fast-track queue skip." style="left:90.87%;top:32.79%">NEW</span></div></div><svg class="zoom-link" width="241" height="516" viewBox="0 0 241 516" aria-hidden="true"><path d="M122.8 100L122.8 74.6" stroke="#fff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity=".9"/><path d="M122.8 100L122.8 74.6" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="122.8" cy="74.6" r="3.5" fill="var(--accent)" stroke="#fff" stroke-width="1.5"/></svg><div class="zoom" data-scale="2.2" style="left:12.5px;top:100px;width:220.6px;height:54.9px"><div class="zoom-crop" style="left:7px;top:7px;width:206.6px;height:40.9px"><img src="img/P5-2-change.png" alt="" style="width:495px;height:1100px;left:-149.3px;top:-101.2px"></div></div>
+<svg class="elbow" style="left:-34px;top:56px" width="34" height="477" viewBox="0 0 34 477" aria-hidden="true"><path d="M20 470H13Q6 470 6 463V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:506px">2</span><span class="ph" style="top:518px">What changed</span>
+<div class="cap-block" style="top:556px;width:281px"><div class="cap">We introduce a Fast-Track credit system to bypass…</div></div></div><div class="trigger" style="left:327px;width:534px;height:92px">
+<div class="trig-label" style="bottom:38px"><div class="t">Trigger</div><p>When the user selects an animation style like &#39;Clapping&#39; (e24) or taps &#39;Animate&#39; (e13) during periods where active…</p></div>
+<svg class="trig-arrow" width="534" height="92" viewBox="0 0 534 92" aria-hidden="true"><path d="M120.5 84V70Q120.5 62 128.5 62H405.5Q413.5 62 413.5 70V79" stroke="var(--accent)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M406.5 77L413.5 86L420.5 77Z" fill="var(--accent)"/><circle cx="120.5" cy="84" r="4.5" fill="var(--accent)"/></svg></div><div class="f-col" data-phase="offer" style="left:620px;top:92px;width:241px">
+<div class="phone" style="width:241px;padding:8px;border-radius:36px"><div class="screen" style="height:500px;border-radius:28px"><img src="img/P5-3-offer.png" alt="Offer: s09"><span class="pin" title="Fast-Track Now: starts a 15s sponsored game" style="left:86.07%;top:56.88%">B</span><span class="pin" title="Wait in Queue: dismisses the offer" style="left:50.00%;top:73.57%">C</span></div></div>
+<svg class="elbow" style="left:-34px;top:311px" width="34" height="222" viewBox="0 0 34 222" aria-hidden="true"><path d="M20 215H13Q6 215 6 208V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:506px">3</span><span class="ph" style="top:518px">Offer</span>
+<div class="cap-block" style="top:556px;width:281px"><div class="cap">When queues are active.</div><div class="decline"><span class="ret" aria-hidden="true">↩</span><span><b>Wait in Queue</b> → back to Animate Tool Screen, nothing lost</span></div></div></div><div class="f-col" data-phase="ad" style="left:913px;top:92px;width:241px">
+<div class="phone" style="width:241px;padding:8px;border-radius:36px"><div class="screen" style="height:500px;border-radius:28px"><img src="img/P5-4-ad.png" alt="Ad plays: s09"></div></div>
+<svg class="elbow" style="left:-34px;top:56px" width="34" height="477" viewBox="0 0 34 477" aria-hidden="true"><path d="M20 470H13Q6 470 6 463V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:506px">4</span><span class="ph" style="top:518px">Ad plays</span>
+<div class="cap-block" style="top:556px;width:281px"><div class="cap long">The user plays the Simula interactive game with Luzia.</div></div></div><div class="f-col" data-phase="value" style="left:1206px;top:92px;width:241px">
+<div class="phone" style="width:241px;padding:8px;border-radius:36px"><div class="screen" style="height:500px;border-radius:28px"><img src="img/P5-5-value.png" alt="Value received: s09"><span class="ring" style="left:30.66%;top:9.41%;width:40.77%;height:3.28%"></span><span class="ring" style="left:3.89%;top:35.01%;width:96.11%;height:28.51%"></span><span class="pin" title="Credit balance is updated to 1." style="left:76.36%;top:11.05%">D</span><span class="pin" title="Fast-Track button is now unlocked to instantly render." style="left:95.31%;top:32.79%">E</span></div></div>
+<svg class="elbow" style="left:-34px;top:56px" width="34" height="477" viewBox="0 0 34 477" aria-hidden="true"><path d="M20 470H13Q6 470 6 463V14Q6 7 13 7H26" stroke="#A3ACBA" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 2L32 7L25 12Z" fill="#A3ACBA"/></svg><span class="mk" style="left:-14px;top:506px">5</span><span class="ph" style="top:518px">Value received</span>
+<div class="cap-block" style="top:556px;width:281px"><div class="cap long">Once granted, the user can instantly bypass the queue.</div></div></div></div><aside class="rail" style="top:232px">
+<div class="badges"><span class="badge ship">SHIP</span><span class="badge ">Score 4.70 / 5 (ship ≥ 3.8)</span><span class="badge ">Product change</span></div>
+<h3>Why this works</h3>
+<ol class="why"><li><div class="stat">$0.009–$0.015 per view</div><div class="txt">Earned per completed US view; the reward costs ≈ $0 to serve.</div></li><li><div class="stat">Paid path untouched</div><div class="txt">Standard generation remains fully free and functional.</div></li><li><div class="stat">≤ 5 a day</div><div class="txt">Opt-in only, at least 10 min apart; nothing plays unless the user taps.</div></li></ol>
+<a class="proto" href="../mock/index.html?proposal=P5&amp;screen=s09">Open the clickable prototype →</a>
+<p class="fine">Simula SIM-RWD · button entry · Game Partner: Luzia · min play 15s · reward granted on REWARD_VERIFIED · frame callouts on slide 4</p>
+</aside>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>3 / 8</span></div></section>
+<section class="slide " id="details-P5">
+<div class="kicker"><b>Luzia</b> · Flow 1 details · P5 v3</div>
+<h1 class="h2">Anima Queue Fast-Track Priority</h1>
+<div class="details"><div><div class="kv"><h4>Trigger</h4><p>When the user selects an animation style like &#39;Clapping&#39; (e24) or taps &#39;Animate&#39; (e13) during periods where active rendering queue wait times exceed 10 seconds.</p></div><div class="kv"><h4>Eligibility</h4><p>Non-paying free tier users who want to skip the standard rendering queue during peak hours.</p></div><div class="kv"><h4>What the user sees</h4><p><b>Skip the Animation Queue</b> Play a quick game to skip wait times and fast-track your animation.<br><span class="btn">Fast-Track Now</span> <span class="btn ghost">Wait in Queue</span></p></div><div class="kv"><h4>Reward and caps</h4><p>1 Fast-Track Animation Credit; granted on REWARD_VERIFIED. At most 5 a day, 10 min apart.</p></div><div class="kv"><h4>Frame by frame (slide 3)</h4><ol class="frames"><li><div class="fr-h"><span class="mk xs">1</span><b>Today</b> <span class="fr-c">Users currently choose animation styles on the Anima Tool screen.</span></div><ul class="legend"><li><span class="d">A</span><span>Users upload their picture and pick an animation style.</span></li></ul></li><li><div class="fr-h"><span class="mk xs">2</span><b>What changed</b> <span class="fr-c">We introduce a Fast-Track credit system to bypass standard processing queues.</span></div><ul class="legend"><li><span class="d new">NEW</span><span>Displays the user&#39;s current Fast-Track credits.</span></li><li><span class="d new">NEW</span><span>Allows triggering a fast-track queue skip.</span></li></ul></li><li><div class="fr-h"><span class="mk xs">3</span><b>Offer</b> <span class="fr-c">When queues are active, users play a game to skip wait times.</span></div><ul class="legend"><li><span class="d">B</span><span>Fast-Track Now: starts a 15s sponsored game</span></li><li><span class="d">C</span><span>Wait in Queue: dismisses the offer</span></li><li><span class="d off"></span><span>Tapping this opens the Simula game invitation to earn 1 Fast-Track Credit.</span></li></ul></li><li><div class="fr-h"><span class="mk xs">4</span><b>Ad plays</b> <span class="fr-c">The user plays the Simula interactive game with Luzia for fifteen seconds.</span></div></li><li><div class="fr-h"><span class="mk xs">5</span><b>Value received</b> <span class="fr-c">Once granted, the user can instantly bypass the queue and export.</span></div><ul class="legend"><li><span class="d">D</span><span>Credit balance is updated to 1.</span></li><li><span class="d">E</span><span>Fast-Track button is now unlocked to instantly render.</span></li></ul></li></ol></div></div><div><div class="kv"><h4>Economics (computed in code)</h4><table class="econ"><tr><td>Revenue per completed US view</td><td>$0.009–$0.015</td></tr><tr><td>Reward value at list price</td><td>n/a (no priced unit)</td></tr><tr><td>Reward ÷ one view</td><td>n/a</td></tr><tr><td>Max earnable per day (5/day)</td><td>n/a</td></tr><tr><td>Cheapest pack</td><td>none observed</td></tr><tr><td>Cost to serve the reward</td><td>$0 per view</td></tr></table></div>
+<div class="scenario"><div class="tag">Scenario, not forecast</div>
+<div class="sc-row"><div><b>0.12</b><span>views per DAU</span></div><div><b>$0.0014</b><span>ARPDAU</span></div><div><b>$525,600</b><span>per year per 1M DAU</span></div></div>
+<p>Scenario, not a forecast: 8% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut.</p></div>
+<div class="kv"><h4>Cannibalization guard</h4><p>Standard generation remains fully free and functional. Wait times only surface during authentic backend rendering congestion to prevent artificial friction, and Luzia+ subscribers always bypass…</p></div>
+<div class="kv"><h4>KPI and holdout</h4><p><b>Anima Fast-Track Ad Revenue</b>; guardrails: Luzia+ Subscription Conversion Rate, s09 Screen Churn Rate, D7 Retention. User-level randomized holdout group, 10% allocation, evaluated over 28 days.</p></div>
+<div class="kv"><h4>Risks</h4><p><ul><li>If peak rendering queue wait times are negligible, the user&#39;s perceived value of Fast-Track…</li></ul></p></div></div><div><div class="kv"><h4>Integration (@simula/ads-react-native)</h4><pre class="code">import { SimulaAds, useRewardedAd, MiniGameButton } from &quot;@simula/ads-react-native&quot;;
+import { useEffect, useState } from &quot;react&quot;;
+
+<span class="c">// P5 on &quot;Animate Tool Screen&quot;. Trigger: When the user selects an animation style like &#39;Clapping&#39; (e24) or taps &#39;Animate&#39; (e13)…</span>
+<span class="c">// Caps 5/day, 10 min apart: app remote config (unit cap: dashboard)</span>
+const AD_UNIT = &quot;SIM-RWD-animate-tool-screen&quot;; <span class="c">// placeholder: create it in the dashboard</span>
+
+export function AnimaQueueFastOffer({ userId, partnerImageUrl, grant, onDecline }) {
+  const rwd = useRewardedAd(AD_UNIT);
+  const [capped, setCapped] = useState(true);
+  useEffect(() =&gt; {
+    SimulaAds.checkFrequencyCap(AD_UNIT, userId).then(setCapped); <span class="c">// true: hide</span>
+    rwd.setMetadata({ surface: &quot;animate-tool-screen&quot;, proposal: &quot;P5&quot; });
+    rwd.load({ charName: &quot;Luzia&quot; }); <span class="c">// Game Partner</span>
+  }, [userId]);
+  useEffect(() =&gt; {
+    <span class="c">// Grant on REWARD_VERIFIED (server-verified), never on EARNED_REWARD.</span>
+    if (rwd.rewardVerified) grant({ amount: 1, resource: &quot;r_fast_track_credit&quot;, token: rwd.rewardToken });
+  }, [rwd.rewardVerified]);
+  <span class="c">// no_fill or not loaded: render nothing; today&#39;s path is unchanged.</span>
+  if (capped || !rwd.isLoaded || rwd.error?.code === &quot;no_fill&quot;) return null;
+  <span class="c">// &quot;Wait in Queue&quot; stays the app&#39;s own control: back to where the user was.</span>
+  return (
+    &lt;MiniGameButton
+      text={&quot;Fast-Track Now&quot;}
+      onClick={() =&gt; rwd.show()}
+    /&gt;
+  );
+}
+<span class="c">// Min play 15s is a unit setting (no RN load option; unverified).</span>
+<span class="c">// Needs &lt;SimulaProvider apiKey={...}&gt; at the root; grant() is your server call.</span></pre></div>
+<div class="kv"><h4>What the judge changed</h4><p><ul><li>Round 0 (v1) REVISE 3.25: Cost to serve per view ($0.0250) severely exceeds net ad revenue ($0.0063), creating an unsustainable, loss-making… Required: Fix unit…</li><li>Round 1 (v2) REVISE 3.55: Reach is very limited because Anima is an auxiliary tool within the Apps catalog rather than Luzia&#39;s core chat loop… Required: Recalibrate…</li></ul></p></div>
+<div class="kv"><h4>Precedents (knowledge base)</h4><p><ul><li><b>TAX-4</b> Progression acceleration (skip wait, speed up, skip queue)</li><li><b>EX-UTIL</b> Utilities</li><li><b>TRIG-5</b> Offer UX anatomy (what a good offer card contains)</li><li><b>POL-8</b> Simula ad units (the client&#39;s vocabulary; from public docs and SDK)</li></ul></p></div></div></div>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>4 / 8</span></div></section>
+<section class="slide " id="ideas-1">
+<div class="kicker"><b>Luzia</b> · Review</div>
+<h1>Ideas we rejected, and why</h1>
+<p class="sub">Every candidate the judge scored, with its final verdict. Only SHIP becomes a flow; REVISE is never promoted. Weighted score out of 5.</p>
+<table class="ideas"><thead><tr><th>ID</th><th>Idea</th><th>Verdict</th><th>Score</th><th>Why</th></tr></thead><tbody><tr><td class="id">P5</td><td><b>Anima Queue Fast-Track Priority</b><div class="case">Product change</div></td><td><span class="v v-ship">SHIP</span></td>
+<td class="num">4.70</td><td>SHIP at 4.7 (v3 after 2 revisions). <a href="#flow-P5">See slide 3.</a></td></tr><tr><td class="id">P4</td><td><b>Daily Check-In Image Generation Hub</b><div class="case">Product change</div></td><td><span class="v v-reject">REJECT</span></td>
+<td class="num">4.40</td><td>REJECT after 2 revisions: fixable gate failed: economics (code); unit-economics scored 2 (&lt; 3); still REVISE after round 2. Top concern: economics (code): Cost to serve…</td></tr><tr><td class="id">P3</td><td><b>Single Deep Reasoning Query Unlock</b><div class="case">Existing mechanic</div></td><td><span class="v v-reject">REJECT</span></td>
+<td class="num">4.00</td><td>REJECT after 1 revision: revision stalled (weighted -0.05, below +0.2) with the same gate failures. Top concern: grounding (code): economy item &quot;Deep reasoning query…</td></tr><tr><td class="id">P1</td><td><b>Paywall Decline Guest Services Pass</b><div class="case">Existing mechanic</div></td><td><span class="v v-reject">REJECT</span></td>
+<td class="num">3.65</td><td>REJECT after 2 revisions: fixable gate failed: reward-coherence (code); value-moment-fit scored 2 (&lt; 3); feasibility scored 2 (&lt; 3); weighted 3.65 &lt; 3.8; still REVISE…</td></tr><tr><td class="id">P2</td><td><b>Custom Bestie Slot Unlock on Signup Decline</b><div class="case">Existing mechanic</div></td><td><span class="v v-reject">REJECT</span></td>
+<td class="num">2.85</td><td>REJECT: weighted 2.85 &lt; 3. Top concern: reward-coherence (code): the reward grants 1 &quot;account&quot; of Account Access, an entitlement: grant a time box or a number of uses…</td></tr></tbody></table>
+<p class="also"><b>Brainstormed, not developed:</b> Response Style Quick Adjust Unlock · Favorite Message Save Credit · Beat Maker AI Synth Loop Sponsor · Services Task Execution Token · Ideas Feed Premium Style Unlock</p>
+<p class="also"><b>Obvious baseline the proposer had to go beyond:</b> Watch an ad on s07 Create Account Sheet paywall to get temporary Luzia+ access. · Watch an ad on s23 Login Screen to bypass free signup and access Account Access features. · Watch an ad on s10 Image Creation Hub to generate an AI image without limits.</p>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>5 / 8</span></div></section>
+<section class="slide " id="appendix-method">
+<div class="kicker"><b>Luzia</b> · Appendix</div>
+<h1>Method and mock fidelity</h1>
+<div class="two"><div><ol class="method"><li><b>Explore.</b> 175 steps, 38 states, 171 edges, 1 external surface in 26 min; stopped: budget steps. 107 actions deliberately not explored.</li><li><b>Understand.</b> 38 screens in the product model; 15 claims verified against on-screen text, 0 inferred. Synthesized by llm.</li><li><b>Mock + QA.</b> 33% of screens rebuilt in HTML; 134/135 navigation flows pass.</li><li><b>Propose.</b> 10 ideas, 5 developed into typed proposals (patch, storyboard, assumptions). Generated by llm.</li><li><b>Judge.</b> 12 judgment rounds for 5 proposals: code gates first, then a rubric scored by llm; the verdict is computed in code (ship ≥ 3.8, every criterion ≥ 3, ≤ 2 rounds).</li><li><b>Slides.</b> Every frame is a screenshot of the patched mock driven through its runtime API; callouts sit on measured DOM positions; numbers come from economics code.</li></ol></div>
+<div><h4 class="lbl">QA fidelity (mock vs the real screenshots)</h4>
+<div class="tiles t3"><div class="tile"><div class="stat-k">Mean composite</div><div class="stat-v">0.72</div></div>
+<div class="tile"><div class="stat-k">Flow pass rate</div><div class="stat-v">99%</div></div>
+<div class="tile"><div class="stat-k">HTML screens</div><div class="stat-v">33%</div></div></div>
+<table class="small"><thead><tr><th>Screen</th><th>Render</th><th>Composite</th><th>Rounds</th><th>Must-fix</th></tr></thead><tbody><tr><td>Chats Home</td><td>html</td><td class="num">0.80</td><td class="num">1</td><td class="num">5</td></tr><tr><td>Custom Bestie Signup Sheet</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Ideas Feed</td><td>html</td><td class="num">0.62</td><td class="num">1</td><td class="num">10</td></tr><tr><td>Ideas Feed</td><td>html</td><td class="num">0.79</td><td class="num">1</td><td class="num">0</td></tr><tr><td>Photo Idea Sheet</td><td>html</td><td class="num">0.57</td><td class="num">1</td><td class="num">0</td></tr><tr><td>Services Tab</td><td>html</td><td class="num">0.86</td><td class="num">1</td><td class="num">4</td></tr><tr><td>Create Account Sheet</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Apps Catalog</td><td>html</td><td class="num">0.83</td><td class="num">1</td><td class="num">0</td></tr><tr><td>Animate Tool Screen</td><td>html</td><td class="num">0.77</td><td class="num">1</td><td class="num">0</td></tr><tr><td>Image Creation Hub</td><td>html</td><td class="num">0.57</td><td class="num">1</td><td class="num">0</td></tr><tr><td>Photoedit Screen</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Attach Photos</td><td>image</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr></tbody></table></div></div>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>6 / 8</span></div></section>
+<section class="slide " id="appendix-cost">
+<div class="kicker"><b>Luzia</b> · Appendix</div>
+<h1>Cost and limitations</h1>
+<div class="two"><div><h4 class="lbl">Model spend for this app (from cost.jsonl)</h4>
+<table class="small"><thead><tr><th>Stage</th><th>Live calls</th><th>Cached</th><th>Tokens in</th><th>Tokens out</th><th>USD</th></tr></thead>
+<tbody><tr><td>explore</td><td class="num">108</td><td class="num">23</td><td class="num">306.2k</td><td class="num">62.8k</td><td class="num">$0</td></tr><tr><td>understand</td><td class="num">3</td><td class="num">0</td><td class="num">58.1k</td><td class="num">21.9k</td><td class="num">$0</td></tr><tr><td>mock</td><td class="num">11</td><td class="num">0</td><td class="num">70.6k</td><td class="num">97.7k</td><td class="num">$0</td></tr><tr><td>qa</td><td class="num">11</td><td class="num">0</td><td class="num">71.8k</td><td class="num">135.1k</td><td class="num">$0</td></tr><tr><td>judge</td><td class="num">71</td><td class="num">64</td><td class="num">5.0M</td><td class="num">248.0k</td><td class="num">$0</td></tr><tr><td>propose</td><td class="num">42</td><td class="num">34</td><td class="num">2.7M</td><td class="num">197.2k</td><td class="num">$0</td></tr><tr><td>slides</td><td class="num">8</td><td class="num">12</td><td class="num">52.8k</td><td class="num">45.3k</td><td class="num">$0</td></tr></tbody>
+<tfoot><tr><td>Total</td><td class="num">254</td><td class="num">133</td><td class="num">8.2M</td><td class="num">808.0k</td><td class="num">$0</td></tr></tfoot></table>
+<p class="fine">Gemini free tier: calls cost $0; tokens are still logged. Models: gemini-3.5-flash-lite, gemini-3.8-flash, gemini-2.5-flash, gemini-3.5-flash, gemini-3-flash-preview, gemini-3.1-flash-lite, gemini-3.6-flash, gemini-3.7-flash. Cached calls replay from disk at no cost.</p></div>
+<div><h4 class="lbl">Limitations</h4><ul class="lim"><li>Explored on an Android emulator (guest account); 107 actions left unexplored by guard rails or scope, listed in the model viewer.</li><li>0 product-model claims inferred rather than observed; the economy review is the human checkpoint for them.</li><li>Revenue per view uses KB eCPM ranges with a non-game haircut; some constants are inferred. ARPDAU appears only as a labelled scenario.</li><li>The ad in the frames is simulated by the mock; real fill, creatives and completion rates vary by market.</li><li>The judge is a separate call of the same model family as the proposer; its single-fault calibration table is in judge-eval.md.</li></ul></div></div>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>7 / 8</span></div></section>
+<section class="slide " id="appendix-scale">
+<div class="kicker"><b>Luzia</b> · Appendix</div>
+<h1>How this runs across hundreds of apps</h1>
+<div class="quad"><div class="tile"><h3>Storage and versioning</h3><ul><li>Screenshots, element lists and HTML are content-addressed blobs; artifact JSON references them by hash.</li><li>A model version is keyed by package, version code and a UI fingerprint of the core flows, which also catches over-the-air updates.</li><li>A diff between two model versions (screens, walls, prices, offers) is itself a sales signal.</li></ul></div><div class="tile"><h3>When to re-explore</h3><ul><li>Daily store version poll; weekly no-LLM smoke replay of the core flows and the path to the wall.</li><li>Drift above 10% or any price change triggers an incremental re-explore from the known graph (about 20% of first-run cost).</li><li>A new ad format re-runs only propose and judge.</li></ul></div><div class="tile"><h3>Where humans review</h3><ul><li>App onboarding and login (15 min); economy review, the highest-leverage step (10 min).</li><li>Deck approval before any customer sees it (15–30 min); exception queue for blocked apps.</li><li>Monthly judge audit against labelled outcomes.</li></ul></div><div class="tile"><h3>Cost and sales fit</h3><ul><li>Prospect scan without a mock ≈ $5 of model calls; full pitch pack ≈ $20–25 plus 45–60 min of human review.</li><li>The deck, clickable prototype and sizing sheet attach to the CRM deal; each SHIP&#39;s integration snippet becomes the implementation ticket.</li><li>Post-launch opt-in, completion and IAP guardrails flow back to recalibrate economics and the judge.</li></ul></div></div>
+<div class="foot"><span>Luzia · rewarded flows · generated from the product model</span><span>8 / 8</span></div></section>
+<script>
+// Fit 1920px slides to the window on screen; print (PDF/PNG export) always renders at 1:1.
+(function () { function fit() { var z = Math.min(1, (window.innerWidth - 32) / 1920); document.documentElement.style.setProperty("--z", String(z)); } fit(); window.addEventListener("resize", fit); })();
+</script>
+</body></html>

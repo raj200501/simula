@@ -1,0 +1,188 @@
+{
+ "purpose": "revise:P1:r1:keep",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Context Memory Boost",
+  "oneLiner": "Unlock 15 minutes of 5x context memory via a rewarded mini-game.",
+  "case": "existing",
+  "archetype": "TAX-7",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m1",
+    "m2"
+   ],
+   "economy": [
+    "of1",
+    "w1"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s03",
+  "trigger": "When the user lands on the memory paywall screen (s03) and is blocked from advanced context.",
+  "eligibility": "Non-paying users reaching the memory wall.",
+  "offer": {
+   "title": "Unlock Memory Boost",
+   "body": "Play a quick 15-second game to get 5x context memory for the next 15 minutes.",
+   "cta": "Play Now",
+   "decline": "Not Now"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Janitor",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "15 minutes of 5x context memory",
+   "resource": "memory_boost",
+   "amount": 1,
+   "duration": "15m",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The reward is strictly time-boxed to 15 minutes and capped at 2 uses per day, ensuring the Janitor Plus subscription (of1) remains the only way to get permanent memory [TAX-2] [CANN-2].",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1.2,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "rewarded_impressions_per_dau",
+   "guardrails": [
+    "subscription_conversion_rate",
+    "average_session_length"
+   ],
+   "holdout": "user-level, 10% share, 21 days"
+  },
+  "precedents": [
+   "TAX-7",
+   "TAX-2",
+   "AI-7",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Increased inference costs, mitigated by using a cost-optimized text-cheap model for the 15-minute boost session [TRIG-4].",
+   "Potential devaluation of the Janitor Plus subscription if frequent usage satisfies core roleplay sessions."
+  ],
+  "evidence": [
+   {
+    "obs": "s03",
+    "el": "e10",
+    "quote": "5× context for better memory"
+   },
+   {
+    "obs": "m1",
+    "el": null,
+    "quote": "Access advanced chat memory and priority is blocked"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s03",
+     "near": "e10",
+     "place": "after",
+     "change": "Add a MiniGameButton styled as 'Try 15 mins for free' below the context feature description."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s03",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "memory_boost",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e10",
+      "text": "Memory context is locked for free users."
+     }
+    ],
+    "caption": "The user hits the memory paywall when seeking better context for their chat."
+   },
+   {
+    "phase": "change",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "A new option to unlock memory via a game appears."
+     }
+    ],
+    "caption": "We add a 'Try for free' button under the premium context feature."
+   },
+   {
+    "phase": "offer",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "User opts in to the value exchange."
+     }
+    ],
+    "caption": "The invite screen discloses the 15s play time and the 15-minute reward."
+   },
+   {
+    "phase": "ad",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The user plays a quick mini-game with Janitor to earn the context boost."
+   },
+   {
+    "phase": "value",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "memory_boost",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e10",
+      "text": "Memory unlocked for 15 minutes."
+     }
+    ],
+    "caption": "Upon verification, the user receives 15 minutes of enhanced roleplay memory."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35450,
+  "output": 1425,
+  "cacheRead": 30445,
+  "cacheWrite": 0,
+  "thoughts": 1961
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:56.051Z"
+}

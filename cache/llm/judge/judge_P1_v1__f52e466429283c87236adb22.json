@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets Settings (s19) and SFW interactions."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is in-app time (30 minutes of Upgrade to Luzia+); no cash, gift cards, or install incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Copy uses positive framing ('Play to try') with a clear decline ('No thanks')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Offer uses an explicit 'Play to try' button."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer states the exact action and reward: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option ('No thanks') leaves Settings fully usable without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger sits in Settings (s19), away from any streaming AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly excludes subscribers ('never subscribers')."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Tying the ad directly to the 'Upgrade to Luzia+' upsell in Settings gives users who tapped the premium feature an immediate try via a game sample.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Appears in Settings rather than mid-chat, preserving the user's roleplay and input flow.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Time-boxes the unlock to 30 minutes, caps it at 2 per day, restricts it to non-subscribers, and provides a holdout.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.0000 (none), well below net revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings is a frequent hub (m12, m19), but tapping Upgrade to Luzia+ from settings is a narrower subset of DAU.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD with button entry, REWARD_VERIFIED, and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Cites obs o0060 ('Upgrade to Luzia+'), screen s19, resource r1, and moments m23/m1.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps at 2 per day with a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails, and a 10% user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "Ensure users understand that the 30-minute time-boxed unlock of a subscription entitlement expires clearly so it does not dilute the perceived value of full Luzia+ subscription."
+ },
+ "usage": {
+  "input": 42485,
+  "output": 934,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:18:09.278Z"
+}

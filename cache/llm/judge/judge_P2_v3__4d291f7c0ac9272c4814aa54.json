@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P2:v3",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets s03 ('More memory for long chats.') and a new modal ns1; the janitor+ subscription context for 'longer memory' and 'better memory' is a standard utility surface [SAFE-1]."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '30 minutes of 5x context for better memory', which is an in-app entitlement with no mention of cash, gift cards, or external rewards [POL-2 #8]."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a sampling-effect trial ('Boost Memory for 30 Minutes') rather than a loss or hostage framing on existing content [ANTI-10]."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal specifies an explicit tap on the 'Play Now' (ne2) CTA before the ad plays [POL-1]."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body states: 'Play a quick 15-second game for 30 minutes of 5x context.' This clearly defines both the action and the duration [POL-2 #2]."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The 'No Thanks' button (ne3) returns the user to the core flow (s01) with no penalty [POL-2 #5]."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is m2, which occurs on paywall dismissal (s03), outside the active chat/streaming flow [ANTI-5]."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly restricted to 'Non-subscribers who dismiss the Janitor Plus paywall' [TRIG-2]."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger (dismissing a paywall for better memory) aligns perfectly with the reward (a 30-minute trial of that exact feature). This is a strong reactive placement [TRIG-1].",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal preserves the flow and uses the existing 'Janitor' character as a Game Partner. It offers a sample of premium value without degrading the free experience [TAX-2].",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gating to paywall decliners at m2 is a textbook way to limit substitution [TAX-10]. The 30-minute window is significantly less than the permanent subscription benefit.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve per view is $0.0018, which is well below the US net revenue of $0.0090–$0.0150 (approx 12-20% COGS) [TRIG-4].",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The paywall (s03) is reached frequently as part of the core monetization loop, and decliners (m2) represent a large portion of the non-paying DAU [MEAS-2].",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD with 'invitation' entry and 15s play. Requires a simple intercept on paywall dismissal, which is standard in subscription apps [POL-8].",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Correctly uses nouns from the digest like 'Janitor Plus', '5x context', 'frontier models', and specific screen/element ids like s03 and e3. Identifies the exact moment m2 [TAX-10].",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal includes a 2 per day cap and a 120-minute cooldown, plus an explicit 'No Thanks' button [TRIG-3].",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposes a 5% randomized user-level holdout and monitors subscription conversion as a guardrail [MEAS-5].",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "Providing consistent 5x context for only 30 minutes may be technically complex to verify if the server-side memory state requires a manual toggle at expiry."
+ },
+ "usage": {
+  "input": 35019,
+  "output": 1210,
+  "cacheRead": 32250,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:12:18.654Z"
+}

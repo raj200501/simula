@@ -1,0 +1,52 @@
+{
+ "purpose": "annotate:bf1af8f588",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Photoedit Screen",
+  "kind": "page",
+  "purpose": "Users can upload photos and use AI prompts to edit them.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Switch to Edit mode",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e5",
+    "intent": "Switch to Create mode",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e7",
+    "intent": "Switch to Animate mode",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e36",
+    "intent": "Type photo editing prompt",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Make it cyberpunk"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2817,
+  "output": 271,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:08:09.659Z"
+}

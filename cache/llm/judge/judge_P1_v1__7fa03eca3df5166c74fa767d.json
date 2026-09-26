@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "\"surface\": \"s04\""
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "\"what\": \"3 frontier model swipes\", \"body\": \"Play a quick 15-second game to get 3 free swipes on our frontier models.\""
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "\"title\": \"Want 3 free swipes?\", \"body\": \"Play a quick 15-second game to get 3 free swipes on our frontier models.\", \"cta\": \"Play Game\", \"decline\": \"No thanks\""
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "\"trigger\": \"Fires immediately after the user taps the decline option ('Not now') on the Janitor Plus paywall.\""
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "\"body\": \"Play a quick 15-second game to get 3 free swipes on our frontier models.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "\"An equally legible secondary button labeled 'No thanks' that dismisses the fallback offer and routes the user back to their profile.\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "\"Fires immediately after the user taps the decline option ('Not now') on the Janitor Plus paywall.\""
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "\"eligibility\": \"Non-paying, non-subscribed users who dismiss the premium subscription offer s04.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal gates on the dismissal of paywall s04 (m3) and offers a temporary sample of 3 premium swipes. This is a classic TAX-10 paywall decline fallback. However, since the free tier currently does not track swipes, it requires introducing a new resource tracking mechanism.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The modal ns1 intercepts the paywall decline to offer a rewarded ad. While intercepting a decline can be slightly intrusive, it is standard for TAX-10 and does not degrade the core roleplay experience.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to non-payers upon paywall decline, with a daily cap of 6 swipes total. A 5% holdout is planned over 28 days to monitor downstream conversion, ensuring the 'generous' paid tier remains superior.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0270) exceeds the net ad revenue per view ($0.0063 at the low end, and $0.0150 at the absolute high end) because it uses premium model text generation. No mitigation or transition to a cheaper model is proposed.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Gated on s04 decline (Janitor Plus Paywall), which the digest identifies as a rare screen ('reach=rare'), meaning few users will encounter this specific trigger daily.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD. However, grounding fails because the free tier currently has no concept of swipes, requiring significant backend changes to introduce and enforce a new consumable swipe currency.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Highly specific to Janitor Plus, referencing screen s04, element e12 ('Not now'), and e8 ('Generous monthly swipes with our frontier models').",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Implements a daily cap of 2 entries and a 12-hour cooldown (720 min) to prevent user fatigue and repetitive prompts.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Excellent experiment design featuring a 5% user-level holdout group for 28 days, with Ad ARPDAU as primary and purchase conversion and retention as guardrails.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward cost by switching from premium frontier swipes to cheaper base model swipes to ensure cost to serve ($0.0270) does not exceed net ad revenue ($0.0090-$0.0150).",
+   "Expand the placement to include s03 ('More memory for long chats'), which is a more frequent paywall entry point than the rare s04 paywall.",
+   "Ground the new swipes resource by detailing how free swipes are tracked on the backend and displayed to users in the UI."
+  ],
+  "topConcern": "The cost to serve 3 premium model swipes ($0.0270) is more than double the maximum gross ad revenue generated from a single completed view ($0.0150), resulting in highly negative unit economics with no mitigation plan."
+ },
+ "usage": {
+  "input": 35217,
+  "output": 1020,
+  "cacheRead": 24183,
+  "cacheWrite": 0,
+  "thoughts": 6272
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:10:40.292Z"
+}

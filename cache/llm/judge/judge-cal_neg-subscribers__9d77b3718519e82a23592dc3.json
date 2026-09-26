@@ -1,0 +1,112 @@
+{
+ "purpose": "judge-cal:neg-subscribers",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": false,
+    "evidence": "The proposal states eligibility is 'All users' and does not implement SFW gating or check for moderation scores, violating the requirement to keep ads away from sensitive contexts in an AI chat platform [SAFE-1]."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a mini-game, which is an permitted incentivized action."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a trial of a paid feature and does not use hostage framing or dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user taps 'Play to try' to begin the rewarded experience."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The reward (30 minutes of 5x context) and action (15s game) are clearly stated."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes a clear 'No thanks' option."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is the paywall on 'More memory for long chats.', which is a structural boundary, not a mid-chat interruption."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": false,
+    "evidence": "The eligibility is explicitly defined as 'All users, including subscribers', which is a severe violation of standard practice [ANTI-16]."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is directly on the paywall for the exact feature the user needs (memory), creating a high-intent moment.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer is presented as a trial of a premium feature, fitting the app's economy, but eligibility is far too broad.",
+    "score": 3
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Offering premium benefits to existing subscribers and showing ads to all users on every app open is a high-risk cannibalization design that undermines the subscription value.",
+    "score": 1
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The proposal uses 30 minutes of a premium feature which costs nothing incremental to serve (it's a time-gated access key).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The paywall s03 is a core monetization screen, ensuring high visibility for the offer.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The patch defines a chip on s03, which is a standard UI addition.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses 'Janitor Plus', '5x context for better memory', and 'More memory for long chats.', showing deep product awareness.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Eligibility on 'every app open' is an anti-pattern that causes user fatigue, despite the daily cap.",
+    "score": 2
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Explicit metrics, guardrails, and a randomized holdout are included.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Restrict eligibility strictly to non-subscribers and non-paying users.",
+   "Remove 'every app open' from the eligibility criteria; strictly gate to the paywall trigger m1/s03.",
+   "Add brand safety gating: suppress the offer if the chat or character context is not SFW (check moderation score/nsfw flag).",
+   "Ensure the offer is only shown when the user reaches the wall, not as a blanket app-open requirement."
+  ],
+  "topConcern": "The proposal includes subscribers in the eligibility and triggers on 'every app open', which destroys subscription value and causes excessive user fatigue; ads should be restricted to non-paying users only on the paywall boundary."
+ },
+ "usage": {
+  "input": 34529,
+  "output": 1078,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1454
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:49.489Z"
+}

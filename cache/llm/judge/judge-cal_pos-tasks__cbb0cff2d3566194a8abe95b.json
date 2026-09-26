@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-tasks",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "A Daily tasks sheet on Store Screen: 3 sponsored 15-second games a day, each for +10 credits; sponsor-approved Game Partner."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a 15-second sponsored game to get +10 credits (rewards the view/play of a mini-game, not a click, install, or cash)."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a 15-second sponsored game to get +10 credits. 3 tasks a day. (Gain framed, no loss or dark patterns)."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: Play task (explicit opt-in via button tap)."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second sponsored game to get +10 credits. (Reward and action stated before ad)."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: Close (equally legible decline, returns user with no penalty)."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered from the Store Screen (s05), not mid-stream chat (s03)."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility: Non-payers only, returning users from their second session on; never subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "A Daily tasks sheet on Store Screen: 3 sponsored 15-second games a day, each for +10 credits; Store Screen (store) is a place users return to.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "A Daily tasks sheet on Store Screen: 3 sponsored 15-second games a day; existing free sources unchanged.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "3 tasks a day, one action each; existing free sources unchanged; far below 1,000 credits for $1.39.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view: $0.0018 (text-cheap x 1); One completed US view earns $0.0090-$0.0150.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Store Screen (store) is a place users return to (9 visits during exploration).",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "simula unit: SIM-RWD, entry: invitation, gamePartner: a sponsor-approved Game Partner, minPlaySec: 15.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Store Screen (s05), credits (r1), and credit economy fit seamlessly.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "perDay: 3, cooldownMin: 5.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Tasks completed per DAU and D7 retention against the holdout; 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None - proposal is robust, fully compliant, and well-grounded."
+ },
+ "usage": {
+  "input": 31666,
+  "output": 698,
+  "cacheRead": 16092,
+  "cacheWrite": 0,
+  "thoughts": 4317
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:56:35.235Z"
+}

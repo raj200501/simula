@@ -1,0 +1,45 @@
+{
+ "purpose": "annotate:bfc79af539",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Profile And Settings",
+  "kind": "tab",
+  "purpose": "View account profile details, subscription plan, and adjust app settings.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e13",
+    "intent": "Go to Home tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e14",
+    "intent": "Go to Store tab",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "limit",
+    "text": "Free plan",
+    "el": "e4"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2218,
+  "output": 213,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:53.001Z"
+}

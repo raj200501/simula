@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-serial",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Starship Galley Chat opens because Credits are too low..."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a 15-second game to unlock +10 credits now. 3 per day."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a 15-second game to unlock +10 credits now. 3 per day."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: Play for +10"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "body: Play a 15-second game to unlock +10 credits now. 3 per day."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: No thanks"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "appears only after the previous reply has finished."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility: Non-payers only, returning users from their second session on; never shown to subscribers..."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Starship Galley Chat opens because Credits are too low for the next action, unlocking +10 credits (one message in Basic mode).",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Appears only after the previous reply has finished, preserving user flow and input.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Non-payers only, rate-limited to 3 per day (+30 credits max), far below the cheapest pack of 1,000 credits for $1.39.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view is $0.0018, which is < 30% of US revenue per view ($0.0090-$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Trigger happens frequently when non-paying users run out of credits in chat.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD unit with button entry, REWARD_VERIFIED callback, and standard Simula patch.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References s03, r1 (Credits), k1 (Basic mode 10 credits), and Starship Galley chat context.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 per day with a 10-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails, and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "Some pack buyers may wait for the free unlock, but this is mitigated by the strict daily cap of 3 and the low reward amount (+10 credits)."
+ },
+ "usage": {
+  "input": 31494,
+  "output": 630,
+  "cacheRead": 16091,
+  "cacheWrite": 0,
+  "thoughts": 4320
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:56:18.796Z"
+}

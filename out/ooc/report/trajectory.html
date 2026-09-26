@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OOC: trajectory</title><style>
+:root{--ink:#111827;--muted:#6B7280;--line:#E5E7EB;--soft:#F6F7F9;--accent:#4F46E5;--ship:#047857;--revise:#B45309;--reject:#B91C1C}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#fff}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+header{background:var(--soft);border-bottom:1px solid var(--line);padding:36px 0 28px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-size:36px;margin:6px 0 8px;letter-spacing:-.01em}
+h2{font-size:24px;margin:40px 0 12px;display:flex;align-items:center;gap:12px}
+h3{font-size:17px;margin:18px 0 6px}
+.lede{font-size:18px;color:#374151;max-width:900px;margin:0}
+.lede2{color:#374151;max-width:1000px}
+.pipe{list-style:none;display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:18px 0 0}
+.pipe li{background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600}
+.pipe li+li::before{content:"→";color:var(--muted);margin-right:8px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+.score th,.small th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding:8px 10px;white-space:nowrap}
+.score td,.small td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top;font-size:15px}
+.score tfoot td{font-weight:700;border-bottom:none}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted);font-size:13px}
+.why{max-width:260px}
+.note{font-size:14px;color:var(--muted);max-width:1000px}
+.state{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.state.complete{background:#ECFDF5;color:var(--ship)}.state.partial{background:#EFF6FF;color:#1D4ED8}.state.blocked{background:#FEF2F2;color:var(--reject)}
+.v{display:inline-block;font-size:12px;font-weight:700;padding:2px 7px;border-radius:999px;margin:1px 0;white-space:nowrap}
+.v.ship{background:#ECFDF5;color:var(--ship)}.v.revise{background:#FFFBEB;color:var(--revise)}.v.reject{background:#FEF2F2;color:var(--reject)}
+.stub{background:#FFFBEB;color:var(--revise);border-radius:4px;padding:0 5px}
+.how th{text-align:left;width:300px;padding:10px 16px 10px 0;border-bottom:1px solid var(--line);vertical-align:top;font-size:15px}
+.how td{padding:10px 0;border-bottom:1px solid var(--line);color:#374151}
+.app{border-top:1px solid var(--line);margin-top:28px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.lnk{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-weight:600;font-size:14px;text-decoration:none;color:var(--ink);background:#fff}
+a.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk.off{color:#9CA3AF;background:var(--soft);border-style:dashed}
+details{margin:10px 0;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+summary{cursor:pointer;font-weight:600}
+.notes li{font-size:15px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--soft);border-radius:14px;padding:16px 18px}
+.card ul{padding-left:18px;margin:6px 0 0;font-size:15px}
+footer{margin:48px 0 32px;font-size:13px;color:var(--muted)}
+.doc{padding-top:24px;padding-bottom:48px}
+.md table{margin:12px 0}
+.md th,.md td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top;font-size:14px}
+.md th{background:var(--soft)}
+.md pre{background:#0F172A;color:#E2E8F0;padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:13px}
+.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+.md blockquote{border-left:3px solid var(--line);margin:8px 0;padding:2px 14px;color:#374151}
+</style></head><body>
+<main class="wrap doc"><p><a href="../../index.html">← Run report</a></p><div class="md"><h1 id="trajectory-ooc">Trajectory: ooc</h1>
+<p>Autonomous decisions: <strong>0</strong>. Human interventions: <strong>1</strong>. Autonomy ratio: <strong>0.0%</strong>.</p>
+<h2 id="stage-runs">Stage runs</h2>
+<table><thead><tr><th>stage</th><th>run</th><th>start</th><th>end</th><th>events</th><th>failures</th><th>stop</th></tr></thead><tbody><tr><td>human</td><td>manual</td><td>19:17:40</td><td>19:17:40</td><td>1</td><td>0</td><td></td></tr></tbody></table>
+<h2 id="failures-and-recoveries">Failures and recoveries</h2>
+<p>None recorded.</p>
+<h2 id="human-interventions">Human interventions</h2>
+<ul><li>2026-09-25T19:17:40 [human] OOC closes itself ~0.8 s after launch on the Google Play emulator (AppSecurity Kill Process D11001); recorded as blocked, not bypassed</li></ul></div></main></body></html>

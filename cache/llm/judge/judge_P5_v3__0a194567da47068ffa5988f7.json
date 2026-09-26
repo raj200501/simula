@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P5:v3",
+ "model": "gemini-3.6-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "\"surface\": \"s09\", \"trigger\": \"When the user selects an animation style like 'Clapping' (e24) or taps 'Animate' (e13)...\""
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "\"reward\": {\"what\": \"1 Fast-Track Animation Credit\", \"resource\": \"r_fast_track_credit\", \"amount\": 1, \"grantOn\": \"REWARD_VERIFIED\"}"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "\"cannibalizationGuard\": \"Standard generation remains fully free and functional. Wait times only surface during authentic backend rendering congestion to prevent artificial friction...\""
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "\"cta\": \"Fast-Track Now\", \"decline\": \"Wait in Queue\""
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "\"body\": \"Play a quick game to skip wait times and fast-track your animation.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "\"decline\": \"Wait in Queue\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "\"trigger\": \"When the user selects an animation style like 'Clapping' (e24) or taps 'Animate' (e13) during periods where active rendering queue wait times exceed 10 seconds.\""
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "\"eligibility\": \"Non-paying free tier users who want to skip the standard rendering queue during peak hours.\" \"Luzia+ subscribers always bypass processing queues.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal triggers on s09 when selecting an animation style like 'Clapping' (e24) or tapping 'Animate' (e13) during >10s rendering queues, directly offering a queue skip via '1 Fast-Track Animation Credit'.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal notes 'Standard generation remains fully free and functional. Wait times only surface during authentic backend rendering congestion to prevent artificial friction'. It adds zero artificial friction or answers degradation.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Proposal limits eligibility to 'Non-paying free tier users who want to skip the standard rendering queue' and notes 'Luzia+ subscribers always bypass processing queues.' Uses a 10% holdout over 28 days.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code output shows 'Cost to serve per view: $0.0000 (none x 1)', with US revenue per view $0.0090-$0.0150. Queue priority carries zero marginal COGS.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Proposal estimates 'engagedShare': 0.08, as the trigger is restricted to periods where 'active rendering queue wait times exceed 10 seconds' on Animate Tool Screen (s09).",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD button entry on s09, adding elements ne1 and ne2 in patch. Requires backend queue monitoring integration.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References Anima tool on s09, specific animation style 'Clapping' (e24), 'Animate' button (e13), and Luzia as Game Partner.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Configures 'caps': {'perDay': 5, 'cooldownMin': 10}.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies primary KPI 'Anima Fast-Track Ad Revenue', guardrails 'Luzia+ Subscription Conversion Rate', 's09 Screen Churn Rate', 'D7 Retention', and 'User-level randomized holdout group, 10% allocation, evaluated over 28 days.'",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Consider providing fallback utility for Fast-Track Credits during off-peak periods when queue wait times are under 10 seconds (e.g. higher rendering resolution or HD preview)."
+  ],
+  "topConcern": "Offer engagement and perceived reward value depend heavily on active server queue congestion exceeding 10 seconds, limiting reach during off-peak hours."
+ },
+ "usage": {
+  "input": 42724,
+  "output": 933,
+  "cacheRead": 40417,
+  "cacheWrite": 0,
+  "thoughts": 4058
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:08:03.990Z"
+}

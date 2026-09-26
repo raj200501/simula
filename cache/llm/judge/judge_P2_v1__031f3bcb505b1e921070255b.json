@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The surface is s11 (Account Menu Sidebar), a standard utility menu, and the reward involves news reading across general categories (Top Stories, Entertainment, etc.) as seen in the core loop."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '15 minutes of ad-free reading' (resource: Ad-free Sprint), which is an in-app entitlement. No cash, gift cards, or external incentives are mentioned."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal introduces a new 'Ad-free Sprint' option as an additive benefit. It does not use fake timers, 'support us' copy, or hostage framing of existing content."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard phase 'offer' specifies that the 'Simula MiniGameInvitation appears' and the user must tap the CTA 'Start Sprint' to participate."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body states: 'Play a 15-second game to clear all ads from your news feed for a short sprint.' (Title: 'Go Ad-Free for 15 Minutes'). Both action and reward are clear."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No thanks' decline button, and the proposal notes that declining returns the user to the sidebar with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is in the Account Menu Sidebar (s11), which is a navigation/settings boundary and does not interrupt an active reading experience or video stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to 'Non-paying users currently exposed to standard ad density.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward (ad-free reading) directly addresses the high density of ads in the app, but placing it in the Account Menu (s11) is a proactive 'hub' placement rather than a reactive 'moment of need' (e.g., after closing an article ad).",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The sprint preserves the news-reading flow and input (article detail views), takes nothing away from free users, and adds a helpful timer badge (ne2) to confirm the state.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is strictly time-boxed to 15 minutes and limited to 3 sessions per day. This acts as a 'taste of premium' sampling effect for non-payers only.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost is $0.00 (no inference/COGS). One US view earns $0.009–$0.015. Ad-free reading is a zero-marginal-cost reward that is margin-safe.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The Account Menu Sidebar (s11) has an 'occasional' reach (m10). Most users spend their time in the Home News Feed (s02, s13), meaning a significant portion of DAU may never see this offer.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD using a button entry. While ad-suppression logic requires development, it fits the Simula SDK pattern of temporary entitlements.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific locations (s11 Sidebar, s02 Home) and references the AOL 'Game Partner'. The 'Ad-Free Sprint' concept is a standard TAX-2 implementation.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Proposal includes explicit caps (3/day) and a 60-minute cooldown (cooldownMin).",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Identifies a primary metric (sprint sessions) and includes a 10% user-level holdout over 21 days with specific guardrail KPIs.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix grounding of economy IDs (e42, e17) as they were flagged by the system as non-existent or misaligned with screen element IDs.",
+   "Introduce a secondary trigger or entry point on high-reach surfaces such as the Home News Feed (s02) or between article transitions to improve reach beyond 'occasional' sidebar users.",
+   "Define a clear success threshold for the primary KPI (Ad-free Sprint sessions started) relative to the holdout group."
+  ],
+  "topConcern": "The placement in the Account Menu Sidebar (s11) has very low reach ('occasional' per the digest), which severely limits the revenue and engagement potential compared to a trigger within the core news feeds."
+ },
+ "usage": {
+  "input": 35045,
+  "output": 1329,
+  "cacheRead": 32250,
+  "cacheWrite": 0,
+  "thoughts": 1600
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:13:44.410Z"
+}

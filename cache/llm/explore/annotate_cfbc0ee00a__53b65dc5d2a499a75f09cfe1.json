@@ -1,0 +1,35 @@
+{
+ "purpose": "annotate:cfbc0ee00a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat",
+  "kind": "chat",
+  "purpose": "Chat interface with Luzia AI where users can send messages and queries.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e12",
+    "intent": "Type a prompt to the AI",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi!",
+    "sendEl": "e12"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2251,
+  "output": 162,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:10:25.777Z"
+}

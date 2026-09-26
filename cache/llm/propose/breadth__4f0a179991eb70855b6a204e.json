@@ -1,0 +1,153 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Insert more native recommendation units into the Home Feed feed.",
+   "Show full-screen interstitial ads between article clicks.",
+   "Add more persistent banner ads in article detail views."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Unlock specific premium analytical content",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "N/A",
+    "viable": false
+   },
+   {
+    "moment": "m3",
+    "exchange": "Unlock ad-free reading session",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Unlock ad-free reading session",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "Unlock ad-free reading session",
+    "viable": true
+   },
+   {
+    "moment": "m6",
+    "exchange": "Earn daily streak bonus credits",
+    "viable": true
+   },
+   {
+    "moment": "m7",
+    "exchange": "Unlock ad-free reading session",
+    "viable": true
+   },
+   {
+    "moment": "m8",
+    "exchange": "N/A (First value policy)",
+    "viable": false
+   },
+   {
+    "moment": "m9",
+    "exchange": "Temporary bypass for comment posting",
+    "viable": true
+   },
+   {
+    "moment": "m10",
+    "exchange": "N/A",
+    "viable": false
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Premium Insights Unlock",
+    "case": "product-change",
+    "archetype": "TAX-3",
+    "moment": "m3",
+    "reward": "1 Premium Deep-Dive Article",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Ad-Free Reading Hour",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m3",
+    "reward": "60 minutes of ad-free reading",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Daily News Reader Streak",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m6",
+    "reward": "+50 Reader Points towards monthly badges",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Unlock Commenting",
+    "case": "product-change",
+    "archetype": "TAX-10",
+    "moment": "m9",
+    "reward": "Post a comment without signing in",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Saved Articles Capacity",
+    "case": "product-change",
+    "archetype": "TAX-7",
+    "moment": "m6",
+    "reward": "+10 saved article slots",
+    "beyondBaseline": true
+   },
+   {
+    "title": "AI News Summary Boost",
+    "case": "product-change",
+    "archetype": "TAX-4",
+    "moment": "m3",
+    "reward": "AI-generated summary for the article",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Offline Reading Refill",
+    "case": "product-change",
+    "archetype": "TAX-1",
+    "moment": "m7",
+    "reward": "Download article for offline reading",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Sponsored Brand Topic",
+    "case": "product-change",
+    "archetype": "TAX-11",
+    "moment": "m3",
+    "reward": "Priority access to curated news topic",
+    "beyondBaseline": true
+   }
+  ],
+  "selected": [
+   {
+    "index": 3,
+    "why": "High-intent reactive moment (m9). Provides a clear, non-intrusive alternative to a hard sign-up wall, improving conversion and engagement for non-logged-in users."
+   },
+   {
+    "index": 2,
+    "why": "Creates a proactive habit loop (m6) where none exists. Gamifies news consumption, increasing retention and DAU without interrupting article reading."
+   },
+   {
+    "index": 0,
+    "why": "Adds a premium tier (product change) that creates tangible value. Matches the 'Wait or Watch' pattern (TAX-3), allowing users who don't subscribe to still access high-value analytical content."
+   }
+  ]
+ },
+ "usage": {
+  "input": 41863,
+  "output": 1119,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2270
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:15:55.408Z"
+}

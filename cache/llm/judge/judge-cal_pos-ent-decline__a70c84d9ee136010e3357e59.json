@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:pos-ent-decline",
+ "model": "gemini-2.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The ad appears on s06 (Services Tab), which describes general assistant services like bookings and shopping. The reward is '30 minutes of Upgrade to Luzia+' features, which are not inherently sensitive. The proposal states offers are not to minors and in SFW contexts."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '30 minutes of Upgrade to Luzia+' which is an in-app, time-boxed trial of premium features, not cash-like. The user plays a '15-second game' for the reward, not clicking or installing."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer appears after the user declines the main paywall (`Create Account Sheet` with 'Maybe later'). The copy 'Not ready yet? Play a 15-second game to try...' is an additive offer and not a punishment or removal of existing free value. The decline button is 'No thanks'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The Simula unit is `SIM-RWD` with `entry: 'button'`, and the offer provides a clear CTA 'Play to try' and a 'No thanks' decline option, requiring explicit user tap."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states 'Play a 15-second game' as the action and '30 minutes of Upgrade to Luzia+' as the reward. The game duration '15-second' is also disclosed."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes an 'equally legible' 'No thanks' button. Declining returns the user to the Services Tab, as they were after dismissing the Create Account Sheet, with no penalty or interruption to existing usage."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is triggered on the `Services Tab` (s06) after the user has dismissed an account sheet and any previous AI response has finished, explicitly avoiding interruption of in-progress AI generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility explicitly states 'never payers or subscribers', ensuring the offer is only shown to guests who do not already have the Luzia+ Subscription (r1)."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets moments ['m2', 'm1'], which are user declines of the 'Create Account Sheet' (s07), marked as 'frequent'. The reward is '30 minutes of Upgrade to Luzia+' which is a time-boxed sample of a premium feature. This aligns with TAX-10 (Paywall-decline fallback) and TAX-2 (Time-boxed premium unlock), firing at a high-intent moment where a user has demonstrated low willingness to pay but might be open to a trial.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer appears on the 'Services Tab' (s06) after a user has dismissed the 'Create Account Sheet', thus avoiding interruption of core chat functionality or AI generation. The 'newMechanic' explicitly 'removesFreeValue: false' and the reward provides an additive sampling experience for premium features. The mini-game format for `SIM-RWD` feels native to the Simula SDK.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The 'eligibility' is strictly limited to 'Guests who just declined the account sheet (never payers or subscribers)'. The reward is '30 minutes of Upgrade to Luzia+' with a 'perDay: 1' cap. The 'cannibalizationGuard' explicitly states 'Once a day and only after the paid or sign-up path was declined; Luzia+ Subscription stays the only unlimited path.' A '10% user-level holdout' and 'Paid plan conversion non-inferior within -3% relative' guardrail are planned.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The 'Cost to serve per view' is $0.0000, as stated by the computed economics, because the reward has 'cogs: none'. One completed US view earns $0.0090–$0.0150, resulting in excellent net margin.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger moments ['m2', 'm1'] are described as 'frequent' in the digest for the 'Create Account Sheet' (s07). However, the 'assumptions' state an 'engagedShare: 0.08' (8% of DAU), which indicates a smaller overall target audience compared to a core loop trigger like message caps.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal uses the standard 'SIM-RWD' unit, a 'button' entry point, and grants the reward on 'REWARD_VERIFIED', all within the Simula SDK capabilities. The patch involves adding a simple one-time card element 'ne1' to 's06', which represents a small engineering lift.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal uses app-specific nouns such as 'Upgrade to Luzia+' (r1), 'Create Account Sheet' (s07), and 'Services Tab' (s06) in the trigger and reward descriptions. The reward itself is directly related to Luzia's premium offering. However, the offer copy 'Not ready yet?' is generic, and the 'Game Partner' character is not explicitly named in the copy.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal specifies a strict 'perDay: 1' cap and eligibility of 'once a day' for the rewarded grant. This, combined with the trigger being a 'one-time card' after a specific user action (declining the paywall), ensures low frequency and minimal user fatigue.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "The proposal clearly outlines a 'primary' KPI ('Fallback opt-in among decliners and later sign-ups or Luzia+ Subscription conversion against the holdout'), specific 'guardrails' ('Paid plan conversion non-inferior within -3% relative', 'D7 retention'), and details a '10% user-level holdout for 4 weeks' for robust A/B testing.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Refine the offer title and body to be purely additive, for example, 'Try Luzia+ features now' instead of 'Not ready yet?'.",
+   "Include the specific 'Game Partner' character's name in the offer body for better in-world framing, consistent with Simula's RWD units."
+  ],
+  "topConcern": "The offer copy 'Not ready yet?' could be perceived as slightly confirmshaming."
+ },
+ "usage": {
+  "input": 42272,
+  "output": 1749,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4384
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:09.815Z"
+}

@@ -1,0 +1,39 @@
+{
+ "purpose": "annotate:af1983a25d",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Home",
+  "kind": "chat",
+  "purpose": "This screen displays past chat history and allows starting a new AI conversation.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e38",
+    "intent": "Start a new chat",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e9",
+    "intent": "Open previous chat",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 3011,
+  "output": 179,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:00:16.855Z"
+}

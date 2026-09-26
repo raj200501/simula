@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P4:v1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "surface: 's01', trigger: 'User taps the Daily Check-In banner on Chats Home to open the check-in modal and initiates the claim.'"
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "rewards users with 2 AI Image Credits for playing a quick mini-game, incentivizing daily retention and introducing soft currency monetization."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a quick 15-second game to unlock 2 free AI Image Credits."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps the Daily Check-In banner on Chats Home to open the check-in modal and initiates the claim."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a quick 15-second game to unlock 2 free AI Image Credits."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: 'Maybe Later'"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "surface: 's01', trigger: 'User taps the Daily Check-In banner on Chats Home to open the check-in modal and initiates the claim.'"
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility: 'Non-paying, free guests and signed-up users who have not claimed today's check-in reward.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal introduces a proactive daily check-in loop ('TAX-9') on s01 to reward '2 AI Image Credits'. It is not a reactive, moment-of-need block, but serves as a solid engagement hook.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Adding a daily check-in banner does not interrupt chats or degrade output. However, placing the banner on s01 (the first-value screen) without a session-1 restriction risks presenting ads before onboarding is complete.",
+    "score": 3
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Highly secure: strictly gated to non-paying users, capped at 1 check-in/day (only 2 credits), and keeps advanced generation features restricted to the Luzia+ paywall, supported by a 10% holdout group.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The cost to serve (2 images = $0.0500) significantly outstrips the net revenue per view ($0.0063) by nearly 8x, making the economics completely unsustainable without heavy structural modifications.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Placing the banner on the main Chats Home (s01) tab ensures exposure to nearly 100% of the active daily audience.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD units and REWARD_VERIFIED logic, but requires a product-change to build a new daily loyalty check-in sheet (ns1) and track a new soft-currency resource.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Explicitly references s01 (Chats Home), welcome text e11, and uses 'Luzia' as the game partner. Connects to Luzia's image creation apps.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strong daily limits: maximum of 1 claim per day, and a strict 1440-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Superb experiment layout tracking D7/D30 retention with guardrails for image gen costs and subscription conversion, using a user-level 10% holdout group for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward value to 1 AI Image Credit (or require completing multiple ads/games to unlock the 2-credit bundle) to align with realistic US net ad revenue.",
+   "Introduce a session gating rule so that the daily check-in banner on the first-value screen (s01) is hidden from users in their first active session.",
+   "Commit to using a heavily compressed, low-cost image generation model to reduce unit image cost below $0.003."
+  ],
+  "topConcern": "The reward cost to serve ($0.0500 for 2 images) is roughly 8x higher than the net ad revenue generated per view ($0.0063), creating a severe and unsustainable deficit."
+ },
+ "usage": {
+  "input": 42788,
+  "output": 1250,
+  "cacheRead": 40419,
+  "cacheWrite": 0,
+  "thoughts": 2960
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:05:53.655Z"
+}

@@ -1,0 +1,46 @@
+{
+ "purpose": "annotate:5ac2d0ab70",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Search Suggestions",
+  "kind": "page",
+  "purpose": "Provides search suggestions as the user types a query.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Close search view",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e12",
+    "intent": "Type search query",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "news"
+   },
+   {
+    "el": "e22",
+    "intent": "Select suggested search WNBA Playoff Schedule",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 3598,
+  "output": 227,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:05:11.318Z"
+}

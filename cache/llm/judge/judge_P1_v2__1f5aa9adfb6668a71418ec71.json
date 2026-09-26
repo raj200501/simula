@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": false,
+    "evidence": "While screens s03 and s04 are generic paywalls, the app contains characters and scenarios involving 'cancer' (s09) and 'neglectful family' (s12). The proposal lacks mention of topic-sensitivity screening or moderation-score gating required to keep ads away from sensitive topics [POL-7, SAFE-1]."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '3 base model swipes', an in-app consumable with no cash-like value or incentive for installs/clicks."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a positive fallback frame ('Want 3 free swipes?') with an 'equally legible secondary button' for declining, avoiding dark patterns or 'support us' copy."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the primary button labeled 'Play Game' on screen ns1 before any ad is served."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The invitation explicitly states the reward and the action: 'Play a quick 15-second game to get 3 free swipes on our base models.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining via 'No thanks' returns the user to the profile menu (s02) without penalty or loss of functionality."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is 'Paywall decline', which is a transition boundary occurring after the user dismisses a blocked context memory/swipe wall (m1/m3)."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to 'Non-paying, non-subscribed users' who are not already entitled to the premium 'frontier model swipes'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward (swipes) perfectly addresses the user's immediate intent when they hit a context memory/swipe wall and then decline the premium subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal preserves the roleplay flow by triggering only on paywall dismissal and uses an additive 'base model' reward that doesn't degrade existing free value.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gating on paywall decline (TAX-10), restricted to a 'base model' and capped at 2 instances/day ensures Janitor Plus remains the superior option. Includes a 5% holdout.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0054) is 45-60% of US net revenue per view. This is within safe bounds but above the 30% threshold for a top score.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggers from paywall decline (m2), which is categorized as 'frequent' reach in the product digest.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD and uses a standard invitation entry, though it requires backend logic for a new 'base model' swipe type and daily counter.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Heavily leverages app-specific nouns like 'Janitor Plus', 'frontier model swipes', and navigates precisely between s03/s04 and the profile (s02).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly caps at 2 per day with a 12-hour cooldown to prevent repetitive prompting.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposes Ad ARPDAU as the primary KPI, includes purchase conversion guardrails, and specifies a user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Add brand-safety controls to suppress the rewarded offer if the preceding character interaction or session context involves sensitive topics such as health, self-harm, or politics [POL-7].",
+   "Implement moderation-score gating to ensure the ad surface is only triggered on SFW-rated characters and pass the 'nsfw' flag to the Simula SDK.",
+   "Clarify that the 'base model swipes' reward does not grant access to 'Limitless' or NSFW model capabilities if those are reserved for Janitor Plus."
+  ],
+  "topConcern": "Adjacency to sensitive content. The app features roleplay themes including 'cancer' and 'neglectful family'; the proposal must incorporate moderation filters to prevent ad delivery in these sensitive contexts."
+ },
+ "usage": {
+  "input": 35595,
+  "output": 1253,
+  "cacheRead": 32258,
+  "cacheWrite": 0,
+  "thoughts": 3897
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:11:36.505Z"
+}

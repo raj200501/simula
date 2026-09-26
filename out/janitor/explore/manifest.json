@@ -1,0 +1,20 @@
+{
+  "stage": "explore",
+  "app": "janitor",
+  "runId": "ex0925-144731",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T18:47:31.692Z",
+  "finishedAt": "2026-09-25T18:52:37.538Z",
+  "status": "ok",
+  "stopReason": "budget_steps",
+  "inputs": [],
+  "outputs": [
+    "explore/ex0925-144731/graph.json"
+  ],
+  "llm": {
+    "calls": 15,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

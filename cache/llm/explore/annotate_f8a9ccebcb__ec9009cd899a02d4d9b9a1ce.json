@@ -1,0 +1,59 @@
+{
+ "purpose": "annotate:f8a9ccebcb",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Create Image",
+  "kind": "tab",
+  "purpose": "Create and edit AI images based on user prompts and popular templates.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Switch to Create tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e6",
+    "intent": "Switch to Edit tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e7",
+    "intent": "Switch to Animate tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e19",
+    "intent": "Select Painting popular template",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e34",
+    "intent": "Type idea for image generation",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "A futuristic city",
+    "sendEl": "e35"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2775,
+  "output": 325,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:17.859Z"
+}

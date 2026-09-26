@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:36d165c914",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Theme Settings",
+  "kind": "page",
+  "purpose": "Allows the user to select the app theme between device default, light mode, and dark mode.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e3",
+    "intent": "Go back to the previous screen",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e8",
+    "intent": "Select device default theme",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e11",
+    "intent": "Select light mode",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e14",
+    "intent": "Select dark mode",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2243,
+  "output": 264,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:17:10.722Z"
+}

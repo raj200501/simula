@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P4:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets the Create Account Sheet (s07) and offers premium services, which are SFW and not sensitive."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a 30-minute trial of service features, with no incentive for clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer is presented as a trial 'Try Advanced Services' rather than using loss-framing or hostage tactics."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal explicitly states it is an 'opt-in rewarded ad' with a 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer explicitly discloses: 'Watch a 15-second game to get 30 minutes of Advanced Services'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No thanks' button, allowing users to decline without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer triggers on the Create Account Sheet (s07), which is a static screen, not a streaming chat response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly limits eligibility to 'Non-subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trial is offered exactly when the user hits the account wall after attempting a premium task, which is the ideal moment of need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The transition is modal and clearly separated from the chat flow, though it must ensure that the user's previously attempted task is resumed immediately upon granting the trial.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to account-wall decliners and limited to 30 minutes and 1x/day, providing a clear sampling effect without giving away the full long-term entitlement.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The proposal acknowledges text-premium COGS (text-premium x 1). At $0.0090 cost vs $0.0063 net revenue, this is currently a loss-leader requiring adjustment.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Targeting the Create Account Sheet (s07) captures users hitting the wall, a frequent point in the monetization loop.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The patch requires a modal and logic to gate Advanced services access for 30 minutes, which is straightforward.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References 'Luzia+', 'Create Account Sheet', and specific services like 'bookings' and 'alerts'.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 1x/day, which is conservative and prevents nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes conversion rate, retention, and time spent, with a clear 8-week holdout plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the trial duration or limit the number of Advanced Service calls to bring COGS below the net revenue-per-view threshold ($0.0063).",
+   "Correct the patch grounding: there is no 'Maybe later' on s07; the action should be bound to the 'Close sheet' or 'BACK' event.",
+   "Fix reward coherence: A subscription 'plan' cannot be granted as a float (0.5 plan). Use a 'TrialToken' resource to gate the features instead."
+  ],
+  "topConcern": "The economics: The cost to serve text-premium requests ($0.0090) exceeds the net revenue per view ($0.0063) in the baseline scenario, making the 30-minute unlimited trial economically unsustainable."
+ },
+ "usage": {
+  "input": 42688,
+  "output": 1123,
+  "cacheRead": 40427,
+  "cacheWrite": 0,
+  "thoughts": 1060
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:38.229Z"
+}

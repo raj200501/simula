@@ -1,0 +1,49 @@
+{
+ "purpose": "annotate:2b6351b533",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s15",
+  "name": "Article Ad View",
+  "kind": "page",
+  "purpose": "Display an advertisement within an article page.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e12",
+    "intent": "Go back to the article content",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "Observe advertisement",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "ADVERTISEMENT"
+   },
+   {
+    "kind": "ad",
+    "text": "Test Ad"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2748,
+  "output": 233,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:10:01.723Z"
+}

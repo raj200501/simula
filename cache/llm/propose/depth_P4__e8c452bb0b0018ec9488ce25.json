@@ -1,0 +1,213 @@
+{
+ "purpose": "depth:P4",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Character Quest & Credits",
+  "oneLiner": "Earn bonus chat credits daily by completing a quick interactive mini-game with Luzia.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m16"
+   ],
+   "economy": [
+    "r3"
+   ],
+   "newMechanic": {
+    "name": "Daily Character Quest",
+    "description": "A daily engagement task where users play a 15-second mini-game with Luzia to earn bonus chat credits.",
+    "whyNeeded": "Luzia currently lacks a daily retention loop and free ad-monetization path for non-paying users on the home tab.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s01",
+  "trigger": "User taps the daily quest banner on the Chats Home hub upon returning to the app.",
+  "eligibility": "Non-paying users who have completed their first session and have remaining daily quota capacity.",
+  "offer": {
+   "title": "Play Daily Quest Now",
+   "body": "Play a quick 15-second mini-game with Luzia to earn 10 bonus chat credits.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "10 bonus chat credits",
+   "resource": "r3",
+   "amount": 10,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Gated to non-paying users with strict daily caps, rewarding soft usage quota rather than permanent subscription features or premium reasoning models.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 10
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU and D7/D30 user retention.",
+   "guardrails": [
+    "Paid conversion non-inferiority (-3% max relative drop)",
+    "Daily message volume per active user",
+    "App store sentiment and crash rates"
+   ],
+   "holdout": "User-level 10% randomized holdout running for 28 days."
+  },
+  "precedents": [
+   "TAX-9",
+   "AI-3",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Low risk of minor fatigue if daily caps are exceeded",
+   "Ensure game partner tone remains fully SFW and aligned with Luzia's brand"
+  ],
+  "evidence": [
+   {
+    "obs": "s01",
+    "el": "e10",
+    "quote": "Luzia"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s01",
+     "kind": "sheet",
+     "change": "Daily Quest Hub sheet displaying available character mini-game tasks for bonus credits."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s01",
+     "near": "e13",
+     "place": "after",
+     "change": "Daily Quest banner button on Chats Home."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s01",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e10",
+      "text": "Luzia chat home hub"
+     }
+    ],
+    "caption": "Users chat on Chats Home without daily task rewards today."
+   },
+   {
+    "phase": "change",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Daily Quest banner"
+     }
+    ],
+    "caption": "Add a daily quest banner for interactive mini-games."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "e10",
+      "text": "Play 15 seconds"
+     }
+    ],
+    "caption": "Opt-in sheet invites user to play with Luzia."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "e10",
+      "text": "Mini-game active"
+     }
+    ],
+    "caption": "User plays the 15-second rewarded mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 10
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e10",
+      "text": "+10 credits credited"
+     }
+    ],
+    "caption": "Credits granted securely upon REWARD_VERIFIED callback."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42723,
+  "output": 1578,
+  "cacheRead": 15403,
+  "cacheWrite": 0,
+  "thoughts": 3561
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:30:07.108Z"
+}

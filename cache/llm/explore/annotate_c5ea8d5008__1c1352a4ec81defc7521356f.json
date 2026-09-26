@@ -1,0 +1,44 @@
+{
+ "purpose": "annotate:c5ea8d5008",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Toki Character Popup",
+  "kind": "modal",
+  "purpose": "A modal dialog introducing a virtual pet character named Toki with growth features.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Meet Toki and explore the character feature",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e7",
+    "intent": "Dismiss the Toki introduction",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "I want to grow and become as powerful as Luzia. Care for me to see me grow!"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2034,
+  "output": 227,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:25:56.687Z"
+}

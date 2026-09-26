@@ -1,0 +1,154 @@
+{
+  "screens": [
+    {
+      "id": "s01",
+      "name": "Build, Share, Explore",
+      "render": "html",
+      "composite": 0.9416,
+      "rounds": 1,
+      "mustFix": 0,
+      "best": "s01/best.png"
+    },
+    {
+      "id": "s02",
+      "name": "@your_handle",
+      "render": "html",
+      "composite": 0.9156,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": "s02/best.png"
+    },
+    {
+      "id": "s03",
+      "name": "More memory for\nlong chats.",
+      "render": "html",
+      "composite": 0.9118,
+      "rounds": 1,
+      "mustFix": 1,
+      "best": "s03/best.png"
+    },
+    {
+      "id": "s04",
+      "name": "Janitor Plus Paywall",
+      "render": "html",
+      "composite": 0.8326,
+      "rounds": 1,
+      "mustFix": 1,
+      "best": "s04/best.png"
+    },
+    {
+      "id": "s05",
+      "name": "Explore Characters",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s06",
+      "name": "Search Page",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s07",
+      "name": "Search Characters",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s08",
+      "name": "Search Characters",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s09",
+      "name": "Character Details",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s10",
+      "name": "Character Detail Page",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s11",
+      "name": "Search Characters",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s12",
+      "name": "Search Characters",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s13",
+      "name": "Notifications Page",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s14",
+      "name": "Notification Settings",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s15",
+      "name": "Blocked Content Screen",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    },
+    {
+      "id": "s16",
+      "name": "Block Settings",
+      "render": "image",
+      "composite": null,
+      "rounds": 0,
+      "mustFix": 0,
+      "best": ""
+    }
+  ],
+  "flow": {
+    "total": 45,
+    "passed": 45,
+    "failures": []
+  },
+  "htmlShare": 0.333
+}

@@ -1,0 +1,1796 @@
+{
+  "worst": [
+    {
+      "node": "e39",
+      "role": "list-item",
+      "severity": 0.03249,
+      "mustFix": false,
+      "phrase": "e39: bg #000000 vs #363636"
+    },
+    {
+      "node": "e38",
+      "role": "list-item",
+      "severity": 0.03248,
+      "mustFix": false,
+      "phrase": "e38: bg #000000 vs #363636"
+    },
+    {
+      "node": "e6",
+      "role": "list-item",
+      "severity": 0.0253,
+      "mustFix": false,
+      "phrase": "e6: bg #000000 vs #363636"
+    },
+    {
+      "node": "e25",
+      "role": "list-item",
+      "severity": 0.01018,
+      "mustFix": false,
+      "phrase": "e25: text '' vs 'Images'"
+    },
+    {
+      "node": "e17",
+      "role": "list-item",
+      "severity": 0.01017,
+      "mustFix": false,
+      "phrase": "e17: text '' vs 'Photoedit'"
+    },
+    {
+      "node": "e11",
+      "role": "list-item",
+      "severity": 0.00425,
+      "mustFix": false,
+      "phrase": "e11: 16dp too far left; bg #363636 vs #080808"
+    },
+    {
+      "node": "e13",
+      "role": "list-item",
+      "severity": 0.00425,
+      "mustFix": false,
+      "phrase": "e13: 16dp too far left; bg #363636 vs #080808"
+    },
+    {
+      "node": "e12",
+      "role": "button",
+      "severity": 0.00345,
+      "mustFix": false,
+      "phrase": "e12: 16dp too far left"
+    },
+    {
+      "node": "e10",
+      "role": "button",
+      "severity": 0.00216,
+      "mustFix": false,
+      "phrase": "e10: 16dp too far left"
+    },
+    {
+      "node": "e9",
+      "role": "tab",
+      "severity": 0.00204,
+      "mustFix": false,
+      "phrase": "e9: bg #363636 vs #080808"
+    },
+    {
+      "node": "e7",
+      "role": "tab",
+      "severity": 0.002,
+      "mustFix": false,
+      "phrase": "e7: bg #363636 vs #080808"
+    },
+    {
+      "node": "e8",
+      "role": "tab",
+      "severity": 0.00192,
+      "mustFix": false,
+      "phrase": "e8: 16dp too far left; 32dp too wide; 7dp too tall; text 'Beat maker →' vs 'Beat maker'"
+    }
+  ],
+  "mustFix": [],
+  "elements": [
+    {
+      "id": "e1",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9987377171930918,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "unbound": null
+    },
+    {
+      "id": "e2",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9987377171930918,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "unbound": null
+    },
+    {
+      "id": "e3",
+      "role": "container",
+      "areaFrac": 0.88625,
+      "missing": false,
+      "iou": 0.9987361524224727,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 810.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 810.3
+      },
+      "unbound": null
+    },
+    {
+      "id": "e4",
+      "role": "list-item",
+      "areaFrac": 0.028050925925925927,
+      "missing": false,
+      "iou": 0.9965903505353289,
+      "want": "Apps",
+      "got": "Apps",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 58.3,
+        "w": 379.4,
+        "h": 27.8
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 58.3,
+        "w": 379.4,
+        "h": 27.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e5",
+      "role": "list-item",
+      "areaFrac": 0.08766280864197531,
+      "missing": false,
+      "iou": 0.9979464112298149,
+      "want": "",
+      "got": "👤",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#363636",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 110.1,
+        "w": 265.5,
+        "h": 124.2
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 110.1,
+        "w": 265.5,
+        "h": 124.2
+      },
+      "unbound": null
+    },
+    {
+      "id": "e6",
+      "role": "list-item",
+      "areaFrac": 0.034964506172839506,
+      "missing": false,
+      "iou": 0.9935079682483796,
+      "want": "",
+      "got": "👩",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#000000",
+      "dE": 14.3447879797632,
+      "colorScore": 0.28276060101184,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 289.5,
+        "y": 110.1,
+        "w": 105.9,
+        "h": 124.2
+      },
+      "got_rect": {
+        "x": 289.5,
+        "y": 110.1,
+        "w": 105.9,
+        "h": 124.2
+      },
+      "unbound": null
+    },
+    {
+      "id": "e7",
+      "role": "tab",
+      "areaFrac": 0.0010648148148148149,
+      "missing": false,
+      "iou": 0.9894785049175642,
+      "want": "Elias",
+      "got": "Elias",
+      "textScore": 1,
+      "bgOrig": "#080808",
+      "bgMock": "#363636",
+      "dE": 13.091029869184585,
+      "colorScore": 0.34544850654077075,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 48.4,
+        "y": 126.5,
+        "w": 26.3,
+        "h": 15.2
+      },
+      "got_rect": {
+        "x": 48.4,
+        "y": 126.5,
+        "w": 26.3,
+        "h": 15.2
+      },
+      "unbound": null
+    },
+    {
+      "id": "e8",
+      "role": "tab",
+      "areaFrac": 0.002623456790123457,
+      "missing": false,
+      "iou": 0.46008804761194755,
+      "want": "Beat maker",
+      "got": "Beat maker →",
+      "textScore": 0.9,
+      "bgOrig": "#FFFFFF",
+      "bgMock": "#FFFFFF",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -16,
+      "dyDp": 0,
+      "dwDp": 32,
+      "dhDp": 6.8,
+      "target": {
+        "x": 176,
+        "y": 126.5,
+        "w": 64.8,
+        "h": 15.2
+      },
+      "got_rect": {
+        "x": 160,
+        "y": 126.5,
+        "w": 96.8,
+        "h": 22
+      },
+      "unbound": null
+    },
+    {
+      "id": "e9",
+      "role": "tab",
+      "areaFrac": 0.0011728395061728395,
+      "missing": false,
+      "iou": 0.9731529238948654,
+      "want": "Luzia",
+      "got": "Luzia",
+      "textScore": 1,
+      "bgOrig": "#080808",
+      "bgMock": "#363636",
+      "dE": 13.091029869184585,
+      "colorScore": 0.34544850654077075,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 321.9,
+        "y": 126.5,
+        "w": 29,
+        "h": 15.2
+      },
+      "got_rect": {
+        "x": 321.9,
+        "y": 126.5,
+        "w": 29,
+        "h": 15.2
+      },
+      "unbound": null
+    },
+    {
+      "id": "e10",
+      "role": "button",
+      "areaFrac": 0.008787037037037038,
+      "missing": false,
+      "iou": 0.7624802301019838,
+      "want": "Beat maker",
+      "got": "Beat maker",
+      "textScore": 1,
+      "bgOrig": "#080808",
+      "bgMock": "#090909",
+      "dE": 0.1601566274957782,
+      "colorScore": 0.9919921686252111,
+      "dxDp": -16,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 96.4,
+        "y": 153.9,
+        "w": 118.9,
+        "h": 27.8
+      },
+      "got_rect": {
+        "x": 80.4,
+        "y": 153.9,
+        "w": 118.9,
+        "h": 27.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e11",
+      "role": "list-item",
+      "areaFrac": 0.0018869598765432099,
+      "missing": false,
+      "iou": 0.2381900394180091,
+      "want": "Doodle",
+      "got": "Doodle",
+      "textScore": 1,
+      "bgOrig": "#080808",
+      "bgMock": "#363636",
+      "dE": 13.091029869184585,
+      "colorScore": 0.34544850654077075,
+      "dxDp": -16,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 369.9,
+        "y": 153.9,
+        "w": 25.5,
+        "h": 27.8
+      },
+      "got_rect": {
+        "x": 353.9,
+        "y": 153.9,
+        "w": 25.5,
+        "h": 27.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e12",
+      "role": "button",
+      "areaFrac": 0.018566358024691358,
+      "missing": false,
+      "iou": 0.8302153473763073,
+      "want": "Tap squares, make music",
+      "got": "Tap squares, make music",
+      "textScore": 1,
+      "bgOrig": "#080808",
+      "bgMock": "#0A0A0A",
+      "dE": 0.3207001386321384,
+      "colorScore": 0.9839649930683931,
+      "dxDp": -16,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 96.4,
+        "y": 181.7,
+        "w": 173,
+        "h": 40.4
+      },
+      "got_rect": {
+        "x": 80.4,
+        "y": 181.7,
+        "w": 173,
+        "h": 40.4
+      },
+      "unbound": null
+    },
+    {
+      "id": "e13",
+      "role": "list-item",
+      "areaFrac": 0.002739969135802469,
+      "missing": false,
+      "iou": 0.23826076488028133,
+      "want": "Turn your sketch into a picture",
+      "got": "Turn your sketch into a picture",
+      "textScore": 1,
+      "bgOrig": "#080808",
+      "bgMock": "#363636",
+      "dE": 13.091029869184585,
+      "colorScore": 0.34544850654077075,
+      "dxDp": -16,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 369.9,
+        "y": 181.7,
+        "w": 25.5,
+        "h": 40.4
+      },
+      "got_rect": {
+        "x": 353.9,
+        "y": 181.7,
+        "w": 25.5,
+        "h": 40.4
+      },
+      "unbound": null
+    },
+    {
+      "id": "e14",
+      "role": "list-item",
+      "areaFrac": 0.07267283950617284,
+      "missing": false,
+      "iou": 0.9971357418098767,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#363636",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 254.5,
+        "w": 185.9,
+        "h": 147
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 254.5,
+        "w": 185.9,
+        "h": 147
+      },
+      "unbound": null
+    },
+    {
+      "id": "e15",
+      "role": "list-item",
+      "areaFrac": 0.07252391975308642,
+      "missing": false,
+      "iou": 0.9954117149220129,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#363636",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 209.9,
+        "y": 254.5,
+        "w": 185.5,
+        "h": 147
+      },
+      "got_rect": {
+        "x": 209.9,
+        "y": 254.5,
+        "w": 185.5,
+        "h": 147
+      },
+      "unbound": null
+    },
+    {
+      "id": "e16",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.9931451718159887,
+      "want": "Anima",
+      "got": "Anima",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 266.7,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 266.7,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e17",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.9873077761253181,
+      "want": "Photoedit",
+      "got": "",
+      "textScore": 0,
+      "bgOrig": "#282828",
+      "bgMock": "#353535",
+      "dE": 4.146370082325658,
+      "colorScore": 0.7926814958837171,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 266.7,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 266.7,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e18",
+      "role": "list-item",
+      "areaFrac": 0.0075246913580246915,
+      "missing": false,
+      "iou": 0.9803205903361011,
+      "want": "Anima",
+      "got": "Anima",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 334.9,
+        "w": 161.5,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 334.9,
+        "w": 161.5,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e19",
+      "role": "list-item",
+      "areaFrac": 0.0075069444444444446,
+      "missing": false,
+      "iou": 0.9784794103687641,
+      "want": "Photoedit",
+      "got": "Photoedit",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 334.9,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 334.9,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e20",
+      "role": "list-item",
+      "areaFrac": 0.015049382716049383,
+      "missing": false,
+      "iou": 0.9908552723698708,
+      "want": "Make your image a video with AI",
+      "got": "Make your image a video with AI",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 354.3,
+        "w": 161.5,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 354.3,
+        "w": 161.5,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e21",
+      "role": "list-item",
+      "areaFrac": 0.0075069444444444446,
+      "missing": false,
+      "iou": 0.980068629408695,
+      "want": "Edit your images with AI",
+      "got": "Edit your images with AI",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 354.3,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 354.3,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e22",
+      "role": "list-item",
+      "areaFrac": 0.07267283950617284,
+      "missing": false,
+      "iou": 0.9969054588414631,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#363636",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 409.5,
+        "w": 185.9,
+        "h": 147
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 409.5,
+        "w": 185.9,
+        "h": 147
+      },
+      "unbound": null
+    },
+    {
+      "id": "e23",
+      "role": "list-item",
+      "areaFrac": 0.07252391975308642,
+      "missing": false,
+      "iou": 0.9951820285102577,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#363636",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 209.9,
+        "y": 409.5,
+        "w": 185.5,
+        "h": 147
+      },
+      "got_rect": {
+        "x": 209.9,
+        "y": 409.5,
+        "w": 185.5,
+        "h": 147
+      },
+      "unbound": null
+    },
+    {
+      "id": "e24",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.9925433310474511,
+      "want": "Mathematics",
+      "got": "Mathematics",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 421.7,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 421.7,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e25",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.9867112240016369,
+      "want": "Images",
+      "got": "",
+      "textScore": 0,
+      "bgOrig": "#282828",
+      "bgMock": "#353535",
+      "dE": 4.146370082325658,
+      "colorScore": 0.7926814958837171,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 421.7,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 421.7,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e26",
+      "role": "list-item",
+      "areaFrac": 0.0075246913580246915,
+      "missing": false,
+      "iou": 0.9784212913536465,
+      "want": "Mathematics",
+      "got": "Mathematics",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 489.9,
+        "w": 161.5,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 489.9,
+        "w": 161.5,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e27",
+      "role": "list-item",
+      "areaFrac": 0.0075069444444444446,
+      "missing": false,
+      "iou": 0.976585437659911,
+      "want": "Images",
+      "got": "Images",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 489.9,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 489.9,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e28",
+      "role": "list-item",
+      "areaFrac": 0.015049382716049383,
+      "missing": false,
+      "iou": 0.9898950343057191,
+      "want": "Solve and explain any problem",
+      "got": "Solve and explain any problem",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 509.3,
+        "w": 161.5,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 509.3,
+        "w": 161.5,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e29",
+      "role": "list-item",
+      "areaFrac": 0.015013888888888889,
+      "missing": false,
+      "iou": 0.9880269004816389,
+      "want": "Generate unique images in seconds",
+      "got": "Generate unique images in seconds",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 509.3,
+        "w": 161.1,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 509.3,
+        "w": 161.1,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e30",
+      "role": "list-item",
+      "areaFrac": 0.07267283950617284,
+      "missing": false,
+      "iou": 0.9954053470514004,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#363636",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 564.6,
+        "w": 185.9,
+        "h": 147
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 564.6,
+        "w": 185.9,
+        "h": 147
+      },
+      "unbound": null
+    },
+    {
+      "id": "e31",
+      "role": "list-item",
+      "areaFrac": 0.07252391975308642,
+      "missing": false,
+      "iou": 0.9936858005745707,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#363636",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 209.9,
+        "y": 564.6,
+        "w": 185.5,
+        "h": 147
+      },
+      "got_rect": {
+        "x": 209.9,
+        "y": 564.6,
+        "w": 185.5,
+        "h": 147
+      },
+      "unbound": null
+    },
+    {
+      "id": "e32",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.9886283059889556,
+      "want": "Summarize",
+      "got": "Summarize",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 576.8,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 576.8,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e33",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.9828305503342318,
+      "want": "Games",
+      "got": "Games",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#353535",
+      "dE": 4.146370082325658,
+      "colorScore": 0.7926814958837171,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 576.8,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 576.8,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e34",
+      "role": "list-item",
+      "areaFrac": 0.0075246913580246915,
+      "missing": false,
+      "iou": 0.9661268830622549,
+      "want": "Summarize",
+      "got": "Summarize",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 645,
+        "w": 161.5,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 645,
+        "w": 161.5,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e35",
+      "role": "list-item",
+      "areaFrac": 0.0075069444444444446,
+      "missing": false,
+      "iou": 0.9643253419899662,
+      "want": "Games",
+      "got": "Games",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 645,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 645,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e36",
+      "role": "list-item",
+      "areaFrac": 0.015049382716049383,
+      "missing": false,
+      "iou": 0.9836570528906464,
+      "want": "Extract key topics from a text",
+      "got": "Extract key topics from a text",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 664.4,
+        "w": 161.5,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 664.4,
+        "w": 161.5,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e37",
+      "role": "list-item",
+      "areaFrac": 0.0075069444444444446,
+      "missing": false,
+      "iou": 0.9658918947749326,
+      "want": "Have fun, train your brain",
+      "got": "Have fun, train your brain",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 664.4,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 664.4,
+        "w": 161.1,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e38",
+      "role": "list-item",
+      "areaFrac": 0.04480864197530864,
+      "missing": false,
+      "iou": 0.9923197661281231,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#000000",
+      "dE": 14.3447879797632,
+      "colorScore": 0.28276060101184,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 719.6,
+        "w": 185.9,
+        "h": 90.7
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 719.6,
+        "w": 185.9,
+        "h": 90.7
+      },
+      "unbound": null
+    },
+    {
+      "id": "e39",
+      "role": "list-item",
+      "areaFrac": 0.044716820987654324,
+      "missing": false,
+      "iou": 0.9906082104097936,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#363636",
+      "bgMock": "#000000",
+      "dE": 14.3447879797632,
+      "colorScore": 0.28276060101184,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 209.9,
+        "y": 719.6,
+        "w": 185.5,
+        "h": 90.7
+      },
+      "got_rect": {
+        "x": 209.9,
+        "y": 719.6,
+        "w": 185.5,
+        "h": 90.7
+      },
+      "unbound": null
+    },
+    {
+      "id": "e40",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.98802918950284,
+      "want": "Transcribe",
+      "got": "Transcribe",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#353535",
+      "dE": 4.146370082325658,
+      "colorScore": 0.7926814958837171,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 731.8,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 731.8,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e41",
+      "role": "list-item",
+      "areaFrac": 0.008336805555555556,
+      "missing": false,
+      "iou": 0.9822366827376948,
+      "want": "Career",
+      "got": "Career",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#353535",
+      "dE": 4.146370082325658,
+      "colorScore": 0.7926814958837171,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 731.8,
+        "w": 56,
+        "h": 56
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 731.8,
+        "w": 56,
+        "h": 56
+      },
+      "unbound": null
+    },
+    {
+      "id": "e42",
+      "role": "list-item",
+      "areaFrac": 0.004416666666666667,
+      "missing": false,
+      "iou": 0.9377126863914388,
+      "want": "Transcribe",
+      "got": "Transcribe",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 28.2,
+        "y": 800,
+        "w": 161.5,
+        "h": 10.3
+      },
+      "got_rect": {
+        "x": 28.2,
+        "y": 800,
+        "w": 161.5,
+        "h": 10.3
+      },
+      "unbound": null
+    },
+    {
+      "id": "e43",
+      "role": "list-item",
+      "areaFrac": 0.00440625,
+      "missing": false,
+      "iou": 0.9359895271085218,
+      "want": "Career",
+      "got": "Career",
+      "textScore": 1,
+      "bgOrig": "#282828",
+      "bgMock": "#363636",
+      "dE": 4.46883162706039,
+      "colorScore": 0.7765584186469805,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 222.1,
+        "y": 800,
+        "w": 161.1,
+        "h": 10.3
+      },
+      "got_rect": {
+        "x": 222.1,
+        "y": 800,
+        "w": 161.1,
+        "h": 10.3
+      },
+      "unbound": null
+    },
+    {
+      "id": "e44",
+      "role": "button",
+      "areaFrac": 0.012055555555555555,
+      "missing": false,
+      "iou": 0.9435693356069952,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 1,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 4.2,
+        "y": 826.3,
+        "w": 94.5,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 4.2,
+        "y": 827.3,
+        "w": 94.5,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e45",
+      "role": "list-item",
+      "areaFrac": 0.012104166666666666,
+      "missing": false,
+      "iou": 0.941182935667729,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 1,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 106.7,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 106.7,
+        "y": 827.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e46",
+      "role": "list-item",
+      "areaFrac": 0.012104166666666666,
+      "missing": false,
+      "iou": 0.9402067950003645,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 1,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 209.5,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 209.5,
+        "y": 827.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e47",
+      "role": "button",
+      "areaFrac": 0.012104166666666666,
+      "missing": false,
+      "iou": 0.9377277985686329,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 1,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 312.4,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 312.4,
+        "y": 827.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e48",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.8573940411654907,
+      "want": "Chat",
+      "got": "Chat",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -0.2,
+      "dyDp": 1.4,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 39.6,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 39.4,
+        "y": 828.8,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e49",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.8548147334131075,
+      "want": "Ideas",
+      "got": "Ideas",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 1.4,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 142.1,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 142.1,
+        "y": 828.8,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e50",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.8514525819188906,
+      "want": "Services",
+      "got": "Services",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -0.1,
+      "dyDp": 1.4,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 245,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 244.9,
+        "y": 828.8,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e51",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.4907361041610944,
+      "want": "Apps",
+      "got": "Apps",
+      "textScore": 1,
+      "bgOrig": "#112255",
+      "bgMock": "#112255",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -12,
+      "dyDp": -0.6,
+      "dwDp": 24,
+      "dhDp": 0,
+      "target": {
+        "x": 347.8,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 335.8,
+        "y": 826.8,
+        "w": 48,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e52",
+      "role": "tab",
+      "areaFrac": 0.0014907407407407408,
+      "missing": false,
+      "iou": 0.8483061116720402,
+      "want": "Chat",
+      "got": "Chat",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0.3,
+      "dyDp": 1.2,
+      "dwDp": -0.6,
+      "dhDp": -0.5,
+      "target": {
+        "x": 35.4,
+        "y": 855.6,
+        "w": 32,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 35.7,
+        "y": 856.8,
+        "w": 31.4,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e53",
+      "role": "tab",
+      "areaFrac": 0.00166820987654321,
+      "missing": false,
+      "iou": 0.8609882587413749,
+      "want": "Ideas",
+      "got": "Ideas",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -0.1,
+      "dyDp": 1.2,
+      "dwDp": -0.1,
+      "dhDp": -0.5,
+      "target": {
+        "x": 136.4,
+        "y": 855.6,
+        "w": 35.8,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 136.3,
+        "y": 856.8,
+        "w": 35.7,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e54",
+      "role": "tab",
+      "areaFrac": 0.002591049382716049,
+      "missing": false,
+      "iou": 0.8419588063522458,
+      "want": "Services",
+      "got": "Services",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -0.9,
+      "dyDp": 1.2,
+      "dwDp": 1.4,
+      "dhDp": -0.5,
+      "target": {
+        "x": 229.3,
+        "y": 855.6,
+        "w": 55.6,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 228.4,
+        "y": 856.8,
+        "w": 57,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e55",
+      "role": "tab",
+      "areaFrac": 0.001614969135802469,
+      "missing": false,
+      "iou": 0.7135929820302493,
+      "want": "Apps",
+      "got": "Apps",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -2.9,
+      "dyDp": -0.8,
+      "dwDp": 5.8,
+      "dhDp": 3.5,
+      "target": {
+        "x": 342.5,
+        "y": 855.6,
+        "w": 34.7,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 339.6,
+        "y": 854.8,
+        "w": 40.5,
+        "h": 21
+      },
+      "unbound": null
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:158c8b74f9",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Notifications Page",
+  "kind": "page",
+  "purpose": "Displays user notifications and updates.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Navigate to Home tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e9",
+    "intent": "Navigate to Search tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e10",
+    "intent": "Navigate to middle tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e12",
+    "intent": "Navigate to Profile tab",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2092,
+  "output": 252,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:51:10.154Z"
+}

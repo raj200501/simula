@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P2:ne1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne1\" style=\"position: absolute; left: 56px; top: 455px; width: 299px; background: #F8F7FC; border-radius: 16px; padding: 14px 16px; border: 1px solid #E8E6F2; z-index: 22; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box;\">\n  <div style=\"font-size: 14px; font-weight: 700; color: #13111C; display: flex; align-items: center; justify-content: space-between;\">\n    <span>Bonus Daily Credits</span>\n    <span style=\"font-size: 12px; font-weight: 700; color: #6D4EF5; background: #F0EDFF; padding: 2px 8px; border-radius: 6px;\">+10</span>\n  </div>\n  <div style=\"font-size: 12px; color: #8E8B96; line-height: 1.4;\">Play a quick 15-second game to earn 10 extra credits.</div>\n  <div style=\"display: flex; gap: 8px; margin-top: 4px;\">\n    <button class=\"btn\" style=\"flex: 1; padding: 10px; font-size: 13px; font-weight: 700; background: #E8E6F2; color: #13111C; border-radius: 10px; border: none; cursor: pointer;\">No thanks</button>\n    <button class=\"btn btn-primary\" style=\"flex: 1; padding: 10px; font-size: 13px; font-weight: 700; background: #6D4EF5; color: #FFFFFF; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(109, 78, 245, 0.2);\">Play Now</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 10432,
+  "output": 517,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 5354
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:59:31.305Z"
+}

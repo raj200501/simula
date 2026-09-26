@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:pos-ent-decline",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets the 'Janitor Plus' paywall screen (s03), which is a standard, SFW subscription promotion surface within the app."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 10 minutes of 5x context (a Janitor+ entitlement). This is an in-app utility, not cash or a link to an external install."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a standard 'Not ready yet?' prompt. There is no hostage framing (e.g., deleting user content) or dark patterns like false hierarchy."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap 'Play to try' to initiate the rewarded ad flow. This is an explicit, unambiguous opt-in."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer card explicitly states 'Play a 15-second game to try 10 minutes of 5x context for better memory now.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The 'No thanks' button is provided, which dismisses the ad without penalty and returns the user to the paywall state."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears after the user dismisses the paywall on the paywall screen (s03). It does not interrupt any streaming AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility is explicitly limited to 'Only non-payers who just declined Janitor Plus; never subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger occurs immediately after the user views the paywall and declines it (m2), which is the exact point of need for the premium benefit sample.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The reward is a trial of the subscription's '5x context' entitlement. However, a 10-minute trial for memory context is awkward because memory accumulation is session-long, not time-boxed. A longer session or message-based trial would be more native.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to decliners only, once per day, and time-boxed as a sample. This preserves the value of the paid subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost ($0.0018) is well below the US revenue ($0.009–$0.015), providing a healthy margin per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The reach is restricted to paywall decliners, which is correct for a fallback design, but inherently limited compared to the core chat loop.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD standard units and existing screen s03. Very feasible.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the exact feature noun '5x context for better memory' and 'Janitor Plus' from the digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 1 per day. This is highly conservative and prevents nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a primary metric, specific guardrails, and a holdout design.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Extend the time-box from 10 minutes to 30 minutes to make the trial of '5x context' feel more meaningful, or change the reward to 'X messages with enhanced memory' if possible.",
+   "Clarify in the UI grant animation that the trial is for 'enhanced memory context', as '10 minutes of context' can be misinterpreted."
+  ],
+  "topConcern": "The 10-minute time-box for an entitlement like '5x context for better memory' is too short to be useful or perceptible to the user, as memory context builds up over the course of a longer roleplay. A 30-minute session or a message-count based trial would be better."
+ },
+ "usage": {
+  "input": 34677,
+  "output": 1176,
+  "cacheRead": 32245,
+  "cacheWrite": 0,
+  "thoughts": 1340
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:00:02.493Z"
+}

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-bad-surface",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets the paywall screen (s03) which is inherently a transactional surface rather than an AI chat surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a temporary entitlement ('10 minutes of 5x context'), not a cash-like item."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses a 'Not ready yet?' positive framing rather than threatening loss."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer requires an explicit 'Play to try' tap."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states 'Play a 15-second game' and the reward duration '10 minutes'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "An 'No thanks' decline option is provided."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears on the paywall screen, not during an active chat stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly excludes subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal correctly identifies a high-intent moment for users who have just dismissed the paywall but need the feature.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer is non-interruptive, appearing only after the user has engaged with the paywall but decided against immediate purchase.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Limits the sample to once a day and only for non-subscribers who have already declined the purchase path, preserving the paid subscription value.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0018) is well below the revenue per view ($0.009-$0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Reach is limited to users hitting the paywall, which is a meaningful but not universal segment.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Grounding failure: the proposal references 's99' in the metadata, while the patch correctly targets 's03'.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like 'Janitor Plus', 'More memory for long chats', and '5x context'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a strict daily cap of 1.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a primary metric, guardrails, and a holdout plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the 'surface' ID in the proposal metadata from 's99' to 's03' to match the screen where the patch is applied.",
+   "Verify that the ad surface (s03) is covered by moderation/safety policies consistent with the app's overall SFW guidelines."
+  ],
+  "topConcern": "The proposal contains a grounding error in the metadata (referencing an undefined surface 's99'), creating a discrepancy between the narrative and the technical patch."
+ },
+ "usage": {
+  "input": 34683,
+  "output": 974,
+  "cacheRead": 32245,
+  "cacheWrite": 0,
+  "thoughts": 1273
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:00:24.107Z"
+}

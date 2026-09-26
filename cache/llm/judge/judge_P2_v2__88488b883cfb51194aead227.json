@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The offer is presented on the Daily Checkin Dialog for a standard story/character companion app featuring SFW characters like The Midnight Library."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is for playing a 15-second rewarded mini-game, not for clicking an ad or installing an app; credits are in-app non-cash currency."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses gain framing ('Play a quick 15-second game to earn 10 extra credits.') with no fake timers, confirmshaming, or loss threats."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer card provides an explicit CTA button ('Play Now')."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states the required action and reward: 'Play a quick 15-second game to earn 10 extra credits.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes a clear decline option ('No thanks') that leaves the app fully usable without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered on the Daily Checkin Dialog after claiming daily check-in, not during an active chat stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility specifies 'Non-paying guests who have completed their daily check-in'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Applies TAX-5 (multiplier/bonus post-action) right after the daily check-in claim on s01, aligning the bonus directly with the check-in habit.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Appears as an optional post-claim card on s01 using Simula's SIM-RWD unit with Game Partner 'The Midnight Library', preserving core flow and adding no interruption.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Limited to 1 per day for non-paying users, granting 10 credits (worth ~$0.014), which aligns closely with a single view value and is vastly below purchase packs ($1.39 for 1,000 credits).",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code confirms cost to serve per view ($0.0018) is well below net revenue per view, and reward value ($0.0139) is 0.93x a view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Occurs at daily check-in completion (m4), which has frequent reach among returning daily users, though limited to once per day per user.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Directly maps to Simula SIM-RWD unit with button entry, Game Partner, REWARD_VERIFIED grant, and standard patch components.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References exact digest elements: screen s01 (Daily Checkin Dialog), resource r1 (Credits), source src1 (Daily check-in), and Game Partner 'The Midnight Library'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps at 1 per day with a 1,440-minute cooldown and a clean decline path.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric (Rewarded ARPDAU), clear guardrails (purchase conversion, retention), and a 5% user-level holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None; proposal is exceptionally well-aligned with the product model, economics, and Simula specs."
+ },
+ "usage": {
+  "input": 31735,
+  "output": 1087,
+  "cacheRead": 16093,
+  "cacheWrite": 0,
+  "thoughts": 2787
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:55:29.582Z"
+}

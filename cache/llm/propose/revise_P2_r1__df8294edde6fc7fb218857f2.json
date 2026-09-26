@@ -1,0 +1,248 @@
+{
+ "purpose": "revise:P2:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily News Reader Streak",
+  "oneLiner": "Turn daily news reading into rewards with a streak tracker and Reader Points redeemable for ad-free time and saved articles.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m6"
+   ],
+   "economy": [
+    "ReaderPoints (new)",
+    "SavedArticles",
+    "AdFreePass (new)"
+   ],
+   "newMechanic": {
+    "name": "Reader Loyalty Program",
+    "description": "Daily reading streak tracking and rewarded point collection backed by the signed-in AOL account cloud database for cross-session persistence.",
+    "whyNeeded": "News apps lack inherent scarcity; this creates a habit loop for daily retention and unlocks rewarded ad inventory that complements organic reading while offering tangible utility like ad-free browsing hours.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s13",
+  "trigger": "Proactive entry via the daily streak badge on the News Feed Home screen.",
+  "eligibility": "Logged-in AOL account non-premium users.",
+  "offer": {
+   "title": "Earn Reader Points",
+   "body": "Play a 15-second game with AOL to earn 50 Reader Points. Redeem points for an ad-free browsing hour or extra saved article capacity.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "50 Reader Points",
+   "resource": "ReaderPoints",
+   "amount": 50,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "ReaderPoints are earned through attention and redeemed for utility like ad-free time or saved article capacity rather than direct cash, preserving IAP while leveraging cloud-synced account state.",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Daily Active Users (DAU) retention",
+   "guardrails": [
+    "Average daily sessions",
+    "Feed scroll depth",
+    "Paid subscription conversion"
+   ],
+   "holdout": "10% user-level random holdout for 4 weeks"
+  },
+  "precedents": [
+   "TAX-9",
+   "EX-DUO",
+   "AI-3",
+   "TAX-2",
+   "TAX-7"
+  ],
+  "risks": [
+   "Users may ignore tasks if point redemption thresholds are set too high.",
+   "Cloud sync latency for streak persistence across devices."
+  ],
+  "evidence": [
+   {
+    "obs": "s13",
+    "el": "e14",
+    "quote": "Home"
+   },
+   {
+    "obs": "s13",
+    "el": "e11",
+    "quote": "Access your saved articles"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "sheet",
+     "change": "Daily Reader Rewards hub containing cloud-synced streak tracking, redemption options for ad-free browsing and saved articles, and the rewarded entry button."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s13",
+     "near": "e14",
+     "place": "after",
+     "change": "Reader Rewards button for daily streak tracking."
+    },
+    {
+     "id": "ne2",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Daily streak progress banner displaying cloud-synced streak state."
+    },
+    {
+     "id": "ne3",
+     "in": "ns1",
+     "near": "ne2",
+     "place": "after",
+     "change": "Watch ad button for 50 Reader Points."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s13",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne3",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "ReaderPoints",
+       "delta": 50
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "ReaderPoints",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e14",
+      "text": "User browses news as usual with no loyalty program."
+     }
+    ],
+    "caption": "AOL News Feed today shows standard news content."
+   },
+   {
+    "phase": "change",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "ReaderPoints",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New Reader Rewards entry button added to navigation."
+     }
+    ],
+    "caption": "Reader Rewards button added to News Feed Home."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "ReaderPoints",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne3",
+      "text": "Button to trigger the rewarded task flow."
+     }
+    ],
+    "caption": "User opens Rewards Hub and is invited to play."
+   },
+   {
+    "phase": "ad",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "ReaderPoints",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "e46",
+      "text": "15-second mini-game with AOL partner."
+     }
+    ],
+    "caption": "User watches a quick mini-game with AOL."
+   },
+   {
+    "phase": "value",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "ReaderPoints",
+      "value": 50
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Points updated, streak progressed."
+     }
+    ],
+    "caption": "Points granted upon verified reward completion."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35920,
+  "output": 1796,
+  "cacheRead": 15232,
+  "cacheWrite": 0,
+  "thoughts": 4386
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:16:59.217Z"
+}

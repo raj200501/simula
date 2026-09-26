@@ -1,0 +1,736 @@
+{
+  "worst": [
+    {
+      "node": "e8",
+      "role": "button",
+      "severity": 0.04913,
+      "mustFix": false,
+      "phrase": "e8: bg #FFFFFF vs #000000"
+    },
+    {
+      "node": "e16",
+      "role": "tab",
+      "severity": 0.00622,
+      "mustFix": true,
+      "phrase": "e16: bg #000000 vs #112255; text '🔧' vs 'Services'"
+    },
+    {
+      "node": "e17",
+      "role": "tab",
+      "severity": 0.00493,
+      "mustFix": true,
+      "phrase": "e17: 11dp too low; text '📱' vs 'Apps'"
+    },
+    {
+      "node": "e15",
+      "role": "tab",
+      "severity": 0.00321,
+      "mustFix": true,
+      "phrase": "e15: text '💡' vs 'Ideas'"
+    },
+    {
+      "node": "e14",
+      "role": "tab",
+      "severity": 0.0032,
+      "mustFix": true,
+      "phrase": "e14: text '💬' vs 'Chat'"
+    },
+    {
+      "node": "e21",
+      "role": "tab",
+      "severity": 0.003,
+      "mustFix": false,
+      "phrase": "e21: 826dp too low; 312dp too far right"
+    },
+    {
+      "node": "e9",
+      "role": "button",
+      "severity": 0.00042,
+      "mustFix": false,
+      "phrase": "e9: 2dp too wide"
+    }
+  ],
+  "mustFix": [
+    {
+      "node": "e16",
+      "role": "tab",
+      "severity": 0.00622,
+      "mustFix": true,
+      "phrase": "e16: bg #000000 vs #112255; text '🔧' vs 'Services'"
+    },
+    {
+      "node": "e17",
+      "role": "tab",
+      "severity": 0.00493,
+      "mustFix": true,
+      "phrase": "e17: 11dp too low; text '📱' vs 'Apps'"
+    },
+    {
+      "node": "e15",
+      "role": "tab",
+      "severity": 0.00321,
+      "mustFix": true,
+      "phrase": "e15: text '💡' vs 'Ideas'"
+    },
+    {
+      "node": "e14",
+      "role": "tab",
+      "severity": 0.0032,
+      "mustFix": true,
+      "phrase": "e14: text '💬' vs 'Chat'"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e1",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e2",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e3",
+      "role": "container",
+      "areaFrac": 0.88625,
+      "missing": false,
+      "iou": 0.9987361524224727,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 810.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 810.3
+      },
+      "unbound": null
+    },
+    {
+      "id": "e4",
+      "role": "button",
+      "areaFrac": 0.006125,
+      "missing": false,
+      "iou": 0.9970151348412558,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 8,
+        "y": 50.3,
+        "w": 48,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 8,
+        "y": 50.3,
+        "w": 48,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e5",
+      "role": "button",
+      "areaFrac": 0.005550925925925926,
+      "missing": false,
+      "iou": 0.9944502618355034,
+      "want": "Services",
+      "got": "Services",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 164.2,
+        "y": 61.7,
+        "w": 83,
+        "h": 25.1
+      },
+      "got_rect": {
+        "x": 164.2,
+        "y": 61.7,
+        "w": 83,
+        "h": 25.1
+      },
+      "unbound": null
+    },
+    {
+      "id": "e6",
+      "role": "button",
+      "areaFrac": 0.03386111111111111,
+      "missing": false,
+      "iou": 0.9897660771138242,
+      "want": "Let Luzia handle it!",
+      "got": "Let Luzia handle it!",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 24,
+        "y": 489.5,
+        "w": 363.4,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 24,
+        "y": 489.5,
+        "w": 363.4,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e7",
+      "role": "button",
+      "areaFrac": 0.03901388888888889,
+      "missing": false,
+      "iou": 0.9864011203709036,
+      "want": "Bookings, shopping, alerts and reminders, all done for you.",
+      "got": "Bookings, shopping, alerts and reminders, all done for you.",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 24,
+        "y": 532.6,
+        "w": 363.4,
+        "h": 40.4
+      },
+      "got_rect": {
+        "x": 24,
+        "y": 532.6,
+        "w": 363.4,
+        "h": 40.4
+      },
+      "unbound": null
+    },
+    {
+      "id": "e8",
+      "role": "button",
+      "areaFrac": 0.04841666666666666,
+      "missing": false,
+      "iou": 0.9851885363401593,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#FFFFFF",
+      "dE": 100,
+      "colorScore": 0,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 760.4,
+        "w": 379.4,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 760.4,
+        "w": 379.4,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e9",
+      "role": "button",
+      "areaFrac": 0.005888888888888889,
+      "missing": false,
+      "iou": 0.9283774956710624,
+      "want": "Start new task",
+      "got": "Start new task",
+      "textScore": 1,
+      "bgOrig": "#FFFFFF",
+      "bgMock": "#FFFFFF",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -1.3,
+      "dyDp": 0.3,
+      "dwDp": 2.4,
+      "dhDp": -0.2,
+      "target": {
+        "x": 150.9,
+        "y": 774.1,
+        "w": 109.7,
+        "h": 20.2
+      },
+      "got_rect": {
+        "x": 149.6,
+        "y": 774.4,
+        "w": 112.1,
+        "h": 20
+      },
+      "unbound": null
+    },
+    {
+      "id": "e10",
+      "role": "button",
+      "areaFrac": 0.012055555555555555,
+      "missing": false,
+      "iou": 0.9837149773304186,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 4.2,
+        "y": 826.3,
+        "w": 94.5,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 4.2,
+        "y": 826.3,
+        "w": 94.5,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e11",
+      "role": "button",
+      "areaFrac": 0.012104166666666666,
+      "missing": false,
+      "iou": 0.9811757870846406,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 106.7,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 106.7,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e12",
+      "role": "button",
+      "areaFrac": 0.012104166666666666,
+      "missing": false,
+      "iou": 0.9801372250291086,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 209.5,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 209.5,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e13",
+      "role": "button",
+      "areaFrac": 0.012104166666666666,
+      "missing": false,
+      "iou": 0.97749990337212,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 312.4,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 312.4,
+        "y": 826.3,
+        "w": 94.9,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e14",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.9317429089333039,
+      "want": "Chat",
+      "got": "💬",
+      "textScore": 0,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -0.2,
+      "dyDp": 0.4,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 39.6,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 39.4,
+        "y": 827.8,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e15",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.9288280886452945,
+      "want": "Ideas",
+      "got": "💡",
+      "textScore": 0,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0.4,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 142.1,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 142.1,
+        "y": 827.8,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e16",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.9250296470906613,
+      "want": "Services",
+      "got": "🔧",
+      "textScore": 0,
+      "bgOrig": "#112255",
+      "bgMock": "#000000",
+      "dE": 22.4288096704595,
+      "colorScore": 0,
+      "dxDp": -0.1,
+      "dyDp": 0.4,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 245,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 244.9,
+        "y": 827.8,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e17",
+      "role": "tab",
+      "areaFrac": 0.00153125,
+      "missing": false,
+      "iou": 0.3556336445262091,
+      "want": "Apps",
+      "got": "📱",
+      "textScore": 0,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 10.9,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 347.8,
+        "y": 827.4,
+        "w": 24,
+        "h": 24
+      },
+      "got_rect": {
+        "x": 347.8,
+        "y": 838.3,
+        "w": 24,
+        "h": 24
+      },
+      "unbound": null
+    },
+    {
+      "id": "e18",
+      "role": "tab",
+      "areaFrac": 0.0014907407407407408,
+      "missing": false,
+      "iou": 0.9519101291918116,
+      "want": "Chat",
+      "got": "Chat",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0.3,
+      "dyDp": 0.2,
+      "dwDp": -0.6,
+      "dhDp": -0.5,
+      "target": {
+        "x": 35.4,
+        "y": 855.6,
+        "w": 32,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 35.7,
+        "y": 855.8,
+        "w": 31.4,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e19",
+      "role": "tab",
+      "areaFrac": 0.00166820987654321,
+      "missing": false,
+      "iou": 0.9669514559521566,
+      "want": "Ideas",
+      "got": "Ideas",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -0.1,
+      "dyDp": 0.2,
+      "dwDp": -0.1,
+      "dhDp": -0.5,
+      "target": {
+        "x": 136.4,
+        "y": 855.6,
+        "w": 35.8,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 136.3,
+        "y": 855.8,
+        "w": 35.7,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e20",
+      "role": "tab",
+      "areaFrac": 0.00264429012345679,
+      "missing": false,
+      "iou": 0.9611406228467876,
+      "want": "Services",
+      "got": "Services",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -0.2,
+      "dyDp": 0.2,
+      "dwDp": 0.2,
+      "dhDp": -0.5,
+      "target": {
+        "x": 228.6,
+        "y": 855.6,
+        "w": 56.8,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 228.4,
+        "y": 855.8,
+        "w": 57,
+        "h": 17
+      },
+      "unbound": null
+    },
+    {
+      "id": "e21",
+      "role": "tab",
+      "areaFrac": 0.0015794753086419754,
+      "missing": false,
+      "iou": 0,
+      "want": "Apps",
+      "got": "Apps",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 312.4,
+      "dyDp": 826.3,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 342.9,
+        "y": 855.6,
+        "w": 33.9,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 655.3,
+        "y": 1681.9,
+        "w": 33.9,
+        "h": 17.5
+      },
+      "unbound": null
+    }
+  ]
+}

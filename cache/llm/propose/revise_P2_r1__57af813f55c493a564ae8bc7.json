@@ -1,0 +1,227 @@
+{
+ "purpose": "revise:P2:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Check-in Bonus",
+  "oneLiner": "Earn a bonus credit reward after claiming daily check-in by playing a rewarded mini-game ad.",
+  "case": "existing",
+  "archetype": "TAX-5",
+  "beyondBaseline": false,
+  "anchor": {
+   "moments": [
+    "m4"
+   ],
+   "economy": [
+    "r1",
+    "src1"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s01",
+  "trigger": "Immediately after claiming the daily check-in reward on the Daily Checkin Dialog.",
+  "eligibility": "Non-paying guests who have completed their daily check-in.",
+  "offer": {
+   "title": "Bonus Daily Credits",
+   "body": "Play a quick 15-second game to earn 10 extra credits.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "The Midnight Library",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "+10 bonus credits",
+   "resource": "r1",
+   "amount": 10,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "Available only to non-paying users once daily after claiming check-in; reward value of 10 credits aligns precisely with single-view ad exchange rates and does not replace direct credit pack purchases.",
+  "assumptions": {
+   "engagedShare": 0.4,
+   "viewsPerEngager": 1,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU and ad revenue per DAU",
+   "guardrails": [
+    "Credit pack purchase conversion rate non-inferiority",
+    "D7 and D30 user retention",
+    "Daily check-in completion rate"
+   ],
+   "holdout": "5% user-level randomized holdout for 28 days"
+  },
+  "precedents": [
+   "TAX-5",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Low ad fill rates in emerging markets",
+   "User fatigue if check-in prompt appears too frequently"
+  ],
+  "evidence": [
+   {
+    "obs": "o0001",
+    "el": "e17",
+    "quote": "+300 credits"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "screen",
+     "change": "Simula rewarded mini-game container for Game Partner interaction."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s01",
+     "near": "e17",
+     "place": "overlay",
+     "change": "Daily Check-in Bonus offer card with Play Now and No thanks buttons."
+    },
+    {
+     "id": "ne2",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Mini-game gameplay area with 15-second progress timer."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s01",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne2",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r1",
+       "delta": 10
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e17",
+      "text": "Claim daily credits"
+     }
+    ],
+    "caption": "User opens Daily Checkin Dialog and taps claim."
+   },
+   {
+    "phase": "change",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 750
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e17",
+      "text": "Check-in claimed successfully"
+     }
+    ],
+    "caption": "Credits are credited to the user's balance."
+   },
+   {
+    "phase": "offer",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 750
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play for bonus credits"
+     }
+    ],
+    "caption": "Offer card prompts user to play for bonus."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 750
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Mini-game active"
+     }
+    ],
+    "caption": "User plays the 15-second rewarded mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 760
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e1",
+      "text": "Bonus credits added"
+     }
+    ],
+    "caption": "+10 bonus credits granted upon verification."
+   }
+  ]
+ },
+ "usage": {
+  "input": 32535,
+  "output": 1571,
+  "cacheRead": 30244,
+  "cacheWrite": 0,
+  "thoughts": 2909
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:55:18.357Z"
+}

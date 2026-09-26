@@ -1,0 +1,15 @@
+{
+  "screen": "s04",
+  "round": 1,
+  "kept": false,
+  "by": "llm",
+  "composite": 0.4462,
+  "iou": 0.1491,
+  "ssim": 0.1614,
+  "text": 1,
+  "color": 0.7682,
+  "pixelDiff": 0.5024,
+  "elements": 54,
+  "missing": 0,
+  "mustFix": 0
+}

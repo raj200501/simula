@@ -1,0 +1,233 @@
+{
+ "purpose": "depth:P3",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Single Deep Reasoning Query Unlock",
+  "oneLiner": "Unlock a single high-intelligence Deep Reasoning query by playing a quick partner mini-game.",
+  "case": "existing",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m14",
+    "m9"
+   ],
+   "economy": [
+    "r1",
+    "Deep reasoning query (new)"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s27",
+  "trigger": "When the user taps the disabled 'Deep reasoning' option (e15) on s27 while not subscribed to Luzia+.",
+  "eligibility": "Non-paying guest or free users who do not have the Luzia+ Subscription (r1).",
+  "offer": {
+   "title": "Try Deep Reasoning Free",
+   "body": "Play a 15-second game with Luzia to unlock 1 smarter, deeper answer.",
+   "cta": "Play & Unlock",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 Deep reasoning query",
+   "resource": "Deep reasoning query",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The reward is strictly capped at 3 single-use queries per day, keeping the unlimited Deep Reasoning mode highly attractive under the main Luzia+ subscription. It also acts as a sampling mechanism to demonstrate the intelligence of premium answers.",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-premium",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Deep reasoning trial opt-in rate",
+   "guardrails": [
+    "Luzia+ Subscription conversion rate",
+    "D7 user retention",
+    "Average session length"
+   ],
+   "holdout": "User-level holdout, 10% of global non-paying DAU, active for 28 days"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-DUO",
+   "AI-4",
+   "TRIG-1"
+  ],
+  "risks": [
+   "Slightly increased LLM inference costs for premium reasoning models",
+   "Minor cannibalization if 1 query satisfies the user's immediate daily need"
+  ],
+  "evidence": [
+   {
+    "obs": "m14",
+    "el": "e15",
+    "quote": "Deep reasoning"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s27",
+     "kind": "sheet",
+     "change": "An offer sheet overlay displayed when tapping Deep reasoning on s27, prompting the user to play a 15s game to unlock 1 query."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "An interactive button displaying 'Play & Unlock' as the primary CTA next to 'No thanks'."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s27",
+     "el": "e15",
+     "to": "ns1",
+     "effects": [],
+     "guard": {
+      "resource": "r1",
+      "lt": 1
+     }
+    },
+    {
+     "from": "ns1",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "Deep reasoning query",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "Deep reasoning toggle is locked."
+     }
+    ],
+    "caption": "Guests tapping the Deep reasoning toggle are redirected to the paywall."
+   },
+   {
+    "phase": "change",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "Tapping toggle now prompts a trial."
+     }
+    ],
+    "caption": "Tapping the toggle now triggers a rewarded trial offer."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     },
+     {
+      "resource": "Deep reasoning query",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tap Play & Unlock to start."
+     }
+    ],
+    "caption": "Luzia offers 1 free query for playing a 15-second game."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     },
+     {
+      "resource": "Deep reasoning query",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The Simula SDK launches a 15-second interactive playable mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     },
+     {
+      "resource": "Deep reasoning query",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "Deep reasoning query is unlocked."
+     }
+    ],
+    "caption": "One Deep reasoning query is granted and the toggle activates."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42769,
+  "output": 1677,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 5060
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:04:08.195Z"
+}

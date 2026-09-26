@@ -1,0 +1,20 @@
+{
+  "stage": "probe",
+  "app": "aol",
+  "runId": "pr0925-021434",
+  "gitSha": "24237a9",
+  "startedAt": "2026-09-25T06:14:34.794Z",
+  "finishedAt": "2026-09-25T06:14:36.798Z",
+  "status": "ok",
+  "inputs": [],
+  "outputs": [
+    "../../config/device.json",
+    "explore/probe/probe.png"
+  ],
+  "llm": {
+    "calls": 0,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

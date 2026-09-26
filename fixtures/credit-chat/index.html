@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>CreditChat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- CreditChat: an adversarial fixture app for the explorer (see README.md). 411x914 phone layout. -->
+  <div id="phone">
+    <!-- Fake Android status bar (24dp). Fixed clock, like the emulator's demo mode. -->
+    <div class="statusbar">
+      <span id="status_clock">9:41</span>
+      <span class="status-icons">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M12 18.5l-9-9a12.7 12.7 0 0 1 18 0z"/></svg>
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 20h3v-4H3zm5 0h3V12H8zm5 0h3V8h-3zm5 0h3V4h-3z"/></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M16 6H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm4 3h1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-1z"/></svg>
+      </span>
+    </div>
+
+    <!-- The current screen is rendered here by app.js. -->
+    <main id="app"></main>
+
+    <!-- In-app sheets and dialogs (mode picker, out of credits, daily check-in). -->
+    <div id="overlay"></div>
+
+    <!-- Surfaces that stand for another app: billing, browser, permission prompt ([data-external]). -->
+    <div id="external"></div>
+
+    <!-- Fake Android 3-button navigation bar (48dp). Decorative: it swallows taps, like a real system bar. -->
+    <div class="navbar">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M16 4v16L5 12z"/></svg>
+      <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <svg viewBox="0 0 24 24" width="18" height="18"><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

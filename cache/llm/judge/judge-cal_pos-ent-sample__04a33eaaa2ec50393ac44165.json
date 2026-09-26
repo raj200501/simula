@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:pos-ent-sample",
+ "model": "gemini-2.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal places the ad on 's19' (Settings screen) next to 'Upgrade to Luzia+'. The app content (AI assistant, chat, content generation, mini-apps) does not indicate inherent NSFW content. The placement is on a Settings screen, which is generally SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward: '30 minutes of Upgrade to Luzia+ (today)'. Offer details: 'Play a 15-second game to unlock 30 minutes...'. Simula unit: 'SIM-RWD'. The reward is an in-app, time-boxed entitlement, not cash-like. The action is playing a mini-game, not clicking or installing."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Offer title 'Try Upgrade to Luzia+'. Body: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today.' CTA: 'Play to try', Decline: 'No thanks'. The framing is gain-oriented, and the decline button is present and legible."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Simula unit 'SIM-RWD', 'entry=button'. Offer details include CTA 'Play to try' and decline 'No thanks'. Storyboard shows 'invite' overlay with 'Play to try' / 'No thanks' buttons."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer body: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today.' Simula 'minPlaySec': 15. The reward and the required action are clearly stated."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Offer includes 'Decline: No thanks'. Storyboard shows 'Play to try' or 'No thanks'. This implies no penalty for declining, aligning with policy that declining leaves the app fully usable at the pre-offer state."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger: 'The user reaches for Upgrade to Luzia+ on Settings... the chip appears next to the upsell once the current answer has finished.' The placement on the Settings screen explicitly avoids interrupting any live AI generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility: 'Signed-in non-subscribers from their second session on; guests keep seeing the account sheet first; never subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Anchor: 'm23' ('User expresses interest in premium features by tapping 'Upgrade to Luzia+'') and 'm1' (wall blocking 'Upgrade to Luzia+'). Reward: '30 minutes of Upgrade to Luzia+ (today)'. The offer samples the desired premium feature precisely when the user shows intent.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Trigger: 'the chip appears next to the upsell once the current answer has finished.' Placement on 's19' (Settings). The reward is a temporary sample, without degrading the free experience or interrupting AI responses.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Eligibility: 'Signed-in non-subscribers... never subscribers.' Reward: '30 minutes of Upgrade to Luzia+ (today)', capped at 'perDay: 2', 'cooldownMin: 60'. CannibalizationGuard: 'Luzia+ Subscription stays the only unlimited way... sample... twice a day, expiring tonight; the grant screen shows Luzia+ Subscription.'",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view: $0.0000 (none x 0). One completed US view earns $0.0090–$0.0150. The zero COGS makes the reward highly profitable from an ad perspective.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Anchor 'm23' ('User expresses interest in premium features by tapping 'Upgrade to Luzia+'') and 'm1' (wall blocking 'Upgrade to Luzia+'). Screen 's19' (Settings) is a 'frequent' screen ('m12'). This targets high-intent users, providing a strong signal of need.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Simula unit 'SIM-RWD', 'entry=button', 'minPlaySec=15'. Reward grant 'on REWARD_VERIFIED'. Patch includes one new element ('ne1') and one new edge, suggesting minimal UI/backend changes. Assumes 'cogs=none'.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses 'Upgrade to Luzia+' (observed phrase, 'e10' on 's19'), 'Luzia+ Subscription' ('r1'). References specific screens ('s19'), elements ('e10'), and moments ('m1', 'm23'), making it highly tailored to the Luzia app.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps: 'perDay=2', 'cooldownMin=60'. CannibalizationGuard: 'twice a day'. Eligibility: 'from their second session on'. Clear and reasonable daily caps and cooldowns prevent over-exposure.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "KPIs: Primary: 'Sample opt-ins per eligible DAU and later Luzia+ Subscription conversion against the holdout'. Guardrails: 'Paid plan conversion non-inferior within -3% relative', 'D7 retention'. Holdout: '10% user-level holdout for 4 weeks'.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Clarify the exact benefits granted (e.g., '30 minutes of advanced services and deep reasoning mode') rather than the upsell action 'Upgrade to Luzia+'.",
+   "Explicitly name the Simula 'Game Partner' character for the mini-game."
+  ],
+  "topConcern": "Clarify the exact benefits granted (e.g., '30 minutes of advanced services and deep reasoning mode') rather than the upsell action 'Upgrade to Luzia+'."
+ },
+ "usage": {
+  "input": 42181,
+  "output": 1612,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3970
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:15:46.589Z"
+}

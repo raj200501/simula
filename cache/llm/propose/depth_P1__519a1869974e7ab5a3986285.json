@@ -1,0 +1,210 @@
+{
+ "purpose": "depth:P1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Task for AI Usage Credits",
+  "oneLiner": "Play a 15-second mini-game with Luzia to earn daily AI usage credits.",
+  "case": "product-change",
+  "archetype": "AI-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m16"
+   ],
+   "economy": [
+    "r3 (AI Usage Quota)"
+   ],
+   "newMechanic": {
+    "name": "Daily Tasks",
+    "description": "A new interactive banner on the Chats Home screen offering daily mini-game challenges for AI usage credits.",
+    "whyNeeded": "Increases daily engagement and retention by gamifying the AI experience.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s01",
+  "trigger": "User taps the Daily Task banner on the Chats Home (s01) tab.",
+  "eligibility": "Non-subscribers, once per day per user.",
+  "offer": {
+   "title": "Daily Task: Earn Credits",
+   "body": "Play a quick 15-second mini-game with Luzia to earn 5 extra AI usage credits.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "5 AI Usage Credits",
+   "resource": "r3",
+   "amount": 5,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Only offered to non-subscribers. The credits are additive to their quota and do not provide the advanced capabilities of the Luzia+ subscription. The banner is non-interruptive.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 2,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 5
+  },
+  "kpis": {
+   "primary": "Total AI Usage Credits granted",
+   "guardrails": [
+    "Paid conversion rate",
+    "D30 retention",
+    "Messages per DAU"
+   ],
+   "holdout": "10% user-level holdout for 4 weeks."
+  },
+  "precedents": [
+   "AI-3",
+   "TAX-9"
+  ],
+  "risks": [
+   "High frequency of tasks could feel repetitive if not rotated.",
+   "Potential for users to rely on credits instead of subscribing."
+  ],
+  "evidence": [
+   {
+    "obs": "s01",
+    "el": "e31",
+    "quote": "Keep chatting"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s01",
+     "near": "e31",
+     "place": "before",
+     "change": "Add a Daily Task banner element to provide a clear entry point for rewarded mini-games."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s01",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r3",
+       "delta": 5
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e31",
+      "text": "Existing chat flow"
+     }
+    ],
+    "caption": "Users browse and start chats on the Home tab."
+   },
+   {
+    "phase": "change",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Daily Task banner"
+     }
+    ],
+    "caption": "We add a new Daily Task banner for a rewarding mini-game."
+   },
+   {
+    "phase": "offer",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Opt-in offer"
+     }
+    ],
+    "caption": "Users opt-in to a 15-second game for 5 AI credits."
+   },
+   {
+    "phase": "ad",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Game with Luzia"
+     }
+    ],
+    "caption": "The user plays the mini-game with Luzia."
+   },
+   {
+    "phase": "value",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 5
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Reward granted"
+     }
+    ],
+    "caption": "Upon completion, the user receives 5 AI usage credits."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42881,
+  "output": 1468,
+  "cacheRead": 23117,
+  "cacheWrite": 0,
+  "thoughts": 2242
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:02:54.824Z"
+}

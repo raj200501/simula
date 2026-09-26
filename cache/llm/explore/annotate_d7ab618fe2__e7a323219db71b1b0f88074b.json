@@ -1,0 +1,75 @@
+{
+ "purpose": "annotate:d7ab618fe2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Ideas Feed",
+  "kind": "tab",
+  "purpose": "Explore creative ideas and prompts for AI generation.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e7",
+    "intent": "Switch to Style filter",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e8",
+    "intent": "Switch to Fun filter",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e9",
+    "intent": "Switch to Video Effects filter",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e10",
+    "intent": "Switch to World Cup 2026 filter",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e16",
+    "intent": "Open Vogue fashion editorial idea",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e43",
+    "intent": "Navigate to Chat tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e45",
+    "intent": "Navigate to Services tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e46",
+    "intent": "Navigate to Apps tab",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 3732,
+  "output": 429,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:06:20.037Z"
+}

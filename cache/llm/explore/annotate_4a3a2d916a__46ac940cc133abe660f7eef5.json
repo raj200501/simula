@@ -1,0 +1,53 @@
+{
+ "purpose": "annotate:4a3a2d916a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Home",
+  "kind": "chat",
+  "purpose": "Provides an AI assistant chat interface where users can ask questions and request various tasks.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e21",
+    "intent": "Type a message to the AI assistant",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e23"
+   },
+   {
+    "el": "e18",
+    "intent": "Tap suggested prompt to help plan a week",
+    "kind": "consume",
+    "priority": 2
+   },
+   {
+    "el": "e4",
+    "intent": "Open navigation menu",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e5",
+    "intent": "Start a new chat",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2468,
+  "output": 297,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:04:48.761Z"
+}

@@ -1,0 +1,227 @@
+{
+ "purpose": "revise:P2:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Character Quest Hub",
+  "oneLiner": "Earn daily check-in rewards and frontier model swipes by completing character quests via rewarded mini-games.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m4"
+   ],
+   "economy": [
+    "of1",
+    "w1"
+   ],
+   "newMechanic": {
+    "name": "Daily Character Quest Hub",
+    "description": "A proactive hub on the profile screen where users complete daily tasks and check-ins with characters to earn frontier swipe credits.",
+    "whyNeeded": "Janitor Plus gating frontier swipes leaves non-payers with limited access; a proactive quest hub creates predictable, non-interruptive rewarded inventory.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s02",
+  "trigger": "When the user views their profile and taps the new daily quest hub entry after onboarding.",
+  "eligibility": "Non-paying users.",
+  "offer": {
+   "title": "Unlock Free Frontier Swipes",
+   "body": "Play a 15-second mini-game with Janitor AI to claim your daily check-in reward.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Janitor AI",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "Daily frontier swipe credits",
+   "resource": "frontier_swipes",
+   "amount": 3,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Restricted to non-payers, capped at 3 daily completions, and sized well below Janitor Plus monthly entitlements.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 2
+  },
+  "kpis": {
+   "primary": "Rewarded ad ARPDAU and daily active engagement rate",
+   "guardrails": [
+    "Paid subscription conversion non-inferiority within -3%",
+    "D7 and D30 retention stability"
+   ],
+   "holdout": "User-level 10% holdout test running for 28 days."
+  },
+  "precedents": [
+   "TAX-9",
+   "AI-3",
+   "EX-DUO",
+   "POL-8"
+  ],
+  "risks": [
+   "Low risk of subscription cannibalization if daily rewards remain modest compared to Janitor Plus benefits.",
+   "Ad fill rates in non-US regions."
+  ],
+  "evidence": [
+   {
+    "obs": "s02",
+    "el": "e21",
+    "quote": "Upgrade to Janitor Plus"
+   },
+   {
+    "obs": "s03",
+    "el": "e9",
+    "quote": "Everything in Free, plus:"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s02",
+     "kind": "sheet",
+     "change": "Add a Daily Character Quest Hub section to the profile screen."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s02",
+     "near": "e21",
+     "place": "after",
+     "change": "Daily Character Quest Hub button"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s02",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [
+      {
+       "resource": "frontier_swipes",
+       "delta": 3
+      }
+     ],
+     "guard": {
+      "resource": "frontier_swipes",
+      "lt": 10
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "frontier_swipes",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e21",
+      "text": "Upgrade to Janitor Plus only"
+     }
+    ],
+    "caption": "Profile shows subscription upsell with no free daily reward option."
+   },
+   {
+    "phase": "change",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "frontier_swipes",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Daily Character Quest Hub"
+     }
+    ],
+    "caption": "Add a proactive Daily Character Quest Hub to the profile."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "frontier_swipes",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s to get frontier swipes"
+     }
+    ],
+    "caption": "User taps quest and sees clear opt-in disclosure."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "frontier_swipes",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Mini-game with Janitor AI"
+     }
+    ],
+    "caption": "User plays the 15-second mini-game with Game Partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "frontier_swipes",
+      "value": 3
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "+3 frontier swipes granted"
+     }
+    ],
+    "caption": "Reward verified and credited instantly to user account."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35719,
+  "output": 1663,
+  "cacheRead": 30453,
+  "cacheWrite": 0,
+  "thoughts": 3757
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:58:08.087Z"
+}

@@ -1,0 +1,235 @@
+{
+ "note": "First observation of a real-device exploration (Jetpack Compose AI chat app, guest home screen, Pixel 8 emulator), as mobile-mcp listed it. Used by explore unit tests.",
+ "device": {
+  "widthPx": 1080,
+  "heightPx": 2400,
+  "density": 2.625,
+  "statusBarPx": 0,
+  "navBarPx": 0,
+  "kind": "android"
+ },
+ "fg": "co.thewordlab.luzia",
+ "elements": [
+  {
+   "type": "android.widget.LinearLayout",
+   "identifier": "co.thewordlab.luzia:id/action_bar_root",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1080,
+    "h": 2400
+   }
+  },
+  {
+   "type": "android.widget.FrameLayout",
+   "identifier": "android:id/content",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1080,
+    "h": 2400
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1080,
+    "h": 279
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 21,
+    "y": 143,
+    "w": 126,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.view.View",
+   "label": "User avatar",
+   "rect": {
+    "x": 147,
+    "y": 153,
+    "w": 105,
+    "h": 105
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Luzia",
+   "rect": {
+    "x": 273,
+    "y": 173,
+    "w": 765,
+    "h": 66
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "What are we doing today?",
+   "rect": {
+    "x": 184,
+    "y": 772,
+    "w": 712,
+    "h": 73
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 42,
+    "y": 1247,
+    "w": 438,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Create an image",
+   "rect": {
+    "x": 158,
+    "y": 1287,
+    "w": 280,
+    "h": 46
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 42,
+    "y": 1396,
+    "w": 365,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Edit a photo",
+   "rect": {
+    "x": 158,
+    "y": 1436,
+    "w": 207,
+    "h": 46
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 42,
+    "y": 1545,
+    "w": 438,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Animate a photo",
+   "rect": {
+    "x": 158,
+    "y": 1585,
+    "w": 280,
+    "h": 46
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 42,
+    "y": 1694,
+    "w": 412,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Help with math",
+   "rect": {
+    "x": 158,
+    "y": 1734,
+    "w": 254,
+    "h": 46
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 42,
+    "y": 1843,
+    "w": 390,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Talk about life",
+   "rect": {
+    "x": 158,
+    "y": 1883,
+    "w": 232,
+    "h": 46
+   }
+  },
+  {
+   "type": "android.widget.EditText",
+   "rect": {
+    "x": 42,
+    "y": 2028,
+    "w": 996,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Ask Luzia",
+   "rect": {
+    "x": 42,
+    "y": 2043,
+    "w": 177,
+    "h": 53
+   }
+  },
+  {
+   "type": "android.widget.Button",
+   "identifier": "buttonAddComposer",
+   "rect": {
+    "x": 21,
+    "y": 2133,
+    "w": 126,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.view.View",
+   "rect": {
+    "x": 933,
+    "y": 2133,
+    "w": 126,
+    "h": 126
+   }
+  },
+  {
+   "type": "android.view.View",
+   "label": "Audio Button: Tap twice or hold to record. Slide up for hands-free mode, left to cancel. Release to send.",
+   "rect": {
+    "x": 970,
+    "y": 2170,
+    "w": 52,
+    "h": 52
+   }
+  },
+  {
+   "type": "android.widget.TextView",
+   "text": "Luzia is AI and can make mistakes. Verify important information.",
+   "rect": {
+    "x": 21,
+    "y": 2280,
+    "w": 1038,
+    "h": 36
+   }
+  }
+ ]
+}

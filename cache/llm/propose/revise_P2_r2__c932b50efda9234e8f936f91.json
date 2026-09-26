@@ -1,0 +1,224 @@
+{
+ "purpose": "revise:P2:r2",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "title": "Session Context Boost",
+  "oneLiner": "Unlock 30 minutes of 5x context memory by playing a quick mini-game after declining the Janitor Plus paywall.",
+  "case": "existing",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m2"
+   ],
+   "economy": [
+    "of1",
+    "premium_context_30min (new)"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s03",
+  "trigger": "User taps Close paywall (e3) on s03 without purchasing a subscription.",
+  "eligibility": "Non-subscribers who dismiss the Janitor Plus paywall.",
+  "offer": {
+   "title": "Boost Memory for 30 Minutes",
+   "body": "Play a quick 15-second game for 30 minutes of 5x context.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Janitor",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "30 minutes of 5x context for better memory",
+   "resource": "premium_context_30min (new)",
+   "amount": 1,
+   "duration": "30 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 120
+  },
+  "cannibalizationGuard": "Gated exclusively to paywall decliners at m2 and time-boxed to 30 minutes [TAX-2] [CANN-1]. The full Janitor Plus plan (of1) retains permanent 5x context, priority routing, and golden badge status.",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1.2,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Rewarded ad revenue per DAU from paywall decliners",
+   "guardrails": [
+    "Janitor Plus subscription conversion rate (non-inferiority margin -2%)",
+    "D7 chat retention"
+   ],
+   "holdout": "5% randomized user-level holdout for 30 days"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-DUO",
+   "EX-MUSIC",
+   "TRIG-1",
+   "SAFE-1",
+   "POL-2"
+  ],
+  "risks": [
+   "Providing 30 minutes of 5x context requires sustainable inference COGS. Using a 'text-cheap' model for this trial ensures the cost per view remains below expected net revenue [TRIG-4].",
+   "Heavy chatters might delay subscription if daily caps are too high [CANN-2]."
+  ],
+  "evidence": [
+   {
+    "obs": "s03",
+    "el": "e3",
+    "quote": "Close paywall"
+   },
+   {
+    "obs": "s03",
+    "el": "e10",
+    "quote": "5× context for better memory"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s03",
+     "kind": "modal",
+     "change": "Rewarded offer overlay shown upon paywall decline."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Reward invitation modal offering 30 minutes of 5x context memory."
+    },
+    {
+     "id": "ne2",
+     "in": "ns1",
+     "near": "ne1",
+     "place": "after",
+     "change": "Play Now button to launch Simula mini-game."
+    },
+    {
+     "id": "ne3",
+     "in": "ns1",
+     "near": "ne2",
+     "place": "after",
+     "change": "No Thanks button to return to core flow."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s03",
+     "el": "e3",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne2",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "premium_context_30min (new)",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne3",
+     "to": "s01",
+     "effects": [],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "User taps Close paywall after reviewing subscription"
+     }
+    ],
+    "caption": "User reaches s03 paywall and chooses to dismiss it."
+   },
+   {
+    "phase": "change",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "Paywall decline intercept catches exit flow"
+     }
+    ],
+    "caption": "System intercepts paywall decline to offer a trial boost."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Offer card introduces 30-min 5x context trial"
+     }
+    ],
+    "caption": "Reward invitation offers 30 minutes of 5x context."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "User plays 15s sponsored mini-game"
+     }
+    ],
+    "caption": "User plays mini-game with Janitor Game Partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s01",
+    "counters": [],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e5",
+      "text": "5x context active banner enabled for 30 minutes"
+     }
+    ],
+    "caption": "Reward verified and 30-minute context boost granted."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35779,
+  "output": 1762,
+  "cacheRead": 30465,
+  "cacheWrite": 0,
+  "thoughts": 1103
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:12:11.479Z"
+}

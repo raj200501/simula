@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:2840db973f",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Search Characters",
+  "kind": "page",
+  "purpose": "Search and filter AI character cards for chat roleplay.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Search for characters",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hero"
+   },
+   {
+    "el": "e47",
+    "intent": "Open character details",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 4589,
+  "output": 182,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:50:44.260Z"
+}

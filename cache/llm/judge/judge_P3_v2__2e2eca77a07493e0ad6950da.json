@@ -1,0 +1,112 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal places the offer on the Home News Feed (s02), which contains general news and entertainment content appropriate for a news browsing audience."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 'News Credits', a virtual currency; no cash, real-world prizes, or incentives for clicks/installs are mentioned."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The streak mechanic is framed as habit-building ('Maintain a daily news habit') and the proposal explicitly states it 'removesFreeValue: false'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the 'ne1' element or the 'Claim Reward' button to trigger the ad invitation."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body states: 'Play a 15-second game with AOL to earn 10 News Credits', disclosing both the action and reward."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer card includes a 'No thanks' button and the storyboard shows the user remains on the Home News Feed after interaction."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is on the Home News Feed (s02), a browsing surface, rather than interrupting a reading or commenting flow."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to 'Non-payers' and those who have not yet claimed the daily reward."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal introduces 'News Credits' for a 'no-scarcity' regime, but the credits currently lack immediate utility as the features they unlock (ad-light sessions, summaries) are not yet implemented.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "A streak mechanic is a natural fit for a news app core loop and it does not degrade the existing free article browsing experience.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is strictly capped at one per day and restricted to non-payers; the reward amount is small and designed for habituation.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "As computed in code, the cost to serve is $0.00 while the US revenue per view is $0.0090–$0.0150. The currency is new and currently has no list price to anchor against.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is located on the 'Home News Feed' (s02), which is identified in the digest as a core-loop surface (reach=core-loop) visited multiple times per session.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal requires a 'product-change' to create 'News Credits' and a 'Daily Reading Streak' logic, necessitating significant backend development and a new virtual economy.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal uses specific AOL app nouns ('AOL News Credits') and correctly maps the trigger to element 'e15' (See the latest news) on 's02'.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal includes an explicit cap of 1 per day with a 1440-minute cooldown and a visible decline option.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "The proposal specifies 'D7 Retention' as the primary KPI and includes a 10% user-level holdout experiment with a 28-day duration.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Implement and define the 'redemption' value for News Credits (e.g., how many credits for an ad-light session) to ensure the reward has perceived value.",
+   "Fix grounding for economy item 'AD TODAY native on Home News Feed (e47)' to match the exact digest string/ID.",
+   "Add topic-level screening to ensure the 'Daily Reading Streak' card does not appear near sensitive news content like politics or health (per POL-7).",
+   "Clearly specify the cost/COGS of 'advanced summaries' once that feature is defined to maintain margin safety."
+  ],
+  "topConcern": "The earned reward ('News Credits') currently lacks utility in the app, as the features it is intended to unlock (summaries and ad-light sessions) do not yet exist."
+ },
+ "usage": {
+  "input": 34932,
+  "output": 1235,
+  "cacheRead": 32249,
+  "cacheWrite": 0,
+  "thoughts": 2206
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:14:37.111Z"
+}

@@ -1,0 +1,80 @@
+{
+ "purpose": "annotate:fa338fac81",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Chats Home",
+  "kind": "tab",
+  "purpose": "View and start chats with AI assistants or custom besties.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e52",
+    "intent": "Switch to Chat tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e53",
+    "intent": "Switch to Ideas tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e54",
+    "intent": "Switch to Services tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e55",
+    "intent": "Switch to Apps tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e4",
+    "intent": "Open Luzia Plus upsell",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e15",
+    "intent": "Start chat with Teacher",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e25",
+    "intent": "Open Custom Bestie creator",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e33",
+    "intent": "Open existing chat",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Try Luzia"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3590,
+  "output": 456,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:06:03.922Z"
+}

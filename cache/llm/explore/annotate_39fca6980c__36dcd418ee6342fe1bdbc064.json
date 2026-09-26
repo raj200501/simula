@@ -1,0 +1,45 @@
+{
+ "purpose": "annotate:39fca6980c",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Bot Profile Sheet",
+  "kind": "sheet",
+  "purpose": "Displays bot profile details and prompts the user to sign up to customize responses.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e20",
+    "intent": "Sign up for an account",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e9",
+    "intent": "View bot responses style",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "View favorite messages",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2346,
+  "output": 220,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:30:54.378Z"
+}

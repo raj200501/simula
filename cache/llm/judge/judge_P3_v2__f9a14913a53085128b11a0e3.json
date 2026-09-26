@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Offer a 1-hour trial of Janitor Plus when users dismiss the paywall after a rewarded mini-game."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a quick 15-second game to unlock 1 hour of premium memory."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Offer a 1-hour trial of Janitor Plus when users dismiss the paywall after a rewarded mini-game."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Play Now"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a quick 15-second game to unlock 1 hour of premium memory."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "No Thanks"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "When a free user taps 'Not now' to dismiss the Janitor Plus paywall (moment m3)."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-paying free users who dismiss the subscription paywall"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Matches moment m3 (paywall decline) on s04 with TAX-2 (time-boxed premium unlock trial), offering a 1-hour trial of Janitor Plus features.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Uses surface s04 and modal ns1 upon paywall decline, preserving user flow and taking nothing away from free value.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to paywall decliners, time-boxed to 1 hour, capped at once per day, with a 20% holdout planned.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view is $0.0018 (text-cheap x 1), while US completed view earns $0.0090–$0.0150, keeping COGS well below 30% of net revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Tied to paywall decline moment m3, which occurs frequently for non-paying users hitting paywalls but is less frequent than core chat interactions.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD with entry invitation, REWARD_VERIFIED, standard SSV and remote config, defining modal ns1 and new element ne1 on s04.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References exact screen s04, moment m3, economy item of1, element e12 ('Not now'), and Janitor Plus subscription features.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 1 per day (perDay: 1, cooldownMin: 1440) with a working decline button.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric named (Rewarded ARPDAU and subscription conversion rate among paywall decliners), guardrails include 3% non-inferiority on paid conversion and D7/D30 retention, with a 20% user-level holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix the economy reference in the anchor array from 'plan' to 'of1' to correctly ground against the observed subscription offer."
+  ],
+  "topConcern": "Economy reference in anchor ('plan') does not match the observed offer identifier ('of1')."
+ },
+ "usage": {
+  "input": 35093,
+  "output": 1054,
+  "cacheRead": 32241,
+  "cacheWrite": 0,
+  "thoughts": 2527
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:58:30.869Z"
+}

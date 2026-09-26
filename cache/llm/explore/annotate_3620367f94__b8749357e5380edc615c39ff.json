@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:3620367f94",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Article Ad View",
+  "kind": "page",
+  "purpose": "Displaying a news article page with an ad and engagement options.",
+  "inScope": false,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e19",
+    "intent": "Go back to the previous screen",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e15",
+    "intent": "View ad details",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   },
+   {
+    "el": "e33",
+    "intent": "View comments",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "Test Ad"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3326,
+  "output": 253,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:09:26.221Z"
+}

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Play a quick 15-second game with Starship Galley to earn free credits."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "\"reward\": {\"what\": \"+150 credits\", \"resource\": \"r1\", \"amount\": 150}"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "\"decline\": \"No Thanks\", \"title\": \"Play a Mini-Game\""
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "\"cta\": \"Play Now\", surface: Choose Chat Mode sheet"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "\"body\": \"Play a quick 15-second game with Starship Galley to earn free credits.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "\"decline\": \"No Thanks\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "When opening the chat mode sheet or daily hub, user taps the available character quest banner."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "\"eligibility\": \"Non-paying guest users with remaining daily quest capacity.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "\"When opening the chat mode sheet or daily hub, user taps the available character quest banner.\" / \"reward\": {\"what\": \"+150 credits\"}",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "\"A proactive daily quest system where users play brief mini-games with their AI character to earn credits.\"",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "\"Restricted to non-paying users with a strict daily cap sized well below the cheapest credit pack.\"",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve the reward ($0.0180) exceeds net revenue per view ($0.0063) at the low end, and reward is 13.9x one view's revenue at list price.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "\"When opening the chat mode sheet or daily hub, user taps the available character quest banner.\"",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "\"unit\": \"SIM-RWD\", \"entry\": \"button\", \"gamePartner\": \"Starship Galley\"",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "\"Choose Chat Mode\", \"Starship Galley\", \"r1\", though surface grounding had a minor schema mismatch.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "\"perDay\": 3, \"cooldownMin\": 60",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "\"Rewarded ARPDAU and D7 retention\", \"90/10 user-level randomized holdout running for 28 days\"",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward amount from 150 credits to 30-50 credits to align with one view's revenue and ensure cost to serve does not exceed net revenue per view.",
+   "Correct surface grounding so that the target sheet matches the declared screens in patch.newScreens."
+  ],
+  "topConcern": "Cost to serve the reward ($0.0180) exceeds net revenue per view ($0.0063) at the low end, making the current reward size economically unviable."
+ },
+ "usage": {
+  "input": 31841,
+  "output": 1018,
+  "cacheRead": 16094,
+  "cacheWrite": 0,
+  "thoughts": 1696
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:52:01.321Z"
+}

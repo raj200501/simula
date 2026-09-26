@@ -1,0 +1,20 @@
+{
+  "stage": "probe",
+  "app": "luzia",
+  "runId": "pr0925-021401",
+  "gitSha": "24237a9",
+  "startedAt": "2026-09-25T06:14:01.557Z",
+  "finishedAt": "2026-09-25T06:14:03.248Z",
+  "status": "ok",
+  "inputs": [],
+  "outputs": [
+    "../../config/device.json",
+    "explore/probe/probe.png"
+  ],
+  "llm": {
+    "calls": 0,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

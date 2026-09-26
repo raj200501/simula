@@ -1,0 +1,57 @@
+{
+ "purpose": "annotate:bcd29b4869",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Apps Catalog",
+  "kind": "tab",
+  "purpose": "Browse available AI tools and mini-apps.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e44",
+    "intent": "Switch to Chat tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e45",
+    "intent": "Switch to Ideas tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e46",
+    "intent": "Switch to Services tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "Open Anima app",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e15",
+    "intent": "Open Photoedit app",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 3464,
+  "output": 298,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:07:52.076Z"
+}

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-subscribers",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Surface s19 is the Settings page, which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is time-boxed in-app feature access; no clicks, installs, ratings, or cash-like rewards are involved."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing ('Play a 15-second game to unlock...') with a clean 'No thanks' decline option and no dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user explicitly opts in by tapping the 'Play to try' CTA on the invite overlay."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The exact reward (30 minutes of Upgrade to Luzia+) and required action (15-second game) are clearly stated before the ad starts."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining via 'No thanks' is free and returns the user to Settings without penalty or degraded state."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered on Settings (s19) once the current answer has finished, ensuring no streaming AI response is interrupted."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": false,
+    "evidence": "Eligibility explicitly states: 'All users, including subscribers, on every app open', which violates the rule against offering ads to subscribers for benefits they already pay for."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the 'Upgrade to Luzia+' upsell on Settings (s19, moments m23/m1), aligning the reward directly with user interest in premium features.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Triggered on the Settings page after responses conclude, maintaining immersion and preserving chat flow.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Eligibility explicitly includes existing subscribers ('All users, including subscribers'), creating an extreme risk of subscription cannibalization and violating payer protection.",
+    "score": 1
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed COGS is $0.0000 per view, well within healthy margins against US net revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings is a frequently visited surface (m12, reach=frequent), though general settings reach is lower than an immediate message cap hit.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD unit on s19 with standard SSV and remote config support.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Properly utilizes app-specific nouns and IDs from the digest: s19, Upgrade to Luzia+, Luzia+ Subscription (r1).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit per-day caps (perDay: 2) and cooldowns (cooldownMin: 60) are defined.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines a primary metric, guardrails (-3% relative plan conversion), and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Restrict eligibility strictly to non-subscribers/non-payers; remove subscribers from the eligibility criteria.",
+   "Add a paid contrast line on the grant screen pointing to the permanent subscription (Luzia+ Subscription)."
+  ],
+  "topConcern": "Offering rewarded ad trials to existing subscribers violates core subscriber protection rules and creates severe subscription cannibalization risk."
+ },
+ "usage": {
+  "input": 42279,
+  "output": 1069,
+  "cacheRead": 32329,
+  "cacheWrite": 0,
+  "thoughts": 2200
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:56.344Z"
+}

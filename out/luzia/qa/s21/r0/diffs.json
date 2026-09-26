@@ -1,0 +1,395 @@
+{
+  "worst": [
+    {
+      "node": "e2",
+      "role": "button",
+      "severity": 0.37482,
+      "mustFix": true,
+      "phrase": "e2: bg #131313 vs #333333; text '' vs 'Close sheet'"
+    },
+    {
+      "node": "e1",
+      "role": "container",
+      "severity": 0.12457,
+      "mustFix": false,
+      "phrase": "e1: bg #131313 vs #333333"
+    },
+    {
+      "node": "e9",
+      "role": "container",
+      "severity": 0.04842,
+      "mustFix": false,
+      "phrase": "e9: 634dp too low"
+    },
+    {
+      "node": "e6",
+      "role": "button",
+      "severity": 0.03535,
+      "mustFix": false,
+      "phrase": "e6: 634dp too low"
+    },
+    {
+      "node": "e5",
+      "role": "button",
+      "severity": 0.01492,
+      "mustFix": false,
+      "phrase": "e5: 634dp too low"
+    },
+    {
+      "node": "e4",
+      "role": "image",
+      "severity": 0.009,
+      "mustFix": false,
+      "phrase": "e4: 4dp too low; 16dp too far left; bg #000000 vs #FFBB33; text '★' vs 'Add button'"
+    },
+    {
+      "node": "e10",
+      "role": "button",
+      "severity": 0.00613,
+      "mustFix": false,
+      "phrase": "e10: 625dp too low; 29dp too far left; 58dp too wide; 19dp too tall; bg #000000 vs #FFFFFF"
+    },
+    {
+      "node": "e7",
+      "role": "image",
+      "severity": 0.006,
+      "mustFix": false,
+      "phrase": "e7: 634dp too low; text '🕒' vs 'Add button'"
+    },
+    {
+      "node": "e3",
+      "role": "button",
+      "severity": 0.003,
+      "mustFix": false,
+      "phrase": "e3: 17dp too far left; 45dp too wide; 8dp too tall"
+    },
+    {
+      "node": "e8",
+      "role": "button",
+      "severity": 0.003,
+      "mustFix": false,
+      "phrase": "e8: 634dp too low; 3dp too wide"
+    }
+  ],
+  "mustFix": [
+    {
+      "node": "e2",
+      "role": "button",
+      "severity": 0.37482,
+      "mustFix": true,
+      "phrase": "e2: bg #131313 vs #333333; text '' vs 'Close sheet'"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e1",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#333333",
+      "bgMock": "#131313",
+      "dE": 9.960954598157869,
+      "colorScore": 0.5019522700921065,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e2",
+      "role": "button",
+      "areaFrac": 0.6933333333333334,
+      "missing": false,
+      "iou": 0.9987721827407775,
+      "want": "Close sheet",
+      "got": "",
+      "textScore": 0,
+      "bgOrig": "#333333",
+      "bgMock": "#131313",
+      "dE": 9.960954598157869,
+      "colorScore": 0.5019522700921065,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 633.9
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 633.9
+      },
+      "unbound": null
+    },
+    {
+      "id": "e3",
+      "role": "button",
+      "areaFrac": 0.005785493827160494,
+      "missing": false,
+      "iou": 0.4995428706377373,
+      "want": "Favorite messages",
+      "got": "Favorite messages",
+      "textScore": 1,
+      "bgOrig": "#664400",
+      "bgMock": "#654300",
+      "dE": 0.3686656473619341,
+      "colorScore": 0.9815667176319033,
+      "dxDp": -16.6,
+      "dyDp": -0.2,
+      "dwDp": 45.2,
+      "dhDp": 8,
+      "target": {
+        "x": 60.2,
+        "y": 661.3,
+        "w": 124.2,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 43.6,
+        "y": 661.1,
+        "w": 169.4,
+        "h": 25.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e4",
+      "role": "image",
+      "areaFrac": 0.000648533950617284,
+      "missing": false,
+      "iou": 0,
+      "want": "Add button",
+      "got": "★",
+      "textScore": 0,
+      "bgOrig": "#FFBB33",
+      "bgMock": "#000000",
+      "dE": 75.90377533776723,
+      "colorScore": 0,
+      "dxDp": -16.4,
+      "dyDp": 4,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 32.4,
+        "y": 662.1,
+        "w": 15.6,
+        "h": 15.6
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 666.1,
+        "w": 15.6,
+        "h": 15.6
+      },
+      "unbound": null
+    },
+    {
+      "id": "e5",
+      "role": "button",
+      "areaFrac": 0.014921296296296297,
+      "missing": false,
+      "iou": 0,
+      "want": "Organize your thoughts",
+      "got": "Organize your thoughts",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 633.9,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 705.9,
+        "w": 223.2,
+        "h": 25.1
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 1339.8,
+        "w": 223.2,
+        "h": 25.1
+      },
+      "unbound": null
+    },
+    {
+      "id": "e6",
+      "role": "button",
+      "areaFrac": 0.03535185185185185,
+      "missing": false,
+      "iou": 0,
+      "want": "Sign up to start saving your favorite messages. It's quick, easy, and free!",
+      "got": "Sign up to start saving your favorite messages. It's quick, easy, and free!",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 633.9,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 747,
+        "w": 379.4,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 1380.9,
+        "w": 379.4,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e7",
+      "role": "image",
+      "areaFrac": 0.0006805555555555556,
+      "missing": false,
+      "iou": 0,
+      "want": "Add button",
+      "got": "🕒",
+      "textScore": 0,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 633.9,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 790.1,
+        "w": 16,
+        "h": 16
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 1424,
+        "w": 16,
+        "h": 16
+      },
+      "unbound": null
+    },
+    {
+      "id": "e8",
+      "role": "button",
+      "areaFrac": 0.0014351851851851852,
+      "missing": false,
+      "iou": 0,
+      "want": "2 mins",
+      "got": "2 mins",
+      "textScore": 1,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 634,
+      "dwDp": 3.3,
+      "dhDp": -0.2,
+      "target": {
+        "x": 48,
+        "y": 790.5,
+        "w": 35.4,
+        "h": 15.2
+      },
+      "got_rect": {
+        "x": 48,
+        "y": 1424.5,
+        "w": 38.7,
+        "h": 15
+      },
+      "unbound": null
+    },
+    {
+      "id": "e9",
+      "role": "container",
+      "areaFrac": 0.04841666666666666,
+      "missing": false,
+      "iou": 0,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#000000",
+      "bgMock": "#000000",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 633.9,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16,
+        "y": 816.4,
+        "w": 379.4,
+        "h": 48
+      },
+      "got_rect": {
+        "x": 16,
+        "y": 1450.3,
+        "w": 379.4,
+        "h": 48
+      },
+      "unbound": null
+    },
+    {
+      "id": "e10",
+      "role": "button",
+      "areaFrac": 0.0030671296296296297,
+      "missing": false,
+      "iou": 0,
+      "want": "Sign up",
+      "got": "Sign up",
+      "textScore": 1,
+      "bgOrig": "#FFFFFF",
+      "bgMock": "#000000",
+      "dE": 100,
+      "colorScore": 0,
+      "dxDp": -29.2,
+      "dyDp": 624.7,
+      "dwDp": 58.4,
+      "dhDp": 18.8,
+      "target": {
+        "x": 177.1,
+        "y": 830.1,
+        "w": 57.1,
+        "h": 20.2
+      },
+      "got_rect": {
+        "x": 147.9,
+        "y": 1454.8,
+        "w": 115.5,
+        "h": 39
+      },
+      "unbound": null
+    }
+  ]
+}

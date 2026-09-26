@@ -1,0 +1,73 @@
+{
+ "purpose": "annotate:bcda2db02c",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Store Screen",
+  "kind": "store",
+  "purpose": "Allows users to purchase credit packs for chatting.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e3",
+    "intent": "Purchase 1000 credits pack",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e4",
+    "intent": "Purchase 2000 credits pack",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e5",
+    "intent": "Purchase 5000 credits pack",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e7",
+    "intent": "Navigate to Home tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e9",
+    "intent": "Navigate to Profile tab",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "price",
+    "text": "$1.39",
+    "el": "e3"
+   },
+   {
+    "kind": "price",
+    "text": "$2.89",
+    "el": "e4"
+   },
+   {
+    "kind": "price",
+    "text": "$7.09",
+    "el": "e5"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2121,
+  "output": 411,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:40.031Z"
+}

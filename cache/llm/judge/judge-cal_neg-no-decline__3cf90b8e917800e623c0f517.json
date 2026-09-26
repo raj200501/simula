@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-no-decline",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets memory context and priority routing; the app itself is a general roleplay platform, and the surfaces (paywall) are SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a 30-minute time-boxed feature trial, not cash, gift cards, or incentivized clicks."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a trial sample ('Play to try') rather than threatening loss of existing features or using confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Requires an explicit tap on 'Play to try'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer text explicitly states 'Play a 15-second game'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": false,
+    "evidence": "The proposal's JSON 'decline' field is an empty string: 'decline': ''."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears after the user dismisses the paywall, not during an AI chat response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly restricted to non-payers only."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer appears immediately after the user declines the paywall for 'More memory for long chats.', identifying a high-intent user who wants the feature but was not ready to purchase.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The trial is time-boxed and clearly framed as a sample of the Janitor Plus features.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gate is restricted to decliners of the paid plan, once per day, and limited to a 30-minute trial sample.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is stated as none, as it is a priority/memory entitlement.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger occurs on paywall dismissal, which is a frequent monetization point.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD units with existing monetization logic.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses specific Janitor+ features like '5x context for better memory' and targets the 'More memory for long chats.' wall.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at once per day.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a holdout, KPI, and guardrails for plan conversion.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Define a clear, non-guilt decline string in the offer object (e.g., 'No thanks').",
+   "Ensure the ad card placement does not obstruct the existing 'Close paywall' behavior if the user wants to leave the paywall screen entirely."
+  ],
+  "topConcern": "The decline option is missing in the JSON configuration, which violates the requirement for an equally legible decline path."
+ },
+ "usage": {
+  "input": 34541,
+  "output": 953,
+  "cacheRead": 32243,
+  "cacheWrite": 0,
+  "thoughts": 793
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:40.792Z"
+}

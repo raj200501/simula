@@ -1,0 +1,56 @@
+{
+ "purpose": "annotate:267cc23d12",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Attachment and Mode Sheet",
+  "kind": "sheet",
+  "purpose": "Allows users to attach photos or files and toggle deep reasoning mode.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Take a photo to attach",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e6",
+    "intent": "Attach photos from gallery",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e7",
+    "intent": "Attach files",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "Toggle deep reasoning mode",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Deep reasoning"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2258,
+  "output": 285,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:18:09.338Z"
+}

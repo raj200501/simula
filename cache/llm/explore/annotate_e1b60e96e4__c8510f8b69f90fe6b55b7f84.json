@@ -1,0 +1,45 @@
+{
+ "purpose": "annotate:e1b60e96e4",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Beat Maker",
+  "kind": "page",
+  "purpose": "Create and edit custom musical loops and beats using a step sequencer interface.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e10",
+    "intent": "Play or pause the beat loop",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e23",
+    "intent": "Paint a beat step on the grid",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e20",
+    "intent": "Add a bar to the sequence length",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 7459,
+  "output": 227,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:18:32.410Z"
+}

@@ -1,0 +1,86 @@
+{
+ "purpose": "annotate:d66fd76209",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s03",
+  "name": "Article Details",
+  "kind": "page",
+  "purpose": "Displays a news article with text, an ad, and engagement options.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Go back to previous screen",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": null,
+    "tapPoint": {
+     "x": 520,
+     "y": 1500
+    },
+    "intent": "Scroll down the article",
+    "kind": "scroll",
+    "priority": 1
+   },
+   {
+    "el": "e45",
+    "intent": "View comments",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e46",
+    "intent": "Change font size",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e47",
+    "intent": "Share on Facebook",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e48",
+    "intent": "Copy link",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e49",
+    "intent": "Share article",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e15",
+    "intent": "View ad",
+    "kind": "tap",
+    "priority": 3,
+    "skip": "ad"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "Discover a powerful electric bicycle on Temu",
+    "el": "e21"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3653,
+  "output": 500,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:07:04.976Z"
+}

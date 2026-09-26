@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Offer a 15-minute priority routing pass when users decline the Janitor Plus subscription paywall."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a quick 15-second game to unlock 15 minutes of priority routing."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Gated strictly to paywall decliners and non-payers, time-boxed to 15 minutes, preserving the full permanent subscription value."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "CTA: Play Now"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a quick 15-second game to unlock 15 minutes of priority routing."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline: No thanks"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "When the user taps 'Close paywall' on the Janitor Plus subscription screen without subscribing."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility: Non-payers who decline the Janitor Plus subscription paywall."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal P2 targets moment m2 on s03 when declining the Janitor Plus subscription paywall by offering 15 minutes of priority routing.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal P2 time-boxes the priority routing feature to 15 minutes, preserving permanent subscription value without degrading the free experience.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Proposal P2 restricts the offer strictly to non-payers who decline the paywall, capping it at 15 minutes and 2 per day.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Economics computed in code show Cost to serve per view is $0.0000, and one completed US view earns $0.0090-$0.0150.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Code computes impressions/DAU 0.375 with 25% engaged share and 1.5 views each for paywall decliners.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Proposal P2 maps to SIM-RWD with button entry, gamePartner 'Janitor', and minPlaySec 15.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal P2 references screen s03, economy items of1 and w1, and Janitor Plus feature priority routing.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Proposal P2 sets explicit caps of 2 per day and 60 minutes cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposal P2 defines primary KPIs, guardrails, and a 5% user-level holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix resource name in patch and storyboard: align the resource identifier 'priority_routing_min' with the baseline economy model."
+  ],
+  "topConcern": "Resource naming mismatch in the patch/storyboard edge and counter ('priority_routing_min' is not defined in the baseline economy model)."
+ },
+ "usage": {
+  "input": 34749,
+  "output": 687,
+  "cacheRead": 32236,
+  "cacheWrite": 0,
+  "thoughts": 3588
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:22.585Z"
+}

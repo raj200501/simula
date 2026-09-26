@@ -1,0 +1,25 @@
+{
+  "stage": "propose",
+  "app": "aol",
+  "runId": "pr0926-072042",
+  "gitSha": "9fec3da",
+  "startedAt": "2026-09-26T07:20:42.278Z",
+  "finishedAt": "2026-09-26T07:20:42.844Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "1e2016eaa18533f76d304370990e2009d757ceda191556e4b112bd5c60a9b5d7"
+    }
+  ],
+  "outputs": [
+    "proposals/candidates.json",
+    "proposals/candidates.md"
+  ],
+  "llm": {
+    "calls": 4,
+    "cached": 4,
+    "usd": 0,
+    "mode": "record"
+  }
+}

@@ -1,0 +1,215 @@
+{
+ "purpose": "depth:P2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Favorite Message Slot Unlock",
+  "oneLiner": "Watch a quick game partner session to unlock favorite message saving without immediate account signup.",
+  "case": "existing",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m5"
+   ],
+   "economy": [
+    "r2"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s21",
+  "trigger": "When guest users tap to save favorite messages on the Favorite Messages page and hit the account signup wall.",
+  "eligibility": "Non-signed-up users (guests) encountering the favorite messages wall.",
+  "offer": {
+   "title": "Unlock Favorite Messages",
+   "body": "Play a 15-second game with Luzia to save your favorite messages for 72 hours.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "72-hour access to favorite message saving",
+   "resource": "r2",
+   "amount": null,
+   "duration": "72 hours",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 15
+  },
+  "cannibalizationGuard": "Access is time-boxed to 72 hours and restricted to guests; permanent account saving and advanced personalization remain exclusive to free sign-up or Luzia+ subscription.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Rewarded ad ARPDAU and ad revenue per guest DAU",
+   "guardrails": [
+    "Guest retention (D1/D7 non-inferiority)",
+    "Free account signup conversion rate",
+    "Ad completion rate >= 90%"
+   ],
+   "holdout": "5% user-level holdout for 28 days comparing total account creation and engagement rates"
+  },
+  "precedents": [
+   "TAX-3",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Users might prefer temporary ad unlocks over permanent free account creation if not clearly time-boxed.",
+   "Low fill rates in specific non-US geos."
+  ],
+  "evidence": [
+   {
+    "obs": "o0084",
+    "el": "e6",
+    "quote": "Sign up to start saving your favorite messages. It's quick, easy, and free!"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s21",
+     "kind": "sheet",
+     "change": "Add Simula rewarded offer button alongside the sign-up button on the Favorite messages sheet."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s21",
+     "near": "e10",
+     "place": "before",
+     "change": "Simula rewarded ad invitation button for unlocking favorite messages"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s21",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r2",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "r2",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e6",
+      "text": "Mandatory sign-up wall blocking message saving"
+     }
+    ],
+    "caption": "Today, guest users hit a strict sign-up wall when trying to save favorite messages."
+   },
+   {
+    "phase": "change",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Added rewarded mini-game option"
+     }
+    ],
+    "caption": "We introduce an opt-in rewarded mini-game alternative to mandatory account creation."
+   },
+   {
+    "phase": "offer",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s game with Luzia"
+     }
+    ],
+    "caption": "The user taps Play Now to view the clear reward offer before engaging."
+   },
+   {
+    "phase": "ad",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "Simula Rewarded Mini-Game"
+     }
+    ],
+    "caption": "The user plays the 15-second mini-game with Luzia as Game Partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "Access granted on REWARD_VERIFIED"
+     }
+    ],
+    "caption": "Upon REWARD_VERIFIED, temporary favorite message saving is unlocked for 72 hours."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42719,
+  "output": 1598,
+  "cacheRead": 15403,
+  "cacheWrite": 0,
+  "thoughts": 2630
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:30:01.797Z"
+}

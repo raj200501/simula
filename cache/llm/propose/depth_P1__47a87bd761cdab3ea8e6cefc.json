@@ -1,0 +1,204 @@
+{
+ "purpose": "depth:P1",
+ "model": "gemini-2.5-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Guest Comment Pass",
+  "oneLiner": "Allow users to post a single comment as a guest after viewing a rewarded ad, providing a taste of social engagement without sign-up.",
+  "case": "product-change",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m9"
+   ],
+   "economy": [],
+   "newMechanic": {
+    "name": "Guest Comment Pass",
+    "description": "A temporary bypass that allows non-logged-in users to post one comment on an article without signing up for an AOL account, after viewing a rewarded ad.",
+    "whyNeeded": "Currently, commenting is gated behind a 'Sign Up to Post' wall, preventing unregistered users from engaging. This pass offers a low-friction entry to social features, potentially increasing engagement and driving future account creation.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s05",
+  "trigger": "User finishes typing a comment on the Add Comment Page (s05) and sees the 'Sign Up to Post' button, indicating a wall. The new 'Post as Guest' button is offered as an alternative.",
+  "eligibility": "Non-logged-in users in their 2nd+ session, not in sensitive content contexts. Capped per user per day.",
+  "offer": {
+   "title": "Post Your Comment Now",
+   "body": "Play a quick game with AOL to post this comment instantly, no sign-up required. Your post will appear as 'Guest User'.",
+   "cta": "Play Game & Post",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 guest comment post",
+   "resource": null,
+   "amount": null,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 180
+  },
+  "cannibalizationGuard": "This feature provides access to an action currently unavailable to non-logged-in users, serving as a trial for the social aspect of the app. It does not replace any paid features as no subscription for commenting exists, nor does it grant full account benefits. It may encourage future sign-ups by showcasing community value.",
+  "assumptions": {
+   "engagedShare": 0.05,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Total comments posted by guest users (via rewarded ad) and subsequent account sign-up rate.",
+   "guardrails": [
+    "Logged-in user comment volume (non-inferiority)",
+    "D7 / D30 retention for new users",
+    "Complaint rate regarding ads"
+   ],
+   "holdout": "User-level randomized holdout (5-10% of non-logged-in users for 28 days)"
+  },
+  "precedents": [
+   "TAX-3",
+   "AI-11",
+   "EX-SERIAL",
+   "EX-UTIL"
+  ],
+  "risks": [
+   "Potential for spam or low-quality guest comments if moderation is insufficient, impacting community quality.",
+   "Low opt-in rate if users don't perceive enough value in a single guest comment.",
+   "Brand safety concerns with user-generated content in proximity to ads. Requires robust content moderation for guest posts."
+  ],
+  "evidence": [
+   {
+    "obs": "m9",
+    "el": null,
+    "quote": "User attempts to post a comment on an article and hits the sign-up wall."
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s05",
+     "kind": "modal",
+     "change": "A modal overlay for the rewarded offer invitation, appearing above the Add Comment Page."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s05",
+     "near": "e15",
+     "place": "before",
+     "change": "A new button labeled 'Post as Guest' placed slightly above the existing 'Sign Up to Post' button."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s05",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "P",
+      "text": "User drafts a comment, ready to post."
+     },
+     {
+      "node": "e15",
+      "text": "The 'Sign Up to Post' button is the only path."
+     }
+    ],
+    "caption": "A user wants to post a comment, but the app requires them to sign in first, blocking their action."
+   },
+   {
+    "phase": "change",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "P",
+      "text": "Comment draft is preserved."
+     },
+     {
+      "node": "ne1",
+      "text": "A new 'Post as Guest' button appears."
+     },
+     {
+      "node": "e15",
+      "text": "The 'Sign Up to Post' option remains."
+     }
+    ],
+    "caption": "A 'Post as Guest' button is added as an alternative, offering a new path to engagement."
+   },
+   {
+    "phase": "offer",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ns1",
+      "text": "The rewarded ad offer appears after tapping 'Post as Guest'."
+     },
+     {
+      "node": "e15",
+      "text": "Paid alternative is subtly visible."
+     }
+    ],
+    "caption": "The user taps 'Post as Guest' and is shown an invitation to play a game for a free comment."
+   },
+   {
+    "phase": "ad",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "SIM-RWD",
+      "text": "User plays a short mini-game with AOL, the Game Partner."
+     }
+    ],
+    "caption": "The user opts in and completes a short rewarded mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s04",
+    "counters": [],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e18",
+      "text": "The user's comment is successfully posted."
+     }
+    ],
+    "caption": "Upon completion and verification, the user's comment is posted, and they are returned to the conversation screen."
+   }
+  ]
+ },
+ "usage": {
+  "input": 34379,
+  "output": 1785,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3303
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:55:24.596Z"
+}

@@ -1,0 +1,342 @@
+/* generatedBy: llm */
+:root {
+  --c-bg: #010203;
+  --c-surface: #1C1C1E;
+  --c-surface-variant: #2E2F30;
+  --c-text: #FCFCFC;
+  --c-muted: #BBC2C7;
+  --c-border: #2E2F30;
+  --c-accent: #5173F1;
+  --c-on-accent: #FCFCFC;
+  --font-body: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fs-xs: 12px;
+  --fs-sm: 14.5px;
+  --fs-md: 18px;
+  --fs-lg: 22px;
+  --fs-xl: 28px;
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+}
+
+[data-screen-root] {
+  color: var(--c-text);
+  font-family: var(--font-body);
+  background-color: var(--c-bg);
+  height: 914px;
+  width: 411px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Typography & Layout */
+[data-screen-root] h1, [data-screen-root] .title {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* App Bar */
+.app-bar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.app-bar .back-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c-surface-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tab Bar */
+.tab-bar {
+  height: 80px;
+  background: var(--c-bg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid var(--c-border);
+  flex-shrink: 0;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--c-muted);
+  font-size: var(--fs-xs);
+}
+
+.tab.is-selected {
+  color: var(--c-accent);
+}
+
+.tab-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Buttons */
+.btn {
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--r-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: var(--fs-sm);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+}
+
+.btn-secondary {
+  background: var(--c-surface-variant);
+  color: var(--c-text);
+}
+
+/* Cards & Lists */
+.card {
+  background: var(--c-surface);
+  border-radius: var(--r-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  gap: 12px;
+}
+
+.list-row + .list-row {
+  border-top: 0.5px solid var(--c-border);
+}
+
+.list-row .label {
+  flex: 1;
+}
+
+.list-row .sub-label {
+  color: var(--c-muted);
+  font-size: var(--fs-xs);
+}
+
+/* Chat Bubbles */
+.bubble-out {
+  align-self: flex-end;
+  background: #172054;
+  color: var(--c-text);
+  padding: 12px 16px;
+  border-radius: 16px 16px 4px 16px;
+  max-width: 85%;
+  margin: 8px 16px;
+  position: relative;
+}
+
+.bubble-out .timestamp {
+  font-size: 10px;
+  color: var(--c-muted);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.bubble-in {
+  align-self: flex-start;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(81, 115, 241, 0.15);
+  color: var(--c-accent);
+  font-size: var(--fs-sm);
+  margin: 4px 16px;
+  border: 1px solid rgba(81, 115, 241, 0.3);
+}
+
+/* Composer */
+.composer {
+  background: var(--c-surface);
+  border-radius: var(--r-md);
+  margin: 16px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.composer input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--c-text);
+  font-size: var(--fs-sm);
+}
+
+/* Paywall / Luzia+ Card */
+.paywall {
+  background: linear-gradient(90deg, #7C3AED 0%, #311B92 100%);
+  border-radius: var(--r-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--c-text);
+  margin: 16px;
+}
+
+/* Store Tile / Idea Card */
+.store-tile {
+  background: var(--c-surface-variant);
+  border-radius: var(--r-md);
+  aspect-ratio: 0.8;
+  position: relative;
+  overflow: hidden;
+}
+
+.store-tile .label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  font-weight: 500;
+  font-size: var(--fs-sm);
+}
+
+/* Chips */
+.chip {
+  padding: 6px 12px;
+  background: var(--c-surface-variant);
+  border-radius: 100px;
+  font-size: var(--fs-xs);
+  color: var(--c-text);
+  white-space: nowrap;
+}
+
+.chip.active {
+  background: var(--c-text);
+  color: var(--c-bg);
+}
+
+/* Badge & Counter */
+.counter {
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.badge {
+  background: #FCFCFC;
+  color: #010203;
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Sheet & Modal */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+
+.sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--c-bg);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: 24px 16px;
+  z-index: 101;
+  border-top: 1px solid var(--c-border);
+}
+
+.sheet .handle {
+  width: 40px;
+  height: 4px;
+  background: var(--c-surface-variant);
+  border-radius: 2px;
+  margin: -12px auto 20px;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  background: var(--c-surface);
+  border-radius: var(--r-md);
+  padding: 20px;
+  z-index: 102;
+}
+
+/* Toggle Switch */
+.toggle {
+  width: 52px;
+  height: 32px;
+  background: var(--c-surface-variant);
+  border-radius: 16px;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.toggle.is-active {
+  background: #34C759;
+}
+
+.toggle::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s;
+}
+
+.toggle.is-active::after {
+  transform: translateX(20px);
+}
+
+/* Avatar Helpers */
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--c-surface-variant);
+  flex-shrink: 0;
+  overflow: hidden;
+}

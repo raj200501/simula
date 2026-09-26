@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:c778b7b450",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Chat Bot Screen",
+  "kind": "chat",
+  "purpose": "Interact with an AI assistant via chat and attachments.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Take a photo",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e6",
+    "intent": "Attach photos",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e7",
+    "intent": "Attach files",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e14",
+    "intent": "Toggle deep reasoning mode",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2258,
+  "output": 250,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:30:19.480Z"
+}

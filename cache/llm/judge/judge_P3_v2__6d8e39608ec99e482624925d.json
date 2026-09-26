@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Play a quick mini-game with Starship Galley to earn 10 credits instantly."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a 15-second game with Starship Galley to earn 10 credits instantly."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a 15-second game with Starship Galley to earn 10 credits instantly."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Play Now"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game with Starship Galley to earn 10 credits instantly."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "No Thanks"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "User attempts to send a message when credits are low or exhausted, triggering the refill prompt."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Non-paying guest users with low credit balances and available daily ad quota."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets s03 (Starship Galley Chat) when credits are low or exhausted, and rewards exactly 10 credits (the cost of one basic message k1).",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Triggered at the message depletion boundary on s03, utilizing an in-world character ('Starship Galley') via a mini-game partner format without disrupting flow.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-paying guest users with a strict cap of 3 refills (30 credits) per day, worth $0.0417, which is vastly below the cheapest credit pack ($1.39 for 1,000 credits).",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view is $0.0018, which is well below the US net revenue per view ($0.0090–0.0150); reward value is aligned at $0.0139.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered during the core messaging loop (m1) when users run low on credits on Starship Galley Chat.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to Simula unit SIM-RWD with entry 'button', gamePartner 'Starship Galley', minPlaySec 15, and grantOn 'REWARD_VERIFIED'.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses exact app nouns and IDs from the digest: r1 (Credits), k1 (Basic 10 credits per message), s03 (Starship Galley Chat), and character 'Starship Galley'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at 3 per day with a 15-minute cooldown between offers.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics (ARPDAU and message volume per DAU), specific guardrails on paid conversion and retention, and a 10% user-level randomized holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None. The proposal is exceptionally well-grounded, economically sound, and strictly adheres to all safety and policy guidelines."
+ },
+ "usage": {
+  "input": 31640,
+  "output": 1031,
+  "cacheRead": 16092,
+  "cacheWrite": 0,
+  "thoughts": 1713
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:53:08.663Z"
+}

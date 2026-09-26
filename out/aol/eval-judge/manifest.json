@@ -1,0 +1,24 @@
+{
+  "stage": "eval-judge",
+  "app": "aol",
+  "runId": "ev0926-072206",
+  "gitSha": "9fec3da",
+  "startedAt": "2026-09-26T07:22:06.253Z",
+  "finishedAt": "2026-09-26T07:22:06.437Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "1e2016eaa18533f76d304370990e2009d757ceda191556e4b112bd5c60a9b5d7"
+    }
+  ],
+  "outputs": [
+    "proposals/judge-eval.md"
+  ],
+  "llm": {
+    "calls": 0,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

@@ -1,0 +1,201 @@
+{
+ "purpose": "revise:P2:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "AOL Ad-Free Sprint",
+  "oneLiner": "Enjoy 15 minutes of ad-free news browsing after a quick game.",
+  "case": "product-change",
+  "archetype": "TAX-2",
+  "beyondBaseline": false,
+  "anchor": {
+   "moments": [
+    "m3",
+    "m4"
+   ],
+   "economy": [
+    "AD TODAY native on Home News Feed (e42)",
+    "AD TODAY banner on Article Ad View (e17)",
+    "Ad-free Sprint (new)"
+   ],
+   "newMechanic": {
+    "name": "Ad-free Sprint",
+    "description": "A time-boxed entitlement that suppresses all native and banner advertisements across news feeds and article pages, including Taboola native units (e47, e48) and banners (e22).",
+    "whyNeeded": "The app relies on high-density native ad placements which interrupt the core reading loop; this adds a scarcity-based value exchange to drive engagement.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s02",
+  "trigger": "User browses the Home News Feed where Taboola ad density (e47) is prominent.",
+  "eligibility": "Non-paying users currently exposed to standard ad density.",
+  "offer": {
+   "title": "Go Ad-Free for 15 Minutes",
+   "body": "Play a 15-second game to clear all ads (including Taboola units) for a short sprint.",
+   "cta": "Start Sprint",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL News Editor",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "15 minutes of ad-free news browsing (hides Taboola ads)",
+   "resource": "Ad-free Sprint",
+   "amount": 15,
+   "duration": "15 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The reward is strictly time-boxed to 15 minutes, serving as a premium sampling effect. It is capped at 3 uses per day to ensure it remains a supplement to, rather than a replacement for, standard reading.",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Ad-free Sprint sessions started",
+   "guardrails": [
+    "Daily active news reading time",
+    "Native ad CTR (non-sprint)",
+    "D7 Retention"
+   ],
+   "holdout": "User-level holdout, 10% share, 21 days"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-MUSIC",
+   "CORE-2"
+  ],
+  "risks": [
+   "Users may grow accustomed to ad-free reading and find the return to standard density jarring.",
+   "Potential revenue dip if sprint sessions overlap with peak reading times."
+  ],
+  "evidence": [
+   {
+    "obs": "s02",
+    "el": "e47",
+    "quote": "TEMU in Taboola advertising section"
+   },
+   {
+    "obs": "s03",
+    "el": "e26",
+    "quote": "Ad"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s02",
+     "near": "e15",
+     "place": "after",
+     "change": "A button with a lightning icon titled 'Ad-Free Sprint' placed in the feed header for high visibility."
+    },
+    {
+     "id": "ne2",
+     "in": "s02",
+     "near": "e12",
+     "place": "after",
+     "change": "A small countdown timer badge next to the 'Home' title indicating remaining ad-free time when active."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s02",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "Ad-free Sprint",
+       "delta": 15
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s02",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e47",
+      "text": "User browses news with frequent native ad units."
+     }
+    ],
+    "caption": "The user reads their news feed and encounters a native Taboola advertising unit."
+   },
+   {
+    "phase": "change",
+    "screen": "s02",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Ad-Free Sprint entry point added."
+     }
+    ],
+    "caption": "A new 'Ad-Free Sprint' button is added to the feed header, offering an ad-free experience."
+   },
+   {
+    "phase": "offer",
+    "screen": "s02",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tapping opens the invitation."
+     }
+    ],
+    "caption": "The user taps the button; Simula MiniGameInvitation appears, disclosing the 15-second requirement."
+   },
+   {
+    "phase": "ad",
+    "screen": "s02",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The user plays a quick 15-second game with the AOL News Editor."
+   },
+   {
+    "phase": "value",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "Ad-free Sprint",
+      "value": 15
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Ads are suppressed; timer begins."
+     }
+    ],
+    "caption": "The sprint begins; Taboola ad units are hidden and a timer tracks the remaining time."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35862,
+  "output": 1634,
+  "cacheRead": 19044,
+  "cacheWrite": 0,
+  "thoughts": 2094
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:18:51.079Z"
+}

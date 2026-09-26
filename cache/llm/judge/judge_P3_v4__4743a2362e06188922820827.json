@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P3:v4",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets 'Chats Home' (s01), which is the main chat interface and is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for watching a 15-second game, not for clicks, installs, or ratings, and is in-app usage quota (r3)."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer is an opt-in 'Daily tasks' incentive without any hostage, loss, or 'support us' language."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal uses a dedicated sheet (ns1) with an explicit 'Play task' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The body copy explicitly states 'Play a 15-second sponsored game to get 1 extra AI message.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal offers a 'Close' button to exit without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed as a badge on the Chats Home screen (s01), not within an ongoing chat."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility criteria explicitly states 'never shown to subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is a proactive hub (Chats Home), which provides lower intent than a reactive refill, though it builds a healthy habit.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The integration is native to Luzia, using the Game Partner mechanic; it is additive and preserves the conversation flow.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Non-payer gating, daily caps, and clear exclusion of subscribers make this highly safe.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS ($0.0018) is roughly 20% of net revenue ($0.009), providing a healthy margin.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Chats Home is the core hub (13 visits during exploration) ensuring high visibility.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD component, simple badge element, and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses Luzia persona, Chats Home (s01), and the specific AI Usage Quota resource (r3).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strict daily cap of 3 tasks prevents nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Explicitly names primary metrics, guardrails, and a user-level holdout as per MEAS-5.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None."
+ },
+ "usage": {
+  "input": 42722,
+  "output": 895,
+  "cacheRead": 40428,
+  "cacheWrite": 0,
+  "thoughts": 1349
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:19:26.693Z"
+}

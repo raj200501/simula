@@ -1,0 +1,15 @@
+{
+  "screen": "s13",
+  "round": 1,
+  "kept": true,
+  "by": "llm",
+  "composite": 0.9015,
+  "iou": 0.9837,
+  "ssim": 0.7013,
+  "text": 0.9367,
+  "color": 0.9728,
+  "pixelDiff": 0.1201,
+  "elements": 78,
+  "missing": 0,
+  "mustFix": 1
+}

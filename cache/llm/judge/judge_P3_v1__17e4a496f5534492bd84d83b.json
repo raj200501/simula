@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets 's07' (Create Account Sheet) and 's27' (Attachment and Mode Sheet), which are standard, brand-safe utility screens in Luzia."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The action is to 'Play a quick 15-second game' and the reward is '30 minutes of deep reasoning mode' with no cash-like elements, clicks, or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer says 'Play a quick 15-second game to unlock 30 minutes of deep reasoning.' which uses positive gain framing without dark patterns or fake timers."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal uses a standard opt-in button on s07 with 'Play Now' and 'No Thanks' as controls."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The body text states 'Play a quick 15-second game to unlock 30 minutes of deep reasoning.' which clearly discloses the action and length."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer card contains a visible 'No Thanks' option which closes the sheet and returns the user to s27 with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs when trying to toggle deep reasoning on the attachment and mode sheet (s27), before any chat response begins."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility is limited to 'Non-paying guests and free users hitting the deep reasoning paywall.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Tapping 'Deep reasoning' on s27 block creates immediate intent. However, the patch grants '+1 Luzia+ Subscription' (resource r1) instead of a temporary pass. Rule 7 dictates that rewards treating an entitlement as a currency must score at most 2.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Bypassing the standard account wall s07 with a rewarded ad competes directly with the free sign-up flow, which stands in for a core action. This is highlighted by the code gate failing 'not-for-account-wall'.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The 30-minute time-box, non-payer eligibility, and daily cap of 2 limits substitution. However, granting r1 in the patch technically gives full plan access.",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0090) exceeds the net revenue per view ($0.0063) at the low end. It is unprofitable for the premium model to run unlimited queries for 30 minutes under a single ad view.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Deep reasoning is a core capability and m9 has a 'frequent' reach on s07 as users try out the smarter modes.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD and uses a simple button entry. However, tracking time-boxed sessions inside a full subscription plan (r1) requires extra tracking infrastructure not standard for standard plan states.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Properly references screens s27, s07, and deep reasoning elements. It loses some credit due to treating r1 as a currency, failing rule limits on plan nouns.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strong cap limits: 2 session passes per day maximum and a 30-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies a clear 10% user-level randomized holdout over 28 days with defined guardrails for conversion and retention.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Modify the reward to be query-limited (e.g. '3 Deep Reasoning queries' instead of a 30-minute session pass) or implement a 2-view ad bundle to offset the $0.0090 premium model cost-to-serve.",
+   "Do not grant +1 Luzia+ Subscription (r1) in the patch. Update the patch to track and grant a custom temporary state rather than treating the subscription plan as a currency.",
+   "Relocate the reward invite so it does not compete directly on the sign-up wall. Only display the rewarded ad option after the user has explicitly declined the s07 Create Account sheet."
+  ],
+  "topConcern": "The unit economics are highly unfavorable; the premium model's inference cost ($0.0090) exceeds the ad's net revenue at the low end. Additionally, granting a standard plan entitlement directly in the patch violates rule restrictions on currency behavior."
+ },
+ "usage": {
+  "input": 42723,
+  "output": 1332,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2712
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:53:55.820Z"
+}

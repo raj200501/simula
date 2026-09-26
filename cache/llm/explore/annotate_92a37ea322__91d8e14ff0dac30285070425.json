@@ -1,0 +1,58 @@
+{
+ "purpose": "annotate:92a37ea322",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s08",
+  "name": "Home News Feed",
+  "kind": "tab",
+  "purpose": "Display news articles and sponsored content in a browsable feed.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e37",
+    "intent": "Read news article",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e31",
+    "intent": "Scroll down the news feed",
+    "kind": "scroll",
+    "priority": 2
+   },
+   {
+    "el": "e18",
+    "intent": "Switch category to Business",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e41",
+    "intent": "Ignore ad",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "TEMU · Ad",
+    "el": "e46"
+   }
+  ]
+ },
+ "usage": {
+  "input": 4820,
+  "output": 308,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:06:44.891Z"
+}

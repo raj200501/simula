@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Play a quick 15-second game with Starship Galley to earn free credits."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "grantOn: REWARD_VERIFIED, reward: +40 credits"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a quick 15-second game with Starship Galley to earn free credits."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: Play Now"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a quick 15-second game with Starship Galley to earn free credits."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: No Thanks"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "trigger: When opening the chat mode sheet, user taps the available character quest banner."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility: Non-paying guest users with remaining daily quest capacity."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal: When opening the chat mode sheet, user taps the character quest banner to earn credits. Digest m3/m7 shows Choose Chat Mode has upsells, making opening the chat mode sheet a moderate fit for earning credits.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal: Daily Mini-Game Quests where users play brief mini-games with their AI character. Digest s04/s03. Feels native and in-world.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Proposal: Restricted to non-paying guest users with a strict daily cap of 3. Digest r1.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code check: Reward is worth 3.7x one view's revenue at list price and cost to serve ($0.0072) exceeds net revenue per view ($0.0063) at the low end.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Proposal: When opening the chat mode sheet. Digest m3/m7 classifies Choose Chat Mode interactions as rare.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Proposal: SIM-RWD on ns1. Code gate failed grounding: new element ne1 is placed near e7, which is not a valid element on ns1.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal: Uses currency r1, character Starship Galley, and screen s04 model sheet. Digest s03/s04.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Proposal: perDay: 3, cooldownMin: 60.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposal: Primary metric Rewarded ARPDAU and D7 retention, guardrails, 90/10 holdout for 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce reward size from 40 credits to ~15-20 credits to resolve the unit economics failure where cost to serve exceeds net revenue per view.",
+   "Fix patch element grounding by referencing a valid element ID on ns1 (based on s04) instead of e7."
+  ],
+  "topConcern": "Unit economics failure: cost to serve the 40-credit reward exceeds net revenue per view at the low end, and the reward is 3.7x view revenue."
+ },
+ "usage": {
+  "input": 31822,
+  "output": 1045,
+  "cacheRead": 16094,
+  "cacheWrite": 0,
+  "thoughts": 2750
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:55:50.950Z"
+}

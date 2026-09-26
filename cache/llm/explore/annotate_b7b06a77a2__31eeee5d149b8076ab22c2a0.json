@@ -1,0 +1,87 @@
+{
+ "purpose": "annotate:b7b06a77a2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Account Menu Sidebar",
+  "kind": "sheet",
+  "purpose": "Provides account management, settings, and support options from a side menu.",
+  "inScope": false,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e35",
+    "intent": "Manage accounts",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e46",
+    "intent": "View contacts",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e49",
+    "intent": "View receipts",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e52",
+    "intent": "Unsubscribe options",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e55",
+    "intent": "Manage notifications",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e61",
+    "intent": "Open settings",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e81",
+    "intent": "Give feedback",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e87",
+    "intent": "Call customer support",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e13",
+    "intent": "Close side bar",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "TEMU",
+    "el": "e78"
+   }
+  ]
+ },
+ "usage": {
+  "input": 6154,
+  "output": 493,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:05:50.411Z"
+}

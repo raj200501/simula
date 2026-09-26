@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-generic",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The ad is placed on s03 (More memory for long chats.), which is a subscription paywall screen."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a time-boxed entitlement (5x context), not cash or external goods."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The copy is neutral and offers a trial/sample; it does not threaten the user."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard shows an explicit invitation screen with a 'Watch' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": false,
+    "evidence": "The offer copy promises 'Free coins!' and 'earn coins', but the reward is '30 minutes of 5x context'. This mismatch fails the requirement for clear, accurate disclosure."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The storyboard includes a 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The proposal states the chip appears after the answer finishes."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal states eligibility is 'Non-payers only'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The user is on the paywall screen (s03) for 'More memory for long chats.' but the offer copy mentions 'coins', which have no value context in this app. The user wants memory.",
+    "score": 1
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer is misleading; it promises 'coins' while delivering a specific premium feature ('5x context'), breaking user trust.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Non-payer gating and time-boxed (30m) access are appropriate and safe design choices.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The cost to serve is $0, which is well within revenue limits.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Placed on the frequent wall for advanced memory (s03), ensuring high visibility.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD on existing screen s03.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The offer copy 'Free coins!' is generic boilerplate that fails to use the app's terminology ('Janitor Plus' or '5x context').",
+    "score": 1
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily cap (2) and cooldown (60m) are well-designed.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric and user-level holdout are correctly defined.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Update the offer title and body to accurately reflect the reward ('5x context for better memory') instead of generic 'coins'.",
+   "Improve specificity in the copy by using Janitor-specific terminology (e.g., 'Try Janitor Plus features' or 'Unlock premium memory')."
+  ],
+  "topConcern": "The offer copy is generic and misleadingly promises 'coins' when the reward is a '5x context' entitlement, violating disclosure policies and creating a poor user experience."
+ },
+ "usage": {
+  "input": 34509,
+  "output": 974,
+  "cacheRead": 32242,
+  "cacheWrite": 0,
+  "thoughts": 1309
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:18:02.881Z"
+}

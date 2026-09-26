@@ -1,0 +1,213 @@
+{
+ "purpose": "revise:P3:r2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Premium Scenario Unlock",
+  "oneLiner": "Watch a quick game to unlock exclusive premium scenarios for 72 hours.",
+  "case": "product-change",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m6"
+   ],
+   "economy": [
+    "s09"
+   ],
+   "newMechanic": {
+    "name": "Premium Scenario Tagging & Badge System",
+    "description": "Creators flag new optional bonus scenarios as 'Premium' in the creation flow. These are explicitly marked with a 'Premium' badge on all search (s07, s08, s11, s12) and browse (s05) result cards, ensuring users see the tag before selecting a character. Access is then unlockable via a rewarded ad path.",
+    "whyNeeded": "It provides a clear value exchange for creators to offer high-quality bonus content, while the 'Premium' badge ensures transparency, preventing frustration by signaling availability prior to clicking through to the details screen.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s09",
+  "trigger": "User taps 'Unlock Scenario' on a Premium-tagged character scenario in Character Details.",
+  "eligibility": "Non-subscribers only. Applies only to new 'Premium' tagged scenarios; existing free scenarios remain unchanged.",
+  "offer": {
+   "title": "Unlock Premium Scenario",
+   "body": "Play a 15-second game with Willson Wáng to unlock this premium scenario for 72 hours.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Willson Wáng",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "72-hour access to Premium Scenario",
+   "resource": "PremiumScenarioAccess",
+   "amount": 1,
+   "duration": "72 hours",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Non-subscribers only; gated to new content (no existing free scenarios removed); frequency capped at 3 per day; upsell included.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Premium scenario unlocks per DAU",
+   "guardrails": [
+    "Paid conversion non-inferiority",
+    "D30 retention"
+   ],
+   "holdout": "10% user-level holdout for 4 weeks"
+  },
+  "precedents": [
+   "TAX-3",
+   "TRIG-5",
+   "EX-SERIAL"
+  ],
+  "risks": [
+   "Requires creator adoption to tag scenarios as 'Premium'.",
+   "Initial inventory may be limited until creators adopt the new tagging system."
+  ],
+  "evidence": [
+   {
+    "obs": "s09",
+    "el": "Willson Wáng",
+    "quote": "Willson Wáng"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s09",
+     "near": "e6",
+     "place": "after",
+     "change": "Unlock Scenario Button"
+    },
+    {
+     "id": "ne2",
+     "in": "s05",
+     "near": "e12",
+     "place": "after",
+     "change": "Premium Scenario Badge"
+    },
+    {
+     "id": "ne3",
+     "in": "s07",
+     "near": "e12",
+     "place": "after",
+     "change": "Premium Scenario Badge"
+    },
+    {
+     "id": "ne4",
+     "in": "s08",
+     "near": "e12",
+     "place": "after",
+     "change": "Premium Scenario Badge"
+    },
+    {
+     "id": "ne5",
+     "in": "s11",
+     "near": "e12",
+     "place": "after",
+     "change": "Premium Scenario Badge"
+    },
+    {
+     "id": "ne6",
+     "in": "s12",
+     "near": "e12",
+     "place": "after",
+     "change": "Premium Scenario Badge"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s09",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "PremiumScenarioAccess",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "JanitorPlus",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [],
+    "caption": "User views character details for Willson Wáng."
+   },
+   {
+    "phase": "change",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Premium Scenario Unlock"
+     }
+    ],
+    "caption": "New 'Unlock Scenario' button added to character details."
+   },
+   {
+    "phase": "offer",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s to unlock"
+     }
+    ],
+    "caption": "Offer appears to non-subscribers."
+   },
+   {
+    "phase": "ad",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "User plays a 15-second mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Unlocked for 72h"
+     }
+    ],
+    "caption": "Premium scenario unlocked successfully."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35329,
+  "output": 1639,
+  "cacheRead": 30438,
+  "cacheWrite": 0,
+  "thoughts": 2187
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:55.427Z"
+}

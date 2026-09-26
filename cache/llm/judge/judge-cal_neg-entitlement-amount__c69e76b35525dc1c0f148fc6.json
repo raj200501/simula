@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-entitlement-amount",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets settings and feature upsells on the Luzia settings screen, which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is an in-app time-boxed feature unlock; no cash or clicks are incentivized."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing (unlock a sample) rather than hostage framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer uses a clear 'Play to try' button with an explicit 'No thanks' decline."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer states 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The 'No thanks' button allows the user to dismiss the offer and continue without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears on the Settings screen (s19), away from streaming conversational responses."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility criteria explicitly state: 'never subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is the user explicitly reaching for the upgrade in settings (m23), making this a high-intent sampling moment.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "While the user-facing copy correctly frames a 30-minute time box, the internal reward definition attempts to grant the full 'Luzia+ Subscription' (r1). This creates a technical disconnect between the intended mechanism and the metadata.",
+    "score": 3
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is a strictly time-boxed sample (30 minutes) of the subscription features, offered to non-subscribers with a daily cap.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The COGS is $0 and the expected revenue per view is ~$0.012, which fits well within the economic guardrails.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings (s19) is a frequently visited screen, though less core than the main chat threads.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to a standard SIM-RWD unit; includes a clear patch to s19.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References Luzia specific screens (s19), features ('Upgrade to Luzia+'), and observed resources (r1).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a strict daily cap of 2 and a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics (conversion), guardrails, and a holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Update the reward definition in the metadata (reward.what and reward.resource) to represent a time-boxed feature entitlement (e.g., '30 mins of Deep Reasoning access') rather than the 'Luzia+ Subscription' plan itself, as granting a full subscription entitlement is not permitted as a reward.",
+   "Ensure the internal grant logic reflects the temporary nature of the time-box, distinct from the permanent r1 subscription entitlement."
+  ],
+  "topConcern": "The proposal metadata incorrectly defines the reward as granting the full 'Luzia+ Subscription' plan (r1), which violates policy. The reward must be strictly defined as a time-limited feature access (a time-box) rather than an entitlement/plan subscription."
+ },
+ "usage": {
+  "input": 42333,
+  "output": 1076,
+  "cacheRead": 36381,
+  "cacheWrite": 0,
+  "thoughts": 1401
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:21:15.400Z"
+}

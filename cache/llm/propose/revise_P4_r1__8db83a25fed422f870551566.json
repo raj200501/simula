@@ -1,0 +1,242 @@
+{
+ "purpose": "revise:P4:r1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Check-In Image Generation Hub",
+  "oneLiner": "Introduce a daily check-in banner on Chats Home that rewards returning users with 1 AI Image Credit using low-cost generation models, hidden in session 1.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m16"
+   ],
+   "economy": [
+    "r3",
+    "r4 AI Image Credits (new)"
+   ],
+   "newMechanic": {
+    "name": "Daily AI Check-In",
+    "description": "A daily loyalty calendar where returning users check in to earn 1 free AI Image Credit, capped and spent on low-cost image creation.",
+    "whyNeeded": "Creates a recurring engagement hook and provides a structured way for free returning users to experience image generation using highly compressed, low-cost models, reducing API server costs below $0.003.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s01",
+  "trigger": "User taps the Daily Check-In banner on Chats Home (hidden in Session 1) to open the check-in modal and initiates the claim.",
+  "eligibility": "Non-paying, returning users in their 2nd or later active session who have not claimed today's check-in reward.",
+  "offer": {
+   "title": "Claim Your Daily Credit",
+   "body": "Play a quick 15-second game to unlock 1 free AI Image Credit.",
+   "cta": "Play Now",
+   "decline": "Maybe Later"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 AI Image Credit",
+   "resource": "r4",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "The daily check-in limits free credits to just 1 per day, enough for a single compressed image. Higher volume, custom styles, and uncompressed creation require a Luzia+ subscription, protecting paid tiers [CANN-2] [TRIG-4].",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1,
+   "cogs": "image",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "D7 and D30 user retention rate",
+   "guardrails": [
+    "Paid subscription conversion rate",
+    "Average daily active users",
+    "Image generation cost per user"
+   ],
+   "holdout": "User-level 10% holdout group kept ineligible for the daily check-in feature for a duration of 28 days."
+  },
+  "precedents": [
+   "TAX-9",
+   "AI-3",
+   "EX-DUO",
+   "TRIG-2",
+   "TRIG-4"
+  ],
+  "risks": [
+   "Potential image generation API cost increases if adoption is too rapid, mitigated by using a heavily compressed, low-cost model under $0.003.",
+   "Accidental exposure to new users, mitigated by strict session gating to completely hide the banner in Session 1."
+  ],
+  "evidence": [
+   {
+    "obs": "m16",
+    "el": null,
+    "quote": "Chats"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "sheet",
+     "change": "Create a Daily Check-In sheet with a weekly progression calendar."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s01",
+     "near": "e11",
+     "place": "after",
+     "change": "Add a compact 'Daily Check-In Banner' under the welcome text showing today's unclaimed reward, hidden in Session 1."
+    },
+    {
+     "id": "ne2",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Add a prominent 'Claim Reward' button that triggers the rewarded video/playable flow."
+    },
+    {
+     "id": "ne3",
+     "in": "ns1",
+     "near": "ne2",
+     "place": "after",
+     "change": "Add a rewards display showing the earned '1 AI Image Credit' with an animation after completion."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s01",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne2",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r4",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r4",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e11",
+      "text": "Luzia welcomes the user to the chat."
+     }
+    ],
+    "caption": "Luzia Chats Home today lacks a daily retention loop or tokens."
+   },
+   {
+    "phase": "change",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r4",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New check-in banner appears here."
+     }
+    ],
+    "caption": "We add a daily check-in banner on Chats Home tab."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r4",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Claim button initiates ad playable."
+     }
+    ],
+    "caption": "Tapping the banner displays a weekly check-in calendar to user."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r4",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Simula rewarded mini-game plays."
+     }
+    ],
+    "caption": "The user plays a 15-second sponsored game with Luzia."
+   },
+   {
+    "phase": "value",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r4",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne3",
+      "text": "New balance shows 1 credit."
+     }
+    ],
+    "caption": "Once completed, the user receives 1 free AI Image Credit."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43605,
+  "output": 1891,
+  "cacheRead": 38560,
+  "cacheWrite": 0,
+  "thoughts": 3442
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:06:28.709Z"
+}

@@ -1,0 +1,186 @@
+{
+ "purpose": "revise:P2:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Paywall-Decline Priority Routing",
+  "oneLiner": "Offer a 15-minute priority routing pass when users decline the Janitor Plus subscription paywall.",
+  "case": "existing",
+  "archetype": "TAX-10",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m2"
+   ],
+   "economy": [
+    "of1",
+    "w1"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s03",
+  "trigger": "When the user taps 'Close paywall' on the Janitor Plus subscription screen without subscribing.",
+  "eligibility": "Non-payers who decline the Janitor Plus subscription paywall.",
+  "offer": {
+   "title": "Want Faster Replies?",
+   "body": "Play a quick 15-second game to unlock 15 minutes of priority routing.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Janitor",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "15 minutes of priority routing",
+   "resource": "janitor_plus_priority_routing_time",
+   "amount": 15,
+   "duration": "15 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Gated strictly to paywall decliners and non-payers, time-boxed to 15 minutes, preserving the full permanent subscription value.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Rewarded ad revenue and incremental engagement",
+   "guardrails": [
+    "Paid subscription conversion non-inferiority",
+    "D7/D30 retention",
+    "Session length"
+   ],
+   "holdout": "5% user-level holdout for 28 days"
+  },
+  "precedents": [
+   "TAX-10",
+   "EX-DUO"
+  ],
+  "risks": [
+   "User fatigue if shown too frequently",
+   "Perception of subscription discounting"
+  ],
+  "evidence": [
+   {
+    "obs": "m2",
+    "el": "e3",
+    "quote": "Close paywall"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s03",
+     "near": "e3",
+     "place": "after",
+     "change": "Add rewarded ad fallback button 'Play for Priority Routing'"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s03",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "janitor_plus_priority_routing_time",
+       "delta": 15
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "User taps Close paywall"
+     }
+    ],
+    "caption": "User views the Janitor Plus subscription paywall and declines."
+   },
+   {
+    "phase": "change",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Fallback ad offer appears"
+     }
+    ],
+    "caption": "Upon declining, a compliant rewarded fallback offer is presented."
+   },
+   {
+    "phase": "offer",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s for 15m priority"
+     }
+    ],
+    "caption": "Clear disclosure states the 15-second mini-game requirement and 15-minute reward."
+   },
+   {
+    "phase": "ad",
+    "screen": "s03",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "15s mini-game active"
+     }
+    ],
+    "caption": "User plays the 15-second interactive partner mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "janitor_plus_priority_routing_time",
+      "value": 15
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "+15m Priority Routing granted"
+     }
+    ],
+    "caption": "Upon REWARD_VERIFIED, 15 minutes of priority routing is unlocked instantly."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35313,
+  "output": 1343,
+  "cacheRead": 30437,
+  "cacheWrite": 0,
+  "thoughts": 1158
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:34.839Z"
+}

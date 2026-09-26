@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:71c71dcb3d",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Create Account Sheet",
+  "kind": "sheet",
+  "purpose": "Prompt the user to create an account to enjoy Luzia+.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e9",
+    "intent": "Dismiss the account creation sheet",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e7",
+    "intent": "Sign in with Google",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "login wall"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2058,
+  "output": 186,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:07:17.532Z"
+}

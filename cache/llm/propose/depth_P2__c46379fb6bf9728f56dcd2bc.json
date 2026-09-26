@@ -1,0 +1,246 @@
+{
+ "purpose": "depth:P2",
+ "model": "gemini-3.7-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Custom Bestie Slot Unlock on Signup Decline",
+  "oneLiner": "Offer guest users a single Custom Bestie creation slot after they dismiss the signup sheet.",
+  "case": "existing",
+  "archetype": "TAX-7",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m7",
+    "m8"
+   ],
+   "economy": [
+    "r2",
+    "w4",
+    "of2"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s02",
+  "trigger": "When a guest user taps 'Close sheet' on the Custom Bestie signup sheet without signing up.",
+  "eligibility": "Guest users without an account who decline the signup prompt on the Custom Bestie sheet.",
+  "offer": {
+   "title": "Create One Custom Bestie",
+   "body": "Play a 15-second mini-game to unlock one Custom Bestie slot without an account. Customize your AI companion immediately.",
+   "cta": "Play Mini-Game",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 Custom Bestie slot",
+   "resource": "r2",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "Surfaced strictly after the user declines the full signup sheet (m8), ensuring users with intent to sign up do so first [TAX-10]. Sized to a single creation slot, leaving multi-persona management, cloud backup, and Luzia+ features gated [CANN-1, AI-8].",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Custom Bestie creations by guest users",
+   "guardrails": [
+    "Account signup conversion rate non-inferiority (-2% relative)",
+    "D7 user retention",
+    "Luzia+ paid trial conversion rate"
+   ],
+   "holdout": "User-level 10% holdout of guest users declining Custom Bestie signup for 28 days"
+  },
+  "precedents": [
+   "TAX-7",
+   "TAX-10",
+   "AI-8",
+   "TRIG-1",
+   "TRIG-5",
+   "POL-2",
+   "POL-8",
+   "CANN-1"
+  ],
+  "risks": [
+   "Guest users might lose their custom bestie if local storage is cleared before creating an account.",
+   "Slight risk of delaying immediate account signup for users satisfied with a single custom persona."
+  ],
+  "evidence": [
+   {
+    "obs": "s02",
+    "el": "e2",
+    "quote": "Close sheet"
+   },
+   {
+    "obs": "s02",
+    "el": null,
+    "quote": "Sign up to personalize your Bestie's look, personality and interests."
+   },
+   {
+    "obs": "s01",
+    "el": "e26",
+    "quote": "Custom Bestie"
+   },
+   {
+    "obs": "s01",
+    "el": "e27",
+    "quote": "Make an AI expert tailored to you"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s02",
+     "kind": "sheet",
+     "change": "Fallback offer sheet shown upon tapping close on s02, offering a single guest custom bestie slot in exchange for playing a mini-game."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Simula MiniGameInvitation card with title 'Create One Custom Bestie', Luzia Game Partner avatar, play CTA, and 'No thanks' decline button."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s02",
+     "el": "e2",
+     "to": "ns1",
+     "effects": [],
+     "guard": {
+      "resource": "r2",
+      "lt": 1
+     }
+    },
+    {
+     "from": "ns1",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r2",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e2",
+      "text": "Guest taps Close sheet after declining signup prompt"
+     }
+    ],
+    "caption": "Guest user opens Custom Bestie creator and encounters the mandatory signup wall."
+   },
+   {
+    "phase": "change",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e2",
+      "text": "Dismissing signup triggers the fallback value-exchange check"
+     }
+    ],
+    "caption": "Dismissing the signup sheet triggers the fallback value-exchange check."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Offer card invites user to play for one bestie slot"
+     }
+    ],
+    "caption": "Luzia invites user to play a quick mini-game to unlock creation."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Interactive 15-second mini-game with Luzia as Game Partner"
+     }
+    ],
+    "caption": "User plays the interactive mini-game with Luzia for fifteen seconds."
+   },
+   {
+    "phase": "value",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r2",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e26",
+      "text": "Unlocked Custom Bestie creation slot is ready to use"
+     }
+    ],
+    "caption": "The single Custom Bestie creation slot is unlocked and ready."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42770,
+  "output": 1880,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4044
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:03:50.594Z"
+}

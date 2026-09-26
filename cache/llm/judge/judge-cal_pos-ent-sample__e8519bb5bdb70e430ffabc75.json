@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-ent-sample",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets a premium feature upgrade screen (s03), which is a utility surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a game; there is no reward for ad clicks or app installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a sampling of a premium feature without loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user taps 'Play to try' or 'No thanks' on the offer card."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer card states: 'Play a 15-second game to unlock 10 minutes of 5x context for better memory today.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The 'No thanks' button closes the offer, leaving the user on the paywall screen."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on the paywall page (s03), not during a chat interaction."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly excludes subscribers: 'never shown to subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is the paywall screen (s03) where the user is blocked from the feature, maximizing relevance.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The reward provides a sampling of the premium feature without altering the baseline free chat experience.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The sample is small (10 minutes), time-boxed to 'today', capped (2/day), and clearly contrasted with the unlimited subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS ($0.0018) is well below the net revenue per view ($0.009–0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The offer is limited to users reaching the paywall, which is a significant but not universal subset of the user base.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD units with a simple chip addition on an existing screen.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses '5x context for better memory' and 'Janitor Plus' from the digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps of 2 per day with a 60-minute cooldown are safe and avoid nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines holdout, primary metrics (conversion), and guardrails.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None; the proposal is well-scoped and adheres to all policies."
+ },
+ "usage": {
+  "input": 34655,
+  "output": 903,
+  "cacheRead": 32245,
+  "cacheWrite": 0,
+  "thoughts": 1446
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:59:55.165Z"
+}

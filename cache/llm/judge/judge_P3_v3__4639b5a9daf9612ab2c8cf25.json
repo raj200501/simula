@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": false,
+    "evidence": "The proposal introduces 'Premium' scenarios but fails to explicitly guarantee they will be SFW-compliant. Given the platform is an AI roleplay site with potentially adult content, this risks placing ads on non-compliant, unsafe inventory, violating [SAFE-1]."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The proposal uses a standard rewarded ad for content access; no clicks, installs, or cash-like rewards are offered."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a gain-framing approach (unlocking exclusive content) rather than a loss-framing one."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer requires the user to tap 'Play Now' after disclosure."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states the reward (72-hour access) and action (play 15-second game)."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a clear 'No thanks' button that closes the prompt without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on the Character Details screen (s09), which is static, not mid-conversation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly excludes subscribers via the 'Non-subscribers only' eligibility rule."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger occurs exactly when a user is evaluating a scenario they wish to access, making it highly contextually relevant.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The integration is native to the existing character details screen and creates a new content tier without degrading the free experience.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is time-boxed to 72 hours, capped at 3 per day, and explicitly gated to non-subscribers.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero, and revenue is net-positive compared to zero-ad baseline.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Character details are a core part of the exploration loop, ensuring high exposure.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to existing SIM-RWD implementation with a standard button entry.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses specific app nouns like 'Willson Wáng' and targets the Character Details screen (s09).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a strict daily cap of 3 and a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a primary metric (scenario unlocks), guardrails, and a 10% holdout plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Explicitly restrict 'Premium' scenarios to SFW-rated content that passes content moderation for brand safety, in accordance with the brand-safety requirements in [SAFE-1].",
+   "Correct the 'JanitorPlus' resource name to 'Janitor Plus' in the edge guard to match the actual subscription resource name."
+  ],
+  "topConcern": "The proposal lacks explicit brand-safety guardrails for the new 'Premium' scenario content type, which could result in rewarded ads being shown alongside non-compliant or adult content."
+ },
+ "usage": {
+  "input": 35091,
+  "output": 1026,
+  "cacheRead": 32251,
+  "cacheWrite": 0,
+  "thoughts": 1641
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:59:04.776Z"
+}

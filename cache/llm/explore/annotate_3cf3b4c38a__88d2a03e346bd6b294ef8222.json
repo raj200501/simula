@@ -1,0 +1,53 @@
+{
+ "purpose": "annotate:3cf3b4c38a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Animate Tool Screen",
+  "kind": "tab",
+  "purpose": "Users can upload or select pictures to animate using AI tools.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Switch to Create tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e6",
+    "intent": "Switch to Edit tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e15",
+    "intent": "Upload picture to animate",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e30",
+    "intent": "Describe animation idea",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Make it smile",
+    "sendEl": "e31"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2645,
+  "output": 282,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:24.824Z"
+}

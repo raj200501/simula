@@ -1,0 +1,194 @@
+{
+ "purpose": "depth:P1",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "title": "AOL Guest Commenter",
+  "oneLiner": "Allow users to post a single news comment by playing a mini-game instead of signing up.",
+  "case": "product-change",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m9"
+   ],
+   "economy": [
+    "Account sign-in / verified user status (new)"
+   ],
+   "newMechanic": {
+    "name": "Guest Posting",
+    "description": "A temporary authorization to submit one comment to a news article discussion without a full AOL account registration.",
+    "whyNeeded": "The sign-up wall on the Add Comment Page (s05) prevents spontaneous interaction from guest users, losing valuable engagement data and ad opportunities.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s05",
+  "trigger": "When a user land on the Add Comment Page and encounters the Sign Up to Post requirement.",
+  "eligibility": "Non-signed-in users who have entered text in the comment box.",
+  "offer": {
+   "title": "Post as a guest",
+   "body": "Don't want to sign up right now? Play a quick 15-second game to post this comment as a guest.",
+   "cta": "Play to Post",
+   "decline": "Maybe later"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "one guest comment submission",
+   "resource": "Guest Comment",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "The guest pass is limited to a single comment per day and does not grant account benefits like comment history, replies, or profile customization, maintaining the long-term value of a full AOL account.",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Comments per DAU",
+   "guardrails": [
+    "Account sign-up rate",
+    "D1 retention"
+   ],
+   "holdout": "user-level, 10%, 28 days"
+  },
+  "precedents": [
+   "TAX-3",
+   "TAX-10",
+   "EX-SERIAL"
+  ],
+  "risks": [
+   "Potential for lower-quality comments from non-verified users",
+   "User frustration if the guest post limit is hit"
+  ],
+  "evidence": [
+   {
+    "obs": "s05",
+    "el": "e141",
+    "quote": "Sign Up to Post"
+   },
+   {
+    "obs": "m9",
+    "el": null,
+    "quote": "User attempts to post a comment on an article and hits the sign-up wall."
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s05",
+     "near": "e141",
+     "place": "before",
+     "change": "A Simula 'Play to Post' rewarded invitation button styled as a secondary action."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s05",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "Guest Comment",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s04",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e18",
+      "text": "User reading comments"
+     }
+    ],
+    "caption": "The user reads interesting comments on a news article."
+   },
+   {
+    "phase": "change",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e141",
+      "text": "Forced sign-up to engage"
+     },
+     {
+      "node": "ne1",
+      "text": "New guest option"
+     }
+    ],
+    "caption": "When trying to comment, they see the sign-up requirement but also a new guest option."
+   },
+   {
+    "phase": "offer",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Post without an account"
+     }
+    ],
+    "caption": "The user chooses to play a quick game to unlock a guest post."
+   },
+   {
+    "phase": "ad",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "A fun 15-second AOL-themed mini-game plays."
+   },
+   {
+    "phase": "value",
+    "screen": "s04",
+    "counters": [
+     {
+      "resource": "Guest Comment",
+      "value": 0
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e9",
+      "text": "Comment successfully posted"
+     }
+    ],
+    "caption": "The reward is verified and the user's comment is published immediately."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35240,
+  "output": 1450,
+  "cacheRead": 22823,
+  "cacheWrite": 0,
+  "thoughts": 937
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:12:59.189Z"
+}

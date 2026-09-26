@@ -1,0 +1,47 @@
+{
+ "purpose": "annotate:d22c33ac83",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Generated Image View",
+  "kind": "page",
+  "purpose": "Displays an AI-generated image with options to modify, share, or download it.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e19",
+    "intent": "Type a modification prompt for the generated image",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Make it brighter",
+    "sendEl": "e20"
+   },
+   {
+    "el": "e20",
+    "intent": "Send the modification request",
+    "kind": "consume",
+    "priority": 2
+   },
+   {
+    "el": "e14",
+    "intent": "Share the generated image",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2300,
+  "output": 252,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:09:33.269Z"
+}

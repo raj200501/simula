@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:89586ded8a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Conversation Screen",
+  "kind": "page",
+  "purpose": "Displays comments and conversation threads for an article.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e135",
+    "intent": "Type a comment",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Interesting discussion!"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 8176,
+  "output": 181,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:02:22.152Z"
+}

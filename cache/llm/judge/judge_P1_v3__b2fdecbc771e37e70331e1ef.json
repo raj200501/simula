@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P1:v3",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets s06 (Services Tab) which includes \"Bookings, shopping, alerts and reminders, all done\" and is an entirely SFW utility context."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is \"15 minutes of Luzia+ services\" which is in-app and non-cash-like, with no incentives offered for clicks, installs, or reviews."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The copy seeds \"Play a 15-second game to unlock Luzia+ services for the next 15 minutes.\" with a \"No thanks\" decline button. No dark patterns, confirmshaming, or loss-framing are used."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must explicitly tap on \"Play Mini-Game\" to engage."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer card states: \"Play a 15-second game to unlock Luzia+ services for the next 15 minutes.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The decline option \"No thanks\" returns the user to the Services tab state with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs on s06 Services Tab after the user explicitly dismisses the Create Account Sheet paywall, meaning it is situated at a clean boundary rather than mid-chat."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to \"Non-paying guest users without an account who have dismissed the Create Account Sheet paywall.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trial directly matches the blocked desire of wanting to perform a premium service task (Start a task) on s06. However, under Rule 7, because the proposal treats the plan entitlement (r1) as a currency with a delta of 1, the score is capped.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "It leverages the Simula RWD invitation cleanly within the Services Tab. It avoids interrupting the AI Chat stream and preserves core user flow. Native handling of offline bookings during guest trials is accounted for by mapping secure device IDs.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Extremely strict controls are in place: only offered after paywall decline, restricted to guests only, capped at a short 15-minute window, and limited to once per day. Includes a randomized 10% holdout.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve is $0.0018 per view, which represents only 12-20% of the US completed view value ($0.0090–$0.0150). Margins remain safe by routing tasks to a distilled model.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is a decline of the paywall on s06 (Services Tab). The Services Tab is visited frequently (7 visits during exploration), but reach is naturally throttled to only guest users hitting the wall.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "While it maps cleanly to the SIM-RWD format and incorporates standard entry points, the patch failed the code-level reward-coherence check because it attempts to directly increment the plan entitlement (r1) rather than modeling a temporary session state.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal refers to Luzia's actual Services tab (s06), task button (e9), and the Create Account Sheet paywall. However, because Rule 7 prevents specificity credit for treating entitlements (Luzia+ Subscription) as currency, the score is reduced.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strictly limited to a daily cap of 1 per day and a 24-hour (1440 min) cooldown to prevent user nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a clear primary metric (Luzia+ subscription conversion rate among paywall decliners), strong revenue guardrail metrics, and a clean 10% randomized user-level holdout over 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Refactor the reward implementation in the patch to avoid incrementing the 'Luzia+ Subscription' (r1) plan directly by delta 1 on REWARD_VERIFIED.",
+   "Introduce a temporary time-boxed state variable or guest session token (e.g., 'LuziaPlusGuestSessionActive') to govern the 15-minute access instead of treating a permanent entitlement as a currency.",
+   "Update the patch rules to check and clear this temporary session variable rather than altering the core subscription ledger."
+  ],
+  "topConcern": "The patch incorrectly attempts to award the Luzia+ Subscription (r1) entitlement as if it were a consumable currency (delta: 1), violating the core policy that plans and memberships must not be treated as currency. This triggered a failure in the reward-coherence check and must be replaced with a time-limited session variable."
+ },
+ "usage": {
+  "input": 42822,
+  "output": 1404,
+  "cacheRead": 40420,
+  "cacheWrite": 0,
+  "thoughts": 2722
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:07:54.943Z"
+}

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-2.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Guest comments are processed via AOL's automated safety filters to prevent spam [SAFE-1]."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward: one guest comment submission"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Don't want to sign up right now? Play a quick 15-second game to post this comment as a guest."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: 'Play and Post', decline: 'No thanks'"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a quick 15-second game to post this comment as a guest."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: 'No thanks'"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "After entering text on the Add Comment Page when the sign-up modal appears."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility: 'Non-signed-in users who have entered text in the comment box on the Add Comment Page.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Code gate 'FAIL grounding': economy item \"Account sign-in / verified user status\" does not exist; evidence \"m9\" is not an observation or screen in the model; evidence \"f1\" is not an observation or screen in the model. The proposal's core anchoring to a moment of need ('m9') and a user flow ('f1') is explicitly flagged as ungrounded by the code gates.",
+    "score": 1
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "newMechanic.description: 'A temporary authorization to submit one comment... without a full AOL account registration. Guest comments are processed via AOL's automated safety filters...'. The proposal is additive, introducing a 'Guest Posting' mechanic without removing existing free value.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "eligibility: 'Non-signed-in users'. caps.perDay: 1. cannibalizationGuard: 'The guest pass is limited to a single comment per day and does not grant account benefits like comment history, replies, or profile customization. A sign-in contrast line reminds users that a full AOL account is required for permanent features [CANN-4].'",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code: 'Cost to serve per view: $0.0000 (none x 1).' Code: 'One completed US view earns $0.0090–$0.0150'. The COGS is zero, making the economics highly favorable.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Code gate 'FAIL grounding': evidence 'm9' is not an observation or screen in the model; evidence 'f1' is not an observation or screen in the model. The claimed core-loop reach is unverified by the system's grounding check.",
+    "score": 1
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "simula.unit: 'SIM-RWD', entry: 'interstitial', minPlaySec: 15. reward.grantOn: 'REWARD_VERIFIED'. The patch proposes an overlay on s05. This leverages standard Simula units and lifecycle.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Code gate 'FAIL grounding': economy item \"Account sign-in / verified user status\" does not exist; evidence \"m9\" is not an observation or screen in the model; evidence \"f1\" is not an observation or screen in the model. The proposal refers to app-specific nouns but these are not recognized as grounded in the model.",
+    "score": 1
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "caps.perDay: 1, cooldownMin: 1440. The daily cap of one comment per day with a long cooldown ensures minimal fatigue.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "kpis.primary: 'Comments per DAU', kpis.guardrails: ['Account sign-up rate', 'D1 retention'], kpis.holdout: 'user-level, 10%, 28 days'. Clear KPIs, guardrails, and a holdout are defined.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Re-ground the proposal's anchor, trigger, and economy item references (m9, f1, 'Account sign-in / verified user status') to align with verified elements in the product model.",
+   "Explicitly add a contrast line in the offer text, directing users to sign in for full account features as mentioned in the cannibalization guard."
+  ],
+  "topConcern": "The core grounding of the proposal to the app's observed model (as reported by the code gates) is failing, which means the proposal cannot be verified as relevant or actionable in its current form."
+ },
+ "usage": {
+  "input": 34932,
+  "output": 1332,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4576
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:14:50.551Z"
+}

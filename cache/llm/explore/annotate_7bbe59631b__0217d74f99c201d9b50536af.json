@@ -1,0 +1,39 @@
+{
+ "purpose": "annotate:7bbe59631b",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "New Chat Selection",
+  "kind": "page",
+  "purpose": "Select a character or bot to start a new chat.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e5",
+    "intent": "Select Luzia chat",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e7",
+    "intent": "Select Teacher chat",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 3570,
+  "output": 172,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:29:40.814Z"
+}

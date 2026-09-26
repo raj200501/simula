@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The paywall screen s03 is a standard subscription-gated interface, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 'priority routing' (an in-app feature), not a cash-like item or ad-interaction incentive."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer is a positive path forward upon paywall decline ('Play for Priority Routing'), with no threat of loss."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap 'Play Now' to start the rewarded session."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal states: 'Play a quick 15-second game to unlock 15 minutes of priority routing.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The 'No thanks' button is provided, returning the user to the previous state."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The ad appears on the s03 paywall screen, which is not a streaming or generative AI response surface."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly limits eligibility to non-payers/decliners."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The user is hitting a paywall for 'More memory for long chats' (s03). Offering 'Priority routing' (a key Plus benefit) directly addresses the user's desire for an enhanced chat experience at the point of obstruction.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The design uses a reactive TAX-10 trigger on a paywall. It does not interrupt live chat streams. Using 'Janitor' as the Game Partner is a logical brand-aligned choice.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to decliners, time-boxed to 15 minutes, and capped at 2 per day. This effectively protects the long-term value of the Janitor Plus subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS is 0 for priority routing. Revenue per view in the US is ~$0.009-0.015, which is well above the cost to serve.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "s03 is a frequently hit paywall surface for non-payers attempting to access enhanced chat features, reaching the core loop of subscription-seekers.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps clearly to standard SIM-RWD architecture, using SSV and a remote-config-ready offer.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses s03 (More memory for long chats) as the anchor and references Janitor Plus features. The resource name 'janitor_plus_priority_routing_time' is slightly generic but clearly mapped to the entitlement.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes an explicit cap of 2 per day and a 60-minute cooldown, adhering to non-game rewarded ad best practices.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metrics, guardrails (subscription conversion), and a 5% holdout for 28 days as required.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Define the 'Game Partner' more specifically; if using a specific character (e.g., a mascot), ensure it is defined in the product model or consistent with Janitor branding.",
+   "Ensure the reward resource name maps explicitly to the 'Priority routing' entitlement defined in Janitor Plus.",
+   "Add a 'Plus' comparison line (e.g., 'Get unlimited priority routing with Janitor Plus') to the grant/reward screen to maintain subscription upsell pressure."
+  ],
+  "topConcern": "Ensuring the reward resource name (currently 'janitor_plus_priority_routing_time') explicitly aligns with the known Janitor Plus 'Priority routing' entitlement to ensure clean fulfillment tracking and fulfillment."
+ },
+ "usage": {
+  "input": 34813,
+  "output": 1166,
+  "cacheRead": 20154,
+  "cacheWrite": 0,
+  "thoughts": 1800
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:51.638Z"
+}

@@ -1,0 +1,46 @@
+{
+ "purpose": "annotate:4a3a2d916a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "Luzia Plus Chat",
+  "kind": "chat",
+  "purpose": "This screen shows a chat conversation explaining the benefits and subscription details of Luzia+.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e32",
+    "intent": "Ask another question about Luzia+",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "How much is it?",
+    "sendEl": "e34"
+   },
+   {
+    "el": "e29",
+    "intent": "Ask about free trial",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Luzia+ includes: Higher usage limits, Multiple Custom Besties, Exclusive premium apps"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2843,
+  "output": 256,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T16:39:17.462Z"
+}

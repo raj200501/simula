@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:a92dd6d845",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Sign In Screen",
+  "kind": "login",
+  "purpose": "The user must sign in to access their AOL account.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Enter email or phone number",
+    "kind": "type-send",
+    "priority": 0,
+    "input": "test@example.com"
+   },
+   {
+    "el": "e11",
+    "intent": "Proceed to next sign in step",
+    "kind": "tap",
+    "priority": 0
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2247,
+  "output": 192,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:02:52.903Z"
+}

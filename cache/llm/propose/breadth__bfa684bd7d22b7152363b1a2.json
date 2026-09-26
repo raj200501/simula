@@ -1,0 +1,242 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.6-flash",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Watch an ad on s07 Create Account Sheet paywall to get temporary Luzia+ access.",
+   "Watch an ad on s23 Login Screen to bypass free signup and access Account Access features.",
+   "Watch an ad on s10 Image Creation Hub to generate an AI image without limits."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Watch ad on Create Account Sheet to try a Luzia+ feature once",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "Fallback offer on paywall dismissal for 30-minute Luzia+ access",
+    "viable": true
+   },
+   {
+    "moment": "m3",
+    "exchange": "Watch ad on Response Style Signup to customize AI response style without account",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Decline Response Style signup to get 1 response style customization",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "Watch ad on Favorite messages sheet to save favorite message without account",
+    "viable": true
+   },
+   {
+    "moment": "m6",
+    "exchange": "Decline Favorite messages signup to unlock 1 favorite message save",
+    "viable": true
+   },
+   {
+    "moment": "m7",
+    "exchange": "Watch ad on Custom Bestie sheet to create 1 Bestie without account",
+    "viable": true
+   },
+   {
+    "moment": "m8",
+    "exchange": "Decline Custom Bestie signup to unlock 1 Custom Bestie slot",
+    "viable": true
+   },
+   {
+    "moment": "m9",
+    "exchange": "Watch ad on deep reasoning toggle for 1 deep reasoning answer",
+    "viable": true
+   },
+   {
+    "moment": "m10",
+    "exchange": "Watch ad on Services tab to run 1 automated assistant task",
+    "viable": true
+   },
+   {
+    "moment": "m11",
+    "exchange": "Tap Try Luzia upsell to view rewarded pass offer",
+    "viable": true
+   },
+   {
+    "moment": "m12",
+    "exchange": "Tap Upgrade to Luzia+ in Settings to unlock 1-hour ad-free pass",
+    "viable": true
+   },
+   {
+    "moment": "m13",
+    "exchange": "Sign up screen locked feature desire - watch ad for guest sample",
+    "viable": false
+   },
+   {
+    "moment": "m14",
+    "exchange": "Tap Deep reasoning upsell on Attachment sheet for 1 deep reasoning response",
+    "viable": true
+   },
+   {
+    "moment": "m15",
+    "exchange": "Post-signup bonus doubling initial usage quota",
+    "viable": true
+   },
+   {
+    "moment": "m16",
+    "exchange": "Proactive daily check-in hub on Chats Home for image credits",
+    "viable": true
+   },
+   {
+    "moment": "m17",
+    "exchange": "Proactive rewarded unlocks on Ideas Feed for premium styles",
+    "viable": true
+   },
+   {
+    "moment": "m18",
+    "exchange": "Services tab hub for sponsored automated assistant task",
+    "viable": true
+   },
+   {
+    "moment": "m19",
+    "exchange": "Apps catalog hub to unlock premium AI tools like Beat Maker or Anima",
+    "viable": true
+   },
+   {
+    "moment": "m20",
+    "exchange": "Animate tool hub for 1 free video animation export",
+    "viable": true
+   },
+   {
+    "moment": "m21",
+    "exchange": "Image Creation Hub for 1 high-resolution generation credit",
+    "viable": true
+   },
+   {
+    "moment": "m22",
+    "exchange": "First-value moment on launch; no offers allowed by rule",
+    "viable": false
+   },
+   {
+    "moment": "m23",
+    "exchange": "Settings interest tap to view rewarded trial option",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Paywall Decline 30-Min Luzia+ Pass",
+    "case": "existing",
+    "archetype": "TAX-10",
+    "moment": "m2",
+    "reward": "30-minute Luzia+ access",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Custom Bestie Slot Unlock on Signup Decline",
+    "case": "existing",
+    "archetype": "TAX-7",
+    "moment": "m8",
+    "reward": "1 Custom Bestie slot",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Single Deep Reasoning Query Unlock",
+    "case": "existing",
+    "archetype": "TAX-2",
+    "moment": "m14",
+    "reward": "1 Deep reasoning response",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Response Style Quick Adjust Unlock",
+    "case": "existing",
+    "archetype": "TAX-3",
+    "moment": "m4",
+    "reward": "1 response style customization",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Favorite Message Save Credit",
+    "case": "existing",
+    "archetype": "TAX-1",
+    "moment": "m6",
+    "reward": "1 favorite message save",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Daily Check-In Image Generation Hub",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m16",
+    "reward": "2 AI image credits",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Anima Video Generation Export Boost",
+    "case": "product-change",
+    "archetype": "TAX-4",
+    "moment": "m20",
+    "reward": "1 Anima video animation export",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Beat Maker AI Synth Loop Sponsor",
+    "case": "product-change",
+    "archetype": "TAX-11",
+    "moment": "m19",
+    "reward": "1 Beat Maker AI track generation",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Services Task Execution Token",
+    "case": "existing",
+    "archetype": "TAX-1",
+    "moment": "m10",
+    "reward": "1 automated assistant task run",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Ideas Feed Premium Style Unlock",
+    "case": "product-change",
+    "archetype": "TAX-3",
+    "moment": "m17",
+    "reward": "1 premium image style prompt unlock",
+    "beyondBaseline": true
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "Provides a classic paywall-decline fallback for price-sensitive non-payers dismissing the Luzia+ subscription sheet."
+   },
+   {
+    "index": 1,
+    "why": "Capitalizes on explicit user intent to personalize a Custom Bestie right after they decline account creation."
+   },
+   {
+    "index": 2,
+    "why": "Captures high moment-of-need intent when users tap the Deep Reasoning toggle in the attachment sheet during active conversation."
+   },
+   {
+    "index": 5,
+    "why": "Establishes a proactive daily engagement habit on Chats Home, creating predictable rewarded ad inventory with zero chat interruption."
+   },
+   {
+    "index": 6,
+    "why": "Monetizes high-value AI video rendering in the Anima mini-app at the exact point of export friction."
+   }
+  ]
+ },
+ "usage": {
+  "input": 50480,
+  "output": 1192,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2652
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:02:58.386Z"
+}

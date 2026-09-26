@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v3",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal features Starship Galley, a sci-fi comedy cooking character, which is safe and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward grants in-app credits (r1) for completing a 15-second mini-game play, with no incentives for clicks, installs, ratings, or cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses clean gain framing with Play Now and No Thanks buttons, avoiding dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Users explicitly tap the character quest banner on the mode selection sheet to initiate the offer."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states Play a quick 15-second game with Starship Galley to earn free credits and +10 credits before launch."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining via No Thanks leaves the user exactly where they were with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is triggered from the chat mode sheet rather than interrupting an active AI message stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly restricted to non-paying guest users."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Placed on the mode selection sheet where users review credit costs per message, providing proactive credit earning.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Uses Simula SIM-RWD unit with an in-world game partner (Starship Galley), though minor grounding errors exist in patch/storyboard element references.",
+    "score": 3
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying users, capped at 3 per day (30 credits total, worth ~$0.04), well below the cheapest $1.39 credit pack.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view ($0.0018) is well under 30% of US net revenue per view ($0.009–0.015), and reward value aligns safely with view earnings.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered from the mode selection sheet (s04), which has rare/occasional reach compared to active chat or home feed.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD SDK specifications, but requires fixing patch element ne1 grounding and storyboard node e3 references.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Utilizes specific app nouns such as currency r1 (credits), character Starship Galley, and Choose Chat Mode sheet s04.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly caps offers at 3 per day with a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics (Rewarded ARPDAU, D7 retention), guardrails (-3% paid conversion non-inferiority), and a 90/10 user holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix patch element grounding so that new element ne1 correctly references a valid element ID on screen ns1.",
+   "Correct storyboard callout node references (e.g., e3) to ensure they map to valid elements present on the target screen."
+  ],
+  "topConcern": "Patch element grounding errors (ne1 and storyboard node e3 references) fail technical validation against the screen model."
+ },
+ "usage": {
+  "input": 31761,
+  "output": 768,
+  "cacheRead": 16093,
+  "cacheWrite": 0,
+  "thoughts": 4752
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:53:43.409Z"
+}

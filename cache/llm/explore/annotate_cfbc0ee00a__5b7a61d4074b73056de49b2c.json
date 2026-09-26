@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:cfbc0ee00a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Interface",
+  "kind": "chat",
+  "purpose": "User is chatting with Luzia AI assistant.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e12",
+    "intent": "Type a message to the AI",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hello",
+    "sendEl": "e12"
+   },
+   {
+    "el": "e4",
+    "intent": "Open navigation menu",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2253,
+  "output": 198,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:00:23.202Z"
+}

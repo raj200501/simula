@@ -1,0 +1,46 @@
+{
+ "purpose": "annotate:4a3a2d916a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Luzia Plus Info",
+  "kind": "chat",
+  "purpose": "This screen displays information about Luzia+ subscription benefits and answers user questions about it in chat format.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e29",
+    "intent": "Ask another question about Luzia+",
+    "kind": "type-send",
+    "priority": 3,
+    "input": "What is the price?",
+    "sendEl": "e31"
+   },
+   {
+    "el": "e26",
+    "intent": "Tap suggested question about free trial",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Luzia+ includes:"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2747,
+  "output": 245,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T16:39:23.447Z"
+}

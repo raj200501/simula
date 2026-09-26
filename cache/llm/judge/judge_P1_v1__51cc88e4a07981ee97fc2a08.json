@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets 's05' (Add Comment Page) which is a standard news interaction surface and is not flagged as a sensitive context."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 'one guest comment submission', which is an in-app interaction and not a 'direct monetary item' like cash or gift cards [POL-2 #8]."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a 'Play to Post' invitation with a 'Maybe later' decline option, avoiding 'confirmshaming' or 'hostage' framing [ANTI-9, ANTI-10]."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the 'Play to Post' button before the ad unit is triggered [POL-1]."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer card states: 'Play a quick 15-second game to post this comment as a guest', disclosing both the action length and the reward [POL-2 #2]."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The decline option is 'Maybe later' and the proposal states it is for 'Non-signed-in users', returning them to the previous blocked state without penalty [POL-2 #5]."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs 'When a user land on the Add Comment Page' as a reaction to a blocked action, not during an active AI generation [POL-9]."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to 'Non-signed-in users', ensuring authenticated users are not prompted for ads [TRIG-2]."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal anchors to 'm9' where a user attempts to comment and hits a wall; the reward provides the exact solution needed for that friction point [TRIG-1].",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "It preserves the user's intent ('entered text in the comment box') and provides a 'secondary action' that doesn't remove existing free value from the 'no-scarcity' regime [AI-X].",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is 'limited to a single comment per day' and excludes account benefits like 'history, replies, or profile customization', maintaining the premium value of a full account [TAX-10, CANN-4].",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Computed COGS is '$0.0000' while one completed US view earns up to '$0.0150', representing a high-margin digital unlock [TRIG-4].",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger m9 is located on the 'Add Comment Page' which is part of the 'core-loop' (f1) for article engagement.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to 'SIM-RWD' with a 15s threshold. However, it requires a 'product-change' to support 'Guest Posting' permissions which is correctly identified.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal uses 's05' and 'm9' from the digest, but relies on invented element ID 'e141' which does not exist in the product model (s05 IDs were uncaptured due to the login wall).",
+    "score": 2
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Implements a strict daily cap of '1 per day' and a '1440' minute cooldown [TRIG-3].",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a 'user-level holdout' of '10%' over '28 days' with 'Account sign-up rate' as a primary guardrail [MEAS-5].",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove reliance on invented element ID 'e141'; since s05 IDs are uncaptured due to the login wall, use a full-screen Rewarded Interstitial (SIM-INT) or anchor to a descriptive layout position.",
+   "Clarify the technical 'Guest Posting' implementation to ensure comments can be moderated without a verified account to satisfy safety requirements [SAFE-1].",
+   "Add a 'Plus' or 'Sign-in' contrast line to the reward grant screen to highlight the benefits of a full account [CANN-4]."
+  ],
+  "topConcern": "The proposal fails grounding by referencing non-existent element IDs (e141) and moment evidence (m9 as a screen) which are not part of the verified product model."
+ },
+ "usage": {
+  "input": 34941,
+  "output": 1320,
+  "cacheRead": 24186,
+  "cacheWrite": 0,
+  "thoughts": 1890
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:13:35.593Z"
+}

@@ -1,0 +1,75 @@
+{
+ "purpose": "annotate:a43782ea67",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Home Feed",
+  "kind": "tab",
+  "purpose": "Displays top news stories, weather, and articles for the user.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e18",
+    "intent": "Switch to Entertainment tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e19",
+    "intent": "Switch to Local tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e20",
+    "intent": "Switch to Sports tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e33",
+    "intent": "Check weather details",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e41",
+    "intent": "Read the news article",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e50",
+    "intent": "Observe sponsored ad",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   },
+   {
+    "el": null,
+    "intent": "Scroll down the feed",
+    "kind": "scroll",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "TEMU · Ad"
+   }
+  ]
+ },
+ "usage": {
+  "input": 4736,
+  "output": 418,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:07:32.083Z"
+}

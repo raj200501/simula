@@ -1,0 +1,212 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Check-in Swipe",
+  "oneLiner": "Earn 1 daily bonus frontier model swipe by playing a 15-second mini-game in the Profile menu.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m4"
+   ],
+   "economy": [
+    "of1",
+    "w1",
+    "Frontier Swipes (new)"
+   ],
+   "newMechanic": {
+    "name": "Daily Check-in Swipes",
+    "description": "A daily check-in feature on the Profile menu where users claim 1 bonus frontier model swipe after playing a short sponsored mini-game.",
+    "whyNeeded": "Janitor gates frontier model swipes behind Janitor Plus; this provides a small, ad-supported sampling for non-payers.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s02",
+  "trigger": "User taps the 'Daily Check-in' card on s02 (Profile menu).",
+  "eligibility": "Non-paying users who have not claimed today's check-in reward.",
+  "offer": {
+   "title": "Daily Check-in Swipe",
+   "body": "Play a 15-second game to claim 1 bonus frontier model swipe today.",
+   "cta": "Play Now",
+   "decline": "Maybe Later"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Janitor",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 bonus frontier model swipe",
+   "resource": "Frontier Swipes",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "The reward is strictly limited to 1 swipe per day, ensuring the Janitor Plus subscription remains the only way to access generous monthly swipes and priority routing.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1,
+   "cogs": "text-premium",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Daily active user retention (D7/D30) on s02.",
+   "guardrails": [
+    "Janitor Plus subscription conversion rate",
+    "Frontier model API token cost per active user"
+   ],
+   "holdout": "5% randomized user-level holdout over 30 days."
+  },
+  "precedents": [
+   "TAX-9",
+   "EX-DUO",
+   "AI-3",
+   "TRIG-1",
+   "POL-8"
+  ],
+  "risks": [
+   "Frontier model LLM token cost for 1 swipe per view remains near the break-even ceiling for ad revenue",
+   "Requirement for backend database changes to track frontier swipe usage for non-payers"
+  ],
+  "evidence": [
+   {
+    "obs": "s02",
+    "el": "e20",
+    "quote": "Main navigation"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s02",
+     "near": "e20",
+     "place": "before",
+     "change": "Add a Daily Check-in card displaying title 'Daily Check-in' and CTA 'Claim 1 Frontier Swipe'."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s02",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "Frontier Swipes",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "Frontier Swipes",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s02",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e20",
+      "text": "Profile menu shows navigation and Janitor Plus banner."
+     }
+    ],
+    "caption": "Profile menu s02 displays current navigation and subscription options."
+   },
+   {
+    "phase": "change",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "Frontier Swipes",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Daily Check-in card ne1 added above navigation."
+     }
+    ],
+    "caption": "A new daily check-in module ne1 appears on Profile menu s02."
+   },
+   {
+    "phase": "offer",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "Frontier Swipes",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Simula invitation modal presents check-in offer terms."
+     }
+    ],
+    "caption": "Tapping check-in displays the Simula reward offer with exact terms."
+   },
+   {
+    "phase": "ad",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "Frontier Swipes",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "15-second mini-game plays with Janitor AI partner."
+     }
+    ],
+    "caption": "User plays a 15-second mini-game with Game Partner Janitor."
+   },
+   {
+    "phase": "value",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "Frontier Swipes",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "1 Frontier Swipe verified and credited."
+     }
+    ],
+    "caption": "REWARD_VERIFIED event credits 1 Frontier Swipe instantly to the user."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35766,
+  "output": 1452,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1765
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:11:02.950Z"
+}

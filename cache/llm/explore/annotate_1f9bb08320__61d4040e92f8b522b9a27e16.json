@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:1f9bb08320",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s03",
+  "name": "AI Chat Screen",
+  "kind": "chat",
+  "purpose": "User interacts with the Luzia AI assistant via chat and prompt shortcuts.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e30",
+    "intent": "Type a message to the AI",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hello",
+    "sendEl": "e33"
+   },
+   {
+    "el": "e26",
+    "intent": "Tap prompt shortcut to ask for email help",
+    "kind": "consume",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2940,
+  "output": 209,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:30:14.854Z"
+}

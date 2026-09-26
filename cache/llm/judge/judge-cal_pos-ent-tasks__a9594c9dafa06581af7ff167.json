@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-ent-tasks",
+ "model": "gemini-2.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "surface\": \"ns1\" (based on s01 Chats Home). Chats Home is a general app home screen."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play three 15-second sponsored games today to unlock 30 minutes of Upgrade to Luzia+."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play three 15-second sponsored games today to unlock 30 minutes of Upgrade to Luzia+.\" and \"removesFreeValue\": false"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user opens the sheet and picks a task.\" and \"simula\": { \"unit\": \"SIM-RWD\", \"entry\": \"invitation\" }"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play three 15-second sponsored games today to unlock 30 minutes of Upgrade to Luzia+."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline\": \"Close\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "trigger\": \"A \\\"Daily tasks 0/3\\\" badge on Chats Home; the user opens the sheet and picks a task.\""
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility\": \"Non-payers only, returning users from their second session on; never subscribers.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "anchor\": \"r1\" (Luzia+ Subscription), \"reward\": \"30 minutes of Upgrade to Luzia+ for finishing all 3 tasks (today)\". \"whyNeeded\": \"There is no daily way to feel Upgrade to Luzia+ without Luzia+ Subscription; a capped task list adds proactive inventory without interrupting.\"",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "surface\": \"ns1\" (based on s01 Chats Home), \"trigger\": \"A \\\"Daily tasks 0/3\\\" badge on Chats Home; the user opens the sheet and picks a task.\" \"simula\": \"entry\": \"invitation\". \"removesFreeValue\": false.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "eligibility\": \"Non-payers only, returning users from their second session on; never subscribers.\" \"cannibalizationGuard\": \"3 tasks a day for one use; Luzia+ Subscription stays the only unlimited path; existing free value unchanged.\" \"kpis\": \"Paid plan conversion non-inferior within -3% relative\", \"holdout\": \"10% user-level holdout for 4 weeks\".",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view: $0.0000 (none x 0).\" \"One completed US view earns $0.0090–$0.0150\". \"cogs\": \"none\", \"cogsUnitsPerView\": 0.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "anchor\": \"m16\" (Chats Home, core-loop hub). Chats Home is described as \"reach=core-loop\" and \"13 visits during exploration.\" \"newMechanic\": \"Daily tasks... resets at midnight.\"",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "simula\": { \"unit\": \"SIM-RWD\", \"entry\": \"invitation\", \"minPlaySec\": 15 }. \"reward\": \"grantOn\": \"REWARD_VERIFIED\". The patch describes adding a badge and a new sheet, which are standard UI patterns.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "reward\": \"30 minutes of Upgrade to Luzia+\". \"anchor\": \"r1\" (Luzia+ Subscription). \"offer\": \"Play three 15-second sponsored games today to unlock 30 minutes of Upgrade to Luzia+.\" Uses app-specific nouns like \"Luzia+\" and \"Chats Home\".",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "caps\": { \"perDay\": 3, \"cooldownMin\": 5 }. \"cannibalizationGuard\": \"3 tasks a day for one use\". \"trigger\": \"A \\\"Daily tasks 0/3\\\" badge\".",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "kpis\": { \"primary\": \"Tasks completed per DAU and D7 retention against the holdout\", \"guardrails\": [ \"Paid plan conversion non-inferior within -3% relative\", \"D7 retention\" ], \"holdout\": \"10% user-level holdout for 4 weeks\" }.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": ""
+ },
+ "usage": {
+  "input": 42341,
+  "output": 1308,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4549
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:20.953Z"
+}

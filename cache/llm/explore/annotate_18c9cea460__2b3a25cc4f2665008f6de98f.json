@@ -1,0 +1,40 @@
+{
+ "purpose": "annotate:18c9cea460",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Search Characters",
+  "kind": "page",
+  "purpose": "Search and filter AI character profiles.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Search for characters",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "friend"
+   },
+   {
+    "el": "e47",
+    "intent": "Select character Eri",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 4556,
+  "output": 178,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:49:28.482Z"
+}

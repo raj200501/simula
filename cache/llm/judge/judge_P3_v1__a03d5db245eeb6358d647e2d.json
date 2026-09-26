@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal surface is the 'Create Account Sheet' (s07) and the reward is 'Deep Reasoning mode', which is a premium feature, not sensitive content."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is feature trial, not clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses gain framing ('Try Deep Reasoning for free') with a clear decline option."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Modal requires a tap on 'Play Now' to proceed."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Proposal explicitly states: 'Play a quick 15-second game to unlock 1 hour of our premium Deep Reasoning mode.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Proposal includes 'No thanks' button which returns the user to the services tab."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger is the paywall decline, not a streaming generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility specifies 'Non-paying guests who are not currently on a subscription'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The user is attempting to access a specific feature (Deep Reasoning/Task) and is blocked; offering the trial at this exact moment is highly context-relevant.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Providing a time-boxed trial of premium features is a standard, non-disruptive way to let users experience core value without degrading the free experience.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Targeting only decliners of the paywall with a time-limited sample is an effective way to generate revenue from users who aren't converting to subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0090) exceeds net revenue ($0.0063). The reward must be sized down to ensure profitability.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggers on paywall walls (s07, s02, etc), which the digest notes are frequent.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD, but the patch references elements (ne_decline_trigger) not declared in the digest/structure; requires cleaner backend integration.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the correct screen IDs (s07) and references the correct premium features (Deep Reasoning, Luzia+).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "1/day cap and 1440 minute cooldown are well designed to prevent nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails, and a holdout duration.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the trial duration (from 1 hour to 15 or 30 minutes) to lower the COGS below the net revenue-per-view of $0.0063.",
+   "Correct the patch/storyboard: Define the trigger element on screen s07 (e.g., 'close_button' or similar) and update the patch to reference existing elements, as 'ne_decline_trigger' is undefined in the digest.",
+   "Refine the patch definition to explicitly state the new screen/modal creation correctly."
+  ],
+  "topConcern": "The proposal has negative unit economics, as the cost to serve ($0.0090) exceeds the net revenue per view ($0.0063). The reward duration must be shortened."
+ },
+ "usage": {
+  "input": 42731,
+  "output": 1086,
+  "cacheRead": 40428,
+  "cacheWrite": 0,
+  "thoughts": 1331
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:26.254Z"
+}

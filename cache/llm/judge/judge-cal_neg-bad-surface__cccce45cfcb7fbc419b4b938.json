@@ -1,0 +1,109 @@
+{
+ "purpose": "judge-cal:neg-bad-surface",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal displays on the Services Tab (s06) after account sheet dismissal for general AI assistant tasks."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 30 minutes of Luzia+ access, with no rewards for clicks, installs, or cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses gain framing (\"Play to try 30 minutes of Upgrade to Luzia+\") and provides a clear \"No thanks\" decline button."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must explicitly tap \"Play to try\" on the offer overlay."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states: \"Play a 15-second game to try 30 minutes of Upgrade to Luzia+ now.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes an equally legible decline option (\"No thanks\") that returns the user without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered only after dismissing the Create Account Sheet, appearing on the Services Tab after answers finish."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Restricted to guests/non-payers who just declined the account sheet, excluding subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal uses TAX-10 (paywall-decline fallback), offering a time-boxed Luzia+ sample on the Services Tab immediately after the user declines the Create Account Sheet (m2).",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Placed natively on the Services Tab after wall dismissal; preserves flow and keeps the paid path first.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to decliners, time-boxed to 30 minutes, capped at once a day, with a 10% holdout planned.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.0000 (none), well below net revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered by wall declines on the Create Account Sheet, which occurs frequently in the core flow.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD unit with button entry, but references non-existent screen 's99' in the proposal header while patch targets 's06'.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References specific model elements like Create Account Sheet, Services Tab, and Upgrade to Luzia+.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at once per day (perDay: 1) with no re-prompting on decline.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Names primary fallback conversion metric, guardrails (-3% relative plan conversion, D7 retention), and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix surface grounding by changing the proposal surface from 's99' to 's06' (Services Tab) to match the patch."
+  ],
+  "topConcern": "Surface ID mismatch where proposal specifies non-existent screen 's99' instead of 's06'."
+ },
+ "usage": {
+  "input": 42391,
+  "output": 1025,
+  "cacheRead": 32330,
+  "cacheWrite": 0,
+  "thoughts": 2434
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:21:02.759Z"
+}

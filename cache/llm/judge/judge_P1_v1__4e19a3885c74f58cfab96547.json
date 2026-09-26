@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets the memory wall on s03, which is a standard utility feature for the service."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a mini-game, not for clicking or installing ads."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing ('Unlock 5x Memory') rather than threatening to delete existing content."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal includes an explicit opt-in via a new 'Try for free' button and an invite screen."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The invitation discloses the action (15s game) and the reward (30 mins of memory)."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The UI design includes a 'Not Now' button, fulfilling the requirement for free decline."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on the memory paywall screen, not during a chat generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility is explicitly restricted to non-paying users."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer is placed directly on the memory wall (s03), providing exactly what the user needs when they are blocked.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The rewarded play is additive to the free tier without degrading the existing chat experience or quality.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is strictly time-boxed (30m) and capped (2/day), which clearly differentiates it from the 'Janitor Plus' permanent entitlement.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The cost to serve is $0.0090, which exceeds the low-end net revenue per view ($0.0063) computed in code.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Memory context is a core bottleneck for roleplay, making the wall a high-frequency trigger.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD units using existing screen surfaces.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References Janitor Plus subscription, memory context, and s03 correctly.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily cap of 2 and 60-minute cooldown defined.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metrics and a user-level holdout experiment plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Resize the reward or switch to a cheaper inference model, as the current cost to serve ($0.0090) exceeds the net revenue per view ($0.0063).",
+   "Update economy references to valid items; 'plan' is not a valid economy item in the digest."
+  ],
+  "topConcern": "The unit economics are currently negative; the cost of providing premium memory context via the rewarded view is higher than the net revenue earned per view."
+ },
+ "usage": {
+  "input": 34861,
+  "output": 970,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:00.207Z"
+}

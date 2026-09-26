@@ -1,0 +1,59 @@
+{
+ "purpose": "annotate:b3c18296e7",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Article Detail Page",
+  "kind": "page",
+  "purpose": "Displays news articles with embedded advertisements.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e13",
+    "intent": "Go back to the previous screen",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": null,
+    "tapPoint": {
+     "x": 500,
+     "y": 1500
+    },
+    "intent": "Scroll down the article",
+    "kind": "scroll",
+    "priority": 1
+   },
+   {
+    "el": "e23",
+    "intent": "View advertisement",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "ADVERTISEMENT"
+   },
+   {
+    "kind": "ad",
+    "text": "Test Ad"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3005,
+  "output": 298,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:08:58.460Z"
+}

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-generic",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets Settings (s19), which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Uses SIM-RWD with 15s mini-game; no cash, gift cards, or ad-click incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Gain-framed temporary sample access; no hostage framing or dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps the sample chip on s19 to invoke the opt-in offer overlay."
+   },
+   {
+    "gate": "disclosed",
+    "pass": false,
+    "evidence": "The offer dialog incorrectly displays generic template text ('Free coins!', 'Watch a video to earn coins.') instead of disclosing the actual reward ('30 minutes of Upgrade to Luzia+')."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes a visible 'No thanks' button that returns the user to Settings without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered on the Settings page (s19), entirely outside active chat or streaming responses."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly restricts offers to signed-in non-subscribers and excludes active subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets Settings (s19) where users encounter the Upgrade to Luzia+ upsell, but the offer copy is generic ('Free coins!') rather than tailored to Luzia+ features.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Triggered cleanly on Settings, but displaying 'Free coins!' in an AI assistant app with no coin currency breaks product integrity and immersion.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-subscribers, time-boxed to 30 minutes, capped at 2 per day, expiring tonight, with Luzia+ remaining the primary paid path and a holdout planned.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.0000 (none), which is well below the net revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings (s19) is reached frequently, but the specific upsell engagement point is occasional.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with standard overlay, chip ne1 on s19, and SSV grant on REWARD_VERIFIED.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal id 'neg-generic' and offer text use generic template copy ('Free coins!') rather than Luzia+'s specific nouns (Luzia+ Subscription, deep reasoning, tasks).",
+    "score": 1
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 2 per day with a 60-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric named, guardrails set on paid conversion and retention, with a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Update the offer title and body to accurately disclose the exact reward ('30 minutes of Luzia+ access') instead of generic 'Free coins!' template text.",
+   "Replace generic copy with specific Luzia terminology referencing Luzia+ Subscription and advanced features."
+  ],
+  "topConcern": "The proposal uses generic template copy ('Free coins!') that completely misrepresents the actual reward (30 minutes of Luzia+ subscription access), failing disclosure requirements and app specificity."
+ },
+ "usage": {
+  "input": 42270,
+  "output": 1082,
+  "cacheRead": 32329,
+  "cacheWrite": 0,
+  "thoughts": 3916
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:21:15.741Z"
+}

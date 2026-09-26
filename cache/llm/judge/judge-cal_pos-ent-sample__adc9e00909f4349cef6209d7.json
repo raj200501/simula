@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-ent-sample",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal focuses on granting time-boxed access to '5x context for better memory' within the app context, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 30 minutes of '5x context for better memory', an in-app feature entitlement, which is not cash-like."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain-framing ('Play a 15-second game to unlock...') and explicitly avoids hostage framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user opts in with an explicit tap on 'Play to try'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The exact reward (30 minutes of 5x context) and action (15-second game) are stated in the offer."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes a clear 'No thanks' decline option that leaves the user in the current state."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on s03 (the More memory for long chats. paywall), not during an active chat stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly excludes subscribers: 'never shown to subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger occurs exactly when the user reaches the 'More memory for long chats.' wall (s03), which is the precise moment of need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The integration feels native, preserving the flow on the paywall screen while sampling a premium feature.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The sample is small (30 minutes), time-limited (today), capped (2/day), and clearly distinguished from the full Janitor Plus subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The COGS is $0.00 and the revenue per view is estimated at $0.009–$0.015, making it clearly profitable.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is on s03, a frequent paywall/upsell screen, ensuring high visibility for non-payers.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal uses standard SIM-RWD units and fits into existing navigation s03.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal uses app-specific identifiers like 'Janitor Plus' and 'More memory for long chats.'",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal defines a daily cap (2) and cooldown (60 min) to prevent nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "The proposal defines primary KPIs, guardrails, and a user-level holdout for validation.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None."
+ },
+ "usage": {
+  "input": 34538,
+  "output": 947,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1495
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:25.577Z"
+}

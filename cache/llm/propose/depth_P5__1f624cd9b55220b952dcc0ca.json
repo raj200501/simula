@@ -1,0 +1,225 @@
+{
+ "purpose": "depth:P5",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Anima Video Generation Export Boost",
+  "oneLiner": "Users can play a quick Simula game to earn an extra Anima video generation credit when they hit the daily free limit.",
+  "case": "product-change",
+  "archetype": "TAX-4",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m20"
+   ],
+   "economy": [
+    "r_anima_credit (new)"
+   ],
+   "newMechanic": {
+    "name": "Anima Generation Limits",
+    "description": "Introduce a daily limit of 1 free video animation per day, with additional exports costing 1 Anima Video Credit.",
+    "whyNeeded": "Protects high-COGS GPU resources on video generation while providing a clear monetization path for free users.",
+    "removesFreeValue": true
+   }
+  },
+  "surface": "s09",
+  "trigger": "When the user taps the generate button with 0 Anima Video Credits remaining.",
+  "eligibility": "Non-paying free tier users who have exhausted their daily video generation limit.",
+  "offer": {
+   "title": "Out of Anima Credits",
+   "body": "Play a 15-second game to get 1 Anima Video Credit and export now.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 Anima Video Credit",
+   "resource": "r_anima_credit",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 15
+  },
+  "cannibalizationGuard": "Video generation limits are completely distinct from the main Luzia+ core reasoning or chat features, ensuring subscribers still maintain exclusive access to faster models and advanced custom services.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1.5,
+   "cogs": "image",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Anima Generation Ad Revenue",
+   "guardrails": [
+    "Luzia+ Subscription Conversion Rate",
+    "s09 Screen Churn Rate",
+    "D7 Retention"
+   ],
+   "holdout": "User-level randomized holdout group, 10% allocation, evaluated over 28 days."
+  },
+  "precedents": [
+   "TAX-4",
+   "EX-UTIL",
+   "TRIG-5",
+   "POL-8"
+  ],
+  "risks": [
+   "Introducing limits on video generation may cause initial user backlash, similar to Duolingo's Energy change.",
+   "High video generation infrastructure costs might exceed ad payout in low-eCPM regions if not geographically capped."
+  ],
+  "evidence": [
+   {
+    "obs": "m20",
+    "el": null,
+    "quote": "Animate Tool Screen (tab) is a place users return to (6 visits during exploration)"
+   },
+   {
+    "obs": "s09",
+    "el": "e14",
+    "quote": "Upload the pic you want to animate"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s09",
+     "near": "e34",
+     "place": "after",
+     "change": "Animate & Export Button"
+    },
+    {
+     "id": "ne2",
+     "in": "s09",
+     "near": "e12",
+     "place": "after",
+     "change": "Anima Credit Badge"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s09",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r_anima_credit",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "r_anima_credit",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e14",
+      "text": "Users upload their picture and pick an animation option on this tab."
+     }
+    ],
+    "caption": "Currently, users can select styles like Clapping or Walking on the Anima Tool screen."
+   },
+   {
+    "phase": "change",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_anima_credit",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Shows that the user has 0 Anima Credits remaining today."
+     },
+     {
+      "node": "ne1",
+      "text": "Generate Video is locked when the balance is 0."
+     }
+    ],
+    "caption": "We introduce a credit counter and block video generation once the daily allowance is exhausted."
+   },
+   {
+    "phase": "offer",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_anima_credit",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tapping this opens the Simula game invitation."
+     }
+    ],
+    "caption": "An explicit opt-in overlay appears, offering 1 credit for playing a 15-second game."
+   },
+   {
+    "phase": "ad",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_anima_credit",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The user plays the Simula interactive mini-game with Luzia for 15 seconds."
+   },
+   {
+    "phase": "value",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_anima_credit",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Credit is instantly updated to 1 after verification."
+     },
+     {
+      "node": "ne1",
+      "text": "The button is now unlocked and ready to export the video."
+     }
+    ],
+    "caption": "Upon game completion, the credit is granted and the user can generate their AI video animation immediately."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42773,
+  "output": 1771,
+  "cacheRead": 23108,
+  "cacheWrite": 0,
+  "thoughts": 2183
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:04:22.596Z"
+}

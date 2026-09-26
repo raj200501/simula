@@ -1,0 +1,65 @@
+{
+ "purpose": "annotate:3cf3b4c38a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Animate Tool Screen",
+  "kind": "tab",
+  "purpose": "This screen allows users to upload a picture and animate it using AI tools.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e7",
+    "intent": "Switch to Animate tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e5",
+    "intent": "Switch to Create tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e6",
+    "intent": "Switch to Edit tab",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e16",
+    "intent": "Upload photo to animate",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e18",
+    "intent": "Select Clapping animation style",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e30",
+    "intent": "Type idea description",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Animate this picture",
+    "sendEl": "e31"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2645,
+  "output": 371,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:07:57.373Z"
+}

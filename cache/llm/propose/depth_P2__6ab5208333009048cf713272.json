@@ -1,0 +1,226 @@
+{
+ "purpose": "depth:P2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Unlock Image Generation Credit",
+  "oneLiner": "Watch a quick mini-game with Luzia to earn an AI image generation credit.",
+  "case": "product-change",
+  "archetype": "AI-5",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m21"
+   ],
+   "economy": [
+    "r3"
+   ],
+   "newMechanic": {
+    "name": "Rewarded Image Credits",
+    "description": "Users can watch or play a mini-game to earn an image generation credit when they hit their AI usage quota.",
+    "whyNeeded": "Allows free users to continue generating images without impacting paid conversion by limiting the reward to a single credit per view.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s10",
+  "trigger": "When user attempts to generate an image in the Image Creation Hub and their AI Usage Quota (r3) is depleted.",
+  "eligibility": "Non-paying users who have exhausted their free AI Usage Quota (r3).",
+  "offer": {
+   "title": "Earn an image credit",
+   "body": "Play a 15-second game with Luzia to get 1 free AI image generation credit.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 AI Image credit",
+   "resource": "r3",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Limited to 3 credits per day and only available when r3 is depleted; ensures non-payers maintain usage without unlimited free generation.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 2,
+   "cogs": "image",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Image generation volume among non-payers",
+   "guardrails": [
+    "Paid conversion rate (Luzia+)",
+    "Daily active usage (DAU)",
+    "Retention (D7, D30)"
+   ],
+   "holdout": "10% of non-paying user base held out for 4 weeks."
+  },
+  "precedents": [
+   "AI-5",
+   "EX-UTIL"
+  ],
+  "risks": [
+   "Ad saturation if limits are too frequent",
+   "Brand safety concerns in AI-generated images",
+   "Potential for lower paid conversion if reward is too generous"
+  ],
+  "evidence": [
+   {
+    "obs": "s10",
+    "el": "e14",
+    "quote": "Create image"
+   },
+   {
+    "obs": "s10",
+    "el": "e15",
+    "quote": "Mix or swap elements from photos"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "modal",
+     "change": "Rewarded ad invitation modal for image credit."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s10",
+     "near": "e14",
+     "place": "after",
+     "change": "Button to trigger rewarded ad for 1 image credit when limit is reached."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s10",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r3",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "r3",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s10",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e14",
+      "text": "User attempts to generate image with 0 credits."
+     }
+    ],
+    "caption": "The user is out of image generation credits and cannot create more."
+   },
+   {
+    "phase": "change",
+    "screen": "s10",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New 'Earn credit' button appears."
+     }
+    ],
+    "caption": "A new 'Earn credit' button is shown when the user reaches the limit."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ns1",
+      "text": "Play a game to get 1 image credit."
+     }
+    ],
+    "caption": "The user opts into the rewarded offer."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ns1",
+      "text": "Luzia plays with you."
+     }
+    ],
+    "caption": "The user plays the mini-game with Luzia."
+   },
+   {
+    "phase": "value",
+    "screen": "s10",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e14",
+      "text": "Credit granted, balance updated."
+     }
+    ],
+    "caption": "The image credit is granted and the user can generate the image."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42882,
+  "output": 1648,
+  "cacheRead": 23117,
+  "cacheWrite": 0,
+  "thoughts": 1786
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:00.370Z"
+}

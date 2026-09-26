@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-account-swap",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The surface is s19 (Settings) and the trigger is reaching for Upgrade to Luzia+."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The proposal uses a 15-second game unlock (SIM-RWD) for in-app time-boxed subscription features."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses gain framing ('unlock 30 minutes') with an explicit decline option ('No thanks')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The primary CTA is 'Play to try', providing explicit opt-in."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Body states: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option is 'No thanks'."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger is on Settings (s19), not interrupting any AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility specifies 'Signed-in non-subscribers... never subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the Upgrade to Luzia+ upsell on Settings (m1, m23), offering a time-boxed sample, but the reward description mentions viewing favorite messages without an account, creating a mismatch.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal attempts to bypass account creation / sign-up walls for account-only features like favorite messages through an ad, which violates the principle that an ad never stands in for creating an account.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "While it time-boxes the sample to 30 minutes and caps it at twice a day, offering account-only features or subscription features via ads without an account undermines account creation.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve is $0.0000 (none), well within net revenue per view ($0.0090-$0.0150 US mid eCPM haircut).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings (s19) and upgrade upsells are frequent touchpoints, but gating on settings taps has moderate reach.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD unit with button entry, SSV, and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References actual screen s19, Upgrade to Luzia+, and economy items r1, w1 from the digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps at 2 per day with a 60-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric (sample opt-ins and subscription conversion), guardrails (-3% plan conversion, D7 retention), and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the attempt to use rewarded ads as a substitute for account creation or unlocking account-only features like favorite messages.",
+   "Ensure the reward strictly grants a time-boxed entitlement to Luzia+ subscription features rather than bypassing account walls."
+  ],
+  "topConcern": "The proposal violates the core rule that an ad never stands in for creating an account or unlocking account-only features (viewing favorite messages), attempting to bypass account walls instead of sampling subscription features."
+ },
+ "usage": {
+  "input": 42183,
+  "output": 766,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2929
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:12.345Z"
+}

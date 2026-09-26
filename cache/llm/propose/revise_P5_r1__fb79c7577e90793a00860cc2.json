@@ -1,0 +1,224 @@
+{
+ "purpose": "revise:P5:r1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Anima Queue Fast-Track Priority",
+  "oneLiner": "Users can play a quick Simula game with Luzia to earn Fast-Track Credits that bypass the animation processing queue during peak hours.",
+  "case": "product-change",
+  "archetype": "TAX-4",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m20"
+   ],
+   "economy": [
+    "r_fast_track_credit (new)"
+   ],
+   "newMechanic": {
+    "name": "Fast-Track Queue Priority",
+    "description": "Introduce a fast-track rendering queue for Anima animations. Free generation remains unlimited but experiences wait times during peak processing periods, which can be bypassed using Fast-Track Credits.",
+    "whyNeeded": "Protects user engagement by keeping free access intact while offering a zero-COGS progression utility that can be monetized via rewarded ads.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s09",
+  "trigger": "When the user taps the Animate & Export button during queue wait times.",
+  "eligibility": "Non-paying free tier users who want to skip the standard rendering queue.",
+  "offer": {
+   "title": "Skip the Animation Queue",
+   "body": "Play a 15-second game with Luzia to skip the wait and fast-track your animation.",
+   "cta": "Fast-Track Now",
+   "decline": "Wait in Queue"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 Fast-Track Animation Credit",
+   "resource": "r_fast_track_credit",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 5,
+   "cooldownMin": 10
+  },
+  "cannibalizationGuard": "Standard generation remains fully free and functional, while Luzia+ subscribers automatically bypass the processing queue at all times without needing ads.",
+  "assumptions": {
+   "engagedShare": 0.35,
+   "viewsPerEngager": 2,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Anima Fast-Track Ad Revenue",
+   "guardrails": [
+    "Luzia+ Subscription Conversion Rate",
+    "s09 Screen Churn Rate",
+    "D7 Retention"
+   ],
+   "holdout": "User-level randomized holdout group, 10% allocation, evaluated over 28 days."
+  },
+  "precedents": [
+   "TAX-4",
+   "EX-UTIL",
+   "TRIG-5",
+   "POL-8"
+  ],
+  "risks": [
+   "If peak rendering queue wait times are negligible, the user's perceived value of Fast-Track Credits may diminish."
+  ],
+  "evidence": [
+   {
+    "obs": "s09",
+    "el": "e14",
+    "quote": "Upload the pic you want to animate"
+   },
+   {
+    "obs": "s08",
+    "el": "e16",
+    "quote": "Anima"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s09",
+     "near": "e34",
+     "place": "after",
+     "change": "Fast-Track Animate Button"
+    },
+    {
+     "id": "ne2",
+     "in": "s09",
+     "near": "e12",
+     "place": "after",
+     "change": "Fast-Track Credit Badge"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s09",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r_fast_track_credit",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "r_fast_track_credit",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e14",
+      "text": "Users upload their picture and pick an animation style."
+     }
+    ],
+    "caption": "Currently, users choose animation styles on the Anima Tool screen."
+   },
+   {
+    "phase": "change",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_fast_track_credit",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Displays the user's current Fast-Track credits."
+     },
+     {
+      "node": "ne1",
+      "text": "Allows triggering a fast-track queue skip."
+     }
+    ],
+    "caption": "We introduce a Fast-Track credit system to bypass standard processing queues."
+   },
+   {
+    "phase": "offer",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_fast_track_credit",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tapping this opens the Simula game invitation to earn 1 Fast-Track Credit."
+     }
+    ],
+    "caption": "When queues are active, users play a game to skip wait times."
+   },
+   {
+    "phase": "ad",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_fast_track_credit",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The user plays the Simula interactive game with Luzia for fifteen seconds."
+   },
+   {
+    "phase": "value",
+    "screen": "s09",
+    "counters": [
+     {
+      "resource": "r_fast_track_credit",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Credit balance is updated to 1."
+     },
+     {
+      "node": "ne1",
+      "text": "Fast-Track button is now unlocked to instantly render."
+     }
+    ],
+    "caption": "Once granted, the user can instantly bypass the queue and export."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43548,
+  "output": 1713,
+  "cacheRead": 38557,
+  "cacheWrite": 0,
+  "thoughts": 4290
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:06:37.732Z"
+}

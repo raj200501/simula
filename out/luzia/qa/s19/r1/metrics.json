@@ -1,0 +1,15 @@
+{
+  "screen": "s19",
+  "round": 1,
+  "kept": true,
+  "by": "llm",
+  "composite": 0.5894,
+  "iou": 0.8362,
+  "ssim": 0.4351,
+  "text": 0.5,
+  "color": 0.4398,
+  "pixelDiff": 0.5795,
+  "elements": 45,
+  "missing": 1,
+  "mustFix": 0
+}

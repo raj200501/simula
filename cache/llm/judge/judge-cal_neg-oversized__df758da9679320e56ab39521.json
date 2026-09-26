@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-oversized",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Surface s19 is the Settings page, which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is in-app feature access, with no cash rewards, crypto, or incentivized clicks/installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Offer uses positive gain framing ('unlock 30 minutes') with standard CTA and decline buttons."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User explicitly opts in by tapping the sample chip and the 'Play to try' button."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The required action ('15-second game') and reward are clearly stated before the ad starts."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option ('No thanks') is present and returns the user to Settings without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Placed on the Settings screen (s19), completely away from active AI streaming responses."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly excludes existing subscribers ('never subscribers')."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the upgrade upsell on Settings (s19), but has a severe internal contradiction: the text and storyboard state '30 minutes of Upgrade to Luzia+', while the reward object specifies '7 days of Luzia+ Subscription'.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Placed natively on the Settings screen (s19) next to the upgrade upsell with a clean chip and standard modal flow.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Granting '7 days of Luzia+ Subscription' (as specified in reward.what) for watching a 15-second ad twice a day completely cannibalizes paid subscriptions by giving 14 days of free access per week.",
+    "score": 1
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "While COGS is listed as none, trading a full 7-day subscription entitlement for a single ad view worth ~$0.012 severely misaligns unit economics.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings is reached frequently during app exploration (m12), but it is not part of the core chat loop.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD unit, button entry, and a clean patch on s19.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Correctly references screen s19, element e10, resource r1, and wall w1 from the digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 2 per day with a 60-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails (-3% plan conversion non-inferiority), and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Align the reward specification in reward.what and reward.duration to strictly match the 30-minute time-box stated in the text (30 minutes of Luzia+ features) rather than 7 full days.",
+   "Ensure complete consistency between offer copy, storyboard, and reward schema fields to prevent severe subscription cannibalization."
+  ],
+  "topConcern": "The proposal contains a dangerous contradiction where the reward object grants '7 days of Luzia+ Subscription', which would completely destroy subscription revenue by allowing users to obtain unlimited free weeks of premium access via ad views."
+ },
+ "usage": {
+  "input": 42289,
+  "output": 1079,
+  "cacheRead": 32329,
+  "cacheWrite": 0,
+  "thoughts": 2878
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:50.790Z"
+}

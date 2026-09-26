@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:643b4b2a89",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s36",
+  "name": "Luzia Chat",
+  "kind": "chat",
+  "purpose": "AI assistant chat interface where users can ask questions and get help.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e30",
+    "intent": "Ask the AI a question or prompt",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e33"
+   },
+   {
+    "el": "e26",
+    "intent": "Tap suggested prompt to send it",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2914,
+  "output": 213,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:24:12.857Z"
+}

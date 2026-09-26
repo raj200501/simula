@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luzia: judge evaluation</title><style>
+:root{--ink:#111827;--muted:#6B7280;--line:#E5E7EB;--soft:#F6F7F9;--accent:#4F46E5;--ship:#047857;--revise:#B45309;--reject:#B91C1C}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#fff}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+header{background:var(--soft);border-bottom:1px solid var(--line);padding:36px 0 28px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-size:36px;margin:6px 0 8px;letter-spacing:-.01em}
+h2{font-size:24px;margin:40px 0 12px;display:flex;align-items:center;gap:12px}
+h3{font-size:17px;margin:18px 0 6px}
+.lede{font-size:18px;color:#374151;max-width:900px;margin:0}
+.lede2{color:#374151;max-width:1000px}
+.pipe{list-style:none;display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:18px 0 0}
+.pipe li{background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600}
+.pipe li+li::before{content:"→";color:var(--muted);margin-right:8px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+.score th,.small th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding:8px 10px;white-space:nowrap}
+.score td,.small td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top;font-size:15px}
+.score tfoot td{font-weight:700;border-bottom:none}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted);font-size:13px}
+.why{max-width:260px}
+.note{font-size:14px;color:var(--muted);max-width:1000px}
+.state{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.state.complete{background:#ECFDF5;color:var(--ship)}.state.partial{background:#EFF6FF;color:#1D4ED8}.state.blocked{background:#FEF2F2;color:var(--reject)}
+.v{display:inline-block;font-size:12px;font-weight:700;padding:2px 7px;border-radius:999px;margin:1px 0;white-space:nowrap}
+.v.ship{background:#ECFDF5;color:var(--ship)}.v.revise{background:#FFFBEB;color:var(--revise)}.v.reject{background:#FEF2F2;color:var(--reject)}
+.stub{background:#FFFBEB;color:var(--revise);border-radius:4px;padding:0 5px}
+.how th{text-align:left;width:300px;padding:10px 16px 10px 0;border-bottom:1px solid var(--line);vertical-align:top;font-size:15px}
+.how td{padding:10px 0;border-bottom:1px solid var(--line);color:#374151}
+.app{border-top:1px solid var(--line);margin-top:28px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.lnk{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-weight:600;font-size:14px;text-decoration:none;color:var(--ink);background:#fff}
+a.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk.off{color:#9CA3AF;background:var(--soft);border-style:dashed}
+details{margin:10px 0;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+summary{cursor:pointer;font-weight:600}
+.notes li{font-size:15px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--soft);border-radius:14px;padding:16px 18px}
+.card ul{padding-left:18px;margin:6px 0 0;font-size:15px}
+footer{margin:48px 0 32px;font-size:13px;color:var(--muted)}
+.doc{padding-top:24px;padding-bottom:48px}
+.md table{margin:12px 0}
+.md th,.md td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top;font-size:14px}
+.md th{background:var(--soft)}
+.md pre{background:#0F172A;color:#E2E8F0;padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:13px}
+.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+.md blockquote{border-left:3px solid var(--line);margin:8px 0;padding:2px 14px;color:#374151}
+</style></head><body>
+<main class="wrap doc"><p><a href="../../index.html">← Run report</a></p><div class="md"><h1 id="judge-calibration-luzia">Judge calibration: Luzia</h1>
+<p>Single-fault confusion table. 3 positives adapted from the KB precedents that fit this app&#39;s economy, grounded in its ids; each negative changes exactly one field of a positive. Every item is judged once: code gates, then one LLM judge (gemini-2.5-flash, gemini-3.1-flash-lite, gemini-3.5-flash-lite) call (skipped when a policy gate already failed). No revision rounds, no Batch API.</p>
+<p>n = 13 items from one run: this shows what each layer catches; it is not a statistical estimate of judge accuracy.</p>
+<h2 id="confusion-table">Confusion table</h2>
+<table><thead><tr><th>item</th><th>kind</th><th>fault (field changed)</th><th>expected catch</th><th>verdict</th><th>weighted</th><th>caught by</th><th>lowest criterion</th><th>failed gates</th></tr></thead><tbody><tr><td>pos-ent-sample</td><td>positive</td><td>EX-MUSIC: Intent-triggered sample of a paid feature (Pandora Premium Access: the missing premium capability, small and expiring)</td><td>SHIP</td><td>SHIP ✓</td><td>4.9</td><td>—</td><td>reach 4</td><td>none</td></tr><tr><td>pos-ent-decline</td><td>positive</td><td>TAX-10: Decline fallback for a gated feature: one small sample, only after the paid (or sign-up) path was declined</td><td>SHIP</td><td>SHIP ✓</td><td>4.55</td><td>—</td><td>reach 3</td><td>none</td></tr><tr><td>pos-ent-tasks</td><td>positive</td><td>TAX-9: Sponsored daily tasks whose completed set unlocks one use of a paid feature (Character.AI Charms, Discord Quests)</td><td>SHIP</td><td>SHIP ✓</td><td>5</td><td>—</td><td>value-moment-fit 5</td><td>none</td></tr><tr><td>neg-autoplay</td><td>negative</td><td>Auto-plays in the middle of a streaming response (<code>trigger</code> of pos-ent-sample)</td><td>judge: no-stream-interrupt / explicit-opt-in / no-loss-framing gates</td><td>REJECT ✓</td><td>4.05</td><td>judge</td><td>product-integrity 1</td><td>no-loss-framing (judge), no-stream-interrupt (judge)</td></tr><tr><td>neg-no-decline</td><td>negative</td><td>The decline option is removed (<code>offer.decline</code> of pos-ent-decline)</td><td>code: structure gate (no decline)</td><td>REVISE ✓</td><td>4.7</td><td>code + judge</td><td>frequency-fatigue 3</td><td>structure (code), free-decline (judge)</td></tr><tr><td>neg-gift-card</td><td>negative</td><td>Gift-card (cash-like) reward (<code>reward.what</code> of pos-ent-sample)</td><td>code: policy-lint gate</td><td>REJECT ✓</td><td>—</td><td>code</td><td>—</td><td>policy-lint (code)</td></tr><tr><td>neg-loss-framing</td><td>negative</td><td>&quot;Watch or lose your history&quot; loss framing (<code>offer.body</code> of pos-ent-tasks)</td><td>judge: no-loss-framing gate</td><td>REJECT ✓</td><td>2.7</td><td>judge</td><td>product-integrity 1</td><td>no-loss-framing (judge)</td></tr><tr><td>neg-oversized</td><td>negative</td><td>Reward far larger than a view is worth (a week of the paid plan per view) (<code>reward</code> of pos-ent-sample)</td><td>judge: cannibalization (a week of the paid plan per view) [ANTI-4]</td><td>REVISE ✓</td><td>3.55</td><td>judge</td><td>cannibalization-safety 1</td><td>none</td></tr><tr><td>neg-subscribers</td><td>negative</td><td>Offered to subscribers on every open (<code>eligibility</code> of pos-ent-sample)</td><td>judge: not-for-subscribers gate, frequency and cannibalization scores</td><td>REVISE ✓</td><td>3.5</td><td>judge</td><td>cannibalization-safety 1</td><td>not-for-subscribers (judge)</td></tr><tr><td>neg-bad-surface</td><td>negative</td><td>A surface id that does not exist in the model (<code>surface</code> of pos-ent-decline)</td><td>code: grounding gate</td><td>REVISE ✓</td><td>4.45</td><td>code</td><td>feasibility 3</td><td>grounding (code)</td></tr><tr><td>neg-generic</td><td>negative</td><td>Generic &quot;watch a video for coins&quot; with no app nouns (<code>offer</code> of pos-ent-sample)</td><td>judge: specificity and disclosure</td><td>REJECT ✓</td><td>2.95</td><td>judge</td><td>specificity 1</td><td>disclosed (judge)</td></tr><tr><td>neg-entitlement-amount</td><td>negative</td><td>An entitlement granted as a currency (&quot;+1 &lt;tier&gt;&quot;) (<code>reward</code> of pos-ent-sample)</td><td>code: reward-coherence gate</td><td>REVISE ✓</td><td>3.35</td><td>code + judge</td><td>value-moment-fit 2</td><td>reward-coherence (code)</td></tr><tr><td>neg-account-swap</td><td>negative</td><td>An account-only feature offered for an ad (an ad in place of signing up) (<code>reward</code> of pos-ent-sample)</td><td>code: not-for-account-wall gate</td><td>REVISE ✓</td><td>3</td><td>code + judge</td><td>product-integrity 1</td><td>not-for-account-wall (code)</td></tr></tbody></table>
+<h2 id="counts">Counts</h2>
+<ul><li>Negatives caught (verdict is not SHIP): <strong>10 / 10</strong> — code only 2, judge only 5, both 3.</li><li>Caught by the layer expected to catch it: 10 / 10.</li><li>Negatives that would SHIP: 0.</li><li>Positives that SHIP: <strong>3 / 3</strong>.</li><li>Not applicable to this model: pos-serial (model lacks reward.amount); pos-music (model lacks reward.amount); pos-duo (model lacks reward.amount); pos-decline (model lacks decline.moment, reward.amount); pos-tasks (model lacks reward.amount).</li></ul>
+<h2 id="top-concern-per-item">Top concern per item</h2>
+<ul><li><strong>pos-ent-sample</strong> (SHIP): Clarify the exact benefits granted (e.g., &#39;30 minutes of advanced services and deep reasoning mode&#39;) rather than the upsell action &#39;Upgrade to Luzia+&#39;.</li><li><strong>pos-ent-decline</strong> (SHIP): The offer copy &#39;Not ready yet?&#39; could be perceived as slightly confirmshaming.</li><li><strong>pos-ent-tasks</strong> (SHIP): </li><li><strong>neg-autoplay</strong> (REJECT): The proposal violates core integrity rules by forcing an auto-playing, interruptive ad while the AI is in the middle of streaming a response to the user.</li><li><strong>neg-no-decline</strong> (REVISE): The proposal lacks an explicit decline option in the offer object, which is a violation of the &#39;Declining is free&#39; policy.</li><li><strong>neg-gift-card</strong> (REJECT): Remove cash-like rewards, incentivized clicks, installs or ratings, and &#39;support us&#39; copy [POL-2] (policy-lint: matched &quot;gift card&quot;).</li><li><strong>neg-loss-framing</strong> (REJECT): The proposal uses manufactured scarcity and hostage framing (&#39;lose your chat history&#39;) to force engagement. This is a severe dark pattern that violates product integrity and user trust.</li><li><strong>neg-oversized</strong> (REVISE): The proposal contains a dangerous contradiction between the 30-minute claim in the offer body and the 7-day subscription grant in the technical metadata; granting a full 7-day subscription for a single ad is unacceptable and would cause immediate cannibalization of the core revenue stream.</li><li><strong>neg-subscribers</strong> (REVISE): The proposal targets existing subscribers with ads, which risks severe user backlash and violates the policy against showing rewarded ads to paying users who already possess the entitlement.</li><li><strong>neg-bad-surface</strong> (REVISE): The proposal refers to an invalid screen ID (s99) which prevents direct implementation without correction.</li><li><strong>neg-generic</strong> (REJECT): The offer copy is generic and actively misleading, promising &#39;Free coins&#39; for an entitlement reward, which violates disclosure policy and creates poor user trust.</li><li><strong>neg-entitlement-amount</strong> (REVISE): The reward incorrectly treats the Luzia+ Subscription entitlement as a currency (+1 plan) instead of granting a time-boxed feature entitlement.</li><li><strong>neg-account-swap</strong> (REVISE): The proposal violates the core rule that an ad never stands in for creating an account or unlocking account-only features (viewing favorite messages), attempting to bypass account walls instead of sampling subscription features.</li></ul></div></main></body></html>

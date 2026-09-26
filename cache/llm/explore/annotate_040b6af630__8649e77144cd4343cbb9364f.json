@@ -1,0 +1,33 @@
+{
+ "purpose": "annotate:040b6af630",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Login Screen",
+  "kind": "login",
+  "purpose": "The login screen prompts users to sign in with Google or continue with limited access.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Continue with limited access",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 1978,
+  "output": 136,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T06:15:15.024Z"
+}

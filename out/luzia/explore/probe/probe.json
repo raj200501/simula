@@ -1,0 +1,54 @@
+{
+  "app": "luzia",
+  "fg": "co.thewordlab.luzia",
+  "inApp": true,
+  "device": {
+    "widthPx": 1080,
+    "heightPx": 2400,
+    "density": 2.625,
+    "statusBarPx": 0,
+    "navBarPx": 0,
+    "kind": "android"
+  },
+  "elements": 23,
+  "labelled": 11,
+  "labelledActionable": 8,
+  "numbers": [],
+  "counters": [],
+  "secsPerObserve": 0.51,
+  "screenshot": "~/simula/out/luzia/explore/probe/probe.png",
+  "deviceFile": "~/simula/config/device.json",
+  "checks": [
+    {
+      "name": "the app is in the foreground",
+      "pass": true,
+      "detail": "co.thewordlab.luzia"
+    },
+    {
+      "name": "at least 3 elements after normalizing",
+      "pass": true,
+      "detail": "23 elements"
+    },
+    {
+      "name": "at least 10 labelled actionable elements",
+      "pass": false,
+      "detail": "8 labelled actionables"
+    },
+    {
+      "name": "a balance or other number is readable as text",
+      "pass": false,
+      "detail": "none"
+    },
+    {
+      "name": "insets known",
+      "pass": false,
+      "detail": "status 0px, nav 0px"
+    },
+    {
+      "name": "one observation under 10 s",
+      "pass": true,
+      "detail": "0.51s"
+    }
+  ],
+  "go": false
+}

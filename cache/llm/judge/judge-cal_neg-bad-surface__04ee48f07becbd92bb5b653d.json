@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-bad-surface",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets a 'Services Tab' surface and offers a standard feature trial, which is inherently SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a 30-minute entitlement trial; there are no incentives for clicks, installs, or ratings, and no cash rewards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses standard 'Maybe later' fallback logic; there is no hostage framing, confirmshaming, or nagging."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer requires a proactive tap on the 'Play to try' CTA card located on the Services Tab."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The card copy states: 'Play a 15-second game to try 30 minutes of Upgrade to Luzia+' prior to opt-in."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The UI provides a clear 'No thanks' decline option that leaves the user on the Services Tab with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears as a persistent card on the navigation hub (Services Tab), never mid-chat or mid-generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is strictly limited to guests who have declined account creation; existing subscribers are excluded."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer appears exactly when the user has expressed a need but is not yet ready to commit to account creation, which is the definition of a fallback opportunity.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer is non-interruptive (hub-based) and preserves the user's current session state entirely.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The trial is strictly time-boxed (30 mins), limited to 1x/day, and only offered to decliners, keeping the permanent premium tier unique.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "As an entitlement-based unlock (no cost per message incurred by the sample), the COGS is near zero, making this highly profitable given US revenue rates.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The Services Tab (s06) is a high-traffic navigation tab in the core loop (f5, m18).",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD logic, but referenced an invalid screen ID (s99) instead of the actual screen (s06).",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References Luzia nouns such as 'Luzia+' (r1), 'Services Tab' (s06), and the Create Account Sheet (s07).",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The offer is explicitly capped at once per day, preventing nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a clearly defined holdout (10%) and success metrics (conversion vs retention).",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the surface reference in the proposal from 's99' to 's06' (Services Tab) to align with the provided digest and patch.",
+   "Ensure the card UI on s06 is conditionally rendered only for guests who have visited s07 recently to avoid clutter."
+  ],
+  "topConcern": "The proposal refers to an invalid screen ID (s99) which prevents direct implementation without correction."
+ },
+ "usage": {
+  "input": 42278,
+  "output": 1069,
+  "cacheRead": 36380,
+  "cacheWrite": 0,
+  "thoughts": 1276
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:51.549Z"
+}

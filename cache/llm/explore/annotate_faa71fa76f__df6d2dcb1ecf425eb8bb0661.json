@@ -1,0 +1,46 @@
+{
+ "purpose": "annotate:faa71fa76f",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Add Comment Page",
+  "kind": "page",
+  "purpose": "Allow users to type a comment on an article before signing up or posting.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e20",
+    "intent": "Type a comment",
+    "kind": "type-send",
+    "priority": 1,
+    "input": "Nice article!"
+   },
+   {
+    "el": "e25",
+    "intent": "Sign up to post",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e7",
+    "intent": "Close comment screen",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2744,
+  "output": 230,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:02:33.056Z"
+}

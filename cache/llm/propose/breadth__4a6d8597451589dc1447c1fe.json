@@ -1,0 +1,133 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.8-flash",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Watch a 30-second video ad to unlock 24 hours of free Janitor Plus subscription access.",
+   "Watch an ad when reaching a message limit to receive 10 more free messages.",
+   "Watch a rewarded ad from the profile menu to earn generic roleplay tokens."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Trade completing a 15-second mini-game for a time-boxed sample of advanced context memory or priority routing when viewing the memory paywall.",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "Offer a 30-minute boost of 5x context for better memory immediately after the user dismisses the memory paywall.",
+    "viable": true
+   },
+   {
+    "moment": "m3",
+    "exchange": "Downsell a small grant of 3 frontier model swipes after the user declines the full Janitor Plus subscription modal.",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Provide a proactive daily check-in or quest hub inside the profile menu that rewards bonus swipes or temporary boosts.",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "No value exchange permitted on initial launch feed before experiencing core chat value per anti-fatigue policy.",
+    "viable": false
+   },
+   {
+    "moment": "m6",
+    "exchange": "Provide an opt-in priority connection or enhanced context preview before launching into a detailed character roleplay session.",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Paywall Fallback Swipes",
+    "case": "existing",
+    "archetype": "TAX-10",
+    "moment": "m3",
+    "reward": "3 frontier model swipes",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Timed Priority Routing Pass",
+    "case": "existing",
+    "archetype": "TAX-4",
+    "moment": "m1",
+    "reward": "1 hour of priority routing for faster replies",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Session Context Boost",
+    "case": "existing",
+    "archetype": "TAX-2",
+    "moment": "m2",
+    "reward": "30 minutes of 5x context for better memory",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Character Pre-Chat Priority Pass",
+    "case": "existing",
+    "archetype": "TAX-2",
+    "moment": "m6",
+    "reward": "1 chat session of priority routing for faster replies",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Daily Check-in Swipes",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m4",
+    "reward": "5 daily bonus frontier swipes",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Extended Character Persona Slot",
+    "case": "product-change",
+    "archetype": "TAX-7",
+    "moment": "m4",
+    "reward": "1 extra custom persona slot for 24 hours",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Scene Memory Pin Refill",
+    "case": "product-change",
+    "archetype": "TAX-7",
+    "moment": "m1",
+    "reward": "2 pinned scene memories for current chat",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Profile Menu Frontier Swipes Refill",
+    "case": "product-change",
+    "archetype": "TAX-1",
+    "moment": "m4",
+    "reward": "3 bonus frontier swipes",
+    "beyondBaseline": false
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "Captures high-intent non-converting users immediately after dismissing the Janitor Plus paywall modal (s04) with a micro-taste of frontier model swipes, driving sampling without cannibalizing the monthly subscription."
+   },
+   {
+    "index": 2,
+    "why": "Directly resolves the user's immediate barrier on the memory limit paywall screen (s03) with a 30-minute time-boxed unlock of the 5x context memory entitlement while keeping full permanent memory gated."
+   },
+   {
+    "index": 4,
+    "why": "Introduces a non-intrusive proactive daily retention loop directly within the Profile menu (s02), granting a capped daily allowance of frontier swipes without degrading the existing unlimited free tier."
+   }
+  ]
+ },
+ "usage": {
+  "input": 38510,
+  "output": 1146,
+  "cacheRead": 24191,
+  "cacheWrite": 0,
+  "thoughts": 4615
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:09:24.998Z"
+}

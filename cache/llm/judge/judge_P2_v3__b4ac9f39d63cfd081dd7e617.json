@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P2:v3",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal uses SFW surfaces (Settings s19) and a standard game partner."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is in-app time-boxed feature access, with no cash or click incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses gain framing ('Play to try') with a clear 'No thanks' decline button."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user taps 'Play to try' explicitly."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Body specifies: 'Play a 15-second game to unlock 5 minutes of Upgrade to Luzia+'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline option 'No thanks' returns the user to the Settings screen with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered from Settings (s19) when reaching for the feature, not during a stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly excludes subscribers ('never subscribers')."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Triggering right when a user taps Upgrade to Luzia+ on Settings provides a direct sampling moment for the blocked feature.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Integrity is well-maintained via an expiring time box (5 minutes) and clean placement on Settings.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Protected by strict time-boxing (5 minutes), a daily cap (2), non-payer restriction, and holdout plans.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero (entitlement time box with no marginal inference cost stated), well within revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings is a frequent hub (m12), but users hitting the specific upgrade wall here represents a more modest share of daily active usage.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD via a button entry on Settings, leveraging standard REWARD_VERIFIED and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Cites actual screen s19, economy resource r1, and moments m23/m1 from the Luzia digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 2 per day with a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a primary conversion metric, guardrails (-3% relative check), and a 10% user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "Treating an entitlement/plan name ('Upgrade to Luzia+') as a grant noun requires careful client-side enforcement to ensure the 5-minute time box correctly toggles the specific features without granting permanent account status."
+ },
+ "usage": {
+  "input": 42483,
+  "output": 932,
+  "cacheRead": 32331,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:18:17.874Z"
+}

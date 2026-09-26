@@ -1,0 +1,63 @@
+{
+ "purpose": "annotate:68cf4c6f92",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s02",
+  "name": "Home News Feed",
+  "kind": "tab",
+  "purpose": "This screen displays the main news feed with top stories, categories, and weather information.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e18",
+    "intent": "Switch to Entertainment category",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e19",
+    "intent": "Switch to Local category",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e20",
+    "intent": "Switch to Sports category",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e41",
+    "intent": "Open news article details",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e47",
+    "intent": "View advertisement",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "TEMU  Ad"
+   }
+  ]
+ },
+ "usage": {
+  "input": 4457,
+  "output": 350,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:04:15.658Z"
+}

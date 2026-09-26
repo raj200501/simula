@@ -1,0 +1,65 @@
+{
+ "purpose": "annotate:bf1af8f588",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Photo Edit Screen",
+  "kind": "page",
+  "purpose": "Users can upload a photo and describe changes to edit it using AI.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Switch to Edit tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e5",
+    "intent": "Switch to Create tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e7",
+    "intent": "Switch to Animate tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e16",
+    "intent": "Upload a photo",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e20",
+    "intent": "Select popular style Vogue",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e36",
+    "intent": "Type editing description",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Make it brighter",
+    "sendEl": "e37"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2817,
+  "output": 366,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:08:33.260Z"
+}

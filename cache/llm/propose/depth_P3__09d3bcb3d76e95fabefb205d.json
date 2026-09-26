@@ -1,0 +1,223 @@
+{
+ "purpose": "depth:P3",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Deep Reasoning Mode Session Pass",
+  "oneLiner": "Allow free users to unlock 30 minutes of deep reasoning mode by engaging with a rewarded Simula mini-game.",
+  "case": "product-change",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m9"
+   ],
+   "economy": [
+    "r1"
+   ],
+   "newMechanic": {
+    "name": "Deep Reasoning Session Pass",
+    "description": "A time-boxed 30-minute entitlement to deep reasoning mode earned via rewarded ad view.",
+    "whyNeeded": "Unlocks high-end AI capability for time-rich non-paying users without permanently devaluing the Luzia+ subscription.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s07",
+  "trigger": "User taps Deep Reasoning on Attachment and Mode Sheet (s27), hitting the subscription wall (s07).",
+  "eligibility": "Non-paying guests and free users hitting the deep reasoning paywall.",
+  "offer": {
+   "title": "Unlock Deep Reasoning Now",
+   "body": "Play a quick 15-second game to unlock 30 minutes of deep reasoning.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "30 minutes of deep reasoning mode",
+   "resource": "r1",
+   "amount": null,
+   "duration": "30 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Gated strictly to non-payers, time-boxed to 30 minutes, capped at 2 per day, and keeps the Luzia+ subscription upsell prominently featured.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-premium",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU and ad monetization revenue lift",
+   "guardrails": [
+    "Paid subscription conversion non-inferiority within -3%",
+    "D7 and D30 user retention parity",
+    "Session length stability"
+   ],
+   "holdout": "10% user-level randomized holdout over 28 days"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-DUO",
+   "POL-8"
+  ],
+  "risks": [
+   "Potential perception that premium features can be bypassed too easily",
+   "Higher inference COGS for premium reasoning model during session passes"
+  ],
+  "evidence": [
+   {
+    "obs": "o0061",
+    "el": null,
+    "quote": "To enjoy Luzia+ you need to create an account first."
+   },
+   {
+    "obs": "s27",
+    "el": "e15",
+    "quote": "Deep reasoning"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s07",
+     "kind": "sheet",
+     "change": "Session pass reward invitation sheet"
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s07",
+     "near": "e7",
+     "place": "before",
+     "change": "Watch ad for 30m Deep Reasoning session"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s07",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r1",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "Deep reasoning is locked for guests"
+     }
+    ],
+    "caption": "Deep reasoning mode requires a paid subscription today."
+   },
+   {
+    "phase": "change",
+    "screen": "s07",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New rewarded session pass option added"
+     }
+    ],
+    "caption": "We introduce a rewarded session pass option."
+   },
+   {
+    "phase": "offer",
+    "screen": "s07",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s game with Luzia"
+     }
+    ],
+    "caption": "Opt in to play a quick game."
+   },
+   {
+    "phase": "ad",
+    "screen": "s07",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Playing Simula mini-game"
+     }
+    ],
+    "caption": "Complete the 15-second rewarded mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "30m pass verified and active"
+     }
+    ],
+    "caption": "Thirty minutes of deep reasoning unlocked."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42722,
+  "output": 1617,
+  "cacheRead": 15403,
+  "cacheWrite": 0,
+  "thoughts": 4288
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:30:01.949Z"
+}

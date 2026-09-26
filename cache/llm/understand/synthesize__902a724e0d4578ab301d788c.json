@@ -1,0 +1,283 @@
+{
+ "purpose": "synthesize",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "brief": {
+   "oneLiner": "An AI character chat application where users spend credits to chat with various bots.",
+   "audience": "Fans of AI roleplay, creative writing, and character chat simulations.",
+   "coreLoop": [
+    "Browse AI characters and view bot details",
+    "Select chat mode (Basic or Premium)",
+    "Send messages consuming message credits",
+    "Earn free credits via daily check-in or purchase credit packs"
+   ],
+   "howItMakesMoney": "Monetizes through consumable credit pack in-app purchases sold in the store.",
+   "whatIsScarce": [
+    "Credits"
+   ],
+   "adsToday": "Sponsored native ad banner displayed on the home screen/daily check-in dialog.",
+   "openQuestions": [
+    "Are there rewarded video ads to earn free credits?",
+    "Are there subscription tiers or only one-off credit pack purchases?"
+   ]
+  },
+  "economy": {
+   "resources": [
+    {
+     "id": "r1",
+     "name": "credits",
+     "unit": "credits",
+     "kind": "quota",
+     "shownOn": [
+      {
+       "screen": "s01",
+       "el": "e1"
+      },
+      {
+       "screen": "s03",
+       "el": "e3"
+      },
+      {
+       "screen": "s04",
+       "el": "e9"
+      }
+     ],
+     "observedValues": [
+      450,
+      10,
+      740
+     ],
+     "resets": null,
+     "evidence": [
+      {
+       "obs": "o0001",
+       "el": "e1",
+       "quote": "450 credits"
+      },
+      {
+       "obs": "o0021",
+       "el": null,
+       "quote": "740 credits"
+      },
+      {
+       "obs": "o0004",
+       "el": "e3",
+       "quote": "Basic · 10"
+      }
+     ]
+    }
+   ],
+   "sinks": [
+    {
+     "id": "k1",
+     "resource": "r1",
+     "amount": 10,
+     "action": "Send a basic message",
+     "edges": [
+      "g0004"
+     ],
+     "context": "Basic",
+     "evidence": [
+      {
+       "obs": "o0005",
+       "el": "e9",
+       "quote": "Basic 10 credits per message · Quick, friendly replies"
+      }
+     ]
+    },
+    {
+     "id": "k2",
+     "resource": "r1",
+     "amount": 30,
+     "action": "Send a premium message",
+     "edges": [],
+     "context": "Premium",
+     "evidence": [
+      {
+       "obs": "o0005",
+       "el": "e10",
+       "quote": "Premium 30 credits per message · Longer, smarter replies"
+      }
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "id": "src1",
+     "resource": "r1",
+     "amount": 300,
+     "cadence": "daily",
+     "how": "Claim daily check-in bonus",
+     "screen": "s01",
+     "evidence": [
+      {
+       "obs": "o0001",
+       "el": "e17",
+       "quote": "+300 credits"
+      }
+     ]
+    },
+    {
+     "id": "src2",
+     "resource": "r1",
+     "amount": null,
+     "cadence": "purchase",
+     "how": "Purchase credit pack",
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": null,
+       "quote": "1,000 credits $1.39"
+      }
+     ]
+    }
+   ],
+   "offers": [
+    {
+     "id": "of1",
+     "kind": "pack",
+     "label": "1,000 credits",
+     "priceText": "$1.39",
+     "priceUsd": 1.39,
+     "grants": {
+      "resource": "r1",
+      "amount": 1000,
+      "period": null,
+      "entitlements": []
+     },
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": null,
+       "quote": "1,000 credits $1.39"
+      }
+     ]
+    },
+    {
+     "id": "of2",
+     "kind": "pack",
+     "label": "2,000 credits",
+     "priceText": "$2.89",
+     "priceUsd": 2.89,
+     "grants": {
+      "resource": "r1",
+      "amount": 2000,
+      "period": null,
+      "entitlements": []
+     },
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": null,
+       "quote": "2,000 credits Popular $2.89"
+      }
+     ]
+    },
+    {
+     "id": "of3",
+     "kind": "pack",
+     "label": "5,000 credits",
+     "priceText": "$7.09",
+     "priceUsd": 7.09,
+     "grants": {
+      "resource": "r1",
+      "amount": 5000,
+      "period": null,
+      "entitlements": []
+     },
+     "screen": "s05",
+     "evidence": [
+      {
+       "obs": "o0022",
+       "el": null,
+       "quote": "5,000 credits Best value $7.09"
+      }
+     ]
+    }
+   ],
+   "walls": [],
+   "entitlements": [
+    {
+     "plan": "Free plan",
+     "benefits": [],
+     "evidence": [
+      {
+       "obs": "o0039",
+       "el": "e4",
+       "quote": "Free plan"
+      }
+     ]
+    }
+   ],
+   "ads": [
+    {
+     "format": "native",
+     "screen": "s01",
+     "el": "e20",
+     "evidence": [
+      {
+       "obs": "o0001",
+       "el": "e20",
+       "quote": "Sponsored"
+      }
+     ]
+    }
+   ]
+  },
+  "flowNames": [
+   {
+    "flow": "f1",
+    "name": "Chat with AI Character",
+    "goal": "Interact with AI characters by sending messages in different chat modes."
+   },
+   {
+    "flow": "f2",
+    "name": "Explore Store and Profile",
+    "goal": "Check account status and view credit purchase options."
+   }
+  ],
+  "extraMoments": [
+   {
+    "type": "post-reward",
+    "screen": "s01",
+    "edge": "g0001",
+    "resource": "r1",
+    "description": "User receives daily check-in credits reward.",
+    "evidence": [
+     {
+      "obs": "o0001",
+      "el": "e17",
+      "quote": "+300 credits"
+     }
+    ]
+   },
+   {
+    "type": "hub",
+    "screen": "s02",
+    "edge": null,
+    "resource": null,
+    "description": "Bot detail hub showing character information and message costs.",
+    "evidence": [
+     {
+      "obs": "o0003",
+      "el": "e9",
+      "quote": "Messages cost credits: Basic 10, Premium 30"
+     }
+    ]
+   }
+  ]
+ },
+ "usage": {
+  "input": 12817,
+  "output": 2011,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 5142
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T08:03:38.011Z"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "mock",
+  "app": "aol",
+  "runId": "mo0925-151036",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T19:10:36.812Z",
+  "finishedAt": "2026-09-25T19:12:48.380Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "model/product-model.json",
+      "sha256": "a4e23c7ca84e24952fbe44f73dc5380b126a91f8799e1bf3d6306d87cdb5ad10"
+    }
+  ],
+  "outputs": [
+    "mock/index.html"
+  ],
+  "llm": {
+    "calls": 7,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

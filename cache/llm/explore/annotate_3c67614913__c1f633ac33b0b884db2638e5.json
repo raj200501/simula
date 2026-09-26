@@ -1,0 +1,69 @@
+{
+ "purpose": "annotate:3c67614913",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Daily Checkin Dialog",
+  "kind": "dialog",
+  "purpose": "Offer daily check-in rewards to encourage user retention and grant free credits.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e17",
+    "intent": "Claim daily check-in credits",
+    "kind": "consume",
+    "priority": 3
+   },
+   {
+    "el": "e28",
+    "intent": "Go to Store",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e29",
+    "intent": "Go to Profile",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e24",
+    "intent": "Learn more about sponsored ad",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   }
+  ],
+  "counters": [
+   {
+    "name": "credits",
+    "unit": "credits",
+    "el": "e1"
+   }
+  ],
+  "signals": [
+   {
+    "kind": "reward",
+    "text": "+300 credits",
+    "el": "e11"
+   },
+   {
+    "kind": "ad",
+    "text": "Sponsored",
+    "el": "e20"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2723,
+  "output": 378,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:05.578Z"
+}

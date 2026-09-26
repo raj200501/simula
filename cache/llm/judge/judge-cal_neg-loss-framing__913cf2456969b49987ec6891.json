@@ -1,0 +1,111 @@
+{
+ "purpose": "judge-cal:neg-loss-framing",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets a general chat hub and uses standard mini-game tasks, which are SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is an in-app entitlement (Upgrade to Luzia+) and does not offer cash or incentives for clicks/installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": false,
+    "evidence": "The proposal uses explicit hostage framing: 'Watch now or lose your chat history: your conversations are deleted in 24 hours unless you play a 15-second game.' This is a severe dark pattern."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user taps 'Play task' to initiate the interaction."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal explicitly states: '3 sponsored 15-second games a day'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes a 'Close' button to dismiss the sheet."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is a badge on the Chats Home screen, not mid-conversation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal specifies eligibility is for 'Non-payers only'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "While subscription features are valuable, framing the offer as a threat to delete data ruins the value exchange. Users want features, they don't want to be held hostage.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal includes a major integrity failure: threatening to delete user chat history if the user does not play an ad is a dark pattern that destroys user trust.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Giving away 'Luzia+' features (the core subscription) is high-risk. While time-boxed to 30 mins, it directly targets the conversion goal.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS is effectively zero as it is a feature toggle for a premium tier.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The badge is on the Chats Home screen, a core high-traffic entry point.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal uses standard Simula units and adds a sheet, which is a manageable engineering task.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References Luzia+ and the Chats Home screen.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a daily cap of 3 tasks.",
+    "score": 3
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics and a user-level holdout.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Remove the loss-framing copy ('Watch now or lose your chat history...') immediately. It is a violation of policy and trust.",
+   "Replace the hostage-based copy with benefit-oriented, additive language (e.g., 'Play 3 games to try Luzia+ for 30 minutes!').",
+   "Ensure the trial benefit is clearly marked as a limited-time trial, not a permanent entitlement."
+  ],
+  "topConcern": "The proposal uses manufactured scarcity and hostage framing ('lose your chat history') to force engagement. This is a severe dark pattern that violates product integrity and user trust."
+ },
+ "usage": {
+  "input": 42348,
+  "output": 1011,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1251
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:15.565Z"
+}

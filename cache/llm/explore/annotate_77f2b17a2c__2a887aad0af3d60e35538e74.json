@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:77f2b17a2c",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Home News Feed",
+  "kind": "tab",
+  "purpose": "Provides the latest news articles and updates across various categories with integrated advertisements.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e38",
+    "intent": "Read news article",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e42",
+    "intent": "View ad",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   },
+   {
+    "el": "e73",
+    "intent": "Switch to inbox tab",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "TEMU: Your next electric bike"
+   }
+  ]
+ },
+ "usage": {
+  "input": 4710,
+  "output": 257,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:01:59.502Z"
+}

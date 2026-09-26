@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-duo",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Store Screen (s05) is an SFW store surface allowing users to purchase credit packs for chatting."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a 15-second game to get +10 credits (r1). No clicks, installs, or cash-like rewards are offered."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a 15-second game to get +10 credits. 3 per day. Decline option is 'Not now'. Gain-framed with no dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User opts in explicitly via the 'Play for +10' CTA on the offer card."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Body explicitly states: 'Play a 15-second game to get +10 credits. 3 per day.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline button is 'Not now', returning the user to Store Screen without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Placed on Store Screen (s05), entirely outside active chat sessions."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly restricts the offer: 'Non-payers only, returning users from their second session on; never shown to subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Tapping the Credits balance on Store Screen while low offers a proactive hub/store earn-back opportunity (AI-2 precedent).",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Adds an unobtrusive pill next to the balance on Store Screen (s05) without interrupting user flow or taking away free value.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-payers, capped at 3 per day (+30 credits max, worth $0.0417 vs cheapest $1.39 pack). Holdout planned.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view ($0.0018) is well below net revenue per view ($0.0090–$0.0150). Reward value is $0.0139 at list price.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Store Screen is a frequent hub (9 visits during exploration), providing good reach for low-credit users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD unit, button entry, minPlaySec 15, with patch elements defined on existing screen s05.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Explicitly utilizes digest nouns and IDs: Store Screen (s05), Credits balance (r1), Basic mode (k1).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Enforces explicit caps: perDay: 3, cooldownMin: 30.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric (Refills per DAU and total revenue per user), guardrails, and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None; proposal is exceptionally well-grounded, economically sound, and strictly adheres to safety and cannibalization guardrails."
+ },
+ "usage": {
+  "input": 31514,
+  "output": 1024,
+  "cacheRead": 16091,
+  "cacheWrite": 0,
+  "thoughts": 2163
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:56:25.450Z"
+}

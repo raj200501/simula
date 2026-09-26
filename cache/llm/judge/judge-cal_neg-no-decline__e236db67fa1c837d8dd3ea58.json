@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-no-decline",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal operates on the Services Tab and Create Account flow, which are standard SFW components of Luzia."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a 30-minute time-boxed trial of premium features, which is an in-app service, not cash or a gift."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer is an additional 'Not ready yet?' prompt and does not threaten content loss or use confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard shows an invite overlay requiring a 'Play to try' tap to initiate the ad."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The card body explicitly states: 'Play a 15-second game to try 30 minutes of Upgrade to Luzia+ now.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": false,
+    "evidence": "The offer object defines a title, body, and cta, but 'decline' is left as an empty string."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is specifically after the Create Account Sheet is dismissed on the Services Tab."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly gates eligibility to 'Guests who just declined the account sheet' and 'never payers or subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward is a sample of the exact feature the user just declined (Create Account/Luzia+), perfectly matching the user's need for the premium functionality.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The ad does not interrupt the core chat loop and uses a native chip on the Services Tab.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "It is gated to guests only, capped at once per day, and provides a 30-minute trial sample which is highly unlikely to cannibalize a full subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS is zero, and the revenue per view is positive; it serves as a low-cost trial conversion lever.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "m1/m2 are frequent moments in the product model, ensuring good reach among non-paying users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD via a native card on the Services Tab.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses Luzia-specific elements (Services Tab, Create Account Sheet, Luzia+).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at once per day, though it lacks an explicit cooldown cooldownMin.",
+    "score": 3
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a holdout, guardrails, and success metrics.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Add a visible 'No thanks' decline button to the offer object.",
+   "Specify a cooldownMin (e.g., 60 minutes) to further protect the UX."
+  ],
+  "topConcern": "The proposal lacks an explicit decline option in the offer object, which is a violation of the 'Declining is free' policy."
+ },
+ "usage": {
+  "input": 42253,
+  "output": 992,
+  "cacheRead": 36373,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:34.861Z"
+}

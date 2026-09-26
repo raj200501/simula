@@ -1,0 +1,51 @@
+{
+ "purpose": "annotate:67a494b38a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s02",
+  "name": "Detective Rowan Detail",
+  "kind": "page",
+  "purpose": "View bot details and start a chat session.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Start chat with the bot",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e11",
+    "intent": "Open similar bot",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e1",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "price",
+    "text": "Messages cost credits: Basic 10, Premium 30",
+    "el": "e9"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2291,
+  "output": 260,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:25.035Z"
+}

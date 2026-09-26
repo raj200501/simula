@@ -1,0 +1,59 @@
+{
+ "purpose": "annotate:6304067c79",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s02",
+  "name": "User Profile Menu",
+  "kind": "modal",
+  "purpose": "This screen displays the user profile drawer with navigation options, billing, and subscription upgrade.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e26",
+    "intent": "Go to billing page",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e28",
+    "intent": "Upgrade subscription",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e24",
+    "intent": "Open settings",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "settings screen"
+   },
+   {
+    "el": "e32",
+    "intent": "Log out",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "destructive action"
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Upgrade to janitor+",
+    "el": "e28"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2882,
+  "output": 321,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:51:33.278Z"
+}

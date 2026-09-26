@@ -1,0 +1,62 @@
+{
+ "purpose": "annotate:7c60f81035",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Choose Chat Mode",
+  "kind": "sheet",
+  "purpose": "Select model or mode for the chat interaction.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e9",
+    "intent": "Select Basic mode",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e10",
+    "intent": "Select Premium mode",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e1",
+    "intent": "Go back",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [
+   {
+    "name": "credits",
+    "unit": "credits",
+    "el": "e3"
+   }
+  ],
+  "signals": [
+   {
+    "kind": "limit",
+    "text": "10 credits per message",
+    "el": "e9"
+   },
+   {
+    "kind": "limit",
+    "text": "30 credits per message",
+    "el": "e10"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2132,
+  "output": 317,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:33:17.962Z"
+}

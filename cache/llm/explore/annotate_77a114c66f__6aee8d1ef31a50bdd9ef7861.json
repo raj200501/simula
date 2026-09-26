@@ -1,0 +1,47 @@
+{
+ "purpose": "annotate:77a114c66f",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Create Image Modal",
+  "kind": "modal",
+  "purpose": "User enters a prompt to generate or edit a painting/image.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e8",
+    "intent": "Type prompt for image creation",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "A futuristic city at night",
+    "sendEl": "e11"
+   },
+   {
+    "el": "e11",
+    "intent": "Tap to create image",
+    "kind": "consume",
+    "priority": 3
+   },
+   {
+    "el": "e2",
+    "intent": "Close sheet",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2096,
+  "output": 242,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:09:13.430Z"
+}

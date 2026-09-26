@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:4a3a2d916a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Screen",
+  "kind": "chat",
+  "purpose": "The user is chatting with Luzia AI to ask questions and get assistance.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e21",
+    "intent": "Send a message to Luzia",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi!",
+    "sendEl": "e23"
+   },
+   {
+    "el": "e18",
+    "intent": "Tap suggestion to plan a week",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2460,
+  "output": 208,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T17:04:21.703Z"
+}

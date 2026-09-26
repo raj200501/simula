@@ -1,0 +1,1280 @@
+{
+  "schema": "simula.revisions/1",
+  "app": "aol",
+  "proposals": [
+    {
+      "id": "P1",
+      "version": 1,
+      "title": "AOL Guest Commenter",
+      "oneLiner": "Allow users to post a single news comment by playing a mini-game instead of signing up.",
+      "case": "product-change",
+      "archetype": "TAX-3",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m9"
+        ],
+        "economy": [
+          "Account sign-in / verified user status (new)"
+        ],
+        "newMechanic": {
+          "name": "Guest Posting",
+          "description": "A temporary authorization to submit one comment to a news article discussion without a full AOL account registration.",
+          "whyNeeded": "The sign-up wall on the Add Comment Page (s05) prevents spontaneous interaction from guest users, losing valuable engagement data and ad opportunities.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s05",
+      "trigger": "When a user land on the Add Comment Page and encounters the Sign Up to Post requirement.",
+      "eligibility": "Non-signed-in users who have entered text in the comment box.",
+      "offer": {
+        "title": "Post as a guest",
+        "body": "Don't want to sign up right now? Play a quick 15-second game to post this comment as a guest.",
+        "cta": "Play to Post",
+        "decline": "Maybe later"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "one guest comment submission",
+        "resource": "Guest Comment",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "The guest pass is limited to a single comment per day and does not grant account benefits like comment history, replies, or profile customization, maintaining the long-term value of a full AOL account.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Comments per DAU",
+        "guardrails": [
+          "Account sign-up rate",
+          "D1 retention"
+        ],
+        "holdout": "user-level, 10%, 28 days"
+      },
+      "precedents": [
+        "TAX-3",
+        "TAX-10",
+        "EX-SERIAL"
+      ],
+      "risks": [
+        "Potential for lower-quality comments from non-verified users",
+        "User frustration if the guest post limit is hit"
+      ],
+      "evidence": [
+        {
+          "obs": "s05",
+          "el": "e141",
+          "quote": "Sign Up to Post",
+          "verified": true
+        },
+        {
+          "obs": "m9",
+          "quote": "User attempts to post a comment on an article and hits the sign-up wall.",
+          "verified": false
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s05",
+            "near": "e141",
+            "place": "before",
+            "change": "A Simula 'Play to Post' rewarded invitation button styled as a secondary action."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s05",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Guest Comment",
+                "delta": 1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s04",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e18",
+              "text": "User reading comments"
+            }
+          ],
+          "caption": "The user reads interesting comments on a news article."
+        },
+        {
+          "phase": "change",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e141",
+              "text": "Forced sign-up to engage"
+            },
+            {
+              "node": "ne1",
+              "text": "New guest option"
+            }
+          ],
+          "caption": "When trying to comment, they see the sign-up requirement but also a new guest option."
+        },
+        {
+          "phase": "offer",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Post without an account"
+            }
+          ],
+          "caption": "The user chooses to play a quick game to unlock a guest post."
+        },
+        {
+          "phase": "ad",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "A fun 15-second AOL-themed mini-game plays."
+        },
+        {
+          "phase": "value",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "Guest Comment",
+              "value": 0
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e9",
+              "text": "Comment successfully posted"
+            }
+          ],
+          "caption": "The reward is verified and the user's comment is published immediately."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.15,
+          "arpdauUsd": 0.0018,
+          "annualPer1mDauUsd": 657000,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P1",
+      "version": 2,
+      "title": "AOL Guest Commenter",
+      "oneLiner": "Allow users to post a single news comment by playing a mini-game instead of signing up.",
+      "case": "product-change",
+      "archetype": "TAX-3",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m9"
+        ],
+        "economy": [
+          "Account sign-in / verified user status",
+          "Guest Comment (new)"
+        ],
+        "newMechanic": {
+          "name": "Guest Posting",
+          "description": "A temporary authorization to submit one comment to a news article discussion without a full AOL account registration. Guest comments are processed via AOL's automated safety filters to prevent spam [SAFE-1].",
+          "whyNeeded": "The sign-up wall on the Add Comment Page (s05) prevents spontaneous interaction from guest users. Providing an ad-supported path monetizes high-intent non-signed-in users.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s05",
+      "trigger": "After entering text on the Add Comment Page when the sign-up modal appears.",
+      "eligibility": "Non-signed-in users who have entered text in the comment box on the Add Comment Page.",
+      "offer": {
+        "title": "Post as a guest",
+        "body": "Don't want to sign up right now? Play a quick 15-second game to post this comment as a guest.",
+        "cta": "Play and Post",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "interstitial",
+        "gamePartner": "AOL",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "one guest comment submission",
+        "resource": "Guest Comment",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "The guest pass is limited to a single comment per day and does not grant account benefits like comment history, replies, or profile customization. A sign-in contrast line reminds users that a full AOL account is required for permanent features [CANN-4].",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Comments per DAU",
+        "guardrails": [
+          "Account sign-up rate",
+          "D1 retention"
+        ],
+        "holdout": "user-level, 10%, 28 days"
+      },
+      "precedents": [
+        "TAX-3",
+        "TAX-10",
+        "EX-SERIAL",
+        "SAFE-1",
+        "CANN-4"
+      ],
+      "risks": [
+        "Potential for lower-quality comments from non-verified users",
+        "Increased moderation load if automated filters fail"
+      ],
+      "evidence": [
+        {
+          "obs": "m9",
+          "quote": "User attempts to post a comment on an article and hits the sign-up wall.",
+          "verified": false
+        },
+        {
+          "obs": "f1",
+          "quote": "Add Comment Page (Type a comment)",
+          "verified": false
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s05",
+            "place": "overlay",
+            "change": "A SimulaRewardedAd interstitial invitation triggered by the sign-up modal on the Add Comment Page."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s05",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Guest Comment",
+                "delta": 1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s04",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e18",
+              "text": "User reading article comments"
+            }
+          ],
+          "caption": "The user reads interesting comments on a news article."
+        },
+        {
+          "phase": "change",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Sign-up wall appears"
+            }
+          ],
+          "caption": "When trying to comment, the user is blocked by a mandatory sign-up requirement."
+        },
+        {
+          "phase": "offer",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New guest post option"
+            }
+          ],
+          "caption": "A Simula interstitial offers a single guest post in exchange for a game."
+        },
+        {
+          "phase": "ad",
+          "screen": "s05",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays an AOL-themed mini-game for 15 seconds."
+        },
+        {
+          "phase": "value",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "Guest Comment",
+              "value": 0
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e9",
+              "text": "Comment posted successfully"
+            }
+          ],
+          "caption": "The comment is published. A message suggests signing in to track comment history."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.15,
+          "arpdauUsd": 0.0018,
+          "annualPer1mDauUsd": 657000,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P2",
+      "version": 1,
+      "title": "AOL Ad-Free Sprint",
+      "oneLiner": "Enjoy 15 minutes of ad-free news reading after a quick game.",
+      "case": "product-change",
+      "archetype": "TAX-2",
+      "beyondBaseline": false,
+      "anchor": {
+        "moments": [
+          "m2",
+          "m10"
+        ],
+        "economy": [
+          "AD TODAY native on Home News Feed (e42)",
+          "AD TODAY banner on Article Ad View (e17)",
+          "Ad-free Sprint (new)"
+        ],
+        "newMechanic": {
+          "name": "Ad-free Sprint",
+          "description": "A time-boxed entitlement that suppresses all native and banner advertisements across news feeds and article pages.",
+          "whyNeeded": "The app is currently high-density in advertisements but lacks a scarcity-based value exchange to drive engagement or sample premium benefits.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s11",
+      "trigger": "User opens the Account Menu Sidebar and views account options.",
+      "eligibility": "Non-paying users currently exposed to standard ad density.",
+      "offer": {
+        "title": "Go Ad-Free for 15 Minutes",
+        "body": "Play a 15-second game to clear all ads from your news feed for a short sprint.",
+        "cta": "Start Sprint",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "15 minutes of ad-free reading",
+        "resource": "Ad-free Sprint",
+        "amount": 15,
+        "duration": "15 minutes",
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 60
+      },
+      "cannibalizationGuard": "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampling effect rather than a permanent replacement for ad-free tiers.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 0
+      },
+      "kpis": {
+        "primary": "Ad-free Sprint sessions started",
+        "guardrails": [
+          "Daily active news reading time",
+          "Native ad CTR (non-sprint)",
+          "D7 Retention"
+        ],
+        "holdout": "User-level holdout, 10% share, 21 days"
+      },
+      "precedents": [
+        "TAX-2",
+        "EX-MUSIC",
+        "CORE-2"
+      ],
+      "risks": [
+        "Users may grow accustomed to ad-free reading and find the return to standard density jarring.",
+        "Potential revenue dip if sprint sessions overlap with peak reading times."
+      ],
+      "evidence": [
+        {
+          "obs": "s11",
+          "quote": "Unsubscribe",
+          "verified": true
+        },
+        {
+          "obs": "s02",
+          "el": "e47",
+          "quote": "TEMU in Taboola advertising section",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s11",
+            "near": "e52",
+            "place": "before",
+            "change": "A menu item with a lightning icon titled 'Ad-Free Sprint (15 min)' and a 'Play to Start' subtitle."
+          },
+          {
+            "id": "ne2",
+            "in": "s02",
+            "near": "e12",
+            "place": "after",
+            "change": "A small countdown timer badge next to the 'Home' title indicating remaining ad-free time."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s11",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Ad-free Sprint",
+                "delta": 15
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e52",
+              "text": "User views standard account options."
+            }
+          ],
+          "caption": "The user explores the sidebar menu where news and account settings are managed."
+        },
+        {
+          "phase": "change",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New Ad-Free Sprint option appears."
+            }
+          ],
+          "caption": "A new 'Ad-Free Sprint' entry point is added to the menu, offering a premium benefit for attention."
+        },
+        {
+          "phase": "offer",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "User taps to see the value exchange."
+            }
+          ],
+          "caption": "Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward."
+        },
+        {
+          "phase": "ad",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays a quick 15-second game with the AOL Game Partner character."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Ad-free Sprint",
+              "value": 15
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Ads are suppressed; timer begins."
+            }
+          ],
+          "caption": "The reward is granted; ads are hidden from the feed and a countdown timer confirms the sprint status."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.225,
+          "arpdauUsd": 0.0027,
+          "annualPer1mDauUsd": 985500,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P2",
+      "version": 2,
+      "title": "AOL Ad-Free Sprint",
+      "oneLiner": "Enjoy 15 minutes of ad-free news reading after a quick game.",
+      "case": "product-change",
+      "archetype": "TAX-2",
+      "beyondBaseline": false,
+      "anchor": {
+        "moments": [
+          "m2",
+          "m3",
+          "m4",
+          "m10"
+        ],
+        "economy": [
+          "AD TODAY native on Home News Feed (e42)",
+          "AD TODAY banner on Article Ad View (e17)",
+          "Ad-free Sprint (new)"
+        ],
+        "newMechanic": {
+          "name": "Ad-free Sprint",
+          "description": "A time-boxed entitlement managed via a remote config flag (isAdFree) that toggles the global state, disabling native Taboola ad rendering units (e47, e48, e49, e50) across s02 and s03.",
+          "whyNeeded": "The app is currently high-density in advertisements but lacks a scarcity-based value exchange to drive engagement or sample premium benefits.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s02",
+      "trigger": "User identifies a native ad unit in the Home News Feed (s02) and taps the 'Ad-Free Sprint' call-to-action.",
+      "eligibility": "Non-paying users currently exposed to standard ad density.",
+      "offer": {
+        "title": "Go Ad-Free for 15 Minutes",
+        "body": "Play a 15-second game to clear all ads from your news feed for a short sprint.",
+        "cta": "Start Sprint",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "15 minutes of ad-free reading",
+        "resource": "Ad-free Sprint",
+        "amount": 15,
+        "duration": "15 minutes",
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 60
+      },
+      "cannibalizationGuard": "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampling effect rather than a permanent replacement for ad-free tiers. Enforcement toggles ad rendering units via remote config.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 0
+      },
+      "kpis": {
+        "primary": "Ad-free Sprint sessions started",
+        "guardrails": [
+          "Daily active news reading time",
+          "Native ad CTR (non-sprint)",
+          "D7 Retention"
+        ],
+        "holdout": "User-level holdout, 10% share, 21 days"
+      },
+      "precedents": [
+        "TAX-2",
+        "EX-MUSIC",
+        "CORE-2"
+      ],
+      "risks": [
+        "Users may grow accustomed to ad-free reading and find the return to standard density jarring.",
+        "Potential revenue dip if sprint sessions overlap with peak reading times."
+      ],
+      "evidence": [
+        {
+          "obs": "s11",
+          "quote": "Unsubscribe",
+          "verified": true
+        },
+        {
+          "obs": "s02",
+          "el": "e47",
+          "quote": "TEMU in Taboola advertising section",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s11",
+            "near": "e37",
+            "place": "after",
+            "change": "A menu item with a lightning icon titled 'Ad-Free Sprint (15 min)' and a 'Play to Start' subtitle."
+          },
+          {
+            "id": "ne2",
+            "in": "s02",
+            "near": "e12",
+            "place": "after",
+            "change": "A small countdown timer badge next to the 'Home' title indicating remaining ad-free time."
+          },
+          {
+            "id": "ne3",
+            "in": "s02",
+            "near": "e47",
+            "place": "before",
+            "change": "A call-to-action button: 'Play game for 15m ad-free reading'."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s11",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Ad-free Sprint",
+                "delta": 15
+              }
+            ]
+          },
+          {
+            "from": "s02",
+            "el": "ne3",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Ad-free Sprint",
+                "delta": 15
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s02",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e47",
+              "text": "User sees a native ad in the Home News Feed."
+            }
+          ],
+          "caption": "The user reads news headlines and encounters standard Taboola native advertisement units."
+        },
+        {
+          "phase": "change",
+          "screen": "s02",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne3",
+              "text": "New Ad-Free Sprint entry point appears."
+            }
+          ],
+          "caption": "A new 'Ad-Free Sprint' call-to-action is added to the feed, offering an ad-free experience for attention."
+        },
+        {
+          "phase": "offer",
+          "screen": "s02",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne3",
+              "text": "User taps to start the sprint."
+            }
+          ],
+          "caption": "Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute ad-free reward."
+        },
+        {
+          "phase": "ad",
+          "screen": "s02",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays a quick 15-second game with the AOL Game Partner character."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Ad-free Sprint",
+              "value": 15
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Timer active; ads removed."
+            }
+          ],
+          "caption": "The reward is granted; native ad units are suppressed via remote config, and a countdown timer confirms the sprint status."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.225,
+          "arpdauUsd": 0.0027,
+          "annualPer1mDauUsd": 985500,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P3",
+      "version": 1,
+      "title": "Daily Reader Streak",
+      "oneLiner": "Earn virtual credits daily to unlock premium news summaries by playing interactive mini-games.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m10"
+        ],
+        "economy": [
+          "AD TODAY native on Home News Feed (e42)",
+          "News Credits (new)"
+        ],
+        "newMechanic": {
+          "name": "AOL News Credits",
+          "description": "A habit-building virtual currency earned through daily streaks and rewarded ads, redeemable for ad-light reading sessions and advanced article summaries.",
+          "whyNeeded": "AOL currently has no scarce resource; News Credits create a value exchange to monetize non-paying attention via opt-in ads.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s11",
+      "trigger": "A user opens the Account Menu Sidebar to manage settings and sees a new Daily Streak progress card.",
+      "eligibility": "Non-signed-in users and signed-in non-subscribers who haven't claimed today's reward.",
+      "offer": {
+        "title": "Daily Reading Streak",
+        "body": "Play a 15-second game with AOL to earn 10 News Credits and keep your streak alive!",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "10 News Credits",
+        "resource": "News Credits",
+        "amount": 10,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "The reward is a small daily amount that cannot be stacked to replace the core subscription value; it acts as a sampling mechanic for premium features.",
+      "assumptions": {
+        "engagedShare": 0.2,
+        "viewsPerEngager": 1,
+        "cogs": "none",
+        "cogsUnitsPerView": 0
+      },
+      "kpis": {
+        "primary": "D7 Retention",
+        "guardrails": [
+          "Average Sessions Per DAU",
+          "Taboola Ad Click-Through Rate"
+        ],
+        "holdout": "User-level randomization, 10% share, 28-day duration"
+      },
+      "precedents": [
+        "TAX-9",
+        "EX-SERIAL",
+        "AI-3"
+      ],
+      "risks": [
+        "User perceived value of credits may start low until redemption utility is expanded.",
+        "Potential fatigue if the streak mechanic feels repetitive."
+      ],
+      "evidence": [
+        {
+          "obs": "s11",
+          "quote": "Manage Accounts",
+          "verified": true
+        },
+        {
+          "obs": "s11",
+          "el": "e31",
+          "quote": "Settings",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s11",
+            "near": "e36",
+            "place": "after",
+            "change": "Add a 'Daily Reader Streak' section with a progress bar and a 'Claim Credits' button."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s11",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "News Credits",
+                "delta": 10
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "Existing accounts menu"
+            }
+          ],
+          "caption": "A user opens the sidebar to access their settings or saved articles."
+        },
+        {
+          "phase": "change",
+          "screen": "s11",
+          "counters": [
+            {
+              "resource": "News Credits",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Daily Streak section"
+            }
+          ],
+          "caption": "A new 'Daily Reader Streak' card appears below the settings menu."
+        },
+        {
+          "phase": "offer",
+          "screen": "s11",
+          "counters": [
+            {
+              "resource": "News Credits",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Tap to claim rewards"
+            }
+          ],
+          "caption": "The user taps to earn credits, triggering a Simula rewarded game invitation."
+        },
+        {
+          "phase": "ad",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays a 15-second sponsored mini-game with the AOL game partner."
+        },
+        {
+          "phase": "value",
+          "screen": "s11",
+          "counters": [
+            {
+              "resource": "News Credits",
+              "value": 10
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Streak maintained!"
+            }
+          ],
+          "caption": "After the game, the streak is updated and 10 News Credits are granted."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.2,
+          "arpdauUsd": 0.0024,
+          "annualPer1mDauUsd": 876000,
+          "label": "Scenario, not a forecast: 20% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P3",
+      "version": 2,
+      "title": "Daily Reader Streak & Ad-Free Access",
+      "oneLiner": "Earn News Credits daily via streaks to unlock 15-minute ad-free news reading sessions.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m10",
+          "m3"
+        ],
+        "economy": [
+          "AD TODAY native on Home News Feed (e42)",
+          "News Credits (new)",
+          "Ad-Free Reader Mode (new)"
+        ],
+        "newMechanic": {
+          "name": "AOL News Credits & Ad-Free Mode",
+          "description": "A habit-building virtual currency earned through daily streaks and rewarded ads. Credits are redeemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode.",
+          "whyNeeded": "AOL currently has no scarcity; News Credits and time-boxed Ad-Free sessions create a value exchange to monetize non-paying attention via opt-in rewarded ads.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s11",
+      "trigger": "Users interact with the Daily Streak card in the Account Sidebar (s11) to earn credits, or tap 'Go Ad-Free' in Article Details (s03) to redeem credits for ad-free reading.",
+      "eligibility": "Non-signed-in users and signed-in non-subscribers who have not claimed today's reward.",
+      "offer": {
+        "title": "Earn News Credits",
+        "body": "Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading!",
+        "cta": "Play Now",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "AOL",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "10 News Credits",
+        "resource": "News Credits",
+        "amount": 10,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 30
+      },
+      "cannibalizationGuard": "The reward is a small, time-boxed sample of ad-free reading (15m) that provides a 'taste' of premium value, encouraging upgrade intent without giving away unlimited ad-free access. Offers are gated to non-subscribers.",
+      "assumptions": {
+        "engagedShare": 0.2,
+        "viewsPerEngager": 2,
+        "cogs": "none",
+        "cogsUnitsPerView": 0
+      },
+      "kpis": {
+        "primary": "D7 Retention",
+        "guardrails": [
+          "Average Sessions Per DAU",
+          "Paid Subscription Conversion Rate"
+        ],
+        "holdout": "User-level randomization, 10% share, 28-day duration"
+      },
+      "precedents": [
+        "TAX-9",
+        "TAX-2",
+        "EX-SERIAL",
+        "AI-3"
+      ],
+      "risks": [
+        "Users may find the redemption utility insufficient if not clearly communicated.",
+        "Potential fatigue if the streak mechanic is perceived as mandatory."
+      ],
+      "evidence": [
+        {
+          "obs": "s11",
+          "quote": "Account Menu Sidebar",
+          "verified": false
+        },
+        {
+          "obs": "s03",
+          "el": "e26",
+          "quote": "Ad",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s11",
+            "near": "e31",
+            "place": "after",
+            "change": "Add a 'Daily Reader Streak' section with a progress bar and 'Claim Credits' button."
+          },
+          {
+            "id": "ne2",
+            "in": "s03",
+            "near": "e12",
+            "place": "after",
+            "change": "Add 'Go Ad-Free' button that triggers Ad-Free Mode if credits balance allows, or offers a rewarded ad to earn more credits."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s11",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "News Credits",
+                "delta": 10
+              }
+            ]
+          },
+          {
+            "from": "s03",
+            "el": "ne2",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "News Credits",
+                "delta": 10
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "Existing account menu"
+            }
+          ],
+          "caption": "User opens the account sidebar to view settings."
+        },
+        {
+          "phase": "change",
+          "screen": "s11",
+          "counters": [
+            {
+              "resource": "News Credits",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New streak card"
+            }
+          ],
+          "caption": "Sidebar now displays Daily Reader Streak section."
+        },
+        {
+          "phase": "offer",
+          "screen": "s11",
+          "counters": [
+            {
+              "resource": "News Credits",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Claim reward"
+            }
+          ],
+          "caption": "User taps Claim to start the rewarded ad flow."
+        },
+        {
+          "phase": "ad",
+          "screen": "s11",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "User plays 15-second sponsored mini-game."
+        },
+        {
+          "phase": "value",
+          "screen": "s11",
+          "counters": [
+            {
+              "resource": "News Credits",
+              "value": 10
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Streak earned!"
+            }
+          ],
+          "caption": "Credits granted; streak maintained."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.2,
+          "viewsPerEngager": 2,
+          "impressionsPerDau": 0.4,
+          "arpdauUsd": 0.0048,
+          "annualPer1mDauUsd": 1752000,
+          "label": "Scenario, not a forecast: 20% of DAU engage, 2 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    }
+  ]
+}

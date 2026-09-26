@@ -1,0 +1,212 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily tasks on Chats Home",
+  "oneLiner": "A \"Daily tasks\" sheet on Chats Home: 3 sponsored 15-second games a day with Luzia, each for 1 image generation credit.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m16"
+   ],
+   "economy": [
+    "r3"
+   ],
+   "newMechanic": {
+    "name": "Daily tasks",
+    "description": "A Chats Home sheet listing 3 sponsored mini-game tasks per day, each paying 1 image generation credit; resets at midnight.",
+    "whyNeeded": "Nothing renews daily today; a capped task list creates a daily habit and predictable inventory.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "ns1",
+  "trigger": "A \"Daily tasks 0/3\" badge on Chats Home; the user opens the sheet and picks a task. No pop-ups.",
+  "eligibility": "Non-payers only (no purchase in the last 30 days), returning users from their second session on; suppressed for 24 h after any purchase and never shown to subscribers [TRIG-2] [CANN-4].",
+  "offer": {
+   "title": "Daily tasks",
+   "body": "Play a 15-second sponsored game to get 1 image generation credit. 3 tasks a day.",
+   "cta": "Play task",
+   "decline": "Close"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 image generation credit",
+   "resource": "r3",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 5
+  },
+  "cannibalizationGuard": "At most 3 tasks a day; the free daily sources are unchanged. Non-payers only; capped per day; a remote-config kill switch rolls it back if paid conversion drops [CANN-4]. This reward (image credit) is not gated by Account Access, preserving the sign-up value proposition.",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 2,
+   "cogs": "image",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Tasks completed per DAU and D7 retention against the holdout",
+   "guardrails": [
+    "Pack / subscription conversion per DAU non-inferior to holdout within -3% relative [MEAS-5]",
+    "D7 retention and sessions per DAU",
+    "Declines followed by churn; ad-related complaints"
+   ],
+   "holdout": "10% user-level holdout never sees the offer for 4 weeks (intent-to-treat) [MEAS-5]"
+  },
+  "precedents": [
+   "TAX-9",
+   "AI-3",
+   "EX-SOCIAL",
+   "TRIG-1"
+  ],
+  "risks": [
+   "New surface to build and maintain; sponsor demand for the tasks must be confirmed."
+  ],
+  "evidence": [
+   {
+    "obs": "o0183",
+    "el": null,
+    "quote": "Usage limits"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s01",
+     "kind": "sheet",
+     "change": "\"Daily tasks\" sheet: 3 rows \"Play a 15-second game: 1 image generation credit\", progress 0/3, resets at midnight"
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s01",
+     "near": "e8",
+     "place": "after",
+     "change": "Badge \"Daily tasks 0/3\""
+    },
+    {
+     "id": "ne2",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Task row \"Play with Luzia: 1 image generation credit\" with a Play button"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s01",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne2",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r3",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e8",
+      "text": "Today's balance"
+     }
+    ],
+    "caption": "Chats Home today: nothing to do for free beyond the existing sources."
+   },
+   {
+    "phase": "change",
+    "screen": "s01",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "NEW: Daily tasks 0/3"
+     }
+    ],
+    "caption": "A Daily tasks badge opens a sheet of 3 sponsored games."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Task disclosed: game length and reward"
+     }
+    ],
+    "caption": "\"Play task\" or \"Close\"."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "A 15-second sponsored game; grant on REWARD_VERIFIED."
+   },
+   {
+    "phase": "value",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "1/3 done"
+     }
+    ],
+    "caption": "Task done: 1 image generation credit."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43410,
+  "output": 1691,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3104
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:18:47.744Z"
+}

@@ -1,0 +1,215 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Premium Mode Trial Pass",
+  "oneLiner": "Watch a quick game partner ad to unlock 15 minutes of Premium mode without spending extra credits.",
+  "case": "product-change",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m1",
+    "m3"
+   ],
+   "economy": [
+    "r1",
+    "k1",
+    "k2"
+   ],
+   "newMechanic": {
+    "name": "Timed Premium Pass",
+    "description": "Unlocks 15 minutes of Premium mode via rewarded ad view",
+    "whyNeeded": "Allows time-boxed sampling of Premium features to drive upgrade intent without giving away permanent credits",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s03",
+  "trigger": "User hits credit limits or opens chat mode on Starship Galley Chat and selects Premium trial.",
+  "eligibility": "Non-paying guest users on Basic mode with available daily ad quota.",
+  "offer": {
+   "title": "Unlock 15 Min Premium",
+   "body": "Play a 15-second game with Starship Galley to try Premium mode free.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Starship Galley",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "15 minutes of Premium mode",
+   "resource": null,
+   "amount": null,
+   "duration": "15 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 2,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Time-boxed to 15 minutes, rate-limited to 2 per day, and restricted to non-payers, protecting subscription conversion while sampling Premium features.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Total ARPDAU and Premium subscription conversion rate",
+   "guardrails": [
+    "Paid conversion non-inferiority within -3%",
+    "D7 and D30 retention stability",
+    "Message volume per DAU"
+   ],
+   "holdout": "User-level 10% randomized holdout for 28 days"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-DUO",
+   "EX-MUSIC",
+   "AI-4"
+  ],
+  "risks": [
+   "Perceived degradation of standard message value if trial is overused",
+   "Ad fill rate variations in international geos"
+  ],
+  "evidence": [
+   {
+    "obs": "s03",
+    "el": "e3",
+    "quote": "Basic · 10"
+   },
+   {
+    "obs": "s04",
+    "el": "e10",
+    "quote": "Premium 30 credits per message · Longer, smarter replies"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s03",
+     "near": "e3",
+     "place": "after",
+     "change": "Add 'Try 15m Premium via Game Partner' button"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s03",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "Basic mode active"
+     }
+    ],
+    "caption": "User chats in Basic mode on Starship Galley Chat."
+   },
+   {
+    "phase": "change",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tap to try Premium free"
+     }
+    ],
+    "caption": "Product change adds rewarded trial button."
+   },
+   {
+    "phase": "offer",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s to unlock 15m"
+     }
+    ],
+    "caption": "Opt-in offer discloses 15-minute trial."
+   },
+   {
+    "phase": "ad",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Playing mini-game with Starship Galley"
+     }
+    ],
+    "caption": "User plays mini-game with character."
+   },
+   {
+    "phase": "value",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "Premium · 15m Timer Active"
+     }
+    ],
+    "caption": "Verification grants 15 minutes of Premium."
+   }
+  ]
+ },
+ "usage": {
+  "input": 32471,
+  "output": 1544,
+  "cacheRead": 30239,
+  "cacheWrite": 0,
+  "thoughts": 3045
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:55:24.306Z"
+}

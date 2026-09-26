@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Trigger: When the user lands on the memory paywall screen (s03) and is blocked from advanced context."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "simula: { \"unit\": \"SIM-RWD\", \"entry\": \"button\", \"gamePartner\": \"Janitor\", \"minPlaySec\": 15 }"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "body: \"Play a quick 15-second game to get 5x context memory for the next 15 minutes.\""
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: \"Play Now\", decline: \"Not Now\""
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "body: \"Play a quick 15-second game to get 5x context memory for the next 15 minutes.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: \"Not Now\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "trigger: \"When the user lands on the memory paywall screen (s03) and is blocked from advanced context.\""
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility: \"Non-paying users reaching the memory wall.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal matches paywall screen s03 ('More memory for long chats.') where advanced context is locked (e10: '5× context for better memory'), directly addressing the exact paywall hit.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Placed on paywall screen s03, avoiding any streaming response interruption. Uses Simula SIM-RWD with Janitor as game partner playing a 15s game, keeping the experience native.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Strictly gated to non-paying users reaching the memory wall, time-boxed to 15 minutes, capped at 2 uses per day, ensuring Janitor Plus (of1) remains the permanent option.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view is $0.0018 (text-cheap x 1), which is well below the US net revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on paywall s03 when users hit the memory wall (frequent moment m1), capturing engaged free users hitting context limits.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD with button entry, Janitor game partner, 15s play, REWARD_VERIFIED, and remote config caps.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Targets screen s03, economy item of1 (Janitor Plus) and w1, quotes e10 ('5× context for better memory'), and uses app character Janitor as game partner.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit caps (perDay: 2, cooldownMin: 60), decline button present, no re-offer loop.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Named primary metric (rewarded_impressions_per_dau), guardrails (subscription_conversion_rate, average_session_length), and a user-level holdout (10% share, 21 days).",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Align the resource identifier in the patch and storyboard (currently 'memory_boost') with valid feature entitlement nomenclature matching the paywall feature (e10).",
+   "Correct the evidence array entry referencing 'm1', as moment IDs are not valid observations or screen IDs in the model digest."
+  ],
+  "topConcern": "The proposal references an ungrounded resource name ('memory_boost') and an invalid evidence identifier ('m1') in its patch and evidence arrays, causing gate validation failures despite a strong economic and UX design."
+ },
+ "usage": {
+  "input": 34874,
+  "output": 1176,
+  "cacheRead": 32238,
+  "cacheWrite": 0,
+  "thoughts": 3568
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:59:13.767Z"
+}

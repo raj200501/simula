@@ -1,0 +1,27 @@
+{
+  "stage": "judge",
+  "app": "aol",
+  "runId": "ju0926-072043",
+  "gitSha": "9fec3da",
+  "startedAt": "2026-09-26T07:20:43.769Z",
+  "finishedAt": "2026-09-26T07:22:02.789Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "proposals/candidates.json",
+      "sha256": "083afd724046f54fed90c3810b3574363f1beb66caa989492d6c64aef77aa29c"
+    }
+  ],
+  "outputs": [
+    "proposals/judgments.json",
+    "proposals/judgments.md",
+    "proposals/candidates.json",
+    "proposals/revisions.json"
+  ],
+  "llm": {
+    "calls": 9,
+    "cached": 3,
+    "usd": 0,
+    "mode": "record"
+  }
+}

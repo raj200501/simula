@@ -1,0 +1,53 @@
+{
+ "purpose": "annotate:5ca54c4c0f",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Image Creation Hub",
+  "kind": "tab",
+  "purpose": "Users can generate or edit AI images by typing a prompt or selecting popular styles.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e34",
+    "intent": "Type prompt to create image",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "A futuristic city",
+    "sendEl": "e35"
+   },
+   {
+    "el": "e6",
+    "intent": "Switch to Edit tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e7",
+    "intent": "Switch to Animate tab",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e19",
+    "intent": "Select Painting popular style",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2775,
+  "output": 288,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:08:37.592Z"
+}

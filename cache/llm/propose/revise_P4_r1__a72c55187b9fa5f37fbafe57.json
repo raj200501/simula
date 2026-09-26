@@ -1,0 +1,205 @@
+{
+ "purpose": "revise:P4:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Sponsored AI usage session",
+  "oneLiner": "A sponsor pays for a daily AI Usage Quota refill: one 15-second game, once a day, offered on Chats Home.",
+  "case": "product-change",
+  "archetype": "TAX-11",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m16"
+   ],
+   "economy": [
+    "r3"
+   ],
+   "newMechanic": {
+    "name": "Sponsored AI usage session",
+    "description": "A daily, sponsor-attributed refill of AI Usage Quota actions for messaging and generation.",
+    "whyNeeded": "Users hit AI usage limits; a sponsored session refills actionable quota without bypassing account rules [CANN-1].",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s01",
+  "trigger": "At the start of a session on Chats Home when quota is low; never mid-reply.",
+  "eligibility": "Non-payers only, returning users from their second session on; suppressed for 24 h after any purchase and never shown to subscribers [TRIG-2] [CANN-4].",
+  "offer": {
+   "title": "Sponsored AI usage session",
+   "body": "Play a 15-second sponsored game to get +10 bonus AI Usage Quota actions.",
+   "cta": "Play to unlock",
+   "decline": "Not today"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "+10 bonus AI Usage Quota actions",
+   "resource": "r3",
+   "amount": 10,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 0
+  },
+  "cannibalizationGuard": "Once a day, capped quota refill; the Luzia+ subscription remains the permanent unlimited option. Non-payers only; a remote-config kill switch rolls it back if paid conversion drops [CANN-4].",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 10
+  },
+  "kpis": {
+   "primary": "Sessions started with the sponsored AI usage session, and paid plan conversion against the holdout",
+   "guardrails": [
+    "Pack / subscription conversion per DAU non-inferior to holdout within -3% relative [MEAS-5]",
+    "D7 retention and sessions per DAU",
+    "Declines followed by churn; ad-related complaints"
+   ],
+   "holdout": "10% user-level holdout never sees the offer for 4 weeks (intent-to-treat) [MEAS-5]"
+  },
+  "precedents": [
+   "TAX-11",
+   "TAX-1",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Providing quota refill must not cannibalize subscription value; cap daily grants strictly."
+  ],
+  "evidence": [
+   {
+    "obs": "o0183",
+    "el": null,
+    "quote": "Usage limits"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s01",
+     "near": "e8",
+     "place": "after",
+     "change": "Dismissible chip \"Sponsored: +10 AI Usage Quota actions — play 15 s\""
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s01",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r3",
+       "delta": 10
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e8",
+      "text": "AI Usage Quota is limited"
+     }
+    ],
+    "caption": "First session of the day on Chats Home."
+   },
+   {
+    "phase": "change",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "NEW: sponsored quota chip"
+     }
+    ],
+    "caption": "A sponsor offers +10 AI Usage Quota actions."
+   },
+   {
+    "phase": "offer",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Opt-in; reward disclosed"
+     }
+    ],
+    "caption": "Opt-in to play or decline."
+   },
+   {
+    "phase": "ad",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "Playing the 15-second sponsored game."
+   },
+   {
+    "phase": "value",
+    "screen": "s01",
+    "counters": [
+     {
+      "resource": "r3",
+      "value": 10
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "+10 actions added"
+     }
+    ],
+    "caption": "+10 actions credited to AI Usage Quota."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43118,
+  "output": 1546,
+  "cacheRead": 15413,
+  "cacheWrite": 0,
+  "thoughts": 3333
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:18:48.033Z"
+}

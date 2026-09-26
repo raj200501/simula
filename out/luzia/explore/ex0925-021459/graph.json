@@ -1,0 +1,2784 @@
+{
+  "schema": "simula.explore-graph/1",
+  "app": {
+    "id": "luzia",
+    "package": "co.thewordlab.luzia",
+    "name": "Luzia"
+  },
+  "runId": "ex0925-021459",
+  "device": {
+    "widthPx": 1080,
+    "heightPx": 2400,
+    "density": 2.625,
+    "statusBarPx": 0,
+    "navBarPx": 0,
+    "kind": "android"
+  },
+  "startedAt": "2026-09-25T06:15:00.476Z",
+  "finishedAt": "2026-09-25T06:20:09.334Z",
+  "launchState": "s01",
+  "states": [
+    {
+      "id": "s01",
+      "signature": [
+        "Button|buttonAddComposer|",
+        "EditText|",
+        "FrameLayout|android:id/content",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||ask luzia",
+        "TextView||luzia",
+        "TextView||what are we doing today?",
+        "View|",
+        "View||",
+        "View||user avatar"
+      ],
+      "dhash": "71682f337070700c",
+      "obs": [
+        "o0001",
+        "o0004",
+        "o0006"
+      ],
+      "name": "Chat Home",
+      "kind": "chat",
+      "purpose": "This is the main chat screen of the AI assistant Luzia, where users can send messages or choose predefined tasks like creating images or editing photos.",
+      "inScope": true,
+      "scrollable": false,
+      "loginWall": false,
+      "annotatedBy": "llm",
+      "actions": [
+        {
+          "id": "a01_1",
+          "elKey": "EditText|||0",
+          "kind": "type-send",
+          "intent": "Type a message to the AI assistant",
+          "input": "Hi! What happens next?",
+          "sendElKey": "View|||7",
+          "priority": 2,
+          "status": "done",
+          "tries": 1,
+          "note": "sent with \"View\""
+        },
+        {
+          "id": "a01_2",
+          "kind": "back",
+          "intent": "press BACK",
+          "priority": 0,
+          "status": "done",
+          "tries": 1
+        }
+      ],
+      "signals": [],
+      "visits": 3,
+      "firstStep": 0
+    },
+    {
+      "id": "s02",
+      "signature": [
+        "FrameLayout|android:id/content",
+        "ImageView||luzia",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||she / her",
+        "TextView||sign up",
+        "View|",
+        "View||",
+        "View||favorite messages",
+        "View||responses"
+      ],
+      "dhash": "4e6e0f2b793d3155",
+      "obs": [
+        "o0002"
+      ],
+      "name": "Character Profile Settings",
+      "kind": "modal",
+      "purpose": "View character profile details and prompt the user to sign up to adjust response styles.",
+      "inScope": true,
+      "scrollable": false,
+      "loginWall": false,
+      "annotatedBy": "llm",
+      "actions": [
+        {
+          "id": "a02_1",
+          "elKey": "TextView||sign up|0",
+          "kind": "tap",
+          "intent": "Sign up to adjust response style",
+          "priority": 3,
+          "status": "done",
+          "tries": 1
+        },
+        {
+          "id": "a02_2",
+          "kind": "back",
+          "intent": "press BACK",
+          "priority": 0,
+          "status": "unreachable",
+          "tries": 0,
+          "note": "no known path from the launch screen"
+        }
+      ],
+      "signals": [],
+      "visits": 1,
+      "firstStep": 1
+    },
+    {
+      "id": "s03",
+      "signature": [
+        "FrameLayout|android:id/content",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||continue with google",
+        "TextView||hi! i'm luzia",
+        "View|",
+        "View|buttonContinueAsGuest",
+        "View|containerLogin"
+      ],
+      "dhash": "260f6e8e2a334d0c",
+      "obs": [
+        "o0003"
+      ],
+      "name": "Login Screen",
+      "kind": "login",
+      "purpose": "The login screen prompts users to sign in with Google or continue with limited access.",
+      "inScope": false,
+      "scrollable": false,
+      "loginWall": true,
+      "annotatedBy": "llm",
+      "actions": [
+        {
+          "id": "a03_1",
+          "elKey": "View|buttonContinueAsGuest||0",
+          "kind": "tap",
+          "intent": "Continue with limited access",
+          "priority": 1,
+          "status": "skipped",
+          "tries": 0,
+          "skip": "login wall: no human available"
+        },
+        {
+          "id": "a03_2",
+          "kind": "back",
+          "intent": "press BACK",
+          "priority": 0,
+          "status": "done",
+          "tries": 1
+        }
+      ],
+      "signals": [],
+      "visits": 1,
+      "firstStep": 2
+    }
+  ],
+  "edges": [
+    {
+      "id": "g0001",
+      "from": "s01",
+      "to": "s02",
+      "action": "a01_1",
+      "obsBefore": "o0001",
+      "obsAfter": "o0002",
+      "effects": [],
+      "context": {
+        "selected": []
+      },
+      "seen": 1,
+      "failures": 0,
+      "firstStep": 1
+    },
+    {
+      "id": "g0002",
+      "from": "s02",
+      "to": "s03",
+      "action": "a02_1",
+      "obsBefore": "o0002",
+      "obsAfter": "o0003",
+      "effects": [],
+      "context": {
+        "selected": []
+      },
+      "seen": 1,
+      "failures": 0,
+      "firstStep": 2
+    },
+    {
+      "id": "g0003",
+      "from": "s03",
+      "to": "s01",
+      "action": "a03_2",
+      "obsBefore": "o0003",
+      "obsAfter": "o0004",
+      "effects": [],
+      "context": {
+        "selected": []
+      },
+      "seen": 1,
+      "failures": 0,
+      "firstStep": 3
+    },
+    {
+      "id": "g0004",
+      "from": "s01",
+      "to": "ext:other",
+      "action": "a01_2",
+      "obsBefore": "o0004",
+      "obsAfter": "o0005",
+      "effects": [],
+      "context": {
+        "selected": []
+      },
+      "seen": 1,
+      "failures": 0,
+      "firstStep": 4
+    }
+  ],
+  "observations": [
+    {
+      "id": "o0001",
+      "step": 0,
+      "ts": "2026-09-25T06:15:03.028Z",
+      "fg": "co.thewordlab.luzia",
+      "screenshot": "obs/o0001.png",
+      "elements": [
+        {
+          "type": "android.widget.LinearLayout",
+          "identifier": "co.thewordlab.luzia:id/action_bar_root",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e1",
+          "key": "LinearLayout|co.thewordlab.luzia:id/action_bar_root||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "android:id/content",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e2",
+          "key": "FrameLayout|android:id/content||0",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 279
+          },
+          "id": "e3",
+          "key": "View|||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 21,
+            "y": 143,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e4",
+          "key": "View|||1",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "User avatar",
+          "rect": {
+            "x": 147,
+            "y": 153,
+            "w": 105,
+            "h": 105
+          },
+          "id": "e5",
+          "key": "View||user avatar|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Luzia",
+          "rect": {
+            "x": 273,
+            "y": 173,
+            "w": 765,
+            "h": 66
+          },
+          "id": "e6",
+          "key": "TextView||luzia|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "What are we doing today?",
+          "rect": {
+            "x": 184,
+            "y": 772,
+            "w": 712,
+            "h": 73
+          },
+          "id": "e7",
+          "key": "TextView||what are we doing today?|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1247,
+            "w": 438,
+            "h": 126
+          },
+          "id": "e8",
+          "key": "View|||2",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Create an image",
+          "rect": {
+            "x": 158,
+            "y": 1287,
+            "w": 280,
+            "h": 46
+          },
+          "id": "e9",
+          "key": "TextView||create an image|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1396,
+            "w": 365,
+            "h": 126
+          },
+          "id": "e10",
+          "key": "View|||3",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Edit a photo",
+          "rect": {
+            "x": 158,
+            "y": 1436,
+            "w": 207,
+            "h": 46
+          },
+          "id": "e11",
+          "key": "TextView||edit a photo|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1545,
+            "w": 438,
+            "h": 126
+          },
+          "id": "e12",
+          "key": "View|||4",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Animate a photo",
+          "rect": {
+            "x": 158,
+            "y": 1585,
+            "w": 280,
+            "h": 46
+          },
+          "id": "e13",
+          "key": "TextView||animate a photo|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1694,
+            "w": 412,
+            "h": 126
+          },
+          "id": "e14",
+          "key": "View|||5",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Help with math",
+          "rect": {
+            "x": 158,
+            "y": 1734,
+            "w": 254,
+            "h": 46
+          },
+          "id": "e15",
+          "key": "TextView||help with math|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1843,
+            "w": 390,
+            "h": 126
+          },
+          "id": "e16",
+          "key": "View|||6",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Talk about life",
+          "rect": {
+            "x": 158,
+            "y": 1883,
+            "w": 232,
+            "h": 46
+          },
+          "id": "e17",
+          "key": "TextView||talk about life|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.EditText",
+          "rect": {
+            "x": 42,
+            "y": 2028,
+            "w": 996,
+            "h": 126
+          },
+          "id": "e18",
+          "key": "EditText|||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Ask Luzia",
+          "rect": {
+            "x": 42,
+            "y": 2043,
+            "w": 177,
+            "h": 53
+          },
+          "id": "e19",
+          "key": "TextView||ask luzia|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.Button",
+          "identifier": "buttonAddComposer",
+          "rect": {
+            "x": 21,
+            "y": 2133,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e20",
+          "key": "Button|buttonAddComposer||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 933,
+            "y": 2133,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e21",
+          "key": "View|||7",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Audio Button: Tap twice or hold to record. Slide up for hands-free mode, left to cancel. Release to send.",
+          "rect": {
+            "x": 970,
+            "y": 2170,
+            "w": 52,
+            "h": 52
+          },
+          "id": "e22",
+          "key": "View||audio button: tap twice or hold to recor|0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Luzia is AI and can make mistakes. Verify important information.",
+          "rect": {
+            "x": 21,
+            "y": 2280,
+            "w": 1038,
+            "h": 36
+          },
+          "id": "e23",
+          "key": "TextView||luzia is ai and can make mistakes. verif|0",
+          "chrome": false
+        }
+      ],
+      "signature": [
+        "Button|buttonAddComposer|",
+        "EditText|",
+        "FrameLayout|android:id/content",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||ask luzia",
+        "TextView||luzia",
+        "TextView||what are we doing today?",
+        "View|",
+        "View||",
+        "View||user avatar"
+      ],
+      "dhash": "71682f337070700c",
+      "scrollIndex": 0,
+      "counters": [],
+      "texts": [
+        "User avatar",
+        "Luzia",
+        "What are we doing today?",
+        "Create an image",
+        "Edit a photo",
+        "Animate a photo",
+        "Help with math",
+        "Talk about life",
+        "Ask Luzia",
+        "Audio Button: Tap twice or hold to record. Slide up for hands-free mode, left to cancel. Release to send.",
+        "Luzia is AI and can make mistakes. Verify important information."
+      ]
+    },
+    {
+      "id": "o0002",
+      "step": 1,
+      "ts": "2026-09-25T06:15:09.013Z",
+      "fg": "co.thewordlab.luzia",
+      "screenshot": "obs/o0002.png",
+      "elements": [
+        {
+          "type": "android.widget.LinearLayout",
+          "identifier": "co.thewordlab.luzia:id/action_bar_root",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e1",
+          "key": "LinearLayout|co.thewordlab.luzia:id/action_bar_root||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "android:id/content",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e2",
+          "key": "FrameLayout|android:id/content||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.ImageView",
+          "label": "Luzia",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 258
+          },
+          "id": "e3",
+          "key": "ImageView||luzia|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 21,
+            "y": 132,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e4",
+          "key": "View|||0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.ImageView",
+          "label": "Luzia",
+          "rect": {
+            "x": 0,
+            "y": 258,
+            "w": 1080,
+            "h": 2142
+          },
+          "id": "e5",
+          "key": "ImageView||luzia|1",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Luzia",
+          "rect": {
+            "x": 42,
+            "y": 1378,
+            "w": 819,
+            "h": 92
+          },
+          "id": "e6",
+          "key": "TextView||luzia|0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "She / Her",
+          "rect": {
+            "x": 882,
+            "y": 1404,
+            "w": 135,
+            "h": 40
+          },
+          "id": "e7",
+          "key": "TextView||she / her|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "We’re in this together 🫶",
+          "rect": {
+            "x": 42,
+            "y": 1481,
+            "w": 996,
+            "h": 47
+          },
+          "id": "e8",
+          "key": "TextView||we’re in this together 🫶|0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1591,
+            "w": 996,
+            "h": 176
+          },
+          "id": "e9",
+          "key": "View|||1",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Responses",
+          "rect": {
+            "x": 179,
+            "y": 1633,
+            "w": 190,
+            "h": 46
+          },
+          "id": "e10",
+          "key": "TextView||responses|0",
+          "chrome": false,
+          "group": "g3"
+        },
+        {
+          "type": "android.view.View",
+          "label": "Responses",
+          "rect": {
+            "x": 84,
+            "y": 1648,
+            "w": 63,
+            "h": 63
+          },
+          "id": "e11",
+          "key": "View||responses|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Responses",
+          "rect": {
+            "x": 933,
+            "y": 1648,
+            "w": 63,
+            "h": 63
+          },
+          "id": "e12",
+          "key": "View||responses|1",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Friendly and Chatty",
+          "rect": {
+            "x": 179,
+            "y": 1679,
+            "w": 329,
+            "h": 46
+          },
+          "id": "e13",
+          "key": "TextView||friendly and chatty|0",
+          "chrome": false,
+          "group": "g3"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1767,
+            "w": 996,
+            "h": 147
+          },
+          "id": "e14",
+          "key": "View|||2",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "label": "Favorite messages",
+          "rect": {
+            "x": 84,
+            "y": 1809,
+            "w": 63,
+            "h": 63
+          },
+          "id": "e15",
+          "key": "View||favorite messages|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Favorite messages",
+          "rect": {
+            "x": 933,
+            "y": 1809,
+            "w": 63,
+            "h": 63
+          },
+          "id": "e16",
+          "key": "View||favorite messages|1",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Favorite messages",
+          "rect": {
+            "x": 179,
+            "y": 1818,
+            "w": 326,
+            "h": 46
+          },
+          "id": "e17",
+          "key": "TextView||favorite messages|0",
+          "chrome": false,
+          "group": "g3"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Sign up to adjust my response style and make our chats even more yours. It's quick, easy, and free! ✨",
+          "rect": {
+            "x": 42,
+            "y": 1977,
+            "w": 996,
+            "h": 160
+          },
+          "id": "e18",
+          "key": "TextView||sign up to adjust my response style and |0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 2164,
+            "w": 996,
+            "h": 126
+          },
+          "id": "e19",
+          "key": "View|||3",
+          "chrome": true,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Sign up",
+          "rect": {
+            "x": 465,
+            "y": 2200,
+            "w": 150,
+            "h": 53
+          },
+          "id": "e20",
+          "key": "TextView||sign up|0",
+          "chrome": true
+        }
+      ],
+      "signature": [
+        "FrameLayout|android:id/content",
+        "ImageView||luzia",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||she / her",
+        "TextView||sign up",
+        "View|",
+        "View||",
+        "View||favorite messages",
+        "View||responses"
+      ],
+      "dhash": "4e6e0f2b793d3155",
+      "scrollIndex": 0,
+      "counters": [],
+      "texts": [
+        "Luzia",
+        "She / Her",
+        "We’re in this together 🫶",
+        "Responses",
+        "Friendly and Chatty",
+        "Favorite messages",
+        "Sign up to adjust my response style and make our chats even more yours. It's quick, easy, and free! ✨",
+        "Sign up"
+      ]
+    },
+    {
+      "id": "o0003",
+      "step": 2,
+      "ts": "2026-09-25T06:15:12.362Z",
+      "fg": "co.thewordlab.luzia",
+      "screenshot": "obs/o0003.png",
+      "elements": [
+        {
+          "type": "android.widget.LinearLayout",
+          "identifier": "co.thewordlab.luzia:id/action_bar_root",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e1",
+          "key": "LinearLayout|co.thewordlab.luzia:id/action_bar_root||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "android:id/content",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e2",
+          "key": "FrameLayout|android:id/content||0",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "identifier": "containerLogin",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e3",
+          "key": "View|containerLogin||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Hi! I'm Luzia",
+          "rect": {
+            "x": 337,
+            "y": 1574,
+            "w": 407,
+            "h": 92
+          },
+          "id": "e4",
+          "key": "TextView||hi! i'm luzia|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Sign up free to unlock features just for you.",
+          "rect": {
+            "x": 121,
+            "y": 1687,
+            "w": 838,
+            "h": 53
+          },
+          "id": "e5",
+          "key": "TextView||sign up free to unlock features just for|0",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1793,
+            "w": 996,
+            "h": 126
+          },
+          "id": "e6",
+          "key": "View|||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Continue with Google",
+          "rect": {
+            "x": 356,
+            "y": 1829,
+            "w": 442,
+            "h": 53
+          },
+          "id": "e7",
+          "key": "TextView||continue with google|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "identifier": "buttonContinueAsGuest",
+          "rect": {
+            "x": 42,
+            "y": 1925,
+            "w": 996,
+            "h": 126
+          },
+          "id": "e8",
+          "key": "View|buttonContinueAsGuest||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Continue with limited access",
+          "rect": {
+            "x": 250,
+            "y": 1961,
+            "w": 581,
+            "h": 53
+          },
+          "id": "e9",
+          "key": "TextView||continue with limited access|0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "By continuing, you automatically accept our Terms of use and Privacy Policy",
+          "rect": {
+            "x": 42,
+            "y": 2098,
+            "w": 996,
+            "h": 92
+          },
+          "id": "e10",
+          "key": "TextView||by continuing, you automatically accept |0",
+          "chrome": false
+        }
+      ],
+      "signature": [
+        "FrameLayout|android:id/content",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||continue with google",
+        "TextView||hi! i'm luzia",
+        "View|",
+        "View|buttonContinueAsGuest",
+        "View|containerLogin"
+      ],
+      "dhash": "260f6e8e2a334d0c",
+      "scrollIndex": 0,
+      "counters": [],
+      "texts": [
+        "Hi! I'm Luzia",
+        "Sign up free to unlock features just for you.",
+        "Continue with Google",
+        "Continue with limited access",
+        "By continuing, you automatically accept our Terms of use and Privacy Policy"
+      ]
+    },
+    {
+      "id": "o0004",
+      "step": 3,
+      "ts": "2026-09-25T06:15:16.496Z",
+      "fg": "co.thewordlab.luzia",
+      "screenshot": "obs/o0004.png",
+      "elements": [
+        {
+          "type": "android.widget.LinearLayout",
+          "identifier": "co.thewordlab.luzia:id/action_bar_root",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e1",
+          "key": "LinearLayout|co.thewordlab.luzia:id/action_bar_root||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "android:id/content",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e2",
+          "key": "FrameLayout|android:id/content||0",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 279
+          },
+          "id": "e3",
+          "key": "View|||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 21,
+            "y": 143,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e4",
+          "key": "View|||1",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "User avatar",
+          "rect": {
+            "x": 147,
+            "y": 153,
+            "w": 105,
+            "h": 105
+          },
+          "id": "e5",
+          "key": "View||user avatar|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Luzia",
+          "rect": {
+            "x": 273,
+            "y": 173,
+            "w": 765,
+            "h": 66
+          },
+          "id": "e6",
+          "key": "TextView||luzia|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "What are we doing today?",
+          "rect": {
+            "x": 184,
+            "y": 1176,
+            "w": 712,
+            "h": 73
+          },
+          "id": "e7",
+          "key": "TextView||what are we doing today?|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.EditText",
+          "text": "Hi! What hnext?a",
+          "rect": {
+            "x": 42,
+            "y": 2028,
+            "w": 996,
+            "h": 126
+          },
+          "id": "e8",
+          "key": "EditText||hi! what hnext?a|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.Button",
+          "identifier": "buttonAddComposer",
+          "rect": {
+            "x": 21,
+            "y": 2133,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e9",
+          "key": "Button|buttonAddComposer||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 933,
+            "y": 2133,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e10",
+          "key": "View|||2",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Confirm button",
+          "rect": {
+            "x": 970,
+            "y": 2170,
+            "w": 52,
+            "h": 52
+          },
+          "id": "e11",
+          "key": "View||confirm button|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Luzia is AI and can make mistakes. Verify important information.",
+          "rect": {
+            "x": 21,
+            "y": 2280,
+            "w": 1038,
+            "h": 36
+          },
+          "id": "e12",
+          "key": "TextView||luzia is ai and can make mistakes. verif|0",
+          "chrome": false
+        }
+      ],
+      "signature": [
+        "Button|buttonAddComposer|",
+        "EditText||hi! what hnext?a",
+        "FrameLayout|android:id/content",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||luzia",
+        "TextView||what are we doing today?",
+        "View||",
+        "View||confirm button",
+        "View||user avatar"
+      ],
+      "dhash": "7170000f2300700c",
+      "scrollIndex": 0,
+      "counters": [],
+      "texts": [
+        "User avatar",
+        "Luzia",
+        "What are we doing today?",
+        "Hi! What hnext?a",
+        "Confirm button",
+        "Luzia is AI and can make mistakes. Verify important information."
+      ]
+    },
+    {
+      "id": "o0005",
+      "step": 4,
+      "ts": "2026-09-25T06:15:20.877Z",
+      "fg": "com.aol.mobile.aolapp",
+      "screenshot": "obs/o0005.png",
+      "elements": [
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "com.aol.mobile.aolapp:id/action_bar_root",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e1",
+          "key": "FrameLayout|com.aol.mobile.aolapp:id/action_bar_root||0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "android:id/content",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e2",
+          "key": "FrameLayout|android:id/content||0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "androidx.drawerlayout.widget.DrawerLayout",
+          "identifier": "com.aol.mobile.aolapp:id/drawer_layout",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e3",
+          "key": "DrawerLayout|com.aol.mobile.aolapp:id/drawer_layout||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.ScrollView",
+          "identifier": "com.aol.mobile.aolapp:id/toolbar_layout",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e4",
+          "key": "ScrollView|com.aol.mobile.aolapp:id/toolbar_layout||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.LinearLayout",
+          "identifier": "com.aol.mobile.aolapp:id/app_bar",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 426
+          },
+          "id": "e5",
+          "key": "LinearLayout|com.aol.mobile.aolapp:id/app_bar||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "com.aol.mobile.aolapp:id/include_ym7_toolbar_layout",
+          "rect": {
+            "x": 0,
+            "y": 132,
+            "w": 1080,
+            "h": 294
+          },
+          "id": "e6",
+          "key": "FrameLayout|com.aol.mobile.aolapp:id/include_ym7_toolbar_layout||0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/title_row",
+          "rect": {
+            "x": 0,
+            "y": 132,
+            "w": 1080,
+            "h": 158
+          },
+          "id": "e7",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/title_row||0",
+          "chrome": true,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/profile_layout",
+          "rect": {
+            "x": 0,
+            "y": 159,
+            "w": 828,
+            "h": 126
+          },
+          "id": "e8",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/profile_layout||0",
+          "chrome": true,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.ImageView",
+          "label": "Sidebar button. Double tap or slide two fingers from the left of the screen to expand.",
+          "identifier": "com.aol.mobile.aolapp:id/avatar_button",
+          "rect": {
+            "x": 29,
+            "y": 159,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e9",
+          "key": "ImageView|com.aol.mobile.aolapp:id/avatar_button|sidebar button. double tap or slide two |0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.LinearLayout",
+          "identifier": "com.aol.mobile.aolapp:id/toolbar_title_parent",
+          "rect": {
+            "x": 155,
+            "y": 159,
+            "w": 473,
+            "h": 126
+          },
+          "id": "e10",
+          "key": "LinearLayout|com.aol.mobile.aolapp:id/toolbar_title_parent||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/title_layout",
+          "rect": {
+            "x": 155,
+            "y": 159,
+            "w": 132,
+            "h": 59
+          },
+          "id": "e11",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/title_layout||0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Home",
+          "identifier": "com.aol.mobile.aolapp:id/toolbar_title",
+          "rect": {
+            "x": 171,
+            "y": 159,
+            "w": 116,
+            "h": 59
+          },
+          "id": "e12",
+          "key": "TextView|com.aol.mobile.aolapp:id/toolbar_title|home|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.ImageButton",
+          "label": "Access your saved articles",
+          "identifier": "com.aol.mobile.aolapp:id/right_button_1",
+          "rect": {
+            "x": 828,
+            "y": 164,
+            "w": 105,
+            "h": 105
+          },
+          "id": "e13",
+          "key": "ImageButton|com.aol.mobile.aolapp:id/right_button_1|access your saved articles|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.ImageButton",
+          "label": "Search",
+          "identifier": "com.aol.mobile.aolapp:id/right_button_2",
+          "rect": {
+            "x": 954,
+            "y": 164,
+            "w": 105,
+            "h": 105
+          },
+          "id": "e14",
+          "key": "ImageButton|com.aol.mobile.aolapp:id/right_button_2|search|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "See the latest news",
+          "identifier": "com.aol.mobile.aolapp:id/toolbar_subtitle",
+          "rect": {
+            "x": 171,
+            "y": 218,
+            "w": 457,
+            "h": 67
+          },
+          "id": "e15",
+          "key": "TextView|com.aol.mobile.aolapp:id/toolbar_subtitle|see the latest news|0",
+          "chrome": true
+        },
+        {
+          "type": "androidx.compose.ui.platform.ComposeView",
+          "identifier": "com.aol.mobile.aolapp:id/jpc_nav_filter",
+          "rect": {
+            "x": 0,
+            "y": 279,
+            "w": 1080,
+            "h": 147
+          },
+          "id": "e16",
+          "key": "ComposeView|com.aol.mobile.aolapp:id/jpc_nav_filter||0",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 53,
+            "y": 290,
+            "w": 239,
+            "h": 126
+          },
+          "checked": true,
+          "id": "e17",
+          "key": "View|||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 313,
+            "y": 290,
+            "w": 284,
+            "h": 126
+          },
+          "id": "e18",
+          "key": "View|||1",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 618,
+            "y": 290,
+            "w": 159,
+            "h": 126
+          },
+          "id": "e19",
+          "key": "View|||2",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 798,
+            "y": 290,
+            "w": 176,
+            "h": 126
+          },
+          "id": "e20",
+          "key": "View|||3",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 995,
+            "y": 290,
+            "w": 85,
+            "h": 126
+          },
+          "id": "e21",
+          "key": "View|||4",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Top Stories",
+          "rect": {
+            "x": 95,
+            "y": 334,
+            "w": 155,
+            "h": 38
+          },
+          "id": "e22",
+          "key": "TextView||top stories|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Entertainment",
+          "rect": {
+            "x": 355,
+            "y": 334,
+            "w": 200,
+            "h": 38
+          },
+          "id": "e23",
+          "key": "TextView||entertainment|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Local",
+          "rect": {
+            "x": 660,
+            "y": 334,
+            "w": 75,
+            "h": 38
+          },
+          "id": "e24",
+          "key": "TextView||local|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Sports",
+          "rect": {
+            "x": 840,
+            "y": 334,
+            "w": 92,
+            "h": 38
+          },
+          "id": "e25",
+          "key": "TextView||sports|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Business",
+          "rect": {
+            "x": 1037,
+            "y": 334,
+            "w": 43,
+            "h": 38
+          },
+          "id": "e26",
+          "key": "TextView||business|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/tab_section",
+          "rect": {
+            "x": 0,
+            "y": 426,
+            "w": 1080,
+            "h": 1974
+          },
+          "id": "e27",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/tab_section||0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/refresh_layout",
+          "rect": {
+            "x": 0,
+            "y": 426,
+            "w": 1080,
+            "h": 1974
+          },
+          "id": "e28",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/refresh_layout||0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "com.aol.mobile.aolapp:id/fragment_container",
+          "rect": {
+            "x": 0,
+            "y": 426,
+            "w": 1080,
+            "h": 1974
+          },
+          "id": "e29",
+          "key": "FrameLayout|com.aol.mobile.aolapp:id/fragment_container||0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "androidx.viewpager.widget.ViewPager",
+          "identifier": "com.aol.mobile.aolapp:id/pager",
+          "rect": {
+            "x": 0,
+            "y": 426,
+            "w": 1080,
+            "h": 1974
+          },
+          "id": "e30",
+          "key": "ViewPager|com.aol.mobile.aolapp:id/pager||0",
+          "chrome": false
+        },
+        {
+          "type": "androidx.recyclerview.widget.RecyclerView",
+          "identifier": "com.aol.mobile.aolapp:id/home_news_recyclerview",
+          "rect": {
+            "x": 0,
+            "y": 426,
+            "w": 1080,
+            "h": 1974
+          },
+          "id": "e31",
+          "key": "RecyclerView|com.aol.mobile.aolapp:id/home_news_recyclerview||0",
+          "chrome": false
+        },
+        {
+          "type": "androidx.compose.ui.platform.ComposeView",
+          "identifier": "com.aol.mobile.aolapp:id/compose_view",
+          "rect": {
+            "x": 0,
+            "y": 426,
+            "w": 1080,
+            "h": 194
+          },
+          "id": "e32",
+          "key": "ComposeView|com.aol.mobile.aolapp:id/compose_view||0",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 80,
+            "y": 460,
+            "w": 921,
+            "h": 126
+          },
+          "id": "e33",
+          "key": "View|||5",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 846,
+            "y": 461,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e34",
+          "key": "View|||6",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Tap here for weather",
+          "rect": {
+            "x": 133,
+            "y": 492,
+            "w": 713,
+            "h": 63
+          },
+          "id": "e35",
+          "key": "TextView||tap here for weather|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/root_view",
+          "rect": {
+            "x": 0,
+            "y": 620,
+            "w": 1080,
+            "h": 945
+          },
+          "id": "e36",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/root_view||0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/custom_poster_view_container",
+          "rect": {
+            "x": 0,
+            "y": 620,
+            "w": 1080,
+            "h": 608
+          },
+          "id": "e37",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/custom_poster_view_container||0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.ImageView",
+          "identifier": "com.aol.mobile.aolapp:id/custom_poster_view",
+          "rect": {
+            "x": 0,
+            "y": 620,
+            "w": 1080,
+            "h": 608
+          },
+          "id": "e38",
+          "key": "ImageView|com.aol.mobile.aolapp:id/custom_poster_view||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.ImageView",
+          "identifier": "com.aol.mobile.aolapp:id/iv_provider_logo",
+          "rect": {
+            "x": 53,
+            "y": 1244,
+            "w": 47,
+            "h": 47
+          },
+          "id": "e39",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_provider_logo||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Bored Panda",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleProvider",
+          "rect": {
+            "x": 100,
+            "y": 1246,
+            "w": 213,
+            "h": 43
+          },
+          "id": "e40",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleProvider|bored panda|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "This female body part was deemed useless and erased from textbooks — but scientists got it wrong",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleTitle",
+          "rect": {
+            "x": 0,
+            "y": 1296,
+            "w": 1080,
+            "h": 201
+          },
+          "id": "e41",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleTitle|this female body part was deemed useless|0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.ImageView",
+          "label": "Save this article",
+          "identifier": "com.aol.mobile.aolapp:id/iv_save",
+          "rect": {
+            "x": 200,
+            "y": 1510,
+            "w": 42,
+            "h": 42
+          },
+          "id": "e42",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_save|save this article|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.ImageView",
+          "label": "Share this news article",
+          "identifier": "com.aol.mobile.aolapp:id/iv_share",
+          "rect": {
+            "x": 284,
+            "y": 1510,
+            "w": 42,
+            "h": 42
+          },
+          "id": "e43",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_share|share this news article|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "11h ago",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleTimestamp",
+          "rect": {
+            "x": 53,
+            "y": 1512,
+            "w": 105,
+            "h": 38
+          },
+          "id": "e44",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleTimestamp|#h ago|0",
+          "chrome": false,
+          "group": "g3"
+        },
+        {
+          "type": "androidx.compose.ui.platform.ComposeView",
+          "identifier": "com.aol.mobile.aolapp:id/compose_view",
+          "rect": {
+            "x": 0,
+            "y": 1565,
+            "w": 1080,
+            "h": 320
+          },
+          "id": "e45",
+          "key": "ComposeView|com.aol.mobile.aolapp:id/compose_view||1",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/graphical_large_card_layout",
+          "rect": {
+            "x": 0,
+            "y": 1565,
+            "w": 1080,
+            "h": 320
+          },
+          "id": "e46",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/graphical_large_card_layout||0",
+          "chrome": false,
+          "group": "g2",
+          "ad": true
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "com.aol.mobile.aolapp:id/display_ad_container",
+          "rect": {
+            "x": 0,
+            "y": 1565,
+            "w": 1080,
+            "h": 320
+          },
+          "id": "e47",
+          "key": "FrameLayout|com.aol.mobile.aolapp:id/display_ad_container||0",
+          "chrome": false,
+          "group": "g1",
+          "ad": true
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "com.aol.mobile.aolapp:id/taboola_classic_ad_container",
+          "rect": {
+            "x": 0,
+            "y": 1565,
+            "w": 1080,
+            "h": 320
+          },
+          "id": "e48",
+          "key": "FrameLayout|com.aol.mobile.aolapp:id/taboola_classic_ad_container||0",
+          "chrome": false,
+          "group": "g1",
+          "ad": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 583,
+            "y": 1565,
+            "w": 126,
+            "h": 106
+          },
+          "id": "e49",
+          "key": "View|||7",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "TEMU in Taboola advertising section · Sponsored: learn about this recommendation (opens dialog) Find Smart Tool Organizers on Temu",
+          "rect": {
+            "x": 49,
+            "y": 1580,
+            "w": 699,
+            "h": 289
+          },
+          "id": "e50",
+          "key": "View||temu in taboola advertising section · sp|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "TEMU in Taboola advertising section",
+          "rect": {
+            "x": 49,
+            "y": 1580,
+            "w": 90,
+            "h": 48
+          },
+          "id": "e51",
+          "key": "View||temu in taboola advertising section|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Image for Taboola Advertising Unit",
+          "rect": {
+            "x": 742,
+            "y": 1580,
+            "w": 289,
+            "h": 289
+          },
+          "id": "e52",
+          "key": "View||image for taboola advertising unit|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.widget.Image",
+          "text": "Image for Taboola Advertising Unit",
+          "rect": {
+            "x": 742,
+            "y": 1580,
+            "w": 289,
+            "h": 289
+          },
+          "id": "e53",
+          "key": "Image||image for taboola advertising unit|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "More options",
+          "rect": {
+            "x": 619,
+            "y": 1581,
+            "w": 53,
+            "h": 53
+          },
+          "id": "e54",
+          "key": "View||more options|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "TEMU",
+          "rect": {
+            "x": 49,
+            "y": 1583,
+            "w": 90,
+            "h": 42
+          },
+          "id": "e55",
+          "key": "TextView||temu|0",
+          "chrome": false,
+          "group": "g3",
+          "ad": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "·",
+          "rect": {
+            "x": 147,
+            "y": 1583,
+            "w": 13,
+            "h": 42
+          },
+          "id": "e56",
+          "key": "TextView||·|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Ad",
+          "rect": {
+            "x": 168,
+            "y": 1583,
+            "w": 44,
+            "h": 42
+          },
+          "id": "e57",
+          "key": "TextView||ad|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Sponsored: learn about this recommendation (opens dialog)",
+          "rect": {
+            "x": 168,
+            "y": 1593,
+            "w": 44,
+            "h": 40
+          },
+          "id": "e58",
+          "key": "View||sponsored: learn about this recommendati|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Find Smart Tool Organizers on Temu",
+          "rect": {
+            "x": 49,
+            "y": 1654,
+            "w": 646,
+            "h": 110
+          },
+          "id": "e59",
+          "key": "View||find smart tool organizers on temu|0",
+          "chrome": false,
+          "ad": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Find Smart Tool Organizers on Temu",
+          "rect": {
+            "x": 49,
+            "y": 1656,
+            "w": 599,
+            "h": 105
+          },
+          "id": "e60",
+          "key": "TextView||find smart tool organizers on temu|0",
+          "chrome": false,
+          "group": "g3",
+          "ad": true
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/root_view",
+          "rect": {
+            "x": 0,
+            "y": 1885,
+            "w": 1080,
+            "h": 367
+          },
+          "id": "e61",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/root_view||1",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.ImageView",
+          "identifier": "com.aol.mobile.aolapp:id/iv_provider_logo",
+          "rect": {
+            "x": 53,
+            "y": 1911,
+            "w": 47,
+            "h": 47
+          },
+          "id": "e62",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_provider_logo||1",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.ImageView",
+          "identifier": "com.aol.mobile.aolapp:id/iv_articleImage",
+          "rect": {
+            "x": 712,
+            "y": 1911,
+            "w": 315,
+            "h": 315
+          },
+          "id": "e63",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_articleImage||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Page Six",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleProvider",
+          "rect": {
+            "x": 100,
+            "y": 1913,
+            "w": 147,
+            "h": 43
+          },
+          "id": "e64",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleProvider|page six|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Bridget Fonda shows off slimmed-down figure in rare sighting",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleTitle",
+          "rect": {
+            "x": 53,
+            "y": 1971,
+            "w": 646,
+            "h": 201
+          },
+          "id": "e65",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleTitle|bridget fonda shows off slimmed-down fig|0",
+          "chrome": false,
+          "group": "g3"
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "com.aol.mobile.aolapp:id/toast_container",
+          "rect": {
+            "x": 0,
+            "y": 2026,
+            "w": 1080,
+            "h": 227
+          },
+          "id": "e66",
+          "key": "FrameLayout|com.aol.mobile.aolapp:id/toast_container||0",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.ImageView",
+          "label": "Save this article",
+          "identifier": "com.aol.mobile.aolapp:id/iv_save",
+          "rect": {
+            "x": 207,
+            "y": 2172,
+            "w": 42,
+            "h": 42
+          },
+          "id": "e67",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_save|save this article|1",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.ImageView",
+          "label": "Share this news article",
+          "identifier": "com.aol.mobile.aolapp:id/iv_share",
+          "rect": {
+            "x": 291,
+            "y": 2172,
+            "w": 42,
+            "h": 42
+          },
+          "id": "e68",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_share|share this news article|1",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "16h ago",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleTimestamp",
+          "rect": {
+            "x": 53,
+            "y": 2174,
+            "w": 112,
+            "h": 38
+          },
+          "id": "e69",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleTimestamp|#h ago|1",
+          "chrome": true,
+          "group": "g3"
+        },
+        {
+          "type": "androidx.compose.ui.platform.ComposeView",
+          "identifier": "com.aol.mobile.aolapp:id/bottom_bar_compose_view",
+          "rect": {
+            "x": 0,
+            "y": 2187,
+            "w": 1080,
+            "h": 213
+          },
+          "id": "e70",
+          "key": "ComposeView|com.aol.mobile.aolapp:id/bottom_bar_compose_view||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 0,
+            "y": 2187,
+            "w": 540,
+            "h": 150
+          },
+          "id": "e71",
+          "key": "View|||8",
+          "chrome": true
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/include_bottom_context_bar",
+          "rect": {
+            "x": 0,
+            "y": 2232,
+            "w": 1080,
+            "h": 168
+          },
+          "id": "e72",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/include_bottom_context_bar||0",
+          "chrome": true,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.ViewGroup",
+          "identifier": "com.aol.mobile.aolapp:id/root_view",
+          "rect": {
+            "x": 0,
+            "y": 2252,
+            "w": 1080,
+            "h": 148
+          },
+          "id": "e73",
+          "key": "ViewGroup|com.aol.mobile.aolapp:id/root_view||2",
+          "chrome": true,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.ImageView",
+          "identifier": "com.aol.mobile.aolapp:id/iv_provider_logo",
+          "rect": {
+            "x": 53,
+            "y": 2278,
+            "w": 47,
+            "h": 47
+          },
+          "id": "e74",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_provider_logo||2",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.ImageView",
+          "identifier": "com.aol.mobile.aolapp:id/iv_articleImage",
+          "rect": {
+            "x": 712,
+            "y": 2278,
+            "w": 315,
+            "h": 122
+          },
+          "id": "e75",
+          "key": "ImageView|com.aol.mobile.aolapp:id/iv_articleImage||1",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Radar Online",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleProvider",
+          "rect": {
+            "x": 100,
+            "y": 2280,
+            "w": 214,
+            "h": 43
+          },
+          "id": "e76",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleProvider|radar online|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Inbox",
+          "rect": {
+            "x": 238,
+            "y": 2287,
+            "w": 64,
+            "h": 35
+          },
+          "id": "e77",
+          "key": "TextView||inbox|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Home",
+          "rect": {
+            "x": 775,
+            "y": 2287,
+            "w": 70,
+            "h": 35
+          },
+          "id": "e78",
+          "key": "TextView||home|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Melania Trump says life under communism was 'beautiful'",
+          "identifier": "com.aol.mobile.aolapp:id/tv_articleTitle",
+          "rect": {
+            "x": 53,
+            "y": 2338,
+            "w": 646,
+            "h": 62
+          },
+          "id": "e79",
+          "key": "TextView|com.aol.mobile.aolapp:id/tv_articleTitle|melania trump says life under communism |0",
+          "chrome": false,
+          "group": "g3"
+        }
+      ],
+      "signature": [
+        "ComposeView|com.aol.mobile.aolapp:id/bottom_bar_compose_view|",
+        "ComposeView|com.aol.mobile.aolapp:id/compose_view",
+        "ComposeView|com.aol.mobile.aolapp:id/jpc_nav_filter",
+        "DrawerLayout|com.aol.mobile.aolapp:id/drawer_layout",
+        "FrameLayout|android:id/content",
+        "FrameLayout|com.aol.mobile.aolapp:id/action_bar_root",
+        "FrameLayout|com.aol.mobile.aolapp:id/display_ad_container",
+        "FrameLayout|com.aol.mobile.aolapp:id/fragment_container",
+        "FrameLayout|com.aol.mobile.aolapp:id/include_ym7_toolbar_layout",
+        "FrameLayout|com.aol.mobile.aolapp:id/taboola_classic_ad_container",
+        "FrameLayout|com.aol.mobile.aolapp:id/toast_container",
+        "ImageButton|com.aol.mobile.aolapp:id/right_button_1|access your saved articles",
+        "ImageButton|com.aol.mobile.aolapp:id/right_button_2|search",
+        "ImageView|com.aol.mobile.aolapp:id/avatar_button",
+        "ImageView|com.aol.mobile.aolapp:id/custom_poster_view",
+        "ImageView|com.aol.mobile.aolapp:id/iv_articleImage",
+        "ImageView|com.aol.mobile.aolapp:id/iv_articleImage|",
+        "ImageView|com.aol.mobile.aolapp:id/iv_provider_logo",
+        "ImageView|com.aol.mobile.aolapp:id/iv_provider_logo|",
+        "ImageView|com.aol.mobile.aolapp:id/iv_save|save this article",
+        "ImageView|com.aol.mobile.aolapp:id/iv_share|share this news article",
+        "Image|",
+        "LinearLayout|com.aol.mobile.aolapp:id/app_bar",
+        "LinearLayout|com.aol.mobile.aolapp:id/toolbar_title_parent|",
+        "RecyclerView|com.aol.mobile.aolapp:id/home_news_recyclerview",
+        "ScrollView|com.aol.mobile.aolapp:id/toolbar_layout",
+        "TextView|",
+        "TextView|com.aol.mobile.aolapp:id/toolbar_subtitle|see the latest news",
+        "TextView|com.aol.mobile.aolapp:id/toolbar_title|home",
+        "TextView|com.aol.mobile.aolapp:id/tv_articleProvider|bored panda",
+        "TextView|com.aol.mobile.aolapp:id/tv_articleProvider|page six",
+        "TextView|com.aol.mobile.aolapp:id/tv_articleProvider|radar online",
+        "TextView|com.aol.mobile.aolapp:id/tv_articleTimestamp",
+        "TextView|com.aol.mobile.aolapp:id/tv_articleTimestamp|#h ago",
+        "TextView|com.aol.mobile.aolapp:id/tv_articleTitle",
+        "TextView||business",
+        "TextView||entertainment",
+        "TextView||home",
+        "TextView||inbox",
+        "TextView||local",
+        "TextView||sports",
+        "TextView||tap here for weather",
+        "TextView||top stories",
+        "ViewGroup|com.aol.mobile.aolapp:id/custom_poster_view_container",
+        "ViewGroup|com.aol.mobile.aolapp:id/graphical_large_card_layout",
+        "ViewGroup|com.aol.mobile.aolapp:id/include_bottom_context_bar|",
+        "ViewGroup|com.aol.mobile.aolapp:id/profile_layout|",
+        "ViewGroup|com.aol.mobile.aolapp:id/refresh_layout",
+        "ViewGroup|com.aol.mobile.aolapp:id/root_view",
+        "ViewGroup|com.aol.mobile.aolapp:id/root_view|",
+        "ViewGroup|com.aol.mobile.aolapp:id/tab_section",
+        "ViewGroup|com.aol.mobile.aolapp:id/title_layout|",
+        "ViewGroup|com.aol.mobile.aolapp:id/title_row|",
+        "ViewPager|com.aol.mobile.aolapp:id/pager",
+        "View|",
+        "View||",
+        "View|||sel"
+      ],
+      "dhash": "868239399826ae86",
+      "scrollIndex": 0,
+      "counters": [],
+      "texts": [
+        "Sidebar button. Double tap or slide two fingers from the left of the screen to expand.",
+        "Home",
+        "Access your saved articles",
+        "Search",
+        "See the latest news",
+        "Top Stories",
+        "Entertainment",
+        "Local",
+        "Sports",
+        "Business",
+        "Tap here for weather",
+        "Bored Panda",
+        "This female body part was deemed useless and erased from textbooks — but scientists got it wrong",
+        "Save this article",
+        "Share this news article",
+        "11h ago",
+        "TEMU in Taboola advertising section · Sponsored: learn about this recommendation (opens dialog) Find Smart Tool Organizers on Temu",
+        "TEMU in Taboola advertising section",
+        "Image for Taboola Advertising Unit",
+        "More options",
+        "TEMU",
+        "·",
+        "Ad",
+        "Sponsored: learn about this recommendation (opens dialog)",
+        "Find Smart Tool Organizers on Temu",
+        "Page Six",
+        "Bridget Fonda shows off slimmed-down figure in rare sighting",
+        "16h ago",
+        "Radar Online",
+        "Inbox",
+        "Melania Trump says life under communism was 'beautiful'"
+      ]
+    },
+    {
+      "id": "o0006",
+      "step": 4,
+      "ts": "2026-09-25T06:15:23.406Z",
+      "fg": "co.thewordlab.luzia",
+      "screenshot": "obs/o0006.png",
+      "elements": [
+        {
+          "type": "android.widget.LinearLayout",
+          "identifier": "co.thewordlab.luzia:id/action_bar_root",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e1",
+          "key": "LinearLayout|co.thewordlab.luzia:id/action_bar_root||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.FrameLayout",
+          "identifier": "android:id/content",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 2400
+          },
+          "id": "e2",
+          "key": "FrameLayout|android:id/content||0",
+          "chrome": false
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 279
+          },
+          "id": "e3",
+          "key": "View|||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 21,
+            "y": 143,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e4",
+          "key": "View|||1",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "User avatar",
+          "rect": {
+            "x": 147,
+            "y": 153,
+            "w": 105,
+            "h": 105
+          },
+          "id": "e5",
+          "key": "View||user avatar|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Luzia",
+          "rect": {
+            "x": 273,
+            "y": 173,
+            "w": 765,
+            "h": 66
+          },
+          "id": "e6",
+          "key": "TextView||luzia|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "What are we doing today?",
+          "rect": {
+            "x": 184,
+            "y": 772,
+            "w": 712,
+            "h": 73
+          },
+          "id": "e7",
+          "key": "TextView||what are we doing today?|0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1247,
+            "w": 438,
+            "h": 126
+          },
+          "id": "e8",
+          "key": "View|||2",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Create an image",
+          "rect": {
+            "x": 158,
+            "y": 1287,
+            "w": 280,
+            "h": 46
+          },
+          "id": "e9",
+          "key": "TextView||create an image|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1396,
+            "w": 365,
+            "h": 126
+          },
+          "id": "e10",
+          "key": "View|||3",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Edit a photo",
+          "rect": {
+            "x": 158,
+            "y": 1436,
+            "w": 207,
+            "h": 46
+          },
+          "id": "e11",
+          "key": "TextView||edit a photo|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1545,
+            "w": 438,
+            "h": 126
+          },
+          "id": "e12",
+          "key": "View|||4",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Animate a photo",
+          "rect": {
+            "x": 158,
+            "y": 1585,
+            "w": 280,
+            "h": 46
+          },
+          "id": "e13",
+          "key": "TextView||animate a photo|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1694,
+            "w": 412,
+            "h": 126
+          },
+          "id": "e14",
+          "key": "View|||5",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Help with math",
+          "rect": {
+            "x": 158,
+            "y": 1734,
+            "w": 254,
+            "h": 46
+          },
+          "id": "e15",
+          "key": "TextView||help with math|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 42,
+            "y": 1843,
+            "w": 390,
+            "h": 126
+          },
+          "id": "e16",
+          "key": "View|||6",
+          "chrome": false,
+          "group": "g1"
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Talk about life",
+          "rect": {
+            "x": 158,
+            "y": 1883,
+            "w": 232,
+            "h": 46
+          },
+          "id": "e17",
+          "key": "TextView||talk about life|0",
+          "chrome": false,
+          "group": "g2"
+        },
+        {
+          "type": "android.widget.EditText",
+          "rect": {
+            "x": 42,
+            "y": 2028,
+            "w": 996,
+            "h": 126
+          },
+          "id": "e18",
+          "key": "EditText|||0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Ask Luzia",
+          "rect": {
+            "x": 42,
+            "y": 2043,
+            "w": 177,
+            "h": 53
+          },
+          "id": "e19",
+          "key": "TextView||ask luzia|0",
+          "chrome": true
+        },
+        {
+          "type": "android.widget.Button",
+          "identifier": "buttonAddComposer",
+          "rect": {
+            "x": 21,
+            "y": 2133,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e20",
+          "key": "Button|buttonAddComposer||0",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "rect": {
+            "x": 933,
+            "y": 2133,
+            "w": 126,
+            "h": 126
+          },
+          "id": "e21",
+          "key": "View|||7",
+          "chrome": true
+        },
+        {
+          "type": "android.view.View",
+          "label": "Audio Button: Tap twice or hold to record. Slide up for hands-free mode, left to cancel. Release to send.",
+          "rect": {
+            "x": 970,
+            "y": 2170,
+            "w": 52,
+            "h": 52
+          },
+          "id": "e22",
+          "key": "View||audio button: tap twice or hold to recor|0",
+          "chrome": false
+        },
+        {
+          "type": "android.widget.TextView",
+          "text": "Luzia is AI and can make mistakes. Verify important information.",
+          "rect": {
+            "x": 21,
+            "y": 2280,
+            "w": 1038,
+            "h": 36
+          },
+          "id": "e23",
+          "key": "TextView||luzia is ai and can make mistakes. verif|0",
+          "chrome": false
+        }
+      ],
+      "signature": [
+        "Button|buttonAddComposer|",
+        "EditText|",
+        "FrameLayout|android:id/content",
+        "LinearLayout|co.thewordlab.luzia:id/action_bar_root",
+        "TextView|",
+        "TextView||ask luzia",
+        "TextView||luzia",
+        "TextView||what are we doing today?",
+        "View|",
+        "View||",
+        "View||user avatar"
+      ],
+      "dhash": "71682f337070700c",
+      "scrollIndex": 0,
+      "counters": [],
+      "texts": [
+        "User avatar",
+        "Luzia",
+        "What are we doing today?",
+        "Create an image",
+        "Edit a photo",
+        "Animate a photo",
+        "Help with math",
+        "Talk about life",
+        "Ask Luzia",
+        "Audio Button: Tap twice or hold to record. Slide up for hands-free mode, left to cancel. Release to send.",
+        "Luzia is AI and can make mistakes. Verify important information."
+      ]
+    }
+  ],
+  "resources": [],
+  "externals": [
+    {
+      "kind": "other",
+      "package": "com.aol.mobile.aolapp",
+      "from": "s01",
+      "action": "a01_2",
+      "obs": "o0005",
+      "texts": [
+        "Sidebar button. Double tap or slide two fingers from the left of the screen to expand.",
+        "Home",
+        "Access your saved articles",
+        "Search",
+        "See the latest news",
+        "Top Stories",
+        "Entertainment",
+        "Local",
+        "Sports",
+        "Business",
+        "Tap here for weather",
+        "Bored Panda",
+        "This female body part was deemed useless and erased from textbooks — but scientists got it wrong",
+        "Save this article",
+        "Share this news article",
+        "11h ago",
+        "TEMU in Taboola advertising section · Sponsored: learn about this recommendation (opens dialog) Find Smart Tool Organizers on Temu",
+        "TEMU in Taboola advertising section",
+        "Image for Taboola Advertising Unit",
+        "More options",
+        "TEMU",
+        "·",
+        "Ad",
+        "Sponsored: learn about this recommendation (opens dialog)",
+        "Find Smart Tool Organizers on Temu",
+        "Page Six",
+        "Bridget Fonda shows off slimmed-down figure in rare sighting",
+        "16h ago",
+        "Radar Online",
+        "Inbox",
+        "Melania Trump says life under communism was 'beautiful'"
+      ]
+    }
+  ],
+  "typed": [
+    "Hi! What happens next?"
+  ],
+  "steps": 4,
+  "stepsSinceNew": 2,
+  "usd": 0,
+  "stopReason": "frontier_empty",
+  "human": []
+}

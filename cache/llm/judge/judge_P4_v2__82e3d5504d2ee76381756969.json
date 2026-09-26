@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal focuses on 'Advanced services' like bookings and shopping, which are SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "No incentive for clicks, installs, or ratings; the reward is a time-boxed entitlement."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses 'Try Advanced Services Free', which is gain-oriented."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user taps 'Play Now' after the trial offer is shown."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal states: 'Play a quick 15-second game to unlock 15 minutes of Advanced Services'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes a 'No thanks' button, allowing users to return to the app."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs on closing the account wall, not during a streaming conversation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly set to 'Non-subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward is offered exactly when the user hits a paywall (s07) trying to start an 'Advanced service' task.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Uses a native, time-boxed trial that fits the Luzia+ Advanced services value proposition; uses 'Luzia' as the game partner.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The trial is time-boxed (15m), limited to once per day, and triggers only after a user declines the subscription wall.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS $0.0018 is significantly less than the estimated net revenue per view ($0.009-$0.015), ensuring a sustainable margin.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggers on the account wall (s07), which is a common monetization funnel step.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps to SIM-RWD units; requires minimal backend changes to grant a 15-minute trial token.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the correct app nouns ('Luzia+', 'Advanced services', 'Create Account Sheet').",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "One-per-day cap is well-designed for a non-game app.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric (conversion) and holdout (10% for 8 weeks) are well-defined.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the trigger mapping: 'Close sheet' is not a listed element ID on s07. Use the existing 'Upgrade to Luzia+' (e7) or 'Continue with limited access' (e9) or a defined back navigation action.",
+   "Ensure the trial token specifically maps to the defined Luzia+ Advanced Services ('bookings, shopping, alerts, reminders')."
+  ],
+  "topConcern": "The proposal references a non-existent trigger element 'Close sheet' on s07; the trigger action must be grounded in the existing screen elements (e7, e9, or back-navigation)."
+ },
+ "usage": {
+  "input": 42648,
+  "output": 1025,
+  "cacheRead": 40427,
+  "cacheWrite": 0,
+  "thoughts": 1720
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:05:09.727Z"
+}

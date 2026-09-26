@@ -1,0 +1,92 @@
+{
+ "purpose": "annotate:65cf5a4914",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Chat Home",
+  "kind": "tab",
+  "purpose": "This is the main chat hub where users can start new chats with different AI personas, view custom besties, virtual pets, and access recent chat history.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e4",
+    "intent": "Open Luzia Plus subscription or upgrade screen",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e15",
+    "intent": "Start chat with Teacher persona",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e17",
+    "intent": "Start chat with Friend persona",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e19",
+    "intent": "Start chat with Elias persona",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e25",
+    "intent": "Open custom bestie feature",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e29",
+    "intent": "Open virtual pet feature",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e37",
+    "intent": "Open previous chat history",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e51",
+    "intent": "Navigate to Ideas tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e52",
+    "intent": "Navigate to Services tab",
+    "kind": "tap",
+    "priority": 1
+   },
+   {
+    "el": "e53",
+    "intent": "Navigate to Apps tab",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "upsell",
+    "text": "Try Luzia"
+   }
+  ]
+ },
+ "usage": {
+  "input": 3569,
+  "output": 565,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:24:58.457Z"
+}

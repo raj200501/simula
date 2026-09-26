@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-entitlement-amount",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The Settings surface (s19) is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards a 15-second game view; no cash, gift cards, clicks, or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses gain framing ('unlock 30 minutes') with no confirmshaming or fake timers."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The 'Play to try' CTA requires an explicit user tap."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Clearly states 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes a 'No thanks' decline option returning the user to Settings."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Placed on the Settings page (s19), avoiding any streaming AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Targeted exclusively to signed-in non-subscribers from their second session onwards."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the Settings upsell, but incorrectly defines the reward as granting +1 plan instead of a proper time-boxed entitlement or feature uses, capping value-moment-fit at 2 per entitlement rules.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Placed cleanly on the Settings page as a sample chip next to the upsell, preserving navigation and flow.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Limited to 30 minutes twice daily expiring tonight, restricted to non-subscribers with a 10% holdout.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.0000 (none), well within net revenue per view.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings (s19) is a frequent hub (m12), though less immediate than a direct message cap wall.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with entry=button on screen s19.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References screen s19 and resource r1, but treats an entitlement as a currency (+1 plan), earning no specificity credit for that noun per rule 7.",
+    "score": 2
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 2 per day with a 60-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a 10% user-level holdout for 4 weeks, primary metric, and paid plan conversion non-inferiority guardrail.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix the reward definition to grant a time box (e.g., 30 minutes of Luzia+ features) rather than +1 plan.",
+   "Ensure the reward struct accurately reflects a time-boxed entitlement rather than treating a subscription plan as a currency."
+  ],
+  "topConcern": "The reward incorrectly treats the Luzia+ Subscription entitlement as a currency (+1 plan) instead of granting a time-boxed feature entitlement."
+ },
+ "usage": {
+  "input": 42220,
+  "output": 702,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3248
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:06.327Z"
+}

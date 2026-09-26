@@ -1,0 +1,45 @@
+{
+ "purpose": "annotate:5badb74936",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Response Style Signup",
+  "kind": "sheet",
+  "purpose": "Prompt the user to sign up to customize response styles.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": true,
+  "actions": [
+   {
+    "el": "e11",
+    "intent": "Sign up",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e5",
+    "intent": "Close sheet",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "lock",
+    "text": "Sign up to adjust my response style",
+    "el": "e8"
+   }
+  ]
+ },
+ "usage": {
+  "input": 2056,
+  "output": 210,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:30:59.421Z"
+}

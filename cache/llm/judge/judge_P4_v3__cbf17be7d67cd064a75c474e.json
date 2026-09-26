@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets general Luzia+ Advanced services and chats, which are SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is in-app trial access; no cash or click-to-earn logic."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Fallback design, not hostage or loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Offer includes a 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "States 15s game and 15m trial duration."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes 'No thanks' decline option."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered on paywall decline, not mid-response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Explicitly gated to non-subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Excellent timing: triggered right when a user hits the paywall ('s07') after being unable to perform an Advanced service task.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Feels native; uses Luzia as the Game Partner and offers a trial that doesn't degrade existing features.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Trial is time-boxed (15m) and limited to 1/day. It creates a sampling effect without giving away permanent access.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS is $0.0018 per view, which is well below the net revenue per view ($0.009-$0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on s07 (Create Account Sheet), which is frequent, but relies on the user performing specific tasks.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The edge 'a07_9' used in the patch does not exist in the provided digest for s07. Requires correction.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses Luzia+, s07, and refers to 'Advanced Services' correctly from the digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "1/day cap and 60m cooldown are appropriate and respectful.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Well-defined primary KPI and a 10% holdout for 8 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the edge definition in the proposal patch (a07_9 does not exist for s07 in the digest).",
+   "Specify the exact interaction that triggers the rewarded trial on s07 if the user performs back navigation (e.g., mapping back-button interaction to the new modal)."
+  ],
+  "topConcern": "The proposal refers to an invalid navigation edge (a07_9) for the s07 screen, making the trigger implementation technically undefined based on the provided digest."
+ },
+ "usage": {
+  "input": 42666,
+  "output": 958,
+  "cacheRead": 40427,
+  "cacheWrite": 0,
+  "thoughts": 1234
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:05:29.041Z"
+}

@@ -1,0 +1,15 @@
+{
+ "purpose": "screen-html:s05",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-screen-root=\"s05\" style=\"position:relative;width:100%;height:100%;overflow:hidden;background-color:#333333\">\n  <!-- Scrim -->\n  <div style=\"position:absolute;inset:0;background:rgba(0,0,0,0.6)\"></div>\n  \n  <!-- Sheet Panel -->\n  <div data-node=\"e1\" style=\"position:absolute;top:616px;left:0;width:411px;height:298px;background:#000000;border-radius:24px 24px 0 0\">\n    \n    <!-- Close sheet target -->\n    <div data-node=\"e2\" style=\"position:absolute;top:0;left:0;width:411px;height:20px\"></div>\n    \n    <!-- Drag handle -->\n    <div data-node=\"e3\" style=\"position:absolute;top:0px;left:182px;width:48px;height:48px;display:flex;align-items:center;justify-content:center\">\n      <div data-node=\"e4\" style=\"width:40px;height:4px;background:#CBCBCB;border-radius:2px\"></div>\n    </div>\n\n    <div data-node=\"e5\" style=\"position:absolute;top:48px;left:16px;width:379px;height:225px\">\n      <!-- Title -->\n      <div data-node=\"e6\" style=\"position:absolute;top:0;left:0;font-size:28px;color:#FFFFFF;font-weight:600\">Vogue fashion editorial</div>\n      \n      <!-- Attach Photo Button -->\n      <div data-node=\"e7\" style=\"position:absolute;top:52px;left:0;width:185px;height:80px;background:#363636;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px\">\n        <img data-node=\"e9\" src=\"assets/a003.png\" style=\"width:24px;height:24px\">\n        <div data-node=\"e11\" style=\"color:#FFFFFF;font-size:14.5px\">Attach Photos</div>\n      </div>\n      \n      <!-- Take Photo Button -->\n      <div data-node=\"e8\" style=\"position:absolute;top:52px;left:193px;width:186px;height:80px;background:#363636;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px\">\n        <img data-node=\"e10\" src=\"assets/a004.png\" style=\"width:24px;height:24px\">\n        <div data-node=\"e12\" style=\"color:#FFFFFF;font-size:14.5px\">Take Photo</div>\n      </div>\n      \n      <!-- Slay the cover button -->\n      <div data-node=\"e13\" style=\"position:absolute;top:168px;left:0;width:379px;height:48px;background:#363636;border-radius:24px;display:flex;align-items:center;justify-content:center\">\n        <span data-node=\"e14\" style=\"color:#666666;font-size:20px;font-weight:500\">Slay the cover</span>\n      </div>\n    </div>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 5219,
+  "output": 883,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:00:09.901Z"
+}

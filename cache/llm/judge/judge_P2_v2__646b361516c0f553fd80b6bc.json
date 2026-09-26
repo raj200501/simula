@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets s21 (Favorite messages), which is a standard SFW feature in Luzia."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 24-hour access to favorite message saving obtained by playing a 15-second game; no clicks, installs, or cash-like rewards are incentivized."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer copy uses clean gain/fallback framing without dark patterns or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the CTA button Play Now to opt in."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The body clearly states the action and reward before the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The decline button is No Thanks, which returns the user to the screen without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs after dismissing the account signup wall on the Favorite messages screen, not during a streaming response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility specifies guest users who dismiss the account signup wall."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Triggered immediately after dismissing the account signup wall on the Favorite messages screen, offering a 24-hour sample of favorite message saving.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Provides a time-boxed sample with clear decline, but violates the rule that account-only features requiring account access cannot be granted via ads.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to guest users who decline signup, time-boxed to 24 hours, and capped at 1 per day.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero and US view earnings are within economic viability.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on s21 (Favorite messages), a frequent guest wall moment.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD unit and standard config, though patch references an unknown resource.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Cites screen s21, resource r2, moment m5, and character Luzia.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps per day at 1 with a 60-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metric, guardrails, and a 5% user-level holdout for 30 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Change the reward from granting access to an account-locked feature (saving messages) to a non-account feature or separate bonus quota, as account-only features cannot be bypassed by ads per procedure rule 8.",
+   "Fix the patch resource delta to use an existing or correctly defined resource instead of the unknown TemporaryFavoriteAccess."
+  ],
+  "topConcern": "An ad cannot stand in for account creation; account-only features like saving messages require account access (r2) and cannot be granted via rewarded ads."
+ },
+ "usage": {
+  "input": 42522,
+  "output": 682,
+  "cacheRead": 32332,
+  "cacheWrite": 0,
+  "thoughts": 4427
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:39.674Z"
+}

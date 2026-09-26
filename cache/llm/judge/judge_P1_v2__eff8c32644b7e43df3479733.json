@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposed surface is the Services Tab (s07/Create Account Sheet), which relates to assistant tasks (bookings, shopping, reminders), a standard SFW utility surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '1 task access' granted in-app, with no incentives for clicks, installs, or external rewards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing: 'Play... to unlock this task', avoiding threats or hostage dynamics."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal includes an offer card with a clear 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer text states: 'Play a quick 15-second game with Luzia to unlock this task.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No thanks' button, and declining simply closes the prompt."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is a subscription wall (s07) rather than mid-stream chat."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly limits eligibility to 'Non-paying users hitting the subscription wall'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is the exact moment of need: when a user attempts to start a task and hits the subscription wall.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The ad is placed at the wall boundary, keeping the chat experience uninterrupted and preserving the user's intent.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is capped at 2 accesses per day, and the offer is only shown to non-payers at the wall, preserving the subscription as the superior, unlimited option.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0009) is roughly 6-10% of the computed revenue per view ($0.009–0.015), providing a healthy margin.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The Services Tab (s06/s07) is identified as a frequent interaction point in the digest (m1, m18).",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps clearly to SIM-RWD and existing screen s07, making it a low-complexity integration.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific screen s07, character Luzia, and r3 task resource.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes explicit caps (2 per day) and a 30-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics and guardrails, including a 10% user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None. The proposal is well-reasoned, economically sound, and strictly adheres to policy."
+ },
+ "usage": {
+  "input": 42485,
+  "output": 963,
+  "cacheRead": 40425,
+  "cacheWrite": 0,
+  "thoughts": 1509
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:25.732Z"
+}

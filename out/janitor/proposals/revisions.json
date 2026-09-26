@@ -1,0 +1,1429 @@
+{
+  "schema": "simula.revisions/1",
+  "app": "janitor",
+  "proposals": [
+    {
+      "id": "P1",
+      "version": 1,
+      "title": "Paywall Fallback Swipes",
+      "oneLiner": "Provide non-paying users with limited frontier model swipes in exchange for engagement when they decline the premium paywall.",
+      "case": "existing",
+      "archetype": "TAX-10",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m3"
+        ],
+        "economy": [
+          "of1",
+          "w1",
+          "plan",
+          "swipes (new)"
+        ]
+      },
+      "surface": "s04",
+      "trigger": "Fires immediately after the user taps the decline option ('Not now') on the Janitor Plus paywall.",
+      "eligibility": "Non-paying, non-subscribed users who dismiss the premium subscription offer s04.",
+      "offer": {
+        "title": "Want 3 free swipes?",
+        "body": "Play a quick 15-second game to get 3 free swipes on our frontier models.",
+        "cta": "Play Game",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor AI",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "3 frontier model swipes",
+        "resource": "swipes",
+        "amount": 3,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 2,
+        "cooldownMin": 720
+      },
+      "cannibalizationGuard": "The offer is gated purely on paywall decline (TAX-10). It is strictly capped at 2 instances (6 swipes) per day, ensuring the premium subscription's 'generous monthly swipes' promise remains a far superior, frictionless option.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1.2,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 3
+      },
+      "kpis": {
+        "primary": "Ad ARPDAU",
+        "guardrails": [
+          "Paywall s04 purchase conversion rate",
+          "D7 User Retention"
+        ],
+        "holdout": "Run a 5% user-level holdout group for 28 days to measure downstream subscription cannibalization and net revenue lift."
+      },
+      "precedents": [
+        "TAX-10",
+        "CANN-1",
+        "AI-10",
+        "TRIG-4",
+        "TRIG-5"
+      ],
+      "risks": [
+        "Slight risk of micro-cannibalization among users who only need a couple of extra swipes per day, mitigated by the low daily cap.",
+        "Potential fatigue if users repeatedly see the offer on every paywall dismissal, mitigated by the 12-hour cooldown."
+      ],
+      "evidence": [
+        {
+          "obs": "s04",
+          "el": "e8",
+          "quote": "Generous monthly swipes with our frontier models",
+          "verified": true
+        },
+        {
+          "obs": "s04",
+          "el": "e12",
+          "quote": "Not now",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s04",
+            "kind": "modal",
+            "change": "Create an overlay modal containing the fallback invitation, containing the reward description, action length, and primary/secondary button layouts."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Primary button labeled 'Play Game' that launches the Simula mini-game on tap."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "near": "ne1",
+            "place": "after",
+            "change": "An equally legible secondary button labeled 'No thanks' that dismisses the fallback offer and routes the user back to their profile."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s04",
+            "el": "e12",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "swipes",
+                "delta": 3
+              }
+            ]
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "s02",
+            "effects": []
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "User taps 'Not now' to decline subscription."
+            }
+          ],
+          "caption": "Today, when a user declines Janitor Plus on the paywall screen, they are returned directly to their profile menu with no premium features."
+        },
+        {
+          "phase": "change",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "Intercepting decline tap to trigger the fallback offer."
+            }
+          ],
+          "caption": "We introduce a product change that intercepts the paywall decline action to offer a restricted sample of premium swipes."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Play 15-second game to earn 3 swipes"
+            }
+          ],
+          "caption": "The fallback modal ns1 appears, explicitly offering 3 free frontier swipes for playing a 15-second game."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays an interactive 15-second mini-game powered by Simula's SDK."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "swipes",
+              "value": 3
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e6",
+              "text": "User gets 3 swipes credited to their account."
+            }
+          ],
+          "caption": "Upon REWARD_VERIFIED, 3 swipes are credited, and the user is redirected to s02 to begin using them."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.027,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1.2,
+          "impressionsPerDau": 0.3,
+          "arpdauUsd": 0.0036,
+          "annualPer1mDauUsd": 1314000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0270) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P1",
+      "version": 2,
+      "title": "Paywall Fallback Swipes",
+      "oneLiner": "Provide non-paying users with limited base model swipes in exchange for engagement when they decline a premium paywall.",
+      "case": "existing",
+      "archetype": "TAX-10",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m1",
+          "m3"
+        ],
+        "economy": [
+          "of1",
+          "w1",
+          "plan",
+          "base_swipes (new)"
+        ],
+        "newMechanic": {
+          "name": "Base Model Swipes",
+          "description": "A new consumable resource allowing limited interactions with a cheaper, base AI model. These are tracked per user, refresh daily, and are distinct from premium 'frontier model swipes'.",
+          "whyNeeded": "To provide a valuable, low-cost rewarded item to non-paying users as an alternative to direct subscription, without cannibalizing the core premium offering.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "ns1",
+      "trigger": "Fires immediately after the user taps the decline option ('Close paywall' on s03 or 'Not now' on s04) on either Janitor Plus paywall.",
+      "eligibility": "Non-paying, non-subscribed users who dismiss the premium subscription offer from s03 or s04.",
+      "offer": {
+        "title": "Want 3 free swipes?",
+        "body": "Play a quick 15-second game to get 3 free swipes on our base models.",
+        "cta": "Play Game",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor AI",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "3 base model swipes",
+        "resource": "base_swipes",
+        "amount": 3,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 2,
+        "cooldownMin": 720
+      },
+      "cannibalizationGuard": "The offer is gated purely on paywall decline (TAX-10). It is strictly capped at 2 instances (6 swipes) per day, ensuring the premium subscription's 'generous monthly swipes' promise remains a far superior, frictionless option. Rewards a cheaper 'base model swipe' instead of premium 'frontier model swipes'.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1.2,
+        "cogs": "text-cheap",
+        "cogsUnitsPerView": 3
+      },
+      "kpis": {
+        "primary": "Ad ARPDAU",
+        "guardrails": [
+          "Paywall s03 and s04 purchase conversion rate",
+          "D7 User Retention"
+        ],
+        "holdout": "Run a 5% user-level holdout group for 28 days to measure downstream subscription cannibalization and net revenue lift."
+      },
+      "precedents": [
+        "TAX-10",
+        "CANN-1",
+        "AI-10",
+        "TRIG-4",
+        "TRIG-5"
+      ],
+      "risks": [
+        "Slight risk of micro-cannibalization among users who only need a couple of extra swipes per day, mitigated by the low daily cap.",
+        "Potential fatigue if users repeatedly see the offer on every paywall dismissal, mitigated by the 12-hour cooldown."
+      ],
+      "evidence": [
+        {
+          "obs": "s04",
+          "el": "e8",
+          "quote": "Generous monthly swipes with our frontier models",
+          "verified": true
+        },
+        {
+          "obs": "s04",
+          "el": "e12",
+          "quote": "Not now",
+          "verified": true
+        },
+        {
+          "obs": "s03",
+          "el": "e12",
+          "quote": "Generous monthly swipes with our frontier models",
+          "verified": true
+        },
+        {
+          "obs": "s03",
+          "el": "e3",
+          "quote": "Close paywall",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s04",
+            "kind": "modal",
+            "change": "Create an overlay modal containing the fallback invitation, containing the reward description, action length, and primary/secondary button layouts."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Primary button labeled 'Play Game' that launches the Simula mini-game on tap."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "near": "ne1",
+            "place": "after",
+            "change": "An equally legible secondary button labeled 'No thanks' that dismisses the fallback offer and routes the user back to their profile."
+          },
+          {
+            "id": "ne3",
+            "in": "s02",
+            "near": "e6",
+            "place": "after",
+            "change": "Text element displaying 'Your Swipes: {base_swipes} left today'. Initially 0 for free users."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s04",
+            "el": "e12",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "s03",
+            "el": "e3",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "base_swipes",
+                "delta": 3
+              }
+            ]
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "s02",
+            "effects": []
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "User taps 'Not now' to decline subscription."
+            }
+          ],
+          "caption": "Today, when a user declines Janitor Plus on either paywall screen (s03 or s04), they are returned directly to their profile menu with no premium features."
+        },
+        {
+          "phase": "change",
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e12",
+              "text": "Intercepting decline tap to trigger the fallback offer."
+            }
+          ],
+          "caption": "We introduce a product change that intercepts paywall decline actions from both s03 and s04 to offer a restricted sample of base model swipes."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Play 15-second game to earn 3 swipes"
+            }
+          ],
+          "caption": "The fallback modal ns1 appears, explicitly offering 3 free base model swipes for playing a 15-second game."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays an interactive 15-second mini-game powered by Simula's SDK."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 3
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne3",
+              "text": "User gets 3 base model swipes credited. Counter visible on Profile menu."
+            }
+          ],
+          "caption": "Upon REWARD_VERIFIED, 3 base model swipes are credited, and the user is redirected to s02 where the new swipe counter is visible."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.0054,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1.2,
+          "impressionsPerDau": 0.3,
+          "arpdauUsd": 0.0036,
+          "annualPer1mDauUsd": 1314000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P2",
+      "version": 1,
+      "title": "Session Context Boost",
+      "oneLiner": "Unlock 30 minutes of 5x context memory by playing a quick mini-game after declining the Janitor Plus paywall.",
+      "case": "existing",
+      "archetype": "TAX-2",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m2"
+        ],
+        "economy": [
+          "of1"
+        ]
+      },
+      "surface": "s03",
+      "trigger": "User taps Close paywall (e3) on s03 without purchasing a subscription.",
+      "eligibility": "Non-subscribers who dismiss the Janitor Plus paywall.",
+      "offer": {
+        "title": "Boost Memory for 30 Minutes",
+        "body": "Play a quick 15-second game for 30 minutes of 5x context.",
+        "cta": "Play Now",
+        "decline": "No Thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "30 minutes of 5x context for better memory",
+        "resource": "of1",
+        "duration": "30 minutes",
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 2,
+        "cooldownMin": 120
+      },
+      "cannibalizationGuard": "Gated exclusively to paywall decliners at m2 and time-boxed to 30 minutes [TAX-2] [CANN-1]. The full Janitor Plus plan (of1) retains permanent 5x context, priority routing, and golden badge status.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1.2,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Rewarded ad revenue per DAU from paywall decliners",
+        "guardrails": [
+          "Janitor Plus subscription conversion rate (non-inferiority margin -2%)",
+          "D7 chat retention"
+        ],
+        "holdout": "5% randomized user-level holdout for 30 days"
+      },
+      "precedents": [
+        "TAX-2",
+        "EX-DUO",
+        "EX-MUSIC",
+        "TRIG-1",
+        "SAFE-1",
+        "POL-2"
+      ],
+      "risks": [
+        "Inference COGS for 5x context during the 30-minute window must be offset by US/Tier-1 eCPMs [TRIG-4].",
+        "Overuse could slightly delay subscription conversion for heavy chatters if capped too loosely [CANN-2]."
+      ],
+      "evidence": [
+        {
+          "obs": "s03",
+          "el": "e3",
+          "quote": "Close paywall",
+          "verified": true
+        },
+        {
+          "obs": "s03",
+          "el": "e10",
+          "quote": "5× context for better memory",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s03",
+            "kind": "modal",
+            "change": "Rewarded offer overlay shown upon paywall decline."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Reward invitation modal offering 30 minutes of 5x context memory."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "near": "ne1",
+            "place": "after",
+            "change": "Play Now button to launch Simula mini-game."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "No Thanks button to return to core flow."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s03",
+            "el": "e3",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "of1",
+                "delta": 1
+              }
+            ]
+          },
+          {
+            "from": "ns1",
+            "el": "ne3",
+            "to": "s01",
+            "effects": []
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s03",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e3",
+              "text": "User taps Close paywall after reviewing subscription"
+            }
+          ],
+          "caption": "User reaches s03 paywall and chooses to dismiss it."
+        },
+        {
+          "phase": "change",
+          "screen": "s03",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e3",
+              "text": "Paywall decline intercept catches exit flow"
+            }
+          ],
+          "caption": "System intercepts paywall decline to offer a trial boost."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Offer card introduces 30-min 5x context trial"
+            }
+          ],
+          "caption": "Reward invitation offers 30 minutes of 5x context."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "User plays 15s sponsored mini-game"
+            }
+          ],
+          "caption": "User plays mini-game with Janitor Game Partner."
+        },
+        {
+          "phase": "value",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e5",
+              "text": "5x context active banner enabled for 30 minutes"
+            }
+          ],
+          "caption": "Reward verified and 30-minute context boost granted."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.009,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1.2,
+          "impressionsPerDau": 0.18,
+          "arpdauUsd": 0.0022,
+          "annualPer1mDauUsd": 788400,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P2",
+      "version": 2,
+      "title": "Session Context Boost",
+      "oneLiner": "Unlock 30 minutes of 5x context memory by playing a quick mini-game after declining the Janitor Plus paywall.",
+      "case": "existing",
+      "archetype": "TAX-2",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m2"
+        ],
+        "economy": [
+          "of1",
+          "premium_context_30min (new)"
+        ]
+      },
+      "surface": "s03",
+      "trigger": "User taps Close paywall (e3) on s03 without purchasing a subscription.",
+      "eligibility": "Non-subscribers who dismiss the Janitor Plus paywall.",
+      "offer": {
+        "title": "Boost Memory for 30 Minutes",
+        "body": "Play a quick 15-second game for 30 minutes of 5x context.",
+        "cta": "Play Now",
+        "decline": "No Thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "30 minutes of 5x context for better memory",
+        "resource": "premium_context_30min",
+        "amount": 1,
+        "duration": "30 minutes",
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 2,
+        "cooldownMin": 120
+      },
+      "cannibalizationGuard": "Gated exclusively to paywall decliners at m2 and time-boxed to 30 minutes [TAX-2] [CANN-1]. The full Janitor Plus plan (of1) retains permanent 5x context, priority routing, and golden badge status.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1.2,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Rewarded ad revenue per DAU from paywall decliners",
+        "guardrails": [
+          "Janitor Plus subscription conversion rate (non-inferiority margin -2%)",
+          "D7 chat retention"
+        ],
+        "holdout": "5% randomized user-level holdout for 30 days"
+      },
+      "precedents": [
+        "TAX-2",
+        "EX-DUO",
+        "EX-MUSIC",
+        "TRIG-1",
+        "SAFE-1",
+        "POL-2"
+      ],
+      "risks": [
+        "The average inference COGS for providing 30 minutes of 5x context using a cheaper model must be sustainable. We assume a 'text-cheap' model for the trial, which significantly lowers the cost per minute of enhanced context compared to the full premium subscription model, making the estimated COGS per view approximately $0.003-$0.005, which is below the low-end net revenue per view [TRIG-4].",
+        "Overuse could slightly delay subscription conversion for heavy chatters if capped too loosely [CANN-2]."
+      ],
+      "evidence": [
+        {
+          "obs": "s03",
+          "el": "e3",
+          "quote": "Close paywall",
+          "verified": true
+        },
+        {
+          "obs": "s03",
+          "el": "e10",
+          "quote": "5× context for better memory",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s03",
+            "kind": "modal",
+            "change": "Rewarded offer overlay shown upon paywall decline."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Reward invitation modal offering 30 minutes of 5x context memory."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "near": "ne1",
+            "place": "after",
+            "change": "Play Now button to launch Simula mini-game."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "No Thanks button to return to core flow."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s03",
+            "el": "e3",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "premium_context_30min",
+                "delta": 1
+              }
+            ]
+          },
+          {
+            "from": "ns1",
+            "el": "ne3",
+            "to": "s01",
+            "effects": []
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s03",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e3",
+              "text": "User taps Close paywall after reviewing subscription"
+            }
+          ],
+          "caption": "User reaches s03 paywall and chooses to dismiss it."
+        },
+        {
+          "phase": "change",
+          "screen": "s03",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e3",
+              "text": "Paywall decline intercept catches exit flow"
+            }
+          ],
+          "caption": "System intercepts paywall decline to offer a trial boost."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Offer card introduces 30-min 5x context trial"
+            }
+          ],
+          "caption": "Reward invitation offers 30 minutes of 5x context."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "User plays 15s sponsored mini-game"
+            }
+          ],
+          "caption": "User plays mini-game with Janitor Game Partner."
+        },
+        {
+          "phase": "value",
+          "screen": "s01",
+          "counters": [],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e5",
+              "text": "5x context active banner enabled for 30 minutes"
+            }
+          ],
+          "caption": "Reward verified and 30-minute context boost granted."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.009,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1.2,
+          "impressionsPerDau": 0.18,
+          "arpdauUsd": 0.0022,
+          "annualPer1mDauUsd": 788400,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P3",
+      "version": 1,
+      "title": "Daily Check-in Swipes",
+      "oneLiner": "Earn 5 daily bonus frontier model swipes by playing a 15-second mini-game in the Profile menu.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m4"
+        ],
+        "economy": [
+          "of1",
+          "w1",
+          "Frontier Swipes (new)"
+        ],
+        "newMechanic": {
+          "name": "Daily Check-in Swipes",
+          "description": "A daily check-in feature on the Profile menu where users claim 5 bonus frontier model swipes after playing a short sponsored mini-game.",
+          "whyNeeded": "Janitor currently gates frontier model swipes behind the Janitor Plus subscription without any daily free check-in allowance for non-paying users.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s02",
+      "trigger": "User taps the 'Daily Check-in' card on s02 (Profile menu).",
+      "eligibility": "Non-paying users who have not claimed today's check-in reward.",
+      "offer": {
+        "title": "Daily Check-in Swipes",
+        "body": "Play a 15-second game to claim 5 bonus frontier model swipes today.",
+        "cta": "Play Now",
+        "decline": "Maybe Later"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "5 bonus frontier model swipes",
+        "resource": "Frontier Swipes",
+        "amount": 5,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "Daily swipes are strictly capped at 5 per day, which lets non-payers sample frontier AI responses without replacing Janitor Plus's generous monthly swipes, 5x context memory, priority routing, or golden badge.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 5
+      },
+      "kpis": {
+        "primary": "Daily active user retention (D7/D30) and check-in completion rate on s02.",
+        "guardrails": [
+          "Janitor Plus subscription conversion rate",
+          "Non-payer D30 retention rate",
+          "Frontier model API token cost per active user"
+        ],
+        "holdout": "5% randomized user-level holdout over 30 days."
+      },
+      "precedents": [
+        "TAX-9",
+        "EX-DUO",
+        "AI-3",
+        "TRIG-1",
+        "POL-8"
+      ],
+      "risks": [
+        "Frontier model LLM token costs for 5 swipes per completed view",
+        "User disappointment if daily check-in swipes do not roll over to the next day"
+      ],
+      "evidence": [
+        {
+          "obs": "s02",
+          "el": "e20",
+          "quote": "Main navigation",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s02",
+            "near": "e20",
+            "place": "before",
+            "change": "Add a Daily Check-in card displaying title 'Daily Check-in' and CTA 'Claim 5 Frontier Swipes'."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s02",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Frontier Swipes",
+                "delta": 5
+              }
+            ],
+            "guard": {
+              "resource": "Frontier Swipes",
+              "lt": 5
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s02",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e20",
+              "text": "Profile menu shows navigation and Janitor Plus banner."
+            }
+          ],
+          "caption": "Profile menu s02 displays navigation and subscription options."
+        },
+        {
+          "phase": "change",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Daily Check-in card ne1 added above navigation."
+            }
+          ],
+          "caption": "Daily check-in module ne1 appears on Profile menu s02."
+        },
+        {
+          "phase": "offer",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Simula invitation modal presents check-in offer terms."
+            }
+          ],
+          "caption": "Tapping check-in displays Simula reward offer with clear disclosures."
+        },
+        {
+          "phase": "ad",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "15-second mini-game plays with Janitor AI partner."
+            }
+          ],
+          "caption": "User plays 15-second mini-game with Game Partner Janitor."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 5
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "5 Frontier Swipes verified and credited."
+            }
+          ],
+          "caption": "REWARD_VERIFIED event credits 5 Frontier Swipes instantly."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.045,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.25,
+          "arpdauUsd": 0.003,
+          "annualPer1mDauUsd": 1095000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0450) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P3",
+      "version": 2,
+      "title": "Daily Check-in Swipe",
+      "oneLiner": "Earn 1 daily bonus frontier model swipe by playing a 15-second mini-game in the Profile menu.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m4"
+        ],
+        "economy": [
+          "of1",
+          "w1",
+          "Frontier Swipes (new)"
+        ],
+        "newMechanic": {
+          "name": "Daily Check-in Swipes",
+          "description": "A daily check-in feature on the Profile menu where users claim 1 bonus frontier model swipe after playing a short sponsored mini-game.",
+          "whyNeeded": "Janitor gates frontier model swipes behind Janitor Plus; this provides a small, ad-supported sampling for non-payers.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s02",
+      "trigger": "User taps the 'Daily Check-in' card on s02 (Profile menu).",
+      "eligibility": "Non-paying users who have not claimed today's check-in reward.",
+      "offer": {
+        "title": "Daily Check-in Swipe",
+        "body": "Play a 15-second game to claim 1 bonus frontier model swipe today.",
+        "cta": "Play Now",
+        "decline": "Maybe Later"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Janitor",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 bonus frontier model swipe",
+        "resource": "Frontier Swipes",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "The reward is strictly limited to 1 swipe per day, ensuring the Janitor Plus subscription remains the only way to access generous monthly swipes and priority routing.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Daily active user retention (D7/D30) on s02.",
+        "guardrails": [
+          "Janitor Plus subscription conversion rate",
+          "Frontier model API token cost per active user"
+        ],
+        "holdout": "5% randomized user-level holdout over 30 days."
+      },
+      "precedents": [
+        "TAX-9",
+        "EX-DUO",
+        "AI-3",
+        "TRIG-1",
+        "POL-8"
+      ],
+      "risks": [
+        "Frontier model LLM token cost for 1 swipe per view remains near the break-even ceiling for ad revenue",
+        "Requirement for backend database changes to track frontier swipe usage for non-payers"
+      ],
+      "evidence": [
+        {
+          "obs": "s02",
+          "el": "e20",
+          "quote": "Main navigation",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s02",
+            "near": "e20",
+            "place": "before",
+            "change": "Add a Daily Check-in card displaying title 'Daily Check-in' and CTA 'Claim 1 Frontier Swipe'."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s02",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Frontier Swipes",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "Frontier Swipes",
+              "lt": 1
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s02",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e20",
+              "text": "Profile menu shows navigation and Janitor Plus banner."
+            }
+          ],
+          "caption": "Profile menu s02 displays current navigation and subscription options."
+        },
+        {
+          "phase": "change",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Daily Check-in card ne1 added above navigation."
+            }
+          ],
+          "caption": "A new daily check-in module ne1 appears on Profile menu s02."
+        },
+        {
+          "phase": "offer",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Simula invitation modal presents check-in offer terms."
+            }
+          ],
+          "caption": "Tapping check-in displays the Simula reward offer with exact terms."
+        },
+        {
+          "phase": "ad",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "15-second mini-game plays with Janitor AI partner."
+            }
+          ],
+          "caption": "User plays a 15-second mini-game with Game Partner Janitor."
+        },
+        {
+          "phase": "value",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "1 Frontier Swipe verified and credited."
+            }
+          ],
+          "caption": "REWARD_VERIFIED event credits 1 Frontier Swipe instantly to the user."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.009,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.25,
+          "arpdauUsd": 0.003,
+          "annualPer1mDauUsd": 1095000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    }
+  ]
+}

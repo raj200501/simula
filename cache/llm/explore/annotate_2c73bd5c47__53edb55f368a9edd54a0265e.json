@@ -1,0 +1,26 @@
+{
+ "purpose": "annotate:2c73bd5c47",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "No Contacts",
+  "kind": "page",
+  "purpose": "Displays empty contact list state.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2161,
+  "output": 82,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:06:16.179Z"
+}

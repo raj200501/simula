@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "AOL is a general news application adhering to brand safety and general audience content standards."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is an in-app comment post action with no rewards for clicks, installs, or cash equivalents."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing ('Post This Comment') without dark patterns, confirmshaming, or loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user explicitly opts in by tapping 'Play Now' on the offer card."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The required action (15-second game) and reward (one comment post) are clearly stated before the ad starts."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "An equally legible decline button ('No thanks') is provided, returning the user to the comment page without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "AOL is a news reader app with no streaming AI generation; the offer triggers at the comment sign-up wall boundary."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The offer is specifically targeted at non-signed-in guest users encountering the sign-up wall, not paying accounts."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal triggers exactly when the user hits the sign-up wall after typing a comment (m9), offering an immediate bypass to post that specific comment.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The user's typed comment draft is saved in local state and restored upon verification, keeping the primary sign-up CTA intact without degrading core experience.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to non-signed-in users hitting the wall (TAX-10 paywall-decline fallback), limited to 1 post per ad / 3 per day, with the primary sign-up CTA remaining the default.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed COGS is $0.0000 (none), well below net revenue per view ($0.0090–$0.0150). Sizing is 1 comment post per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Reaches users attempting to comment (core interaction loop, m9), though comment wall hits represent a subset of total news feed readers.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD with a button entry point, REWARD_VERIFIED, and local draft preservation, fitting standard SDK capabilities.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References screen s05 (Add Comment Page), moment m9, and AOL News brand, though the economy item 'POST_WALL' is ungrounded.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 per day with a 30-minute cooldown, preventing ad fatigue and repeat prompting.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric 'Comments per DAU', guardrails for account conversion and D1 retention, and a 10% user holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Ground the economy item in the digest by replacing the ungrounded 'POST_WALL' identifier with a valid resource.",
+   "Fix the storyboard callout node reference for screen s05 to ensure it correctly maps to declared elements."
+  ],
+  "topConcern": "Grounding error in economy items ('POST_WALL' is not defined in the product digest) and storyboard node validation failure."
+ },
+ "usage": {
+  "input": 35095,
+  "output": 1088,
+  "cacheRead": 32241,
+  "cacheWrite": 0,
+  "thoughts": 2162
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:17:09.966Z"
+}

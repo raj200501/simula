@@ -1,0 +1,35 @@
+{
+ "purpose": "annotate:9bdb1de303",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Home",
+  "kind": "chat",
+  "purpose": "Chat interface with the Luzia AI assistant offering prompt suggestions and message input.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e21",
+    "intent": "Type message and send to chat",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e23"
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2460,
+  "output": 168,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:14:05.433Z"
+}

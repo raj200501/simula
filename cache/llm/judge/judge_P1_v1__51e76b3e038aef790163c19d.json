@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets the comment section of a news app, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is for posting a comment; no incentives for clicks, installs, or ratings."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses gain framing: 'Watch a quick game to post instead'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Uses a clear CTA 'Play Now' after the invitation."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "States 'Play a 15-second game with AOL News to post your comment'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes a 'No thanks' decline option."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Placed on the comment sign-up wall, not mid-stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to non-signed-in users."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Perfect moment: user wants to post, hits sign-up wall, offer provides the exact desired outcome.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Native gate-bypass mechanic; does not degrade existing content.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to non-signed-in guests, protecting the account conversion flow.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS is 0; revenue is positive; reward is 1 post vs potential multiple posts by members.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Limited to users who reach the comment gate, which is a fraction of DAU.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Standard RWD implementation, but relies on a missing element ID for grounding.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like 'AOL News', but element placement requires correction.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strict caps: 3/day, 30m cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metric, holdout design, and guardrails.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the grounding: The proposal cites 'Sign Up to Post' as an element on s05, but it is not listed in the digest. Update the patch to target existing elements or a general container on s05.",
+   "Add draft persistence: Explicitly confirm that the comment draft is preserved while the user completes the ad."
+  ],
+  "topConcern": "The proposal assumes the existence of a 'Sign Up to Post' button on the Add Comment Page (s05) which is not in the provided screen element list."
+ },
+ "usage": {
+  "input": 35060,
+  "output": 907,
+  "cacheRead": 20156,
+  "cacheWrite": 0,
+  "thoughts": 2351
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:16:37.874Z"
+}

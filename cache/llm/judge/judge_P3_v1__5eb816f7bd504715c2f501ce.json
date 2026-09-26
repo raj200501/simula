@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The surface is s11 (Account Menu Sidebar), which manages account settings and saved articles, away from any sensitive news topics."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '10 News Credits', a virtual currency earned for playing a 15-second game; no real-world cash or click/install incentives are present."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a positive streak mechanic ('keep your streak alive') and avoids forced ads, fake timers, or 'support us' copy."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard and storyboard caption (offer phase) describe a Simula rewarded game invitation with a 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states: 'Play a 15-second game with AOL to earn 10 News Credits'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "An equally legible 'No thanks' button is included, and the storyboard indicates the user remains in s11 upon decline."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs upon opening the Account Menu Sidebar (s11), a static utility surface with no streaming AI or active article generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to 'Non-signed-in users and signed-in non-subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal uses a 'Daily Reading Streak' in a hub (s11). While proactive, it is disconnected from the immediate 'moment of need' on the article feed, scoring lower than reactive refills.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The streak mechanic feels native to a news habit app. It creates a new scarcity (News Credits) rather than degrading the existing free reading experience.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is capped at one per day and is described as a 'sampling mechanic'. It is gated to non-payers and includes a 10% holdout experiment.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed economics show a reward cost to serve of $0.0000 against a gross revenue of $0.0090–$0.0150 per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is the Account Menu Sidebar (m10/s11), which the digest identifies as an 'occasional' reach moment, far lower than the core news feed loops.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps clearly to SIM-RWD and uses a simple UI patch in an existing sidebar, though grounding errors in IDs increase complexity.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal uses app-specific terms like 'Account Menu Sidebar' and screen IDs (s11), and attempts to link to economy items (though it fails grounding on e42).",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes an explicit daily cap of 1 and a 1440-minute cooldown, ensuring no nagging occurs.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Features a clearly defined D7 Retention primary KPI, session/click-through guardrails, and a user-level randomization holdout plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the grounding error for the economy item; e42 on s02 is the 'Brandi Glanville' price signal, not a native ad.",
+   "Verify the existence of e36 on s11, as s11 is not fully defined in the digest's screen list.",
+   "Consider moving the entry point to s02 (Home News Feed) to increase reach from 'occasional' to 'core-loop'."
+  ],
+  "topConcern": "Grounding error: The proposal references e42 as a native ad on the home feed and relies on an undefined element (e36) in the sidebar (s11) for placement."
+ },
+ "usage": {
+  "input": 34907,
+  "output": 1197,
+  "cacheRead": 32248,
+  "cacheWrite": 0,
+  "thoughts": 1774
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:13:52.469Z"
+}

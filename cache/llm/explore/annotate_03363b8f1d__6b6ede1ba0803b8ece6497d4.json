@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:03363b8f1d",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "AI Chat Screen",
+  "kind": "chat",
+  "purpose": "This screen is a chat interface with an AI assistant named Luzia where users can ask questions and use suggested prompts.",
+  "inScope": true,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e25",
+    "intent": "Send a message to Luzia",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e28"
+   },
+   {
+    "el": "e14",
+    "intent": "Tap suggestion to create an image",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2787,
+  "output": 217,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:29:45.176Z"
+}

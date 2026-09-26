@@ -1,0 +1,45 @@
+{
+ "purpose": "annotate:af1983a25d",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Home",
+  "kind": "tab",
+  "purpose": "Main chat history and navigation screen for the Luzia AI assistant.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e36",
+    "intent": "Start a new chat",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e9",
+    "intent": "Open previous chat",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e7",
+    "intent": "Open Creativity category",
+    "kind": "tap",
+    "priority": 3
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2945,
+  "output": 218,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T16:34:56.938Z"
+}

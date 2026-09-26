@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets Attachment and Mode Sheet (s27) for Deep reasoning, which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards 1 hour of Deep reasoning as a time-boxed entitlement; no rewards for clicks, installs, or cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses positive gain framing with a clear No thanks decline button and no dark patterns or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User explicitly opts in by tapping the primary CTA Play to try."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The exact reward (1 hour of Deep reasoning) and required action (15-second game) are stated before the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining via No thanks leaves the app fully usable at the pre-offer state with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger specifies the offer appears after the current response finishes, avoiding stream interruption."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Explicitly restricts eligibility to signed-in non-subscribers and excludes subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "P1 targets s27 where users hit the paywall for Deep reasoning (r1), offering a time-boxed sample of Deep reasoning right at the moment of need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Places a chip on Attachment and Mode Sheet (s27), preserves input, respects stream finish, and uses Luzia as the Game Partner.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Time-boxed to 1 hour, capped at 2 per day, restricted to non-subscribers, with a paid contrast line and holdout planned.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code flags that cost to serve the reward ($0.0900) exceeds net revenue per view ($0.0063) at the low end due to text-premium COGS.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Deep reasoning on s27 is an occasional feature for users exploring advanced modes rather than a frequent daily core loop.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD unit, button entry, existing screen s27, and SSV with a small engineering patch.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses actual nouns and IDs from the digest: s27 (Attachment and Mode Sheet), r1 (Luzia+ Subscription), w5, and Game Partner Luzia.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 2 per day with a 60-minute cooldown, and decliners are not re-prompted.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines a primary metric, guardrails (-3% non-inferiority margin), and a 10% user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce reward COGS by switching the reward model tier from text-premium to a cheaper base model or reducing message count so COGS is below 30% of net revenue per view.",
+   "Verify regional eCPM assumptions and adjust reward sizing or daily caps to ensure positive net margin per view."
+  ],
+  "topConcern": "The cost to serve the reward ($0.0900) significantly exceeds net revenue per view ($0.0063), resulting in negative unit economics."
+ },
+ "usage": {
+  "input": 42418,
+  "output": 1082,
+  "cacheRead": 32331,
+  "cacheWrite": 0,
+  "thoughts": 2274
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:19:57.487Z"
+}

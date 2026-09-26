@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal focuses on Janitor's roleplay platform and offers a 30-minute context boost. All surfaces mentioned (s03) are for subscription management."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for in-app benefits (context memory) and not for clicks, installs, or cash-like rewards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a standard paywall-decline fallback and avoids dark patterns or hostaging."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal specifies an explicit 'Play Now' CTA (ne2) and a decline option (ne3)."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer text 'Play a quick 15-second game for 30 minutes of 5x context' clearly states the reward and the action before the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "A 'No Thanks' button returns the user to the core flow (s01)."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is a paywall decline (s03), which is at a navigation boundary, not mid-chat."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is strictly gated to 'Non-subscribers who dismiss the Janitor Plus paywall'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Fits TAX-10 perfectly. The user hits a wall for memory (s03) and is offered memory as a trial immediately upon dismissal.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer is an overlay on a paywall. It does not break the chat flow, preserve the user's current session state, and adds to the experience.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Strictly limited to paywall decliners, capped at 2/day, and time-boxed to 30 minutes. It leaves the permanent plan (of1) clearly superior.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The code flags that cost-to-serve ($0.0090) exceeds the net revenue floor ($0.0063). While the proposer acknowledges this and suggests using a cheaper model, the current economics in the proposal are unverified and risky.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered by paywall declines, which is a high-intent segment but represents a small percentage of total DAU daily.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD unit, using standard game partner and reward verification logic.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References 'Janitor Plus' (of1), '5x context' (of1), and screen 's03' explicitly.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily cap of 2 and a 120-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metrics, guardrails, and a specific user-level holdout plan.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward duration (e.g., to 15 minutes) or require a multi-ad bundle (e.g., 2 ads for 30 minutes) to bring the cost-to-serve below the net revenue per view.",
+   "Explicitly define the expected COGS for the proposed 'text-cheap' model if it is to be used as the basis for the trial, rather than relying on the general premium model cost."
+  ],
+  "topConcern": "The proposed reward currently costs more to serve than the net revenue generated per view, rendering the monetization design unsustainable."
+ },
+ "usage": {
+  "input": 35099,
+  "output": 1118,
+  "cacheRead": 32251,
+  "cacheWrite": 0,
+  "thoughts": 1605
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:18:28.599Z"
+}

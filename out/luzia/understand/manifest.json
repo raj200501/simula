@@ -1,0 +1,26 @@
+{
+  "stage": "understand",
+  "app": "luzia",
+  "runId": "un0925-135657",
+  "gitSha": "edcac2a",
+  "startedAt": "2026-09-25T17:56:57.728Z",
+  "finishedAt": "2026-09-25T17:57:56.569Z",
+  "status": "ok",
+  "inputs": [
+    {
+      "path": "explore/ex0925-130556/graph.json",
+      "sha256": "e56b0ffc83fe022259e4dee33e67a098a9657e176e761fdcd4df91c1955ec9ec"
+    }
+  ],
+  "outputs": [
+    "model/product-model.json",
+    "model/digest.md",
+    "model/viewer.html"
+  ],
+  "llm": {
+    "calls": 1,
+    "cached": 0,
+    "usd": 0,
+    "mode": "record"
+  }
+}

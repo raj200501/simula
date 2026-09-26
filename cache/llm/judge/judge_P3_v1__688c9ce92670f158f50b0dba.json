@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The surface is s02 (Profile menu). Profile menu is a generic, SFW settings/profile page containing elements like 'Settings', 'Billing', 'Main navigation'."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Earn 5 daily bonus frontier model swipes by playing a 15-second mini-game in the Profile menu. The reward is a virtual utility, not cash-like, and is given for playing, not clicking or installing."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Daily swipes are strictly capped at 5 per day, which lets non-payers sample frontier AI responses. There is no loss framing or countdown pressure, and the decline option is a standard 'Maybe Later'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps the 'Daily Check-in' card on s02 (Profile menu). This opens the Simula invitation modal where the user must explicitly tap 'Play Now'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a 15-second game to claim 5 bonus frontier model swipes today."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The decline option is 'Maybe Later'. Tapping it dismisses the modal and returns the user to the profile screen without any penalties."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is placed on s02 (Profile menu) which is outside of any active character chat, preventing any interruptions to streaming responses."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility: Non-paying users who have not claimed today's check-in reward."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward consists of 5 bonus frontier model swipes, which are highly valued and gated behind Janitor Plus (of1). Since this is placed as a proactive check-in (TAX-9) in the profile menu s02, it is a habit loop rather than a reactive moment-of-need trigger.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Daily Check-in Swipes is additive and does not degrade the core free experience. Gating the reward behind a silent profile menu card prevents chat interruptions and respects user roleplay immersion.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Eligibility is restricted to non-payers. Daily swipes are capped at 5 per day (1 check-in per day), which is a tiny fraction compared to Janitor Plus's 'generous monthly swipes' and leaves other features like 5x context completely behind the paywall. A 5% holdout is scheduled.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed economics reveal that the cost to serve 5 frontier swipes is $0.0450 (text-premium x 5), which is 5x higher than the low-end net reward revenue of $0.0063. The net margins are deeply negative.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger occurs on s02 (Profile menu) which is frequently visited as part of character discovery navigation (f1). The proposed engaged share of 25% is realistic for a free daily utility.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The setup maps easily to SIM-RWD and uses standard invitation kits. However, Janitor's backend currently does not track swipe counts or quotas for free users, which requires introducing a database tracking layer for non-payers.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal refers specifically to Janitor Plus, s02 Profile Menu, Main Navigation, and 'frontier model swipes' which directly align with Janitor's current subscription offerings.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strictly limited to a daily cap of 1 claim per day with a 1440-minute cooldown. The UI does not push invasive popups upon app open or navigation transitions.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Well-designed metrics including D7/D30 active retention, Janitor Plus conversion rates as a guardrail, API token costs, and a robust 5% randomized user-level holdout over 30 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the daily check-in reward size from 5 frontier model swipes to 1 frontier model swipe. This drops the cost to serve per view to $0.0090, aligning it with the expected gross revenue ($0.0090–$0.0150) and preventing massive economic losses.",
+   "Implement database fields and tracking structures for free users on the backend to log and consume 'Frontier Swipes' before running the ad integration."
+  ],
+  "topConcern": "The cost to serve 5 frontier model swipes ($0.0450) is roughly 5 to 7 times higher than the net revenue earned per completed rewarded view ($0.0063), making the proposal economically unsustainable without downsizing the reward."
+ },
+ "usage": {
+  "input": 34980,
+  "output": 1384,
+  "cacheRead": 32240,
+  "cacheWrite": 0,
+  "thoughts": 4620
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:10:49.316Z"
+}

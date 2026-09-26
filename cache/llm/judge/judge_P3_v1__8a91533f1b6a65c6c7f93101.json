@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets deep reasoning mode on safe, SFW assistant surfaces."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is earned via a 15-second mini-game play with no cash, gift cards, or click/install incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses gain-oriented session pass copy ('Unlock Deep Reasoning Now') with standard opt-in buttons and no dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Requires an explicit tap on the 'Play Now' CTA before any ad initiates."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Clearly states the action ('Play a quick 15-second game') and reward ('30 minutes of deep reasoning') prior to the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes an equally legible 'No Thanks' decline option returning the user to the sheet without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered when hitting the subscription wall on deep reasoning, not mid-stream during generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Explicitly restricted to non-paying guests and free users hitting the paywall."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the exact moment of need when hitting the deep reasoning wall (m9), but the patch incorrectly models an entitlement plan (r1) as a numeric delta (delta: 1), capping the score at 2 per instruction rule 7.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Time-boxed session pass preserves user flow, provides native tasting of deep reasoning without permanent devaluing, and keeps the subscription upsell visible.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to non-payers hitting the paywall, time-boxed to 30 minutes, capped at 2 per day, and preserves the Luzia+ subscription upsell.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve ($0.0090) exceeds net revenue per view ($0.0063) at the low end as flagged by code.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Hits users attempting to use deep reasoning mode (m9), representing a solid segment of engaged feature users.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard Simula SIM-RWD unit with button entry point and SSV verification.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References Luzia, deep reasoning, s07, and s27, but loses specificity credit for improperly treating the subscription plan entitlement as a numeric currency delta.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit caps of 2 per day and 30-minute cooldowns, with no re-offer after decline.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails (-3% subscription conversion, retention parity), and a 10% user-level randomized holdout over 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix the patch resource grant to specify a proper time-boxed entitlement rather than granting numeric delta 1 of subscription plan r1.",
+   "Optimize COGS by routing session passes through a lighter model or adjusting duration/view requirements to ensure net positive margins per view."
+  ],
+  "topConcern": "The patch incorrectly treats a subscription plan entitlement as a countable currency quantity (delta: 1), and inference COGS exceeds net revenue per view at the low end."
+ },
+ "usage": {
+  "input": 42685,
+  "output": 1080,
+  "cacheRead": 32333,
+  "cacheWrite": 0,
+  "thoughts": 2980
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:03.148Z"
+}

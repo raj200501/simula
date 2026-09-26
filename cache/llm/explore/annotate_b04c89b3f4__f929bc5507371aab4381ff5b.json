@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:b04c89b3f4",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat History",
+  "kind": "chat",
+  "purpose": "This screen displays an ongoing AI chat conversation where the assistant solves math problems step-by-step.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e26",
+    "intent": "Type a prompt and send to the AI",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Can you solve another one?",
+    "sendEl": "e28"
+   },
+   {
+    "el": "e23",
+    "intent": "Tap suggested prompt to continue chat",
+    "kind": "consume",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2619,
+  "output": 219,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:14:42.780Z"
+}

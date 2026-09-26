@@ -1,0 +1,8 @@
+{
+  "id": "fixture",
+  "package": "web.fixture.creditchat",
+  "name": "CreditChat (fixture)",
+  "profile": "fixture",
+  "login": "none",
+  "webUrl": "fixtures/credit-chat/index.html"
+}

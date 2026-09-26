@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal features a game partner session with Luzia for saving favorite messages, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The proposal rewards completing a 15-second mini-game view, not clicks, installs, or cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing (play to unlock saving for 72 hours) without dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal uses an explicit CTA button 'Play Now' before launching the ad."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal clearly states the reward and action ('Play a 15-second game with Luzia to save your favorite messages for 72 hours') prior to the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes a clear decline option ('No Thanks') that returns the user to the screen."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The proposal triggers when hitting the signup wall on s21 (Favorite Messages sheet), not mid-stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to non-signed-up users (guests) encountering the favorite messages wall."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the account signup wall on s21, but attempts to grant account access entitlement r2 as a reward, violating the rule that account-only features cannot be rewarded. Score: 2.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Procedure rule 8 states that an ad never stands in for creating an account and account-only features (saving) are never rewards. Score: 2.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Access is time-boxed to 72 hours for guests, keeping permanent account saving behind sign-up, though granting account access via ad is flawed. Score: 3.",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code computed COGS as $0.0000 against US view revenue of $0.0090-$0.0150. Score: 4.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on m5 (Favorite messages wall), which is a frequent core loop interaction. Score: 4.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with button entry, Luzia game partner, 15s play, and REWARD_VERIFIED. Score: 5.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References screen s21 (Favorite messages), resource r2, and Luzia, but loses points for treating account entitlement as a currency. Score: 3.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Specifies a per-day cap of 3 and a 15-minute cooldown. Score: 4.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metric ARPDAU, guardrails (retention, signup conversion, completion rate), and a 5% user-level holdout for 28 days. Score: 5.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove account access (r2) as a direct reward entitlement; an ad never stands in for creating an account or granting account-only features like saving.",
+   "Redesign the offer to be a post-decline fallback sample (TAX-10) rather than a direct substitute for account signup wall creation."
+  ],
+  "topConcern": "The proposal treats account access (r2) and account-only saving features as a rewarded entitlement, violating core rules that account creation must remain the primary path and account-only features cannot be rewarded."
+ },
+ "usage": {
+  "input": 42635,
+  "output": 828,
+  "cacheRead": 32333,
+  "cacheWrite": 0,
+  "thoughts": 3309
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:30:55.208Z"
+}

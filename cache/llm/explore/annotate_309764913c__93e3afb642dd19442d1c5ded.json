@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:309764913c",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s02",
+  "name": "Teacher Chat",
+  "kind": "chat",
+  "purpose": "A chat interface to converse with an AI teacher persona.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e27",
+    "intent": "Type a message to the AI teacher",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi! What happens next?",
+    "sendEl": "e30"
+   },
+   {
+    "el": "e5",
+    "intent": "Start a new chat",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2803,
+  "output": 205,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T15:25:25.044Z"
+}

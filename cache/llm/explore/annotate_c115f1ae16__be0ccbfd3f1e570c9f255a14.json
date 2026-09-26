@@ -1,0 +1,69 @@
+{
+ "purpose": "annotate:c115f1ae16",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s14",
+  "name": "Home News Feed",
+  "kind": "tab",
+  "purpose": "Provides the main news feed with personalized categories and local headlines.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e19",
+    "intent": "Switch to Sports feed",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e20",
+    "intent": "Switch to Business feed",
+    "kind": "tap",
+    "priority": 3
+   },
+   {
+    "el": "e39",
+    "intent": "Open news article",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e47",
+    "intent": "View ad",
+    "kind": "tap",
+    "priority": 0,
+    "skip": "ad"
+   },
+   {
+    "el": "e14",
+    "intent": "Open search",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e82",
+    "intent": "Navigate to Inbox tab",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": [
+   {
+    "kind": "ad",
+    "text": "TEMU · Ad"
+   }
+  ]
+ },
+ "usage": {
+  "input": 5302,
+  "output": 379,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:07:53.595Z"
+}

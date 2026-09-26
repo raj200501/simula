@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P5:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposed surface is the Attachment and Mode Sheet (s27), which is a utility screen for photo processing, entirely SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is in-app photo analysis credits, which are non-transferable and not cash-like. There is no incentive for clicks, installs, or ratings."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses benefit-driven language ('Get Free Photo Credits') and includes a clear, neutral 'No Thanks' option, avoiding dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer is an opt-in invitation card with explicit 'Play Now' and 'No Thanks' buttons, as stated in the storyboard."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer specifies the reward ('3 bonus photo analysis credits') and the required action ('Play a quick game with Luzia')."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No Thanks' option, and declining allows the user to continue using the app at the pre-offer state."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs on the Attachment and Mode Sheet (s27), which is a pre-generation or utility state, not a streaming AI chat response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal states it is 'Gated strictly to non-subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger occurs exactly when a non-subscriber hits their quota limit while attempting an action, which is the high-intent moment of need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal fits natively into the existing Attachment and Mode Sheet flow, using the character Luzia as a Game Partner in-world.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The design is gated strictly to non-subscribers, uses a temporary consumable resource (bonus credits), and implements a conservative daily cap of 3.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed economics reveal a cost to serve ($0.0250/view) that significantly exceeds the net revenue per view ($0.0063/view), making the current 3-credit grant unsustainable.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Photo analysis and image generation are part of the core Luzia loop, providing frequent and broad reach for the offer.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal uses existing Simula units (SIM-RWD), existing screens, and clear resource definitions, minimizing technical overhead.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns including Luzia, 'Attachment and Mode Sheet' (s27), and 'Photo Analysis Credits' (r3).",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Implements an explicit daily cap of 3 and a 15-minute cooldown, which prevents nagging and fatigue.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics (Rewarded ARPDAU), guardrails (subscription conversion, retention), and a user-level holdout experiment.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward grant size from 3 credits to 1 credit per view, or implement a 2-view bundle requirement to align COGS with net revenue.",
+   "Perform an additional unit-economic review after adjusting the reward size to ensure the cost to serve remains within the 60% threshold of net revenue per view."
+  ],
+  "topConcern": "The unit economics are currently negative, as granting 3 photo credits per view costs significantly more ($0.0250) than the net revenue generated per view ($0.0063)."
+ },
+ "usage": {
+  "input": 42561,
+  "output": 1138,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1158
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:31:16.133Z"
+}

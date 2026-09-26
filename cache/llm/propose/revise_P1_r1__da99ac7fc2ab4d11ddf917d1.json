@@ -1,0 +1,231 @@
+{
+ "purpose": "revise:P1:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "In-Chat Message Refill",
+  "oneLiner": "Watch a quick mini-game to earn 15 free message credits when balances run low.",
+  "case": "existing",
+  "archetype": "TAX-1",
+  "beyondBaseline": false,
+  "anchor": {
+   "moments": [
+    "m1"
+   ],
+   "economy": [
+    "r1",
+    "k1"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s03",
+  "trigger": "When message credits are exhausted while chatting",
+  "eligibility": "Non-paying users with balance below message cost",
+  "offer": {
+   "title": "Out of Free Messages",
+   "body": "Play a quick 15-second game to earn 15 free credits.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Starship Galley",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "+15 credits",
+   "resource": "r1",
+   "amount": 15,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "Restricted to non-paying users with a daily cap of 3 grants to prevent credit pack purchase cannibalization.",
+  "assumptions": {
+   "engagedShare": 0.35,
+   "viewsPerEngager": 2,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1.5
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU and engaged share of DAU",
+   "guardrails": [
+    "Paid conversion non-inferiority within 3%",
+    "D7 retention",
+    "Session length"
+   ],
+   "holdout": "User-level 10% holdout for 28 days"
+  },
+  "precedents": [
+   "TAX-1",
+   "EX-DUO",
+   "TRIG-1",
+   "TRIG-5",
+   "POL-2"
+  ],
+  "risks": [
+   "Perceived spam if daily caps are exceeded",
+   "Low-margin COGS if premium model is used"
+  ],
+  "evidence": [
+   {
+    "obs": "s03",
+    "el": "e3",
+    "quote": "Basic · 10"
+   },
+   {
+    "obs": "s03",
+    "el": "e9",
+    "quote": "Message"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "modal",
+     "change": "Rewarded ad offer modal for credit refill"
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s03",
+     "near": "e9",
+     "place": "before",
+     "change": "Get More Credits button when balance is low"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s03",
+     "el": "ne1",
+     "to": "ns1",
+     "effects": [],
+     "guard": {
+      "resource": "r1",
+      "lt": 10
+     }
+    },
+    {
+     "from": "ns1",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r1",
+       "delta": 15
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 10
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "Basic · 10 credits"
+     }
+    ],
+    "caption": "User chats until message credits run low."
+   },
+   {
+    "phase": "change",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Get More Credits"
+     }
+    ],
+    "caption": "In-chat refill button appears at zero balance."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s for 15 credits"
+     }
+    ],
+    "caption": "Opt-in offer clearly states reward and action."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Playing mini-game"
+     }
+    ],
+    "caption": "User plays 15-second partner mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s03",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 15
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e3",
+      "text": "+15 credits added"
+     }
+    ],
+    "caption": "Credits verified and chat resumes instantly."
+   }
+  ]
+ },
+ "usage": {
+  "input": 32445,
+  "output": 1534,
+  "cacheRead": 15118,
+  "cacheWrite": 0,
+  "thoughts": 2884
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:52:01.401Z"
+}

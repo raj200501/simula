@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P4:v4",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Chats Home is a general chat interface, and the proposal limits offers to non-paying users in SFW contexts."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a 15-second sponsored game, not for clicks, installs, or ratings."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses positive gain framing ('+3 bonus AI Usage Quota actions')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard shows a clear opt-in flow with 'Play to unlock' and 'Not today' options."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states '+3 bonus AI Usage Quota actions' and '15-second sponsored game' before opt-in."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The user has a clear 'Not today' option that returns them to the Chats Home without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer triggers on Chats Home (s01), not during chat or generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility clause explicitly states: 'never shown to subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer triggers on the home screen for a quota refill, providing a direct solution to usage limits.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The ad is additive and non-interruptive, appearing as a sponsored chip on the home screen.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is capped at one per day and limited to non-payers, ensuring the Luzia+ subscription remains the premium choice.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The requested 3 actions (COGS $0.0054) represent roughly 60-80% of net revenue per view ($0.0067-$0.009), exceeding the 30% COGS target.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Chats Home is the core hub of the app (m16), ensuring high visibility.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD units on an existing surface (s01).",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Refers to r3 (AI Usage Quota), Luzia persona, Chats Home, and the Luzia+ subscription model.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Daily cap of 1 and explicit cooldowns prevent nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a 4-week holdout and clear guardrails for conversion.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward amount to +1 AI Usage Quota action to ensure the cost-to-serve remains below 30% of the net revenue per view.",
+   "Explicitly document the non-inferiority conversion guardrail in the rollout plan."
+  ],
+  "topConcern": "The COGS for a 3-action reward ($0.0054) significantly exceeds the 30% target relative to the computed net revenue per view, risking the unit economics of the ad placement."
+ },
+ "usage": {
+  "input": 42590,
+  "output": 1014,
+  "cacheRead": 40426,
+  "cacheWrite": 0,
+  "thoughts": 1812
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:19:34.288Z"
+}

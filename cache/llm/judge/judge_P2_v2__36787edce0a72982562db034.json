@@ -1,0 +1,107 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The Daily Character Quest Hub is located on the user's profile screen and involves general character quests, which are inherently SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 'frontier swipe credits', an in-app utility resource, not cash or gift cards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The feature is proactive and uses gain-framing ('claim your daily check-in reward') rather than loss-framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal requires the user to 'Play Now' after clear disclosure."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states: 'Play a 15-second mini-game with Janitor AI to claim your daily check-in reward.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a clear 'No Thanks' button that returns the user to the profile without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on the profile screen (s02), completely outside of the chat interaction flow."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility is explicitly restricted to 'Non-paying users.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "As a daily hub, it aligns well with the scarcity of 'frontier swipes', giving users a reliable path to earn this paid-tier feature.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proactive quest hub on the profile screen is a native-feeling addition that does not disrupt any existing chat flow.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Access is restricted to non-payers, capped at 3 per day, and provides only 3 swipes, which is modest compared to monthly subscription entitlements.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The cost to serve ($0.0036) is approximately 40% of the low-end US revenue ($0.009), slightly exceeding the 30% guideline, but still generating positive margin.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The profile page is a standard navigation hub, though less central than the chat itself.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD units and fits cleanly into the profile layout (s02).",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like 'Janitor AI' and 'frontier swipes' related to the subscription perks.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily cap of 3 and a 30-minute cooldown are well-designed for a non-game app.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics, guardrails, and a 10% user-level holdout experiment.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None. The proposal is well-designed, safe, and economically viable."
+ },
+ "usage": {
+  "input": 35116,
+  "output": 961,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1417
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:58:19.560Z"
+}

@@ -1,0 +1,220 @@
+{
+ "purpose": "revise:P4:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Character Companion Mini-Game Quests",
+  "oneLiner": "Engage in daily mini-game quests with AI characters to earn free message credits and build companion bonds.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m7"
+   ],
+   "economy": [
+    "r1"
+   ],
+   "newMechanic": {
+    "name": "Daily Mini-Game Quests",
+    "description": "A proactive daily quest system where users play brief mini-games with their AI character to earn credits.",
+    "whyNeeded": "Creates a predictable habit loop and monetization surface without altering core messaging pricing.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "ns1",
+  "trigger": "When opening the chat mode sheet, user taps the available character quest banner.",
+  "eligibility": "Non-paying guest users with remaining daily quest capacity.",
+  "offer": {
+   "title": "Play a Mini-Game",
+   "body": "Play a quick 15-second game with Starship Galley to earn free credits.",
+   "cta": "Play Now",
+   "decline": "No Thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Starship Galley",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "+40 credits",
+   "resource": "r1",
+   "amount": 40,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Restricted to non-paying users with a strict daily cap sized well below the cheapest credit pack.",
+  "assumptions": {
+   "engagedShare": 0.25,
+   "viewsPerEngager": 1.5,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 4
+  },
+  "kpis": {
+   "primary": "Rewarded ARPDAU and D7 retention",
+   "guardrails": [
+    "Paid credit pack conversion rate non-inferiority within -3%",
+    "D30 retention stability"
+   ],
+   "holdout": "90/10 user-level randomized holdout running for 28 days"
+  },
+  "precedents": [
+   "TAX-9",
+   "AI-3",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Users might ignore quests if credit yield is perceived as small",
+   "Quest fatigue if presented too frequently"
+  ],
+  "evidence": [
+   {
+    "obs": "s04",
+    "el": "e7",
+    "quote": "Choose a mode"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s04",
+     "kind": "sheet",
+     "change": "Add Daily Mini-Game Quest entry sheet for rewarded credits."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "ns1",
+     "near": "e7",
+     "place": "after",
+     "change": "Quest banner button to launch rewarded mini-game with Starship Galley."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "ns1",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r1",
+       "delta": 40
+      }
+     ],
+     "guard": {
+      "resource": "r1",
+      "lt": 1000
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s04",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e7",
+      "text": "Basic mode selected."
+     }
+    ],
+    "caption": "Users choose chat modes without earning extra credits."
+   },
+   {
+    "phase": "change",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Daily Quest banner."
+     }
+    ],
+    "caption": "Introduce daily mini-game quests for free credits."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15 seconds."
+     }
+    ],
+    "caption": "Opt-in reward offer clearly states terms."
+   },
+   {
+    "phase": "ad",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 450
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Mini-game active."
+     }
+    ],
+    "caption": "User plays partner mini-game successfully."
+   },
+   {
+    "phase": "value",
+    "screen": "ns1",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 490
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "+40 credits granted."
+     }
+    ],
+    "caption": "Verified reward instantly updates credit balance."
+   }
+  ]
+ },
+ "usage": {
+  "input": 32527,
+  "output": 1558,
+  "cacheRead": 30243,
+  "cacheWrite": 0,
+  "thoughts": 3296
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:55:39.945Z"
+}

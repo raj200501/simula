@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets s10 Image Creation Hub, which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is 1 AI Image credit (resource r3), with no cash-like items or incentivized clicks/installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Offer uses gain framing ('Earn an image credit') with a clear decline option ('No thanks')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User opts in explicitly via the 'Play Now' CTA on the offer modal."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer explicitly states: 'Play 2 quick games with Luzia to get 1 free AI image generation credit.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Decline button 'No thanks' returns the user directly to s10 with no penalty or degraded state."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered when hitting the quota limit (r3) on image generation, not mid-stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility specifies non-paying users who have exhausted their free AI Usage Quota (r3)."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal targets moment m21 on s10 Image Creation Hub when the user's AI Usage Quota (r3) is depleted.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal uses mini-games with Luzia as Game Partner, keeping the experience native and immersive on s10.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-paying users with a daily cap of 2 credits and a 2:1 view bundle, plus a 10% holdout.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code flags a deficit: cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Image creation is a frequent core loop activity (m21, s10), hitting a broad share of active users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with button entry, SSV (REWARD_VERIFIED), and a defined patch.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns and IDs: s10, r3, Image Creation Hub, Luzia.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit per-day cap of 2 and a 30-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric, guardrails (paid conversion, DAU, retention), and a 4-week holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Increase the view requirement or switch to a cheaper mini image model to resolve the unit economics deficit where the cost to serve ($0.0250) exceeds net revenue per view ($0.0063)."
+  ],
+  "topConcern": "Unit economics deficit: the cost to serve an image generation ($0.0250) exceeds net revenue per view ($0.0063), making the 2-view bundle financially unsustainable."
+ },
+ "usage": {
+  "input": 42713,
+  "output": 1032,
+  "cacheRead": 32334,
+  "cacheWrite": 0,
+  "thoughts": 2743
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:59.876Z"
+}

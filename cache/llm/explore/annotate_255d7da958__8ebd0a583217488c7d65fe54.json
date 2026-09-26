@@ -1,0 +1,39 @@
+{
+ "purpose": "annotate:255d7da958",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Favorites Sheet",
+  "kind": "sheet",
+  "purpose": "This sheet prompts the user to sign up to view and manage their favorite messages.",
+  "inScope": false,
+  "scrollable": false,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e10",
+    "intent": "Open sign up flow",
+    "kind": "tap",
+    "priority": 0
+   },
+   {
+    "el": "e2",
+    "intent": "Close the sheet",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2026,
+  "output": 177,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T07:31:03.916Z"
+}

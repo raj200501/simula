@@ -1,0 +1,75 @@
+{
+  "designCss": "llm",
+  "screens": [
+    {
+      "screen": "s01",
+      "generatedBy": "llm",
+      "attempts": 2,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s03",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s04",
+      "generatedBy": "fallback",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s05",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s06",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s08",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s09",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 0.9411764705882353,
+      "violations": []
+    },
+    {
+      "screen": "s10",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    },
+    {
+      "screen": "s19",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 0.9777777777777777,
+      "violations": []
+    },
+    {
+      "screen": "s21",
+      "generatedBy": "llm",
+      "attempts": 1,
+      "coverage": 1,
+      "violations": []
+    }
+  ]
+}

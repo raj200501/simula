@@ -1,0 +1,201 @@
+{
+ "purpose": "depth:P2",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "title": "AOL Ad-Free Sprint",
+  "oneLiner": "Enjoy 15 minutes of ad-free news reading after a quick game.",
+  "case": "product-change",
+  "archetype": "TAX-2",
+  "beyondBaseline": false,
+  "anchor": {
+   "moments": [
+    "m2",
+    "m10"
+   ],
+   "economy": [
+    "AD TODAY native on Home News Feed (e42)",
+    "AD TODAY banner on Article Ad View (e17)",
+    "Ad-free Sprint (new)"
+   ],
+   "newMechanic": {
+    "name": "Ad-free Sprint",
+    "description": "A time-boxed entitlement that suppresses all native and banner advertisements across news feeds and article pages.",
+    "whyNeeded": "The app is currently high-density in advertisements but lacks a scarcity-based value exchange to drive engagement or sample premium benefits.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s11",
+  "trigger": "User opens the Account Menu Sidebar and views account options.",
+  "eligibility": "Non-paying users currently exposed to standard ad density.",
+  "offer": {
+   "title": "Go Ad-Free for 15 Minutes",
+   "body": "Play a 15-second game to clear all ads from your news feed for a short sprint.",
+   "cta": "Start Sprint",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "15 minutes of ad-free reading",
+   "resource": "Ad-free Sprint (new)",
+   "amount": 15,
+   "duration": "15 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampling effect rather than a permanent replacement for ad-free tiers.",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Ad-free Sprint sessions started",
+   "guardrails": [
+    "Daily active news reading time",
+    "Native ad CTR (non-sprint)",
+    "D7 Retention"
+   ],
+   "holdout": "User-level holdout, 10% share, 21 days"
+  },
+  "precedents": [
+   "TAX-2",
+   "EX-MUSIC",
+   "CORE-2"
+  ],
+  "risks": [
+   "Users may grow accustomed to ad-free reading and find the return to standard density jarring.",
+   "Potential revenue dip if sprint sessions overlap with peak reading times."
+  ],
+  "evidence": [
+   {
+    "obs": "s11",
+    "el": null,
+    "quote": "Unsubscribe"
+   },
+   {
+    "obs": "s02",
+    "el": "e47",
+    "quote": "TEMU in Taboola advertising section"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s11",
+     "near": "Unsubscribe",
+     "place": "before",
+     "change": "A menu item with a lightning icon titled 'Ad-Free Sprint (15 min)' and a 'Play to Start' subtitle."
+    },
+    {
+     "id": "ne2",
+     "in": "s02",
+     "near": "e12",
+     "place": "after",
+     "change": "A small countdown timer badge next to the 'Home' title indicating remaining ad-free time."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s11",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "Ad-free Sprint (new)",
+       "delta": 15
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "Unsubscribe",
+      "text": "User views standard account options."
+     }
+    ],
+    "caption": "The user explores the sidebar menu where news and account settings are managed."
+   },
+   {
+    "phase": "change",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New Ad-Free Sprint option appears."
+     }
+    ],
+    "caption": "A new 'Ad-Free Sprint' entry point is added to the menu, offering a premium benefit for attention."
+   },
+   {
+    "phase": "offer",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "User taps to see the value exchange."
+     }
+    ],
+    "caption": "Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward."
+   },
+   {
+    "phase": "ad",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The user plays a quick 15-second game with the AOL Game Partner character."
+   },
+   {
+    "phase": "value",
+    "screen": "s02",
+    "counters": [
+     {
+      "resource": "Ad-free Sprint (new)",
+      "value": 15
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Ads are suppressed; timer begins."
+     }
+    ],
+    "caption": "The reward is granted; ads are hidden from the feed and a countdown timer confirms the sprint status."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35245,
+  "output": 1617,
+  "cacheRead": 22823,
+  "cacheWrite": 0,
+  "thoughts": 1120
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:13:05.926Z"
+}

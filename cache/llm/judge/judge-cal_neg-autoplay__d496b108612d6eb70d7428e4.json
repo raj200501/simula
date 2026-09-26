@@ -1,0 +1,112 @@
+{
+ "purpose": "judge-cal:neg-autoplay",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets general Luzia users on non-sensitive surfaces like Settings."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Rewards are for playing a 15-second game; no cash, clicks, or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a gain-framed offer (Try for free) rather than loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": false,
+    "evidence": "Proposal states 'the rewarded game auto-plays full-screen... whenever the user touches Upgrade to Luzia+', which auto-plays rather than requiring an explicit, separate opt-in to the ad."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer clearly states 'Play a 15-second game'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No thanks' decline button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": false,
+    "evidence": "Proposal explicitly triggers 'mid-response, while the answer is still streaming', which violates [ANTI-5]."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility criteria explicitly exclude subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer (30 minutes of Luzia+ Subscription) is highly relevant when the user hits the subscription wall, but triggering mid-conversation is inappropriate.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Triggering a full-screen ad mid-response breaks the immersion and UX of a streaming AI chat.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Giving away 30 minutes of the core subscription twice a day is a significant potential substitute for purchasing the plan.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is $0.00 and revenue per view is ~$0.012. Profitability is solid, though the reward value is high.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is linked to 'Upgrade to Luzia+' which is accessible from settings and paywalls frequently.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD unit, though the trigger logic needs significant revision.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses Luzia's specific subscription name 'Luzia+ Subscription' and triggers from the settings/account sheets.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps are explicitly defined (2 per day, 60m cooldown).",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "The proposal defines primary metrics, guardrails, and a user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the auto-play functionality; require an explicit 'Play to try' tap.",
+   "Move the trigger to a natural boundary (after the AI response finishes) rather than interrupting a stream.",
+   "Ensure the offer only appears when the user explicitly requests an action blocked by a subscription wall, rather than whenever they navigate to a screen.",
+   "Consider reducing the reward duration or frequency to prevent subscription cannibalization."
+  ],
+  "topConcern": "The auto-play, mid-stream interruption is a severe violation of UX and brand safety policies, and directly contradicts [ANTI-5]."
+ },
+ "usage": {
+  "input": 42285,
+  "output": 1002,
+  "cacheRead": 36380,
+  "cacheWrite": 0,
+  "thoughts": 1379
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T19:20:30.947Z"
+}

@@ -1,0 +1,784 @@
+{
+  "worst": [
+    {
+      "node": "e16",
+      "role": "button",
+      "severity": 0.03384,
+      "mustFix": true,
+      "phrase": "e16: text 'Payment will be charged to your Google …' vs 'Payment will be charged to your Google …'"
+    },
+    {
+      "node": "e15",
+      "role": "button",
+      "severity": 0.01236,
+      "mustFix": false,
+      "phrase": "e15: 117dp too far right; 229dp too narrow"
+    },
+    {
+      "node": "e5",
+      "role": "list-item",
+      "severity": 0.00157,
+      "mustFix": false,
+      "phrase": "e5: text 'Keep more of the story in context, get …' vs 'Keep more of the story in context, get …'"
+    },
+    {
+      "node": "e12",
+      "role": "list-item",
+      "severity": 0.00107,
+      "mustFix": false,
+      "phrase": "e12: text '• Generous monthly swipes with our fron…' vs 'Generous monthly swipes with our fronti…'"
+    },
+    {
+      "node": "e10",
+      "role": "list-item",
+      "severity": 0.00089,
+      "mustFix": false,
+      "phrase": "e10: text '• 5× context for better memory' vs '5× context for better memory'"
+    },
+    {
+      "node": "e11",
+      "role": "list-item",
+      "severity": 0.00083,
+      "mustFix": false,
+      "phrase": "e11: text '• Priority routing for faster replies' vs 'Priority routing for faster replies'"
+    },
+    {
+      "node": "e13",
+      "role": "list-item",
+      "severity": 0.00075,
+      "mustFix": false,
+      "phrase": "e13: text '• Golden checkmark next to your username' vs 'Golden checkmark next to your username'"
+    },
+    {
+      "node": "e7",
+      "role": "button",
+      "severity": 0.00065,
+      "mustFix": false,
+      "phrase": "e7: 3dp too far left; 6dp too wide"
+    }
+  ],
+  "mustFix": [
+    {
+      "node": "e16",
+      "role": "button",
+      "severity": 0.03384,
+      "mustFix": true,
+      "phrase": "e16: text 'Payment will be charged to your Google …' vs 'Payment will be charged to your Google …'"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e1",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e2",
+      "role": "container",
+      "areaFrac": 1,
+      "missing": false,
+      "iou": 0.9997799769035502,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": -0.4,
+      "dhDp": -0.3,
+      "target": {
+        "x": 0,
+        "y": 0,
+        "w": 411.4,
+        "h": 914.3
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 0,
+        "w": 411,
+        "h": 914
+      },
+      "unbound": null
+    },
+    {
+      "id": "e3",
+      "role": "button",
+      "areaFrac": 0.0027222222222222222,
+      "missing": false,
+      "iou": 0.9784522242511932,
+      "want": "Close paywall",
+      "got": "Close paywall",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 363,
+        "y": 66.3,
+        "w": 32,
+        "h": 32
+      },
+      "got_rect": {
+        "x": 363,
+        "y": 66.3,
+        "w": 32,
+        "h": 32
+      },
+      "unbound": null
+    },
+    {
+      "id": "e4",
+      "role": "button",
+      "areaFrac": 0.07098765432098765,
+      "missing": false,
+      "iou": 0.998014903067813,
+      "want": "More memory for long chats.",
+      "got": "More memory for long chats.",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 15.2,
+        "y": 75.8,
+        "w": 381,
+        "h": 70.1
+      },
+      "got_rect": {
+        "x": 15.2,
+        "y": 75.8,
+        "w": 381,
+        "h": 70.1
+      },
+      "unbound": null
+    },
+    {
+      "id": "e5",
+      "role": "list-item",
+      "areaFrac": 0.02960185185185185,
+      "missing": false,
+      "iou": 0.990836120830623,
+      "want": "Keep more of the story in context, get faster replies, and unlock smarter swipes.",
+      "got": "Keep more of the story in context, get faster replies, and unlock smarter swi...",
+      "textScore": 0.9559748427672956,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 47.2,
+        "y": 277,
+        "w": 317.7,
+        "h": 35
+      },
+      "got_rect": {
+        "x": 47.2,
+        "y": 277,
+        "w": 317.7,
+        "h": 35
+      },
+      "unbound": null
+    },
+    {
+      "id": "e6",
+      "role": "button",
+      "areaFrac": 0.04782716049382716,
+      "missing": false,
+      "iou": 0.9909380870639514,
+      "want": "Loading products...",
+      "got": "Loading products...",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#323439",
+      "dE": 0.3215764409191805,
+      "colorScore": 0.983921177954041,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 47.2,
+        "y": 392.8,
+        "w": 317,
+        "h": 56.8
+      },
+      "got_rect": {
+        "x": 47.2,
+        "y": 392.8,
+        "w": 317,
+        "h": 56.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e7",
+      "role": "button",
+      "areaFrac": 0.008354166666666666,
+      "missing": false,
+      "iou": 0.9223953762820192,
+      "want": "Loading products...",
+      "got": "Loading products...",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": -3,
+      "dyDp": 0,
+      "dwDp": 6.3,
+      "dhDp": 0.4,
+      "target": {
+        "x": 129.1,
+        "y": 410.7,
+        "w": 152.8,
+        "h": 20.6
+      },
+      "got_rect": {
+        "x": 126.1,
+        "y": 410.7,
+        "w": 159.1,
+        "h": 21
+      },
+      "unbound": null
+    },
+    {
+      "id": "e8",
+      "role": "list-item",
+      "areaFrac": 0.014800925925925926,
+      "missing": false,
+      "iou": 0.9786365689155844,
+      "want": "No commitment, cancel anytime.",
+      "got": "No commitment, cancel anytime.",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 47.2,
+        "y": 456,
+        "w": 317.7,
+        "h": 17.5
+      },
+      "got_rect": {
+        "x": 47.2,
+        "y": 456,
+        "w": 317.7,
+        "h": 17.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e9",
+      "role": "list-item",
+      "areaFrac": 0.019305555555555555,
+      "missing": false,
+      "iou": 0.9787643747638063,
+      "want": "Everything in Free, plus:",
+      "got": "Everything in Free, plus:",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 47.2,
+        "y": 518.1,
+        "w": 317.7,
+        "h": 22.9
+      },
+      "got_rect": {
+        "x": 47.2,
+        "y": 518.1,
+        "w": 317.7,
+        "h": 22.9
+      },
+      "unbound": null
+    },
+    {
+      "id": "e10",
+      "role": "list-item",
+      "areaFrac": 0.014945987654320987,
+      "missing": false,
+      "iou": 0.9764466924830897,
+      "want": "5× context for better memory",
+      "got": "• 5× context for better memory",
+      "textScore": 0.9642857142857143,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 81.1,
+        "y": 550.1,
+        "w": 283.8,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 81.1,
+        "y": 550.1,
+        "w": 283.8,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e11",
+      "role": "list-item",
+      "areaFrac": 0.014945987654320987,
+      "missing": false,
+      "iou": 0.9729569728723892,
+      "want": "Priority routing for faster replies",
+      "got": "• Priority routing for faster replies",
+      "textScore": 0.9714285714285714,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 81.1,
+        "y": 574.5,
+        "w": 283.8,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 81.1,
+        "y": 574.5,
+        "w": 283.8,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e12",
+      "role": "list-item",
+      "areaFrac": 0.029891975308641974,
+      "missing": false,
+      "iou": 0.9849839846203294,
+      "want": "Generous monthly swipes with our frontier models",
+      "got": "• Generous monthly swipes with our frontier models",
+      "textScore": 0.9791666666666666,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 81.1,
+        "y": 598.9,
+        "w": 283.8,
+        "h": 39.6
+      },
+      "got_rect": {
+        "x": 81.1,
+        "y": 598.9,
+        "w": 283.8,
+        "h": 39.6
+      },
+      "unbound": null
+    },
+    {
+      "id": "e13",
+      "role": "list-item",
+      "areaFrac": 0.014945987654320987,
+      "missing": false,
+      "iou": 0.9762070758805622,
+      "want": "Golden checkmark next to your username",
+      "got": "• Golden checkmark next to your username",
+      "textScore": 0.9736842105263158,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 81.1,
+        "y": 643.4,
+        "w": 283.8,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 81.1,
+        "y": 643.4,
+        "w": 283.8,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e14",
+      "role": "button",
+      "areaFrac": 0.04486805555555556,
+      "missing": false,
+      "iou": 0.9859540957655232,
+      "want": "More info",
+      "got": "More info",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#2F3136",
+      "dE": 0.641441198259406,
+      "colorScore": 0.9679279400870296,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 16.4,
+        "y": 705.5,
+        "w": 378.7,
+        "h": 44.6
+      },
+      "got_rect": {
+        "x": 16.4,
+        "y": 705.5,
+        "w": 378.7,
+        "h": 44.6
+      },
+      "unbound": null
+    },
+    {
+      "id": "e15",
+      "role": "button",
+      "areaFrac": 0.015708333333333335,
+      "missing": false,
+      "iou": 0.21304770909668982,
+      "want": "More info",
+      "got": "More info",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 116.7,
+      "dyDp": 0.7,
+      "dwDp": -228.5,
+      "dhDp": -1.8,
+      "target": {
+        "x": 54.1,
+        "y": 718.1,
+        "w": 298.3,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 170.8,
+        "y": 718.8,
+        "w": 69.8,
+        "h": 18
+      },
+      "unbound": null
+    },
+    {
+      "id": "e16",
+      "role": "button",
+      "areaFrac": 0.06635802469135803,
+      "missing": false,
+      "iou": 0.9899885865163042,
+      "want": "Payment will be charged to your Google Play account at confirmation of purchase. Subscription renews automatically unless canceled before the end of the current period. You can manage or cancel in Google Play subscriptions after purchase.",
+      "got": "Payment will be charged to your Google Play account at confirmation of purchase.",
+      "textScore": 0.5,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 15.2,
+        "y": 761.5,
+        "w": 381,
+        "h": 65.5
+      },
+      "got_rect": {
+        "x": 15.2,
+        "y": 761.5,
+        "w": 381,
+        "h": 65.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e17",
+      "role": "button",
+      "areaFrac": 0.0048348765432098765,
+      "missing": false,
+      "iou": 0.9682614274580497,
+      "want": "Terms of Service",
+      "got": "Terms of Service",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 59.4,
+        "y": 835.4,
+        "w": 91.8,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 59.4,
+        "y": 835.4,
+        "w": 91.8,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e18",
+      "role": "button",
+      "areaFrac": 0.0039722222222222225,
+      "missing": false,
+      "iou": 0.9648866546418479,
+      "want": "Privacy Policy",
+      "got": "Privacy Policy",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 162.3,
+        "y": 835.4,
+        "w": 75.4,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 162.3,
+        "y": 835.4,
+        "w": 75.4,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e19",
+      "role": "button",
+      "areaFrac": 0.005416666666666667,
+      "missing": false,
+      "iou": 0.9632673889618233,
+      "want": "Restore Purchases",
+      "got": "Restore Purchases",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 248.8,
+        "y": 835.4,
+        "w": 102.9,
+        "h": 19.8
+      },
+      "got_rect": {
+        "x": 248.8,
+        "y": 835.4,
+        "w": 102.9,
+        "h": 19.8
+      },
+      "unbound": null
+    },
+    {
+      "id": "e20",
+      "role": "button",
+      "areaFrac": 0.00016126543209876544,
+      "missing": false,
+      "iou": 0.8808685098277207,
+      "want": "•",
+      "got": "•",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 154.7,
+        "y": 838.1,
+        "w": 4.2,
+        "h": 14.5
+      },
+      "got_rect": {
+        "x": 154.7,
+        "y": 838.1,
+        "w": 4.2,
+        "h": 14.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e21",
+      "role": "button",
+      "areaFrac": 0.00016126543209876544,
+      "missing": false,
+      "iou": 0.8767053997640976,
+      "want": "•",
+      "got": "•",
+      "textScore": 1,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 241.1,
+        "y": 838.1,
+        "w": 4.2,
+        "h": 14.5
+      },
+      "got_rect": {
+        "x": 241.1,
+        "y": 838.1,
+        "w": 4.2,
+        "h": 14.5
+      },
+      "unbound": null
+    },
+    {
+      "id": "e22",
+      "role": "container",
+      "areaFrac": 0.0043858024691358025,
+      "missing": false,
+      "iou": 0.9898074776809874,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 0,
+        "y": 839.6,
+        "w": 22.1,
+        "h": 74.7
+      },
+      "got_rect": {
+        "x": 0,
+        "y": 839.6,
+        "w": 22.1,
+        "h": 74.7
+      },
+      "unbound": null
+    },
+    {
+      "id": "e23",
+      "role": "container",
+      "areaFrac": 0.0043858024691358025,
+      "missing": false,
+      "iou": 0.9613108563291923,
+      "want": "",
+      "got": "",
+      "textScore": null,
+      "bgOrig": "#313338",
+      "bgMock": "#313338",
+      "dE": 0,
+      "colorScore": 1,
+      "dxDp": 0,
+      "dyDp": 0,
+      "dwDp": 0,
+      "dhDp": 0,
+      "target": {
+        "x": 389.3,
+        "y": 839.6,
+        "w": 22.1,
+        "h": 74.7
+      },
+      "got_rect": {
+        "x": 389.3,
+        "y": 839.6,
+        "w": 22.1,
+        "h": 74.7
+      },
+      "unbound": null
+    }
+  ]
+}

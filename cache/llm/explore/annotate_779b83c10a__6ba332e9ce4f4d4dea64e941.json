@@ -1,0 +1,41 @@
+{
+ "purpose": "annotate:779b83c10a",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": "s01",
+  "name": "AI Chat Screen",
+  "kind": "chat",
+  "purpose": "This screen displays an ongoing AI chat conversation where the user can interact with the assistant.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e26",
+    "intent": "Type a message to the AI assistant",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "Hi!",
+    "sendEl": "e29"
+   },
+   {
+    "el": "e23",
+    "intent": "Tap suggested prompt",
+    "kind": "tap",
+    "priority": 2
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 2678,
+  "output": 208,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T09:14:48.558Z"
+}

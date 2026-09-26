@@ -1,0 +1,46 @@
+{
+ "purpose": "annotate:6d499aa9f8",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "low",
+ "parsed": {
+  "sameAs": null,
+  "name": "Search Characters",
+  "kind": "page",
+  "purpose": "Search and filter AI character profiles and chat scenarios.",
+  "inScope": true,
+  "scrollable": true,
+  "loginWall": false,
+  "actions": [
+   {
+    "el": "e6",
+    "intent": "Search for characters",
+    "kind": "type-send",
+    "priority": 2,
+    "input": "friend"
+   },
+   {
+    "el": "e45",
+    "intent": "Open character detail",
+    "kind": "tap",
+    "priority": 2
+   },
+   {
+    "el": "e9",
+    "intent": "Filter by tag OC",
+    "kind": "tap",
+    "priority": 1
+   }
+  ],
+  "counters": [],
+  "signals": []
+ },
+ "usage": {
+  "input": 4280,
+  "output": 222,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-25T18:49:42.012Z"
+}
