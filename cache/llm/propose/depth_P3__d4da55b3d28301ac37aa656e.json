@@ -1,0 +1,208 @@
+{
+ "purpose": "depth:P3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Paywall-decline: Deep Reasoning Sample",
+  "oneLiner": "Offer a 1-hour trial of Deep Reasoning mode after declining the account signup wall.",
+  "case": "product-change",
+  "archetype": "AI-4",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m1",
+    "m9",
+    "m14"
+   ],
+   "economy": [
+    "r1"
+   ],
+   "newMechanic": {
+    "name": "Rewarded Deep Reasoning Trial",
+    "description": "A time-boxed (1 hour) trial of Deep Reasoning mode triggered by an ad after the user declines the account signup wall on s07.",
+    "whyNeeded": "Deep Reasoning is a core premium differentiator; letting users experience it creates high conversion intent.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s07",
+  "trigger": "After the user taps 'Close' to decline the account signup wall that appeared when they tried to toggle 'Deep reasoning' (m9) or 'Start a task' (m10).",
+  "eligibility": "Non-paying guests who are not currently on a subscription and have triggered the Luzia+ paywall.",
+  "offer": {
+   "title": "Try Deep Reasoning for free",
+   "body": "Play a quick 15-second game to unlock 1 hour of our premium Deep Reasoning mode.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 hour of Deep Reasoning mode",
+   "resource": null,
+   "amount": null,
+   "duration": "1 hour",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "This offer is only presented to users who have already explicitly declined the paywall. It provides a limited, time-boxed trial rather than permanent access, protecting the subscription value and highlighting the benefit of Luzia+.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 1.2,
+   "cogs": "text-premium",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Premium conversion rate (Luzia+ Subscription)",
+   "guardrails": [
+    "Subscription conversion rate",
+    "Retention",
+    "Daily active users"
+   ],
+   "holdout": "5% user holdout for 4 weeks to measure revenue impact."
+  },
+  "precedents": [
+   "TAX-2",
+   "TAX-10",
+   "AI-4"
+  ],
+  "risks": [
+   "Ad availability (no-fill) may frustrate users who have just declined the paywall; mitigation is an immediate fallback to the original state.",
+   "High COGS for the premium model; mitigation is the 1-hour time box."
+  ],
+  "evidence": [
+   {
+    "obs": "s27",
+    "el": "e15",
+    "quote": "Deep reasoning"
+   },
+   {
+    "obs": "s07",
+    "el": null,
+    "quote": "To enjoy Luzia+ you need to create an account first."
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": null,
+     "kind": "modal",
+     "change": "A rewarded invitation modal informing the user they can unlock 1 hour of Deep Reasoning mode by playing a mini-game."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne_reward_invitation",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Button 'Play Now' triggers the rewarded ad flow (SIM-RWD)."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s07",
+     "el": "ne_decline_trigger",
+     "to": "ns1",
+     "effects": [
+      {
+       "resource": "Deep Reasoning Trial",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "r1",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s27",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "User wants Deep Reasoning"
+     }
+    ],
+    "caption": "User taps 'Deep reasoning' in the attachment sheet."
+   },
+   {
+    "phase": "change",
+    "screen": "s07",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "s07",
+      "text": "User declines account signup"
+     }
+    ],
+    "caption": "Paywall appears, user taps 'Close' to decline."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne_reward_invitation",
+      "text": "1 hour free sample!"
+     }
+    ],
+    "caption": "Reward offer appears with clear 'Play Now' CTA."
+   },
+   {
+    "phase": "ad",
+    "screen": "s27",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "s27",
+      "text": "Quick mini-game with Luzia"
+     }
+    ],
+    "caption": "Luzia plays a mini-game with the user."
+   },
+   {
+    "phase": "value",
+    "screen": "s27",
+    "counters": [
+     {
+      "resource": "Deep Reasoning Trial",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e15",
+      "text": "Trial activated!"
+     }
+    ],
+    "caption": "Reward verified: 1 hour trial activated."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42883,
+  "output": 1587,
+  "cacheRead": 23117,
+  "cacheWrite": 0,
+  "thoughts": 2468
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:02:45.487Z"
+}

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal includes explicit eligibility checks for sensitive content contexts."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is an in-app feature (posting a comment), not cash, gift cards, or other incentivized clicks/installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "No loss framing is used; the approach is a gain-framed opportunity to engage as a guest."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the 'Post as Guest' button, which is clearly labeled, to trigger the rewarded ad offer."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states: 'Play a quick game with AOL to post this comment instantly'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "A 'No Thanks' button is clearly provided."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears at the comment posting wall, not during article reading or AI generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to non-logged-in users."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer appears at the exact moment a user hits the sign-up wall, offering a solution to their immediate goal.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The guest comment pass feels native to the article discussion flow, preserving the draft and user input.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-logged-in users only; no substitution for paid tiers, as AOL has no commenting subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS ($0.0018) is significantly below the US net revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Commenting is part of the core article loop, though hit rates depend on users who choose to comment.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Integration is straightforward, though it requires a backend mechanism for handling temporary guest comment posting.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the AOL app context, though it could be more descriptive regarding the specific AOL-branded Game Partner characters.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly capped at 2 per day.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary KPIs, guardrails, and a user-level holdout for validation.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the references from s05 to s04 (Conversation Screen) to match the provided product model.",
+   "Update storyboard to reflect actual elements existing on s04, ensuring the 'Post as Guest' button is defined as a new element addition to the existing conversation UI."
+  ],
+  "topConcern": "The proposal incorrectly references non-existent screen 's05', which should be updated to 's04' to accurately align with the provided product model."
+ },
+ "usage": {
+  "input": 35363,
+  "output": 964,
+  "cacheRead": 20159,
+  "cacheWrite": 0,
+  "thoughts": 3569
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:55:52.339Z"
+}

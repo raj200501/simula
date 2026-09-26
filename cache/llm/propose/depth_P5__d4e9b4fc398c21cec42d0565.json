@@ -1,0 +1,214 @@
+{
+ "purpose": "depth:P5",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Save a Favorite Message with Ad",
+  "oneLiner": "Allow non-registered users to save favorite messages by watching a short game, increasing engagement without forcing signup.",
+  "case": "product-change",
+  "archetype": "AI-11",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m5"
+   ],
+   "economy": [
+    "w3",
+    "r2 (Account Access)"
+   ],
+   "newMechanic": {
+    "name": "Rewarded Favorite",
+    "description": "Unlock individual favorite message saves without a full account.",
+    "whyNeeded": "Allows casual users to utilize the favorites feature without immediate friction of signup, lowering entry barriers.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s21",
+  "trigger": "User taps 'Favorite' on a message, and the 'Favorite messages' (s21) wall is triggered because they lack an account.",
+  "eligibility": "Non-registered users only; users who have not yet signed up.",
+  "offer": {
+   "title": "Save to Favorites?",
+   "body": "Play a 15-second game with Luzia to save this message to your favorites for free.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 favorite message save",
+   "resource": "saved_message_slot",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 10
+  },
+  "cannibalizationGuard": "Limits rewards to 3 saves per day, ensuring heavy users are still incentivized to create an account for unlimited storage; only available to non-registered users.",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 2,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Daily active users saving messages",
+   "guardrails": [
+    "Paid account conversion rate",
+    "Retention (D7, D30)"
+   ],
+   "holdout": "10% of users excluded from rewarded path for 4 weeks."
+  },
+  "precedents": [
+   "AI-11",
+   "TAX-3",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Users may find the 3-save limit restrictive and churn.",
+   "Lower perceived value of account signup."
+  ],
+  "evidence": [
+   {
+    "obs": "s21",
+    "el": "e6",
+    "quote": "Sign up to start saving your favorite messages. It"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s21",
+     "near": "e10",
+     "place": "before",
+     "change": "Add a MiniGameButton to trigger the rewarded flow."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s21",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "saved_message_slot",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "saved_message_slot",
+      "lt": 3
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "favorite_slot",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e6",
+      "text": "Sign-up wall prevents saving favorites."
+     }
+    ],
+    "caption": "Currently, only registered users can save favorite messages."
+   },
+   {
+    "phase": "change",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "favorite_slot",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New button allows saving with an ad."
+     }
+    ],
+    "caption": "A 'Save for free' option is added to the wall."
+   },
+   {
+    "phase": "offer",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "favorite_slot",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "User taps to unlock."
+     }
+    ],
+    "caption": "The user is offered a short game to get a save."
+   },
+   {
+    "phase": "ad",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "favorite_slot",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "15-second mini-game."
+     }
+    ],
+    "caption": "Luzia joins the game as the partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s21",
+    "counters": [
+     {
+      "resource": "favorite_slot",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "1 save unlocked."
+     }
+    ],
+    "caption": "Message saved successfully without signing up."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42881,
+  "output": 1544,
+  "cacheRead": 23117,
+  "cacheWrite": 0,
+  "thoughts": 2653
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:02:54.657Z"
+}

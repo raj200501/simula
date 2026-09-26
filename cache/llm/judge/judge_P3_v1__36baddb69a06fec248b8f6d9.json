@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Sidebar menu is a navigation surface and contains no mature or sensitive content."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is for game play to receive in-app save slots, not for clicks, installs, or ratings."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal frames this as an 'expansion' ('Expand Library') rather than threatening deletion or removal of existing saved content."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Proposal explicitly includes 'Play Now' and 'No thanks' buttons."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer states 'Play a quick game to add 5 more save slots.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Proposal explicitly allows 'No thanks' which closes the menu/offer without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Trigger is the sidebar menu, not during content viewing or interaction."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is strictly for 'Logged-in free tier users.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Users who are active enough to save more than 50 articles (power users) are the ones likely to hit the limit and desire more, creating a high-intent moment.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Imposing a new capacity limit on a feature previously available without restriction degrades the free experience for established users, which violates the spirit of keeping the core free experience intact [ANTI-10].",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Adding save slots is a secondary utility, not a core subscription benefit like ad-free news, making cannibalization risk low.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "With 0 COGS, even a single view is profitable. The reward (5 slots) is nominal.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Requires users to be logged in and to have saved more than 50 articles, which is a small subset of the total user base.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD, but requires building a new quota system for the 'Saved articles' library.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Specifically references 'Account Menu Sidebar' (s11) and the 'Saved articles' feature.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "3 per day cap is reasonable.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric 'Total saved articles' and D7 retention are appropriate; holdout is included.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Clearly communicate on the limit-hit screen that existing saved articles are protected, and explicitly provide a path to view premium subscription plans to differentiate tiers.",
+   "Add a monitor for 'Saved articles' usage to ensure that the 50-slot limit is actually reached by enough users to make the inventory viable."
+  ],
+  "topConcern": "Introducing a new hard cap on a previously unlimited feature (saving articles) poses a significant product-integrity risk and may frustrate power users who currently rely on the feature, potentially leading to churn."
+ },
+ "usage": {
+  "input": 34970,
+  "output": 997,
+  "cacheRead": 32249,
+  "cacheWrite": 0,
+  "thoughts": 1474
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:55:55.101Z"
+}

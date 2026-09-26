@@ -1,0 +1,112 @@
+{
+ "purpose": "judge-cal:neg-generic",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal adds a chip to s03, the subscription paywall page, which is an SFW surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is an in-app feature (5x context), not cash or external incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "There is no evidence of dark patterns; the offer is additive."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal uses a specific 'Try 5x context: play to unlock' chip as an opt-in."
+   },
+   {
+    "gate": "disclosed",
+    "pass": false,
+    "evidence": "The offer copy says 'Free coins!' and 'Watch a video to earn coins', which misrepresents the reward (10 mins of context) and does not state the 15-second duration."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The proposal specifies that the chip appears 'once the current answer has finished'."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal specifies 'Non-payers only... never shown to subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The anchor (memory) is correct, but the copy ('Free coins!') is a generic mismatch that fails to communicate the actual value offered.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The integration into the paywall is native, but the generic and misleading 'Free coins' copy breaks immersion.",
+    "score": 3
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Uses a small, time-boxed sample (10 minutes) of a premium feature, restricted to non-payers, with a stated holdout.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS ($0.0018) is well below net revenue per view (approx. $0.00675), making it efficient.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is the memory-full wall, which captures high-intent users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD units with established entry points.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal refers to '5x context for better memory' but fails to reflect this in the offer copy, using generic coin-based text instead.",
+    "score": 2
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a strict daily cap of 2, preventing over-exposure.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines clear primary and guardrail metrics with a 10% user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix offer copy to accurately describe the reward (e.g., 'Try 5x context') instead of generic 'Free coins' copy.",
+   "Update offer copy to clearly disclose the 15-second action duration as required by policy.",
+   "Add explicit SFW content controls for the rewarded experience, ensuring the Game Partner is brand-safe.",
+   "Ensure the grant screen includes a contrast line explaining that Janitor Plus provides permanent access."
+  ],
+  "topConcern": "The offer copy is generic ('Free coins!') and misrepresents the actual reward, failing to communicate the value of the 5x context sample and confusing the user."
+ },
+ "usage": {
+  "input": 34626,
+  "output": 1038,
+  "cacheRead": 32244,
+  "cacheWrite": 0,
+  "thoughts": 1566
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:00:35.346Z"
+}

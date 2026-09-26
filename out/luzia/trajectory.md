@@ -1,6 +1,6 @@
 # Trajectory: luzia
 
-Autonomous decisions: **628**. Human interventions: **20**. Autonomy ratio: **96.9%**.
+Autonomous decisions: **635**. Human interventions: **2**. Autonomy ratio: **99.7%**. Sign-in walls noted for a human and skipped: 18 (11 distinct).
 
 ## Stage runs
 
@@ -35,6 +35,11 @@ Autonomous decisions: **628**. Human interventions: **20**. Autonomy ratio: **96
 | slides | sl0925-194008 | 19:40:08 | 19:40:28 | 12 | 0 |  |
 | slides | sl0925-205116 | 20:51:16 | 20:51:37 | 12 | 0 |  |
 | slides | sl0925-210101 | 21:01:01 | 21:01:20 | 12 | 0 |  |
+| propose | pr0926-055312 | 05:53:12 | 05:53:13 | 10 | 0 |  |
+| judge | ju0926-055314 | 05:53:14 | 05:53:55 | 31 | 4 | revision stalled: weighted 4.4 -> 4.5 |
+| eval-judge | ev0926-055939 | 05:59:39 | 05:59:39 | 15 | 0 |  |
+| propose | pr0926-060210 | 06:02:10 | 06:03:00 | 16 | 0 |  |
+| judge | ju0926-060301 | 06:03:01 | 06:03:47 | 34 | 5 |  |
 
 ## New states discovered over time
 
@@ -683,8 +688,39 @@ Autonomous decisions: **628**. Human interventions: **20**. Autonomy ratio: **96
 - 19:33:09 **gemini:variant:P4:ne1**: 503 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
   - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
 
+### judge · run ju0926-055314
+
+- 05:53:19 **gemini:judge:P1:v1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 05:53:22 **gemini:judge:P1:v1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 05:53:30 **gemini:judge:P2:v1**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 05:53:30 **gemini:judge:P3:v1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+
+### judge · run ju0926-060301
+
+- 06:03:02 **gemini:judge:P1:v1**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 06:03:34 **gemini:revise:P3:r1**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 06:03:38 **gemini:judge:P5:v1**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 06:03:42 **gemini:judge:P2:v2**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 06:03:47 **gemini:revise:P4:r1**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+
 
 ## Human interventions
+
+- 2026-09-25T18:47:29 [human] luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
+- 2026-09-25T18:47:31 [human] luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 
+
+## Sign-in walls skipped
+
+The explorer never signs in. It records each wall for a human and explores elsewhere.
 
 - 2026-09-25T06:15:15 [explore] "Login Screen" (s03) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - 2026-09-25T07:30:23 [explore] "Create Account Sheet" (s07) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
@@ -704,8 +740,6 @@ Autonomous decisions: **628**. Human interventions: **20**. Autonomy ratio: **96
 - 2026-09-25T17:07:40 [explore] "Create Account Sheet" (s07) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - 2026-09-25T17:16:27 [explore] "Login Screen" (s23) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - 2026-09-25T17:16:50 [explore] "Response Style Signup" (s24) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- 2026-09-25T18:47:29 [human] luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
-- 2026-09-25T18:47:31 [human] luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 
 
 ## Key exploration decisions (priority 3)
 

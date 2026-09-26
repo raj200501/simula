@@ -1,0 +1,210 @@
+{
+ "purpose": "depth:P3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Bonus Save Slot",
+  "oneLiner": "Watch a quick game to expand your article library.",
+  "case": "product-change",
+  "archetype": "TAX-7",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m10"
+   ],
+   "economy": [
+    "SAVE_CAPACITY",
+    "ARTICLE_SAVE"
+   ],
+   "newMechanic": {
+    "name": "Library Capacity Limit",
+    "description": "Limit free account article saving to 50 slots.",
+    "whyNeeded": "Creates a scarce resource anchor for rewarded ads.",
+    "removesFreeValue": true
+   }
+  },
+  "surface": "s11",
+  "trigger": "User opens the sidebar menu.",
+  "eligibility": "Logged-in free tier users.",
+  "offer": {
+   "title": "Expand Your Library",
+   "body": "Play a quick game to add 5 more save slots.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "5 extra save slots",
+   "resource": "SAVE_CAPACITY",
+   "amount": 5,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The reward is additive, not subtractive. Saved article limit is a non-core engagement feature and does not impact ad-supported reading experience [TAX-7].",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1.2,
+   "cogs": "none",
+   "cogsUnitsPerView": 5
+  },
+  "kpis": {
+   "primary": "Total saved articles",
+   "guardrails": [
+    "D7 Retention",
+    "Daily ad revenue"
+   ],
+   "holdout": "10% user holdout for 4 weeks to measure total engagement."
+  },
+  "precedents": [
+   "TAX-7",
+   "POL-2",
+   "TRIG-5"
+  ],
+  "risks": [
+   "Users may be frustrated by the introduction of a new limit on a previously unlimited feature."
+  ],
+  "evidence": [
+   {
+    "obs": "s11",
+    "el": null,
+    "quote": "Account Menu Sidebar"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne_storage_status",
+     "in": "s11",
+     "near": null,
+     "place": "after",
+     "change": "Add storage status (45/50 slots) and 'Expand Library' CTA button."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s11",
+     "el": "ne_storage_status",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "SAVE_CAPACITY",
+       "delta": 5
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "Existing sidebar menu."
+     }
+    ],
+    "caption": "AOL sidebar today, providing general account navigation."
+   },
+   {
+    "phase": "change",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "New capacity tracker: 45/50 saved articles."
+     }
+    ],
+    "caption": "Introduce a 50-article save limit to the account menu."
+   },
+   {
+    "phase": "offer",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "Play to unlock +5 slots!"
+     }
+    ],
+    "caption": "When user nears the limit, the expansion offer appears."
+   },
+   {
+    "phase": "ad",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "15s mini-game."
+     }
+    ],
+    "caption": "User plays the interactive rewarded mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 55
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "Slots expanded to 55!"
+     }
+    ],
+    "caption": "Library capacity is updated immediately upon verification."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35200,
+  "output": 1479,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 3121
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:55:28.897Z"
+}

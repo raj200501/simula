@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P1:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Play a quick 15-second mini-game with Luzia to earn 5 extra AI usage credits on Chats Home (s01)."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Play a quick 15-second mini-game with Luzia to earn 5 extra AI usage credits - rewards play/view, not clicks, installs, or cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Play a quick 15-second mini-game with Luzia to earn 5 extra AI usage credits. No thanks - gain-framed, no loss framing or dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User taps the Daily Task banner on the Chats Home (s01) tab with CTA Play Now."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Play a quick 15-second mini-game with Luzia to earn 5 extra AI usage credits."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "No thanks decline button returns the user without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Placed on Chats Home (s01) via a banner element, not interrupting a streaming AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Only offered to non-subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Proposal uses AI-3 archetype on Chats Home (s01) for AI usage credits (r3).",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Added as a non-interruptive banner on Chats Home (ne1 near e31), game partner Luzia plays along.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Restricted to non-subscribers, additive credits, non-interruptive banner, holdout planned.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve ($0.0090) exceeds net revenue per view ($0.0063) at the low end.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Placed on Chats Home (s01), which is a core-loop hub visited frequently.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD unit, button entry, game partner Luzia, minPlaySec 15.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app noun Chats Home (s01), Luzia, references AI Usage Quota.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 per day with a 30-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric named, guardrails listed, 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the reward amount or use cheaper models to lower the cost to serve below net revenue per view.",
+   "Exclude session 1 from eligibility since s01 is the first-value screen where no offers are allowed.",
+   "Correct the economy item reference for AI Usage Quota (r3)."
+  ],
+  "topConcern": "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end, and eligibility must exclude session 1 on s01."
+ },
+ "usage": {
+  "input": 42541,
+  "output": 1038,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2042
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:12.787Z"
+}

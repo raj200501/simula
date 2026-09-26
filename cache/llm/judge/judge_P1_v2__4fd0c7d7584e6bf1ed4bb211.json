@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal introduces a daily task banner on the Chats Home screen, a core interface surface for general chat and task automation."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '2 AI Usage Credits' (resource r3), which are in-app consumables and not cash-like."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a gain for an action, with a clear 'Play Now' / 'No thanks' choice, avoiding dark patterns."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap a banner to trigger the mini-game flow."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states: 'Play a quick 15-second mini-game with Luzia to earn 2 extra AI usage credits.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer provides an explicit 'No thanks' button, and declining leaves the user in the Chats Home tab."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is triggered from a home screen banner, not during an active chat stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal eligibility explicitly states: 'Only offered to non-subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proactive banner on the Home tab creates a habit loop but does not target a specific 'moment of need' like a blocked request.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The banner feels native to the Chats Home (s01) interface and preserves the core chat flow.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The credits are additive, limited to non-subscribers, and explicitly do not unlock premium reasoning modes.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost-to-serve ($0.0036) is ~43% of net revenue per view ($0.0084), which is profitable but above the ideal 30% threshold.",
+    "score": 3
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Chats Home (s01) is the core landing page with high daily traffic.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD units with a simple banner addition in s01.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References s01, r3, and Luzia as the Game Partner accurately based on the digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 grants per day with a 30-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defined primary, guardrails, and a user-level holdout plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Consider reducing the reward to 1 credit per view if the goal is to optimize the net margin to below 30% of net revenue.",
+   "Ensure the banner visual style matches the 'Try Luzia' upsell style to maintain UI consistency."
+  ],
+  "topConcern": "The unit economics show the COGS (~43% of net revenue) is higher than the ideal 30% threshold for the '5' score, though still profitable."
+ },
+ "usage": {
+  "input": 42558,
+  "output": 1011,
+  "cacheRead": 40426,
+  "cacheWrite": 0,
+  "thoughts": 1863
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:36.193Z"
+}

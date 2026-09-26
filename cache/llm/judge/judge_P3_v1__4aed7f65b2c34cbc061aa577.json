@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P3:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The surface s09 (Character Details) for Willson Wáng is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The offer rewards playing a mini-game to unlock content, with no incentivized clicks, installs, or cash-like rewards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses gain framing ('Unlock Premium Scenario') with a clear decline option ('No thanks')."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap 'Play Now' on the offer card to initiate the ad."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The exact reward (72-hour access) and action (play a quick game / 15s) are disclosed prior to the ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "An equally legible decline button 'No thanks' is present and returns the user to the screen without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer triggers on a button tap in character details before chat starts, never during a streaming response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is explicitly restricted to non-subscribers only."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Unlocking scenarios on character details aligns with content needs (TAX-3), but introduces a new monetization anchor not present in the base app.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal specifies removesFreeValue: true, gating previously free content behind ads, which harms user trust and product integrity.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-subscribers with a 72-hour expiry and daily cap of 3, protecting subscription value.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view is $0.0000, well below US revenue per view ($0.0090–$0.0150).",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered when viewing character details (m6), which occurs regularly in the discovery loop.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD unit, but introduces ungrounded UI elements and edge cases noted in code gates.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References character 'Willson Wáng' from digest, but assumes scenario locking mechanics that do not exist in Janitor.",
+    "score": 2
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes explicit per-day cap of 3 and 60-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metric (Scenario views per DAU), guardrails, and a 10% user-level holdout for 4 weeks.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Ground the proposal in existing Janitor features or explicitly document the product change required to introduce scenario gating.",
+   "Remove removesFreeValue: true or apply scenario locking only to newly created premium scenarios to prevent user churn and backlash.",
+   "Correct the UI element grounding to match actual elements on screen s09."
+  ],
+  "topConcern": "Introducing a product change that removes free access to existing character scenarios (removesFreeValue: true) creates severe trust and churn risk for free users."
+ },
+ "usage": {
+  "input": 34741,
+  "output": 1035,
+  "cacheRead": 16118,
+  "cacheWrite": 0,
+  "thoughts": 3393
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:14.652Z"
+}

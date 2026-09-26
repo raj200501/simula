@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P5:v1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Screen s21 is the Favorite messages page featuring Luzia, which is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 1 favorite message save slot, with no incentives for clicks, installs, or cash-like rewards."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses gain framing ('save this message') without loss framing, fake timers, or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user taps an explicit CTA ('Play Now') to opt into the rewarded mini-game."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states 'Play a 15-second game with Luzia to save this message'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "An equally legible decline option ('No thanks') is provided, returning the user without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer appears at the favorite-saving wall boundary (s21), not interrupting a streaming AI response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to non-registered users who lack account access."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Users want to save favorite messages, but account-only features cannot be bypassed directly by ads standing in for accounts.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Violates Rule #8: An ad never stands in for creating an account. Account-only features like saving messages must require signup or be offered only after account signup is declined.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Undermines the core account creation funnel by offering ad-based access to account-only features instead of requiring signup.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve storage slot is zero, well within revenue per view.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Saving messages happens frequently in core usage, but gating misaligns with signup flows.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD on s21, but requires handling temporary saves without persistent accounts.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References screen s21 ('Favorite messages') and the Luzia character from the digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 3 per day with a 10-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies primary metric, guardrails, and a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Restructure the flow so account sign-up remains the primary path on the wall, and the rewarded ad is offered only after the user declines sign-up (paywall-decline fallback).",
+   "Correct economy grounding references in the proposal to align with the product digest (e.g., Account Access entitlement)."
+  ],
+  "topConcern": "P5 violates Rule #8 by attempting to use a rewarded ad to bypass account creation for an account-only feature (saving favorites), rather than keeping sign-up as the primary path and offering ads only upon decline."
+ },
+ "usage": {
+  "input": 42671,
+  "output": 1002,
+  "cacheRead": 32333,
+  "cacheWrite": 0,
+  "thoughts": 2912
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:57.634Z"
+}

@@ -1,0 +1,133 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Watch a 30-second video ad to get 10 free premium text messages with any character.",
+   "Watch an ad to get 15 minutes of priority routing for faster AI reply speeds.",
+   "Watch an ad to temporarily unlock the golden checkmark next to your username for 24 hours."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Play a 15-second game to unlock 30 minutes of 5x context memory for long chats.",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "Play a 15-second game to get a temporary priority routing boost for 15 minutes after paywall dismissal.",
+    "viable": true
+   },
+   {
+    "moment": "m3",
+    "exchange": "Play a 15-second game to earn 5 frontier model swipes after declining the main subscription paywall.",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Access an always-available task hub in the profile menu to earn cosmetic checkmarks via partner games.",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "Cannot offer ads on first-launch or main exploration feed to preserve initial user value experience.",
+    "viable": false
+   },
+   {
+    "moment": "m6",
+    "exchange": "Play a 15-second partner game to unlock a detailed character background scenario on the details page.",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Context Memory Boost",
+    "case": "existing",
+    "archetype": "TAX-7",
+    "moment": "m1",
+    "reward": "30 minutes of 5x context memory",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Paywall-Decline Priority routing",
+    "case": "existing",
+    "archetype": "TAX-10",
+    "moment": "m2",
+    "reward": "15 minutes of priority routing",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Frontier Swipes Sample",
+    "case": "existing",
+    "archetype": "TAX-2",
+    "moment": "m3",
+    "reward": "5 frontier model swipes",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Profile Menu Mini-Game Hub",
+    "case": "product-change",
+    "archetype": "TAX-9",
+    "moment": "m4",
+    "reward": "1 day of golden username checkmark",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Premium Scenario Unlock",
+    "case": "product-change",
+    "archetype": "TAX-3",
+    "moment": "m6",
+    "reward": "unlocked premium character scenario",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Extra Character Slots",
+    "case": "product-change",
+    "archetype": "TAX-7",
+    "moment": "m4",
+    "reward": "1 temporary custom character slot for 7 days",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Speed Boost Token",
+    "case": "existing",
+    "archetype": "TAX-4",
+    "moment": "m1",
+    "reward": "10 priority model replies",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Golden Checkmark Cosmetics",
+    "case": "existing",
+    "archetype": "TAX-13",
+    "moment": "m4",
+    "reward": "1 hour of golden checkmark",
+    "beyondBaseline": false
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "Context Memory Boost targets users precisely at their moment of frustration (m1) when the chatbot starts 'forgetting' key details in long chat sessions, offering high value while sampling the subscription's 5x context feature."
+   },
+   {
+    "index": 1,
+    "why": "Paywall-Decline Priority routing effectively monetizes non-paying users who dismiss the main billing screen (m2) by offering them a short, non-cannibalizing taste of fast response speeds."
+   },
+   {
+    "index": 4,
+    "why": "Premium Scenario Unlock introduces a product-change model that gates optional, curated creative scenarios (m6) behind mini-games, which boosts community creator content value without interfering with core chat mechanics."
+   }
+  ]
+ },
+ "usage": {
+  "input": 38472,
+  "output": 1119,
+  "cacheRead": 20159,
+  "cacheWrite": 0,
+  "thoughts": 2918
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:57:02.462Z"
+}

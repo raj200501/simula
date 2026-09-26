@@ -1,0 +1,213 @@
+{
+ "purpose": "revise:P4:r1",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Sponsored Advanced Services 15m Trial",
+  "oneLiner": "Offer a 15-minute trial of Luzia+ Advanced services after closing the account wall.",
+  "case": "product-change",
+  "archetype": "TAX-2",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m1",
+    "m10"
+   ],
+   "economy": [
+    "r1",
+    "r4 Advanced Service Trial Token (new)"
+   ],
+   "newMechanic": {
+    "name": "Rewarded Trial Access",
+    "description": "After a user closes the Create Account sheet, surface an opt-in rewarded ad to unlock 15 minutes of Luzia+ Advanced services via a trial token.",
+    "whyNeeded": "Allows high-intent, cash-poor users to experience premium value, increasing conversion probability while monetizing users who would otherwise churn at the paywall.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "ns1",
+  "trigger": "User taps 'Close sheet' on the Create Account Sheet (s07) after attempting a premium-gated task.",
+  "eligibility": "Non-subscribers who have not hit the daily cap for rewarded trials.",
+  "offer": {
+   "title": "Try Advanced Services Free",
+   "body": "Play a quick 15-second game to unlock 15 minutes of Advanced Services.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "15 minutes of Luzia+ Advanced services",
+   "resource": "r4 Advanced Service Trial Token (new)",
+   "amount": null,
+   "duration": "15 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The trial is time-boxed (15m) and limited to 1x/day, protecting the long-term value of the subscription while creating a clear sampling effect. The offer appears only as a fallback to account creation, ensuring purchase remains the primary path.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 1.2,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Trial-to-subscription conversion rate",
+   "guardrails": [
+    "Subscription purchase rate",
+    "Retention (D7, D30)",
+    "Total daily time spent"
+   ],
+   "holdout": "10% of non-subscribers for 8 weeks."
+  },
+  "precedents": [
+   "TAX-2",
+   "TAX-10",
+   "EX-MUSIC",
+   "EX-UTIL"
+  ],
+  "risks": [
+   "Advanced services use compute resources; trial usage must be monitored to ensure sustainable unit economics.",
+   "Users may perceive the ad path as sufficient and delay upgrading."
+  ],
+  "evidence": [
+   {
+    "obs": "s07",
+    "el": "e7",
+    "quote": "Upgrade to Luzia+"
+   },
+   {
+    "obs": "s07",
+    "el": "e9",
+    "quote": "Continue with limited access"
+   }
+  ],
+  "patch": {
+   "newScreens": [
+    {
+     "id": "ns1",
+     "basedOn": "s07",
+     "kind": "modal",
+     "change": "Rewarded trial offer modal appearing after closing account creation on s07."
+    }
+   ],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "ns1",
+     "near": null,
+     "place": "overlay",
+     "change": "Button for triggering rewarded trial: 'Play Now'"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s07",
+     "el": "Close sheet",
+     "to": "ns1",
+     "effects": [],
+     "guard": null
+    },
+    {
+     "from": "ns1",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r4 Advanced Service Trial Token (new)",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s07",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e7",
+      "text": "User wants Advanced services."
+     }
+    ],
+    "caption": "User tries an Advanced service task."
+   },
+   {
+    "phase": "change",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Trial offer appears on close."
+     }
+    ],
+    "caption": "User closes account sheet, sees offer."
+   },
+   {
+    "phase": "offer",
+    "screen": "ns1",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s game for 15m trial."
+     }
+    ],
+    "caption": "User sees trial offer and opts in."
+   },
+   {
+    "phase": "ad",
+    "screen": "s06",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "e6",
+      "text": "Luzia plays along in game."
+     }
+    ],
+    "caption": "Luzia partners with user in mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "r4 Advanced Service Trial Token (new)",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e6",
+      "text": "15 minutes of access granted!"
+     }
+    ],
+    "caption": "User gets temporary Advanced services."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43487,
+  "output": 1643,
+  "cacheRead": 30842,
+  "cacheWrite": 0,
+  "thoughts": 3091
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:04:03.796Z"
+}

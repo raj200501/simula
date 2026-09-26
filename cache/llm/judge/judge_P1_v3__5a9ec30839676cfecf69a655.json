@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P1:v3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal focuses on s03 (Memory Wall), which is a standard paywall screen for roleplay features."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a 15-second mini-game, not for clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a gain-framed title 'Unlock Memory Boost'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user taps 'Play Now' after disclosure."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal clearly states: 'Play a quick 15-second game to get 5x context memory for the next 15 minutes.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'Not Now' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is triggered at the paywall (s03), not during an active chat stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal specifies eligibility for 'Non-paying users reaching the memory wall.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is exactly at the friction point (s03), providing the user with the feature they are currently missing (enhanced memory).",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The reward (time-boxed memory) fits perfectly within the roleplay ecosystem and the existing s03 wall without disrupting the core loop.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Strictly time-boxed to 15 minutes with a cap of 2/day, leaving the Janitor Plus permanent upgrade as the vastly superior option.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS ($0.0018) is well below the revenue per view ($0.009–0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The memory wall is a core constraint for Janitor users, ensuring a large addressable audience.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD; standard implementation pattern using existing entitlement logic.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References 'Janitor Plus' and '5x context' appropriately from the digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps of 2/day and 60m cooldowns are appropriately conservative.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes specific KPIs, guardrails, and a planned holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the resource identifier 'context_memory_5x' in the patch and storyboard to align with the actual entitlement system string, as it was not found in the product model digest.",
+   "Explicitly document the technical check to ensure Janitor Plus subscribers are completely excluded from seeing the offer, even if they hit a wall (e.g., via session-level remote config)."
+  ],
+  "topConcern": "The resource identifier 'context_memory_5x' is non-grounded; it must match the existing entitlement system exactly to function."
+ },
+ "usage": {
+  "input": 34883,
+  "output": 997,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1096
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:59:38.126Z"
+}

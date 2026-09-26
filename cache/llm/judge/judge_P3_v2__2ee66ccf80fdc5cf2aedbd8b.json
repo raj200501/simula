@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets general scenario content for 'Willson Wáng' on screen s09. Content is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is access to a premium scenario, granted in-app, with no cash or click-to-earn incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Neutral framing: 'Unlock Premium Scenario'. No dark patterns or manufactured scarcity."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User initiates by tapping 'Unlock Scenario' button, followed by an offer screen with a clear 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer screen explicitly states: 'Play a 15-second game with Willson Wáng to unlock this premium scenario for 72 hours.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Offer contains a clearly legible 'No thanks' button that exits the offer flow."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Offered in character details (s09), not during an active chat or generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility restricts the offer to 'Non-subscribers only'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer triggers directly when the user seeks to access a premium scenario (s09), which is the exact moment of need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Adds an 'Exclusive Premium' tag to creator scenarios; does not degrade existing free content or disrupt current chat flows.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-subscribers, time-boxed (72h), capped at 3/day, and leaves the full premium subscription as the primary unlimited path.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero for content access. Revenue per view is sufficient for the reward type.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Placed on character details (s09), which is a high-traffic intersection in the discovery-to-chat flow.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD; logic relies on tagging and standard gate access, which is well-supported.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References specific character 'Willson Wáng' (e6 in s09) and screen s09 correctly.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps at 3 per day with a 60-minute cooldown; provides clear frequency management.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metric, guardrails, and a explicit plan for a 10% user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Define the 'Exclusive Premium' tagging system for creators to ensure scenarios are clearly marked prior to the trigger.",
+   "Clarify how the UI handles Premium-tagged scenarios in search results so free users do not feel frustrated by 'gated' content visibility."
+  ],
+  "topConcern": "Operational dependency on creator adoption for the 'Premium' scenario tagging, which may impact the initial inventory volume available for the ad path."
+ },
+ "usage": {
+  "input": 34760,
+  "output": 997,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1842
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:58:42.702Z"
+}

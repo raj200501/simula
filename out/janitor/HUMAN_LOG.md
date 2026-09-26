@@ -1,0 +1,1 @@
+- 2026-09-26T06:04:11.420Z Logged after the fact: before the 2026-09-25 explore run, a person signed in to Janitor AI on the emulator with Google (apps/janitor.json sets login: manual; the explorer never types credentials). The account handle and join date were then redacted in every artifact: text replaced, screenshots blurred.

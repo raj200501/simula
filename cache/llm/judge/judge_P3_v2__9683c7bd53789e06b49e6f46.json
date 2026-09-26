@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.5-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets s07 (Create Account Sheet) for Deep Reasoning mode, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Offers a time-boxed trial for playing a mini-game; no cash, gift cards, or incentivized clicks/installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Uses gain framing ('unlock 30 minutes of Deep Reasoning mode') with no dark patterns or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Requires explicit tap on 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "States exact reward (30 minutes of Deep Reasoning mode) and required action (15-second game) prior to ad."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes an equally legible 'No thanks' decline button that returns the user to the app without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggered on paywall decline (m9) rather than interrupting a streaming response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly restricts the offer to non-paying guests not currently on a subscription."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Offered right after hitting the paywall for Deep Reasoning mode (m9), providing an immediate trial of the exact feature desired.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Feels native, preserves user flow, and uses Luzia as the Game Partner without degrading the free experience.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to paywall decliners and limited to a 30-minute time-box with a daily cap of 1, protecting subscription value.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code flagged that the cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Frequent trigger point (m9) whenever users attempt to access Deep Reasoning mode.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD with button entry, SSV verification, and remote config.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like Luzia+, Deep Reasoning, s07, and Luzia as game partner.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 1 per day with a 1440-minute cooldown and no re-offering after decline.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary conversion metric, guardrails, and a 5% user holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the COGS of the reward to comply with unit economics (e.g., shorten the trial duration, limit message count in the trial, or use a cheaper model tier instead of full text-premium for 30 minutes, since current cost $0.0090 exceeds low-end net revenue $0.0063).",
+   "Fix the grounding error in the patch definition where an unknown resource 'Deep Reasoning Trial' was referenced instead of existing resources or entitlements."
+  ],
+  "topConcern": "Unit economics violation where the cost to serve premium text inference for 30 minutes ($0.0090) exceeds net revenue per view at the low end ($0.0063), resulting in negative margins per completed view."
+ },
+ "usage": {
+  "input": 42718,
+  "output": 1076,
+  "cacheRead": 32334,
+  "cacheWrite": 0,
+  "thoughts": 1299
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:04:01.603Z"
+}

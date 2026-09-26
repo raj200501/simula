@@ -1,0 +1,111 @@
+{
+ "purpose": "judge-cal:neg-autoplay",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The surface (s03, Janitor Plus paywall) is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is access to the '5x context' feature, which is in-app and non-transferable; no cash or clicks are incentivized."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer copy is gain-framed and does not use dark patterns like confirming-shaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": false,
+    "evidence": "The proposal states: 'The rewarded game auto-plays full-screen mid-response', which is an forced action, not an explicit opt-in."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states: 'Play a 15-second game to unlock 10 minutes'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": false,
+    "evidence": "Because the game auto-plays immediately upon the trigger condition, there is no pre-ad opportunity to decline."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": false,
+    "evidence": "The proposal explicitly states: 'The rewarded game auto-plays full-screen mid-response, while the answer is still streaming'."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is strictly 'Non-payers only'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the 5x context memory wall (m1/s03), which is a high-intent moment for free users, but the delivery (interruption) destroys the value.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Auto-playing an ad mid-stream violates the fundamental integrity of an AI chat app; it breaks the user's immersion and interrupts the streaming response.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is highly safe: it is a 10-minute time-boxed sample (not permanent access) of a premium feature, limited to 2 per day for non-payers, with the paid plan prominently contrasted.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost-to-serve is $0.0018 per view, which is well below the US revenue per view ($0.0090–$0.0150).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggering on the memory paywall provides high reach as users frequently hit these limits.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses SIM-RWD as expected and maps to the existing s03 paywall.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like '5x context for better memory' and 'Janitor Plus'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a 2/day cap and 60-min cooldown, which is reasonable.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a user-level holdout and specific KPIs like non-inferiority conversion margins.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the auto-play functionality immediately. Change the trigger to require an explicit user tap on an offer chip (e.g., the proposed 'Play to try' button).",
+   "Add a guardrail to ensure the trigger cannot activate while an AI response is streaming. It must wait until the response has finished generating.",
+   "Ensure the standard AdMob/Unity opt-in sequence (intro screen with 'No' option) is presented before the ad initiates."
+  ],
+  "topConcern": "The auto-play trigger mid-response is a catastrophic violation of user experience, policy, and chat integrity that will immediately destroy user trust and lead to high churn."
+ },
+ "usage": {
+  "input": 34641,
+  "output": 1110,
+  "cacheRead": 32244,
+  "cacheWrite": 0,
+  "thoughts": 1603
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:00:09.510Z"
+}

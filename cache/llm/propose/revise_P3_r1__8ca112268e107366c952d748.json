@@ -1,0 +1,213 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Bonus Save Slot",
+  "oneLiner": "Watch a quick game to expand your article library.",
+  "case": "product-change",
+  "archetype": "TAX-7",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m10"
+   ],
+   "economy": [
+    "SAVE_CAPACITY",
+    "ARTICLE_SAVE"
+   ],
+   "newMechanic": {
+    "name": "Library Capacity Limit",
+    "description": "Limit free account article saving to 50 slots. Existing saved articles remain fully accessible; new saves are blocked until expansion or subscription.",
+    "whyNeeded": "Creates a scarce resource anchor for rewarded ads, distinguishing free from premium tiers.",
+    "removesFreeValue": true
+   }
+  },
+  "surface": "s11",
+  "trigger": "User opens the sidebar menu, where capacity is displayed.",
+  "eligibility": "Logged-in free tier users.",
+  "offer": {
+   "title": "Expand Your Library",
+   "body": "Library full (50/50). Play a game for +5 slots, or see premium plans.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "5 extra save slots",
+   "resource": "SAVE_CAPACITY",
+   "amount": 5,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The reward is a partial, additive expansion for non-payers. Subscription plans remain clearly superior (unlimited storage).",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1.2,
+   "cogs": "none",
+   "cogsUnitsPerView": 5
+  },
+  "kpis": {
+   "primary": "Total saved articles",
+   "guardrails": [
+    "CapacityHitRate",
+    "D7 Retention",
+    "SubscriptionConversionRate"
+   ],
+   "holdout": "10% user holdout for 4 weeks to measure capacity usage and revenue impact."
+  },
+  "precedents": [
+   "TAX-7",
+   "POL-2",
+   "TRIG-5",
+   "AI-X"
+  ],
+  "risks": [
+   "Frustration risk from capping previously unlimited storage; mitigated by clearly stating existing content is safe.",
+   "Low utilization if users do not save many articles; mitigated by capacity usage monitoring."
+  ],
+  "evidence": [
+   {
+    "obs": "s11",
+    "el": null,
+    "quote": "Account Menu Sidebar"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne_storage_status",
+     "in": "s11",
+     "near": null,
+     "place": "after",
+     "change": "Add storage status indicator (e.g., 45/50 slots) with 'Upgrade' link and 'Play for Slots' CTA button."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s11",
+     "el": "ne_storage_status",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "SAVE_CAPACITY",
+       "delta": 5
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "Existing sidebar menu."
+     }
+    ],
+    "caption": "AOL sidebar today, providing general account navigation."
+   },
+   {
+    "phase": "change",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "New capacity tracker: 50/50 used. Upgrade or Play to unlock."
+     }
+    ],
+    "caption": "Introduce a 50-article save limit, protecting existing content."
+   },
+   {
+    "phase": "offer",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "Play to unlock +5 slots!"
+     }
+    ],
+    "caption": "When user hits the 50-slot limit, the expansion offer appears."
+   },
+   {
+    "phase": "ad",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 50
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "15s mini-game."
+     }
+    ],
+    "caption": "User plays the interactive rewarded mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "SAVE_CAPACITY",
+      "value": 55
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne_storage_status",
+      "text": "Slots expanded to 55!"
+     }
+    ],
+    "caption": "Library capacity is updated immediately upon successful ad completion."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35613,
+  "output": 1534,
+  "cacheRead": 30455,
+  "cacheWrite": 0,
+  "thoughts": 1094
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:56:06.608Z"
+}

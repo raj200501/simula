@@ -1,0 +1,111 @@
+{
+ "purpose": "judge-cal:neg-subscribers",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The surface s03 is a subscription paywall page, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is 10 minutes of a premium feature, not cash, ratings, or app installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "No loss framing is used; it is a standard subscription upsell page."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer requires an explicit tap on the 'Play to try' chip before any ad plays."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states 'Play a 15-second game to unlock...'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The user is provided a 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The ad appears on the s03 paywall page, not mid-chat."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": false,
+    "evidence": "Eligibility states 'All users, including subscribers' are eligible, which is a negative user experience for someone who already owns the entitlement."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer is placed on the paywall screen (s03) where the user is actively blocked, creating a strong moment of need.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "It offers a sample of a paid feature, which fits natively into the UI as a chip.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "While time-boxed, the eligibility includes subscribers who already have the feature, which is inefficient and undermines the subscription value.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost ($0.0018) is well below the conservative net revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Reach is limited to the paywall trigger, which is an occasional occurrence rather than a core daily loop for everyone.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal uses standard SIM-RWD units and existing screens.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific terms like 'Janitor Plus' and '5x context'.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps are set to 2/day with a 60-minute cooldown.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a holdout, guardrails, and clear primary KPIs.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Exclude existing subscribers from eligibility to prevent negative UX and value devaluation.",
+   "Correct the eligibility clause to apply only to non-paying users.",
+   "Restrict the trigger to the paywall screen (s03) as per the proposal's own trigger description, removing the 'every app open' claim."
+  ],
+  "topConcern": "The proposal offers an ad to subscribers for a feature they are already paying for, which creates a negative user experience and devalues the Janitor Plus subscription."
+ },
+ "usage": {
+  "input": 34646,
+  "output": 959,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1208
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:00:16.549Z"
+}

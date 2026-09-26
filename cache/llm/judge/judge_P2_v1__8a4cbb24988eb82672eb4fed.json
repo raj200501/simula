@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Image generation in the Image Creation Hub is a standard feature and the proposal includes no NSFW incentives or content."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is granted for playing a mini-game, not for clicking ads or installing apps."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a reward when the quota is depleted, rather than threatening content deletion or loss."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The storyboard shows an offer screen (ns1) with 'Play Now' and 'No thanks' buttons."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer explicitly states: 'Play a 15-second game with Luzia to get 1 free AI image generation credit.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a 'No thanks' button that returns the user to the Image Creation Hub (s10)."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is specifically when the usage quota (r3) is depleted, which is a hard block boundary."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility is explicitly restricted to 'Non-paying users'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The reward is offered exactly when the user hits the usage limit in the Image Creation Hub, which is the precise moment of need.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The solution is additive (adds credits) and keeps the user in flow. Playing with the character is a native, in-world action.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is capped at 3 credits per day, ensuring usage remains limited and non-subscribers do not gain unlimited generation capability.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The cost to serve ($0.0250) is significantly higher than the estimated net revenue per view ($0.0063). The proposal fails to achieve break-even.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Image generation is a core loop function in Luzia; hitting usage limits is a common experience for free users.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps clearly to SIM-RWD units with a logical patch and SSV-ready grant path.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the specific app screen (s10), resource (r3), and character (Luzia) from the digest.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a strict 3-per-day cap and a 30-minute cooldown, preventing nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes primary metrics (image generation volume), guardrails (paid conversion), and a holdout design.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Adjust the reward bundle to require two completed views for one image credit (a 2:1 ratio) to align with unit economics, or utilize a lower-cost model if available.",
+   "Update the offer copy to reflect the new bundle requirements (e.g., 'Watch 2 ads to earn 1 credit')."
+  ],
+  "topConcern": "The unit economics are unsustainable: the cost to serve the image generation ($0.0250) is roughly four times higher than the expected net revenue from a US rewarded view ($0.0063)."
+ },
+ "usage": {
+  "input": 42691,
+  "output": 1055,
+  "cacheRead": 20213,
+  "cacheWrite": 0,
+  "thoughts": 1081
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:03:16.450Z"
+}

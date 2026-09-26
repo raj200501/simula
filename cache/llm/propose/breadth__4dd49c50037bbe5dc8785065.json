@@ -1,0 +1,153 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Watch a video to remove all native and banner ads for the next 30 minutes.",
+   "Watch an ad to unlock access to a single 'Premium' article from a partner publisher.",
+   "Watch a video to unlock additional font sizes and themes in the Article Detail Page settings."
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "None; reading headlines is already a free core loop action.",
+    "viable": false
+   },
+   {
+    "moment": "m2",
+    "exchange": "None; unsubscribing is a utility/management function, not a rewardable desire.",
+    "viable": false
+   },
+   {
+    "moment": "m3",
+    "exchange": "Unlock a temporary 'Ad-Light' browsing session for the Home News Feed.",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "Unlock an exclusive 'Lighter Side' interactive puzzle or sponsored mini-game.",
+    "viable": true
+   },
+   {
+    "moment": "m5",
+    "exchange": "Unlock an enhanced 'Local Radar' weather view to fix the weather error state.",
+    "viable": true
+   },
+   {
+    "moment": "m6",
+    "exchange": "Earn a 'Daily Read' multiplier to boost account engagement points.",
+    "viable": true
+   },
+   {
+    "moment": "m7",
+    "exchange": "Unlock a 'Political Digest' summary for the current session.",
+    "viable": true
+   },
+   {
+    "moment": "m8",
+    "exchange": "None; first-value moment must be offer-free.",
+    "viable": false
+   },
+   {
+    "moment": "m9",
+    "exchange": "Bypass the sign-up wall to post a single 'Guest Comment' on the current article.",
+    "viable": true
+   },
+   {
+    "moment": "m10",
+    "exchange": "Unlock a permanent extra slot for the Saved Articles list.",
+    "viable": true
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Guest Comment Pass",
+    "case": "product-change",
+    "archetype": "TAX-3",
+    "moment": "m9",
+    "reward": "1 guest comment post",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Ad-Light Session",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m3",
+    "reward": "30 minutes of reduced ads",
+    "beyondBaseline": false
+   },
+   {
+    "title": "News Streak Multiplier",
+    "case": "product-change",
+    "archetype": "TAX-5",
+    "moment": "m6",
+    "reward": "2x engagement points for today",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Pro Weather Radar",
+    "case": "product-change",
+    "archetype": "TAX-4",
+    "moment": "m5",
+    "reward": "24h of detailed local radar",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Priority User Badge",
+    "case": "product-change",
+    "archetype": "TAX-13",
+    "moment": "m9",
+    "reward": "Verified Guest badge for 1 hour",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Bonus Save Slot",
+    "case": "product-change",
+    "archetype": "TAX-7",
+    "moment": "m10",
+    "reward": "+1 saved article slot",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Lighter Side Puzzle",
+    "case": "product-change",
+    "archetype": "TAX-3",
+    "moment": "m4",
+    "reward": "access to the Daily Crossword",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Premium Reading Themes",
+    "case": "product-change",
+    "archetype": "TAX-13",
+    "moment": "m10",
+    "reward": "AOL Classic dark mode theme",
+    "beyondBaseline": false
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "This targets a high-intent 'desire' moment where users are currently blocked by a hard sign-up wall. Allowing a single guest comment per ad view provides immediate value and samples the community features [TAX-3]."
+   },
+   {
+    "index": 2,
+    "why": "Introduces a habit-forming product change by rewarding streaks. A proactive multiplier on a frequent hub screen encourages daily returns without interrupting the reading flow [TAX-5, TRIG-1]."
+   },
+   {
+    "index": 5,
+    "why": "Utility-based capacity expansion is a low-cannibalization reward for news apps. It encourages users to curate more content within the AOL ecosystem while providing a tangible permanent benefit [TAX-7]."
+   }
+  ]
+ },
+ "usage": {
+  "input": 41864,
+  "output": 1233,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1659
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:54:54.169Z"
+}

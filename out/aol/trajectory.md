@@ -1,6 +1,6 @@
 # Trajectory: aol
 
-Autonomous decisions: **77**. Human interventions: **3**. Autonomy ratio: **96.3%**.
+Autonomous decisions: **81**. Human interventions: **1**. Autonomy ratio: **98.8%**. Sign-in walls noted for a human and skipped: 2 (2 distinct).
 
 ## Stage runs
 
@@ -17,6 +17,9 @@ Autonomous decisions: **77**. Human interventions: **3**. Autonomy ratio: **96.3
 | human | manual | 19:26:58 | 19:26:58 | 1 | 0 |  |
 | slides | sl0925-205159 | 20:51:59 | 20:52:01 | 4 | 0 |  |
 | slides | sl0925-210143 | 21:01:43 | 21:01:45 | 4 | 0 |  |
+| propose | pr0926-055437 | 05:54:37 | 05:55:31 | 17 | 0 |  |
+| judge | ju0926-055531 | 05:55:32 | 05:56:28 | 27 | 1 | revision stalled: weighted 3.6 -> 3.1 |
+| eval-judge | ev0926-055940 | 05:59:40 | 05:59:40 | 3 | 0 |  |
 
 ## New states discovered over time
 
@@ -139,12 +142,22 @@ failed to get foreground
 - 19:17:29 **gemini:judge:P3:v3**: 503 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
   - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
 
+### judge · run ju0926-055531
+
+- 05:56:06 **gemini:judge:P3:v2**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+
 
 ## Human interventions
 
+- 2026-09-25T19:26:58 [human] Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
+
+## Sign-in walls skipped
+
+The explorer never signs in. It records each wall for a human and explores elsewhere.
+
 - 2026-09-25T19:02:33 [explore] "Add Comment Page" (s05) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
 - 2026-09-25T19:02:52 [explore] "Sign In Screen" (s06) needs a human: sign in or pass the phone check / CAPTCHA on the device (the explorer never types passwords, codes or phone numbers).
-- 2026-09-25T19:26:58 [human] Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
 
 ## Key exploration decisions (priority 3)
 

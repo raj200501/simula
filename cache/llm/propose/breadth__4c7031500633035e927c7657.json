@@ -1,0 +1,242 @@
+{
+ "purpose": "breadth",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "baseline": [
+   "Banner ads on the paywall screen",
+   "Interstitial ads between chat messages",
+   "Rewarded video to remove ads for 1 hour"
+  ],
+  "momentSweep": [
+   {
+    "moment": "m1",
+    "exchange": "Upgrade for advanced services",
+    "viable": true
+   },
+   {
+    "moment": "m2",
+    "exchange": "None",
+    "viable": false
+   },
+   {
+    "moment": "m3",
+    "exchange": "Adjust response style",
+    "viable": true
+   },
+   {
+    "moment": "m4",
+    "exchange": "None",
+    "viable": false
+   },
+   {
+    "moment": "m5",
+    "exchange": "Save favorite message",
+    "viable": true
+   },
+   {
+    "moment": "m6",
+    "exchange": "None",
+    "viable": false
+   },
+   {
+    "moment": "m7",
+    "exchange": "Create custom bestie",
+    "viable": true
+   },
+   {
+    "moment": "m8",
+    "exchange": "None",
+    "viable": false
+   },
+   {
+    "moment": "m9",
+    "exchange": "Toggle deep reasoning mode",
+    "viable": true
+   },
+   {
+    "moment": "m10",
+    "exchange": "Start a task",
+    "viable": true
+   },
+   {
+    "moment": "m11",
+    "exchange": "Upsell",
+    "viable": false
+   },
+   {
+    "moment": "m12",
+    "exchange": "Upsell",
+    "viable": false
+   },
+   {
+    "moment": "m13",
+    "exchange": "Upsell",
+    "viable": false
+   },
+   {
+    "moment": "m14",
+    "exchange": "Unlock Deep reasoning mode",
+    "viable": true
+   },
+   {
+    "moment": "m15",
+    "exchange": "None",
+    "viable": false
+   },
+   {
+    "moment": "m16",
+    "exchange": "Usage quota refill",
+    "viable": true
+   },
+   {
+    "moment": "m17",
+    "exchange": "Inspiration",
+    "viable": true
+   },
+   {
+    "moment": "m18",
+    "exchange": "Assistant tools access",
+    "viable": true
+   },
+   {
+    "moment": "m19",
+    "exchange": "Mini-app tool access",
+    "viable": true
+   },
+   {
+    "moment": "m20",
+    "exchange": "Animation generation",
+    "viable": true
+   },
+   {
+    "moment": "m21",
+    "exchange": "Image generation",
+    "viable": true
+   },
+   {
+    "moment": "m22",
+    "exchange": "None",
+    "viable": false
+   },
+   {
+    "moment": "m23",
+    "exchange": "Upsell",
+    "viable": false
+   }
+  ],
+  "ideas": [
+   {
+    "title": "Daily Task for AI Usage Credits",
+    "case": "product-change",
+    "archetype": "AI-3",
+    "moment": "m16",
+    "reward": "5 AI Usage Credits",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Unlock 1 Image Generation",
+    "case": "product-change",
+    "archetype": "AI-5",
+    "moment": "m21",
+    "reward": "1 Image generation task",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Paywall-decline: Deep Reasoning Sample",
+    "case": "existing",
+    "archetype": "AI-4",
+    "moment": "m14",
+    "reward": "1 hour of Deep reasoning mode",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Sponsored Advanced Services 30m Trial",
+    "case": "product-change",
+    "archetype": "TAX-2",
+    "moment": "m1",
+    "reward": "30 minutes of Advanced services (bookings/alerts)",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Save a Favorite Message",
+    "case": "existing",
+    "archetype": "AI-11",
+    "moment": "m5",
+    "reward": "Unlock 1 favorite message save",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Unlock Custom Bestie slot",
+    "case": "product-change",
+    "archetype": "AI-8",
+    "moment": "m7",
+    "reward": "1 extra Custom Bestie slot",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Proactive Hub: Usage Refills",
+    "case": "existing",
+    "archetype": "AI-2",
+    "moment": "m16",
+    "reward": "10 AI Usage Credits",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Streak Protection for Daily Chats",
+    "case": "product-change",
+    "archetype": "AI-13",
+    "moment": "m16",
+    "reward": "Protect relationship bond level",
+    "beyondBaseline": true
+   },
+   {
+    "title": "Paywall-decline: Adjust Response Style",
+    "case": "existing",
+    "archetype": "AI-4",
+    "moment": "m3",
+    "reward": "24 hours of Custom Response Style",
+    "beyondBaseline": false
+   },
+   {
+    "title": "Unlock Beat Maker Loop",
+    "case": "product-change",
+    "archetype": "AI-3",
+    "moment": "m19",
+    "reward": "30 minutes of advanced Beat Maker features",
+    "beyondBaseline": true
+   }
+  ],
+  "selected": [
+   {
+    "index": 0,
+    "why": "Establishes a proactive daily habit loop using existing AI usage quota constraints, perfect for retention."
+   },
+   {
+    "index": 1,
+    "why": "Directly monetizes the high-intent image generation flow at the moment of creation."
+   },
+   {
+    "index": 2,
+    "why": "Leverages the paywall-decline fallback pattern to let free users sample the 'Deep reasoning' core premium feature, driving conversion."
+   },
+   {
+    "index": 3,
+    "why": "Demonstrates the high-value 'Advanced Services' capability to non-payers, proving the value of the Luzia+ subscription."
+   },
+   {
+    "index": 4,
+    "why": "Existing wall for saving messages; gives users an immediate path to 'Organize thoughts' without a full subscription."
+   }
+  ]
+ },
+ "usage": {
+  "input": 50598,
+  "output": 1483,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2358
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T06:02:28.909Z"
+}

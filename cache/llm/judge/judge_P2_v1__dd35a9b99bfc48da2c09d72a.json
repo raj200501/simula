@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "AOL is a general news reader app; the daily reading streak mechanic is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for a daily reading streak (engagement), not for clicks, installs, or ratings. Points are in-app and non-cash."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing ('Double Your Streak Points') and offers a 'No thanks' decline option."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The offer screen presents a 'Play Now' CTA for the rewarded ad, acting as the explicit opt-in."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states: 'Play a 15-second game to double your Daily Streak points'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer screen includes a 'No thanks' button which returns the user to the News Feed."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is the user tapping 'Save this article' (e38), which is an action boundary, not mid-reading."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal restricts eligibility to non-paying users."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Saving an article is a high-intent, active engagement gesture; rewarding this action with streak progress is a strong, positive feedback loop for a news-reading habit.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Streaks and reading goals are native to news/content apps; the ad is opt-in and does not degrade the article content.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is meta-game progress (streak points), which has no overlap with subscription or ad-free entitlements.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The reward has zero COGS and provides a net profit of ~$0.009–$0.015 per view, well within profitable limits.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger relies on the user performing a 'Save article' action, which is a secondary action rather than the primary core loop (reading), limiting reach.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Adding a streak meter and button to the news feed is a standard UI implementation; utilizes SIM-RWD units effectively.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Properly references AOL elements like 'Save this article' (e38) and 'News Feed Home' (s13).",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped at 1 per day with a 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes DAU as a primary metric, clear guardrails, and a planned holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix logic mismatch in reward definition: The proposal claims to 'Double' points, but the reward amount is '1'. If points are 3, it should grant +3 points.",
+   "Clarify point utility: Define what 'Streak points' unlock (badges, profile themes) to ensure the reward is perceived as valuable."
+  ],
+  "topConcern": "The logic mismatch between the 'Double' claim and the '1' reward amount needs correction; if the reward doesn't mathematically double the user's current points, the claim will be seen as deceptive."
+ },
+ "usage": {
+  "input": 35295,
+  "output": 1063,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1479
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:55:49.917Z"
+}

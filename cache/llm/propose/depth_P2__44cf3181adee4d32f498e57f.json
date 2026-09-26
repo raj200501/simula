@@ -1,0 +1,226 @@
+{
+ "purpose": "depth:P2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "News Streak Multiplier",
+  "oneLiner": "Drive daily reading habit through a gamified streak mechanic that can be doubled by watching rewarded ads.",
+  "case": "product-change",
+  "archetype": "TAX-5",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m6"
+   ],
+   "economy": [
+    "DAILY_STREAK_POINTS"
+   ],
+   "newMechanic": {
+    "name": "Daily Reading Streak",
+    "description": "Users earn 1 point for every day they read or save at least one article. Points accrue for achievements and profile badges.",
+    "whyNeeded": "Creates a meaningful, scarce engagement resource to anchor the rewarded ad value exchange.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s13",
+  "trigger": "After the user taps 'Save this article' (e38) on the News Feed Home screen (s13), confirming a daily reading action.",
+  "eligibility": "All non-paying users who have completed their daily reading goal (saved at least 1 article).",
+  "offer": {
+   "title": "Double Your Streak Points",
+   "body": "Play a 15-second game to double your Daily Streak points for today.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL News",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "Daily Streak points doubled",
+   "resource": "DAILY_STREAK_POINTS",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "The reward is a retention-focused meta-game point (engagement), not a substitute for a paid subscription tier or ad-free access. This creates positive sampling effects for the app without devaluing existing content.",
+  "assumptions": {
+   "engagedShare": 0.4,
+   "viewsPerEngager": 1,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "Daily Active Users (DAU)",
+   "guardrails": [
+    "Article save rate",
+    "Session duration",
+    "Retention (D7, D30)"
+   ],
+   "holdout": "10% of total users held out from the Streak Multiplier offer for 30 days."
+  },
+  "precedents": [
+   "TAX-5",
+   "TAX-9",
+   "EX-DUO"
+  ],
+  "risks": [
+   "Points may be perceived as trivial if they do not unlock tangible benefits like badges or profile themes.",
+   "Potential for user fatigue if the multiplier is offered every day without sufficient engagement."
+  ],
+  "evidence": [
+   {
+    "obs": "s13",
+    "el": "e38",
+    "quote": "Save this article"
+   },
+   {
+    "obs": "s13",
+    "el": "e37",
+    "quote": "Takeaways from Trump-Xi summit: Lots of pomp and e"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ns13_streak_meter",
+     "in": "s13",
+     "near": "e14",
+     "place": "after",
+     "change": "Displays current daily reading streak count (e.g., 'Today's Streak: 3')"
+    },
+    {
+     "id": "ns13_multiplier_btn",
+     "in": "s13",
+     "near": "e38",
+     "place": "after",
+     "change": "Button visible after saving an article: '2x Streak Multiplier'"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s13",
+     "el": "ns13_multiplier_btn",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "DAILY_STREAK_POINTS",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "DAILY_STREAK_POINTS",
+      "lt": 2
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "DAILY_STREAK_POINTS",
+      "value": 3
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ns13_streak_meter",
+      "text": "Current 3-day streak shown."
+     }
+    ],
+    "caption": "User has a 3-day reading streak."
+   },
+   {
+    "phase": "change",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "DAILY_STREAK_POINTS",
+      "value": 3
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e38",
+      "text": "User saves an article."
+     }
+    ],
+    "caption": "User saves a news story, triggering the streak multiplier opportunity."
+   },
+   {
+    "phase": "offer",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "DAILY_STREAK_POINTS",
+      "value": 3
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ns13_multiplier_btn",
+      "text": "Offer: Double your streak points?"
+     }
+    ],
+    "caption": "A prompt invites the user to double their streak points by playing a short game."
+   },
+   {
+    "phase": "ad",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "DAILY_STREAK_POINTS",
+      "value": 3
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ns13_multiplier_btn",
+      "text": "Game: 15s play session."
+     }
+    ],
+    "caption": "User plays a quick 15-second mini-game with the AOL partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s13",
+    "counters": [
+     {
+      "resource": "DAILY_STREAK_POINTS",
+      "value": 4
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ns13_streak_meter",
+      "text": "Points doubled: 4 points total."
+     }
+    ],
+    "caption": "The reward is verified and streak points are credited."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35201,
+  "output": 1768,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2016
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:55:31.071Z"
+}

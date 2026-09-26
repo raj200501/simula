@@ -1,0 +1,178 @@
+{
+ "purpose": "depth:P3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Premium Scenario Unlock",
+  "oneLiner": "Watch a quick game to unlock a premium scenario for 72 hours.",
+  "case": "product-change",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m6"
+   ],
+   "economy": [
+    "s09"
+   ],
+   "newMechanic": {
+    "name": "Premium Scenario Lock",
+    "description": "Gating character-specific scenarios behind a premium requirement, accessible via rewarded ad.",
+    "whyNeeded": "Leverages character-specific content as high-intent content anchors to drive monetization.",
+    "removesFreeValue": true
+   }
+  },
+  "surface": "s09",
+  "trigger": "User taps 'Unlock Scenario' on a premium-gated character scenario in Character Details.",
+  "eligibility": "Non-subscribers only.",
+  "offer": {
+   "title": "Unlock Premium Scenario",
+   "body": "Play a quick game to unlock this premium scenario for 72 hours.",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "Willson Wáng",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "72-hour access to Premium Scenario",
+   "resource": "UnlockedScenario",
+   "amount": 1,
+   "duration": "72 hours",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 60
+  },
+  "cannibalizationGuard": "Non-subscribers only; gated by 72-hour expiry and daily frequency cap. Includes clear upsell path to subscription.",
+  "assumptions": {
+   "engagedShare": 0.3,
+   "viewsPerEngager": 1.5,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Scenario views per DAU",
+   "guardrails": [
+    "Paid conversion non-inferiority",
+    "D30 retention"
+   ],
+   "holdout": "10% user-level holdout for 4 weeks"
+  },
+  "precedents": [
+   "TAX-3",
+   "TRIG-5",
+   "EX-SERIAL"
+  ],
+  "risks": [
+   "High risk: gating content creates friction for free users; requires clear communication.",
+   "Potential churn if scenario selection feels predatory."
+  ],
+  "evidence": [
+   {
+    "obs": "s09",
+    "el": "Willson Wáng",
+    "quote": "Willson.. Stop growing a tail please."
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s09",
+     "near": "Willson Wáng",
+     "place": "after",
+     "change": "Unlock Scenario Button"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s09",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "UnlockedScenario",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "JanitorPlus",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [],
+    "caption": "User views character details for Willson Wáng."
+   },
+   {
+    "phase": "change",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Unlock premium scenario"
+     }
+    ],
+    "caption": "Unlock button added to scenario details."
+   },
+   {
+    "phase": "offer",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Play 15s to unlock"
+     }
+    ],
+    "caption": "Offer appears for non-subscribers."
+   },
+   {
+    "phase": "ad",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "User plays a 15-second mini-game with Willson Wáng."
+   },
+   {
+    "phase": "value",
+    "screen": "s09",
+    "counters": [],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Unlocked for 72h"
+     }
+    ],
+    "caption": "Scenario access granted for 72 hours."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35074,
+  "output": 1263,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 2252
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T05:57:35.222Z"
+}
