@@ -1,8 +1,8 @@
 # Judge calibration: AOL
 
-Single-fault confusion table. 5 positives adapted from KB precedents, grounded in this app's ids; each negative changes exactly one field of a positive. Every item is judged once: code gates, then one judge (stub heuristic, no LLM) call (skipped when a policy gate already failed). No revision rounds, no Batch API.
+Single-fault confusion table. 0 positives adapted from the KB precedents that fit this app's economy, grounded in its ids; each negative changes exactly one field of a positive. Every item is judged once: code gates, then one judge (stub heuristic, no LLM) call (skipped when a policy gate already failed). No revision rounds, no Batch API.
 
-n = 0 items from one run: this shows what each layer catches; it is not a statistical estimate of judge accuracy.
+n = 0: no KB precedent fits this app's economy, so there is no known-good proposal to break here. The list under Counts says what each item needs.
 
 ## Confusion table
 

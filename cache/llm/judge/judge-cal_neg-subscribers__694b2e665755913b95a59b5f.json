@@ -1,0 +1,111 @@
+{
+ "purpose": "judge-cal:neg-subscribers",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets the Settings screen (s19), which is an SFW surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a time-boxed entitlement (Luzia+), not cash, crypto, or incentivized clicks."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a gain-framing offer ('Try Upgrade to Luzia+ for a game') without hostage or loss tactics."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user explicitly opts in via a 'Play to try' button on the chip."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal explicitly states: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The proposal includes an explicit 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed on the Settings screen (s19), not inside a chat or generation stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": false,
+    "evidence": "The proposal explicitly specifies: 'All users, including subscribers, on every app open.' This violates the policy against showing ads to subscribers [ANTI-16]."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is linked directly to the 'Upgrade to Luzia+' upsell in Settings (m23), which is where users demonstrate interest in premium features.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The integration is subtle, appearing as a chip in the Settings menu without degrading the AI chat or generation experience.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The proposal explicitly targets subscribers (eligibility: 'All users, including subscribers'), which is a high risk for perceived bait-and-switch and cannibalization of subscription value [ANTI-16].",
+    "score": 1
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The cost to serve is effectively zero (entitlement access), which fits well within the computed US revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Settings (s19) is a frequent tab (m12, m19), but not the core loop of chat or image creation.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal uses existing Simula units (SIM-RWD) and maps cleanly to the Settings screen upsell.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses identified screens (s19) and resources (r1) correctly.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal suggests showing the offer on 'every app open' for eligible users, which is overly aggressive and likely to cause fatigue, despite the daily caps.",
+    "score": 2
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics (sample opt-ins) and includes a 10% user-level holdout for 4 weeks.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Exclude existing Luzia+ subscribers from ad eligibility; this is a hard policy requirement [ANTI-16].",
+   "Change eligibility from 'every app open' to a more reasonable trigger, such as on the first Settings visit per session or after a paywall decline to avoid fatigue.",
+   "Ensure the offer is only shown to non-subscribers to prevent devaluing the paid membership."
+  ],
+  "topConcern": "The proposal targets existing subscribers with ads, which risks severe user backlash and violates the policy against showing rewarded ads to paying users who already possess the entitlement."
+ },
+ "usage": {
+  "input": 42166,
+  "output": 1081,
+  "cacheRead": 36379,
+  "cacheWrite": 0,
+  "thoughts": 1165
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:29.030Z"
+}

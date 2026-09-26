@@ -1,0 +1,109 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal is for AOL news reading application, a general news feed service, and the ad surface is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is for game play/viewing, not for clicks or installs; currency is in-app and non-transferable."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses positive gain framing ('Earn News Credits') rather than loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "User explicitly interacts with 'Daily Reader Streak' card or 'Go Ad-Free' button to initiate the rewarded flow."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Proposal discloses 'Play a 15-second game with AOL' before the ad plays."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Offer card includes a 'No thanks' button as standard."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Triggers are sidebar buttons or article buttons, which are user-initiated entry points, not mid-content interruptions."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Proposal explicitly states 'Offers are gated to non-subscribers'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "News readers encounter Taboola ads; offering an ad-free session is the direct solution to that user pain point.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Ad-free reader mode is a natural value-add for a news app; embedding entry points in the sidebar and article footer is non-intrusive.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "15-minute sessions are highly time-boxed and require active user effort, making them a 'taste' rather than a substitute for a full subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is nil; revenue per view ~$0.012; reward is highly profitable.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Article Detail Pages (s03) are a core loop location. Sidebar (s11) is used for account settings.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps directly to SIM-RWD on existing UI elements (article buttons, sidebar).",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "References 'Article Details' (s03), 'Account Menu Sidebar' (s11), and 'News Credits' specific to the AOL reader context.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "3 per day limit with 30m cooldown prevents spamming.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Clear KPI, guardrails, and 10% holdout plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Define 'Ad-Free Reader Mode' clearly in the UI to specify that it suppresses the 'Taboola' native/banner advertising units mentioned in the digest."
+  ],
+  "topConcern": "Ensure that the ad-free session does not inadvertently hide critical UI elements or cause layout shifts when Taboola ads are removed."
+ },
+ "usage": {
+  "input": 35120,
+  "output": 963,
+  "cacheRead": 32251,
+  "cacheWrite": 0,
+  "thoughts": 1392
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:22:02.764Z"
+}

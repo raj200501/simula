@@ -5,79 +5,103 @@
     {
       "id": "P1",
       "version": 1,
-      "title": "Daily Task for AI Usage Credits",
-      "oneLiner": "Play a 15-second mini-game with Luzia to earn daily AI usage credits.",
-      "case": "product-change",
-      "archetype": "AI-3",
-      "beyondBaseline": true,
+      "title": "Paywall Decline 30-Min Luzia+ Pass",
+      "oneLiner": "Offer a 30-minute Luzia+ trial pass via a rewarded mini-game after declining the account creation paywall.",
+      "case": "existing",
+      "archetype": "TAX-10",
+      "beyondBaseline": false,
       "anchor": {
         "moments": [
-          "m16"
+          "m2"
         ],
         "economy": [
-          "r3 (AI Usage Quota)"
-        ],
-        "newMechanic": {
-          "name": "Daily Tasks",
-          "description": "A new interactive banner on the Chats Home screen offering daily mini-game challenges for AI usage credits.",
-          "whyNeeded": "Increases daily engagement and retention by gamifying the AI experience.",
-          "removesFreeValue": false
-        }
+          "r1",
+          "of1",
+          "w1",
+          "w6"
+        ]
       },
-      "surface": "s01",
-      "trigger": "User taps the Daily Task banner on the Chats Home (s01) tab.",
-      "eligibility": "Non-subscribers, once per day per user.",
+      "surface": "s06",
+      "trigger": "User taps Maybe later on Create Account Sheet and returns to Services Tab without subscribing.",
+      "eligibility": "Non-paying guest users who have dismissed the Create Account Sheet paywall and have no active Luzia+ entitlement.",
       "offer": {
-        "title": "Daily Task: Earn Credits",
-        "body": "Play a quick 15-second mini-game with Luzia to earn 5 extra AI usage credits.",
-        "cta": "Play Now",
+        "title": "Try Luzia+ for 30 Minutes",
+        "body": "Play a 15-second mini-game to unlock 30 minutes of Luzia+ services. Experience bookings, reminders, and deeper reasoning before deciding to subscribe.",
+        "cta": "Play Mini-Game",
         "decline": "No thanks"
       },
       "simula": {
         "unit": "SIM-RWD",
-        "entry": "button",
+        "entry": "invitation",
         "gamePartner": "Luzia",
         "minPlaySec": 15
       },
       "reward": {
-        "what": "5 AI Usage Credits",
-        "resource": "r3",
-        "amount": 5,
+        "what": "30 minutes of Luzia+ access",
+        "resource": "r1",
+        "duration": "30 minutes",
         "grantOn": "REWARD_VERIFIED"
       },
       "caps": {
-        "perDay": 3,
-        "cooldownMin": 30
+        "perDay": 1,
+        "cooldownMin": 1440
       },
-      "cannibalizationGuard": "Only offered to non-subscribers. The credits are additive to their quota and do not provide the advanced capabilities of the Luzia+ subscription. The banner is non-interruptive.",
+      "cannibalizationGuard": "Only surfaces after an explicit paywall decline to self-select users unwilling to purchase immediately. Capped strictly at one 30-minute session per day so it samples premium value without substituting for a recurring subscription.",
       "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 2,
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1,
         "cogs": "text-cheap",
-        "cogsUnitsPerView": 5
+        "cogsUnitsPerView": 3
       },
       "kpis": {
-        "primary": "Total AI Usage Credits granted",
+        "primary": "Luzia+ subscription conversion rate among paywall decliners over 28 days",
         "guardrails": [
-          "Paid conversion rate",
-          "D30 retention",
-          "Messages per DAU"
+          "Overall D7 and D30 user retention non-inferiority margin within -1%",
+          "Total paid subscription revenue per user (non-inferiority margin -3% relative)",
+          "Paywall decline churn rate"
         ],
-        "holdout": "10% user-level holdout for 4 weeks."
+        "holdout": "Randomized user-level 10% holdout group ineligible for rewarded fallback passes for 28 days"
       },
       "precedents": [
-        "AI-3",
-        "TAX-9"
+        "TAX-10",
+        "TAX-2",
+        "EX-MUSIC",
+        "EX-DUO",
+        "AI-15",
+        "CORE-5"
       ],
       "risks": [
-        "High frequency of tasks could feel repetitive if not rotated.",
-        "Potential for users to rely on credits instead of subscribing."
+        "Users may defer subscribing if a single 30-minute pass satisfies their immediate one-off assistant task.",
+        "Inference costs for complex assistant queries during the pass may exceed ad revenue if usage spikes.",
+        "User fatigue if the fallback invitation triggers on every single paywall dismissal."
       ],
       "evidence": [
         {
-          "obs": "s01",
-          "el": "e31",
-          "quote": "Keep chatting",
+          "obs": "s07",
+          "quote": "Sign up so Luzia can start doing things for you.",
+          "verified": true
+        },
+        {
+          "obs": "s07",
+          "quote": "Maybe later",
+          "verified": true
+        },
+        {
+          "obs": "s06",
+          "el": "e6",
+          "quote": "Let Luzia handle it!",
+          "verified": true
+        },
+        {
+          "obs": "s06",
+          "el": "e9",
+          "quote": "Start new task",
+          "verified": true
+        },
+        {
+          "obs": "s19",
+          "el": "e10",
+          "quote": "Upgrade to Luzia+",
           "verified": true
         }
       ],
@@ -86,69 +110,84 @@
         "newElements": [
           {
             "id": "ne1",
-            "in": "s01",
-            "near": "e31",
+            "in": "s06",
+            "near": "e9",
+            "place": "after",
+            "change": "Add MiniGameInvitation card prompting user for 30-minute Luzia+ trial pass"
+          },
+          {
+            "id": "ne2",
+            "in": "s06",
+            "near": "e6",
             "place": "before",
-            "change": "Add a Daily Task banner element to provide a clear entry point for rewarded mini-games."
+            "change": "Add Luzia+ active trial countdown badge displaying remaining minutes"
           }
         ],
         "newEdges": [
           {
-            "from": "s01",
+            "from": "s06",
             "el": "ne1",
             "to": "rwd",
             "effects": [
               {
-                "resource": "r3",
-                "delta": 5
+                "resource": "r1",
+                "delta": 1
               }
-            ]
+            ],
+            "guard": {
+              "resource": "r1",
+              "lt": 1
+            }
           }
         ]
       },
       "storyboard": [
         {
           "phase": "today",
-          "screen": "s01",
+          "screen": "s06",
           "counters": [
             {
-              "resource": "r3",
+              "resource": "r1",
               "value": 0
             }
           ],
           "overlay": "none",
           "callouts": [
             {
-              "node": "e31",
-              "text": "Existing chat flow"
+              "node": "e9",
+              "text": "Tapping Start new task opens the account creation sheet."
             }
           ],
-          "caption": "Users browse and start chats on the Home tab."
+          "caption": "User attempts to start a task and hits the account paywall."
         },
         {
           "phase": "change",
-          "screen": "s01",
+          "screen": "s06",
           "counters": [
             {
-              "resource": "r3",
+              "resource": "r1",
               "value": 0
             }
           ],
           "overlay": "none",
           "callouts": [
             {
+              "node": "e9",
+              "text": "User returns to Services tab after tapping Maybe later."
+            },
+            {
               "node": "ne1",
-              "text": "Daily Task banner"
+              "text": "Rewarded trial invitation appears below the task button."
             }
           ],
-          "caption": "We add a new Daily Task banner for a rewarding mini-game."
+          "caption": "User dismisses the paywall and returns to the Services tab."
         },
         {
           "phase": "offer",
-          "screen": "s01",
+          "screen": "s06",
           "counters": [
             {
-              "resource": "r3",
+              "resource": "r1",
               "value": 0
             }
           ],
@@ -156,17 +195,17 @@
           "callouts": [
             {
               "node": "ne1",
-              "text": "Opt-in offer"
+              "text": "Invitation prompts user to play a 15-second mini-game."
             }
           ],
-          "caption": "Users opt-in to a 15-second game for 5 AI credits."
+          "caption": "Luzia offers a 30-minute Luzia+ trial pass via mini-game."
         },
         {
           "phase": "ad",
-          "screen": "s01",
+          "screen": "s06",
           "counters": [
             {
-              "resource": "r3",
+              "resource": "r1",
               "value": 0
             }
           ],
@@ -174,28 +213,279 @@
           "callouts": [
             {
               "node": "ne1",
-              "text": "Game with Luzia"
+              "text": "User plays the 15-second interactive mini-game with Luzia."
             }
           ],
-          "caption": "The user plays the mini-game with Luzia."
+          "caption": "User plays a 15-second interactive mini-game with Luzia."
         },
         {
           "phase": "value",
-          "screen": "s01",
+          "screen": "s06",
           "counters": [
             {
-              "resource": "r3",
-              "value": 5
+              "resource": "r1",
+              "value": 1
             }
           ],
           "overlay": "verified",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "Reward granted"
+              "node": "ne2",
+              "text": "Luzia+ trial badge indicates 30 minutes of unlocked access."
+            },
+            {
+              "node": "e9",
+              "text": "Start new task is now enabled without the paywall."
             }
           ],
-          "caption": "Upon completion, the user receives 5 AI usage credits."
+          "caption": "Luzia+ activates for 30 minutes, unlocking assistant services."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.0054,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.15,
+          "arpdauUsd": 0.0018,
+          "annualPer1mDauUsd": 657000,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P1",
+      "version": 2,
+      "title": "Paywall Decline Guest Task Pass",
+      "oneLiner": "Offer a single guest task execution via a rewarded mini-game after a user declines the account setup paywall.",
+      "case": "existing",
+      "archetype": "TAX-10",
+      "beyondBaseline": false,
+      "anchor": {
+        "moments": [
+          "m2"
+        ],
+        "economy": [
+          "r1",
+          "of1",
+          "w1",
+          "w6",
+          "Guest Task Execution (new)"
+        ]
+      },
+      "surface": "s06",
+      "trigger": "User taps Maybe later on Create Account Sheet and returns to Services Tab without subscribing.",
+      "eligibility": "Non-paying guest users without an account who have dismissed the Create Account Sheet paywall.",
+      "offer": {
+        "title": "Try One Task for Free",
+        "body": "Play a 15-second game to run one assistant task without creating an account.",
+        "cta": "Play Mini-Game",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 free assistant task execution",
+        "resource": "Guest Task Execution",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "Only surfaces after an explicit paywall decline as a guest-friendly fallback. Strictly capped at one single execution per day to ensure users with ongoing utility needs still convert to a premium subscription.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Luzia+ subscription conversion rate among paywall decliners over 28 days",
+        "guardrails": [
+          "Overall D7 and D30 user retention non-inferiority margin within -1%",
+          "Total paid subscription revenue per user (non-inferiority margin -3% relative)",
+          "Paywall decline churn rate"
+        ],
+        "holdout": "Randomized user-level 10% holdout group ineligible for rewarded guest fallback passes for 28 days"
+      },
+      "precedents": [
+        "TAX-10",
+        "TAX-4",
+        "EX-UTIL",
+        "EX-MUSIC",
+        "CORE-5"
+      ],
+      "risks": [
+        "Users with infrequent task needs may defer signing up indefinitely if their daily task is satisfied.",
+        "Premium tool execution and model costs might outpace ad revenue in lower-eCPM regions."
+      ],
+      "evidence": [
+        {
+          "obs": "s07",
+          "quote": "Sign up so Luzia can start doing things for you.",
+          "verified": true
+        },
+        {
+          "obs": "s07",
+          "quote": "Maybe later",
+          "verified": true
+        },
+        {
+          "obs": "s06",
+          "el": "e9",
+          "quote": "Start new task",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s06",
+            "near": "e9",
+            "place": "after",
+            "change": "Add MiniGameInvitation card prompting user for 1 free guest task execution"
+          },
+          {
+            "id": "ne2",
+            "in": "s06",
+            "near": "e6",
+            "place": "before",
+            "change": "Add guest task execution credit balance indicator displaying remaining free executions"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s06",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Guest Task Execution",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "Guest Task Execution",
+              "lt": 1
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "Guest Task Execution",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e9",
+              "text": "Tapping Start new task opens the account creation sheet."
+            }
+          ],
+          "caption": "User attempts to start a task and hits the account paywall."
+        },
+        {
+          "phase": "change",
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "Guest Task Execution",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e9",
+              "text": "User returns to Services tab after tapping Maybe later."
+            },
+            {
+              "node": "ne1",
+              "text": "Rewarded invitation appears below the task button."
+            }
+          ],
+          "caption": "User dismisses the paywall and returns to the Services tab."
+        },
+        {
+          "phase": "offer",
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "Guest Task Execution",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Invitation prompts user to play a 15-second mini-game."
+            }
+          ],
+          "caption": "Luzia offers one free guest task execution via mini-game."
+        },
+        {
+          "phase": "ad",
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "Guest Task Execution",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "User plays the 15-second interactive mini-game with Luzia."
+            }
+          ],
+          "caption": "User plays a 15-second interactive mini-game with Luzia."
+        },
+        {
+          "phase": "value",
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "Guest Task Execution",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Indicator displays 1 free task credit available."
+            },
+            {
+              "node": "e9",
+              "text": "Start new task is now enabled for a single guest execution."
+            }
+          ],
+          "caption": "Guest task credit activates, letting the user run one premium task."
         }
       ],
       "economics": {
@@ -209,12 +499,12 @@
         "cheapestPaidUnitUsd": null,
         "cogsPerViewUsd": 0.009,
         "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 2,
-          "impressionsPerDau": 0.6,
-          "arpdauUsd": 0.0072,
-          "annualPer1mDauUsd": 2628000,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 2 views each, US mid eCPM after a 25% non-game haircut."
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.15,
+          "arpdauUsd": 0.0018,
+          "annualPer1mDauUsd": 657000,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
         },
         "flags": [
           "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
@@ -223,80 +513,91 @@
     },
     {
       "id": "P1",
-      "version": 2,
-      "title": "Daily Task for AI Usage Credits",
-      "oneLiner": "Play a 15-second mini-game with Luzia to earn daily AI usage credits.",
-      "case": "product-change",
-      "archetype": "AI-3",
-      "beyondBaseline": true,
+      "version": 3,
+      "title": "Paywall Decline Guest Services Pass",
+      "oneLiner": "Offer a 15-minute trial of Luzia+ services via a rewarded mini-game after a user declines the account setup paywall.",
+      "case": "existing",
+      "archetype": "TAX-10",
+      "beyondBaseline": false,
       "anchor": {
         "moments": [
-          "m16"
+          "m2"
         ],
         "economy": [
-          "r3"
-        ],
-        "newMechanic": {
-          "name": "Daily Tasks",
-          "description": "A new interactive banner on the Chats Home (s01) screen offering daily mini-game challenges for AI usage credits.",
-          "whyNeeded": "Increases daily engagement and retention for non-subscribers by gamifying AI usage while protecting margins.",
-          "removesFreeValue": false
-        }
+          "r1",
+          "of1",
+          "w1",
+          "w6"
+        ]
       },
-      "surface": "s01",
-      "trigger": "User taps the Daily Task banner on the Chats Home (s01) tab, outside of their first session.",
-      "eligibility": "Returning non-subscribers (session 2+), once per day per user.",
+      "surface": "s06",
+      "trigger": "User taps Maybe later on Create Account Sheet and returns to Services Tab without subscribing.",
+      "eligibility": "Non-paying guest users without an account who have dismissed the Create Account Sheet paywall.",
       "offer": {
-        "title": "Daily Task: Earn Credits",
-        "body": "Play a quick 15-second mini-game with Luzia to earn 2 extra AI usage credits.",
-        "cta": "Play Now",
+        "title": "Try Luzia+ Services Free",
+        "body": "Play a 15-second game to unlock Luzia+ services for the next 15 minutes.",
+        "cta": "Play Mini-Game",
         "decline": "No thanks"
       },
       "simula": {
         "unit": "SIM-RWD",
-        "entry": "button",
+        "entry": "invitation",
         "gamePartner": "Luzia",
         "minPlaySec": 15
       },
       "reward": {
-        "what": "2 AI Usage Credits",
-        "resource": "r3",
-        "amount": 2,
+        "what": "15 minutes of Luzia+ services",
+        "resource": "r1",
+        "duration": "15 minutes",
         "grantOn": "REWARD_VERIFIED"
       },
       "caps": {
-        "perDay": 3,
-        "cooldownMin": 30
+        "perDay": 1,
+        "cooldownMin": 1440
       },
-      "cannibalizationGuard": "Only offered to non-subscribers and returning users (session 2+). Credits are additive to the usage quota and do not unlock the advanced capabilities or reasoning modes of the Luzia+ subscription. The reward is sized to maintain a healthy margin per view.",
+      "cannibalizationGuard": "Only surfaces after an explicit paywall decline as a guest-friendly fallback. To prevent subscriber substitution, the session is capped at 15 minutes once per day. To enable stateless bookings and alerts during the guest session, the backend maps temporary session tokens to secure device IDs, restricting high-risk operations (such as actual purchases) until a full account is linked. Crucially, requests during guest trials route to a lower-cost distilled model (text-cheap) to guarantee positive margins in low-eCPM regions.",
       "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 2,
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1,
         "cogs": "text-cheap",
-        "cogsUnitsPerView": 2
+        "cogsUnitsPerView": 1
       },
       "kpis": {
-        "primary": "Total AI Usage Credits granted",
+        "primary": "Luzia+ subscription conversion rate among paywall decliners over 28 days",
         "guardrails": [
-          "Paid conversion rate (non-inferiority check)",
-          "D30 retention",
-          "Messages per DAU"
+          "Overall D7 and D30 user retention non-inferiority margin within -1%",
+          "Total paid subscription revenue per user (non-inferiority margin -3% relative)",
+          "Paywall decline churn rate"
         ],
-        "holdout": "10% user-level holdout for 4 weeks."
+        "holdout": "Randomized user-level 10% holdout group ineligible for rewarded guest fallback passes for 28 days"
       },
       "precedents": [
-        "AI-3",
-        "TAX-9"
+        "TAX-10",
+        "TAX-2",
+        "EX-MUSIC",
+        "TRIG-2",
+        "TRIG-4",
+        "CORE-5"
       ],
       "risks": [
-        "If not rotated, mini-game tasks may become repetitive.",
-        "Potential for users to rely on ad-earned credits instead of subscribing if limits are miscalculated."
+        "Users with very low task needs may defer signing up indefinitely if their brief daily trial session is sufficient.",
+        "Premium task execution costs could still be high in low-eCPM areas if the distilled model fails to satisfy complex user prompts."
       ],
       "evidence": [
         {
-          "obs": "s01",
-          "el": "e31",
-          "quote": "Keep chatting",
+          "obs": "s07",
+          "quote": "To enjoy Luzia+ you need to create an account first.",
+          "verified": false
+        },
+        {
+          "obs": "s07",
+          "quote": "Maybe later",
+          "verified": true
+        },
+        {
+          "obs": "s06",
+          "el": "e9",
+          "quote": "Start new task",
           "verified": true
         }
       ],
@@ -305,1202 +606,113 @@
         "newElements": [
           {
             "id": "ne1",
-            "in": "s01",
-            "near": "e31",
+            "in": "s06",
+            "near": "e9",
+            "place": "after",
+            "change": "Add MiniGameInvitation card offering 15 minutes of Luzia+ Services"
+          },
+          {
+            "id": "ne2",
+            "in": "s06",
+            "near": "e6",
             "place": "before",
-            "change": "Add a Daily Task banner element to provide a clear entry point for rewarded mini-games."
+            "change": "Add temporary Luzia+ countdown timer displaying remaining trial minutes"
           }
         ],
         "newEdges": [
           {
-            "from": "s01",
-            "el": "ne1",
-            "to": "rwd",
-            "effects": [
-              {
-                "resource": "r3",
-                "delta": 2
-              }
-            ]
-          }
-        ]
-      },
-      "storyboard": [
-        {
-          "phase": "today",
-          "screen": "s01",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "e31",
-              "text": "Existing chat flow"
-            }
-          ],
-          "caption": "Returning users browse and start chats on the Home tab."
-        },
-        {
-          "phase": "change",
-          "screen": "s01",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Daily Task banner"
-            }
-          ],
-          "caption": "We add a new Daily Task banner for a rewarding mini-game."
-        },
-        {
-          "phase": "offer",
-          "screen": "s01",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "invite",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Opt-in offer"
-            }
-          ],
-          "caption": "Users opt-in to a 15-second game for 2 AI credits."
-        },
-        {
-          "phase": "ad",
-          "screen": "s01",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "game",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Game with Luzia"
-            }
-          ],
-          "caption": "The user plays the mini-game with Luzia."
-        },
-        {
-          "phase": "value",
-          "screen": "s01",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 2
-            }
-          ],
-          "overlay": "verified",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Reward granted"
-            }
-          ],
-          "caption": "Upon completion, the user receives 2 AI usage credits."
-        }
-      ],
-      "economics": {
-        "viewValueUsd": [
-          0.009,
-          0.015
-        ],
-        "rewardValueUsdAtList": null,
-        "rewardToViewRatio": null,
-        "maxDailyEarnUsdAtList": null,
-        "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0.0036,
-        "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 2,
-          "impressionsPerDau": 0.6,
-          "arpdauUsd": 0.0072,
-          "annualPer1mDauUsd": 2628000,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 2 views each, US mid eCPM after a 25% non-game haircut."
-        },
-        "flags": []
-      }
-    },
-    {
-      "id": "P2",
-      "version": 1,
-      "title": "Unlock Image Generation Credit",
-      "oneLiner": "Watch a quick mini-game with Luzia to earn an AI image generation credit.",
-      "case": "product-change",
-      "archetype": "AI-5",
-      "beyondBaseline": true,
-      "anchor": {
-        "moments": [
-          "m21"
-        ],
-        "economy": [
-          "r3"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Image Credits",
-          "description": "Users can watch or play a mini-game to earn an image generation credit when they hit their AI usage quota.",
-          "whyNeeded": "Allows free users to continue generating images without impacting paid conversion by limiting the reward to a single credit per view.",
-          "removesFreeValue": false
-        }
-      },
-      "surface": "s10",
-      "trigger": "When user attempts to generate an image in the Image Creation Hub and their AI Usage Quota (r3) is depleted.",
-      "eligibility": "Non-paying users who have exhausted their free AI Usage Quota (r3).",
-      "offer": {
-        "title": "Earn an image credit",
-        "body": "Play a 15-second game with Luzia to get 1 free AI image generation credit.",
-        "cta": "Play Now",
-        "decline": "No thanks"
-      },
-      "simula": {
-        "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Luzia",
-        "minPlaySec": 15
-      },
-      "reward": {
-        "what": "1 AI Image credit",
-        "resource": "r3",
-        "amount": 1,
-        "grantOn": "REWARD_VERIFIED"
-      },
-      "caps": {
-        "perDay": 3,
-        "cooldownMin": 30
-      },
-      "cannibalizationGuard": "Limited to 3 credits per day and only available when r3 is depleted; ensures non-payers maintain usage without unlimited free generation.",
-      "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 2,
-        "cogs": "image",
-        "cogsUnitsPerView": 1
-      },
-      "kpis": {
-        "primary": "Image generation volume among non-payers",
-        "guardrails": [
-          "Paid conversion rate (Luzia+)",
-          "Daily active usage (DAU)",
-          "Retention (D7, D30)"
-        ],
-        "holdout": "10% of non-paying user base held out for 4 weeks."
-      },
-      "precedents": [
-        "AI-5",
-        "EX-UTIL"
-      ],
-      "risks": [
-        "Ad saturation if limits are too frequent",
-        "Brand safety concerns in AI-generated images",
-        "Potential for lower paid conversion if reward is too generous"
-      ],
-      "evidence": [
-        {
-          "obs": "s10",
-          "el": "e14",
-          "quote": "Create image",
-          "verified": true
-        },
-        {
-          "obs": "s10",
-          "el": "e15",
-          "quote": "Mix or swap elements from photos",
-          "verified": true
-        }
-      ],
-      "patch": {
-        "newScreens": [
-          {
-            "id": "ns1",
-            "kind": "modal",
-            "change": "Rewarded ad invitation modal for image credit."
-          }
-        ],
-        "newElements": [
-          {
-            "id": "ne1",
-            "in": "s10",
-            "near": "e14",
-            "place": "after",
-            "change": "Button to trigger rewarded ad for 1 image credit when limit is reached."
-          }
-        ],
-        "newEdges": [
-          {
-            "from": "s10",
-            "el": "ne1",
-            "to": "rwd",
-            "effects": [
-              {
-                "resource": "r3",
-                "delta": 1
-              }
-            ],
-            "guard": {
-              "resource": "r3",
-              "lt": 1
-            }
-          }
-        ]
-      },
-      "storyboard": [
-        {
-          "phase": "today",
-          "screen": "s10",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "e14",
-              "text": "User attempts to generate image with 0 credits."
-            }
-          ],
-          "caption": "The user is out of image generation credits and cannot create more."
-        },
-        {
-          "phase": "change",
-          "screen": "s10",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "New 'Earn credit' button appears."
-            }
-          ],
-          "caption": "A new 'Earn credit' button is shown when the user reaches the limit."
-        },
-        {
-          "phase": "offer",
-          "screen": "ns1",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "invite",
-          "callouts": [
-            {
-              "node": "ns1",
-              "text": "Play a game to get 1 image credit."
-            }
-          ],
-          "caption": "The user opts into the rewarded offer."
-        },
-        {
-          "phase": "ad",
-          "screen": "ns1",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "game",
-          "callouts": [
-            {
-              "node": "ns1",
-              "text": "Luzia plays with you."
-            }
-          ],
-          "caption": "The user plays the mini-game with Luzia."
-        },
-        {
-          "phase": "value",
-          "screen": "s10",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 1
-            }
-          ],
-          "overlay": "verified",
-          "callouts": [
-            {
-              "node": "e14",
-              "text": "Credit granted, balance updated."
-            }
-          ],
-          "caption": "The image credit is granted and the user can generate the image."
-        }
-      ],
-      "economics": {
-        "viewValueUsd": [
-          0.009,
-          0.015
-        ],
-        "rewardValueUsdAtList": null,
-        "rewardToViewRatio": null,
-        "maxDailyEarnUsdAtList": null,
-        "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0.025,
-        "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 2,
-          "impressionsPerDau": 0.6,
-          "arpdauUsd": 0.0072,
-          "annualPer1mDauUsd": 2628000,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 2 views each, US mid eCPM after a 25% non-game haircut."
-        },
-        "flags": [
-          "Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end."
-        ]
-      }
-    },
-    {
-      "id": "P2",
-      "version": 2,
-      "title": "Unlock Image Generation Credit",
-      "oneLiner": "Play two quick mini-games with Luzia to earn an AI image generation credit.",
-      "case": "product-change",
-      "archetype": "AI-5",
-      "beyondBaseline": true,
-      "anchor": {
-        "moments": [
-          "m21"
-        ],
-        "economy": [
-          "r3"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Image Credits",
-          "description": "Users can play two mini-games with Luzia to earn an image generation credit when they hit their AI usage quota.",
-          "whyNeeded": "Allows free users to continue generating images by bundling views, improving unit economics to be sustainable for high-cost image generation.",
-          "removesFreeValue": false
-        }
-      },
-      "surface": "s10",
-      "trigger": "When user attempts to generate an image in the Image Creation Hub and their AI Usage Quota (r3) is depleted.",
-      "eligibility": "Non-paying users who have exhausted their free AI Usage Quota (r3).",
-      "offer": {
-        "title": "Earn an image credit",
-        "body": "Play 2 quick games with Luzia to get 1 free AI image generation credit.",
-        "cta": "Play Now",
-        "decline": "No thanks"
-      },
-      "simula": {
-        "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Luzia",
-        "minPlaySec": 15
-      },
-      "reward": {
-        "what": "1 AI Image credit",
-        "resource": "r3",
-        "amount": 1,
-        "grantOn": "REWARD_VERIFIED"
-      },
-      "caps": {
-        "perDay": 2,
-        "cooldownMin": 30
-      },
-      "cannibalizationGuard": "Limited to 2 credits per day and requires a 2:1 view-to-credit bundle; ensures non-payers maintain usage without unlimited free generation and aligns with sustainable unit economics.",
-      "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 4,
-        "cogs": "image",
-        "cogsUnitsPerView": 1
-      },
-      "kpis": {
-        "primary": "Image generation volume among non-payers",
-        "guardrails": [
-          "Paid conversion rate (Luzia+)",
-          "Daily active usage (DAU)",
-          "Retention (D7, D30)"
-        ],
-        "holdout": "10% of non-paying user base held out for 4 weeks."
-      },
-      "precedents": [
-        "AI-5",
-        "EX-UTIL"
-      ],
-      "risks": [
-        "Ad fatigue due to two-view bundle requirement",
-        "Brand safety concerns in AI-generated images",
-        "Potential for lower paid conversion if reward is too generous"
-      ],
-      "evidence": [
-        {
-          "obs": "s10",
-          "el": "e14",
-          "quote": "Create image",
-          "verified": true
-        },
-        {
-          "obs": "s10",
-          "el": "e15",
-          "quote": "Mix or swap elements from photos",
-          "verified": true
-        }
-      ],
-      "patch": {
-        "newScreens": [
-          {
-            "id": "ns1",
-            "kind": "modal",
-            "change": "Rewarded ad invitation modal for image credit bundle."
-          }
-        ],
-        "newElements": [
-          {
-            "id": "ne1",
-            "in": "s10",
-            "near": "e14",
-            "place": "after",
-            "change": "Button to trigger rewarded ad bundle for 1 image credit when limit is reached."
-          }
-        ],
-        "newEdges": [
-          {
-            "from": "s10",
-            "el": "ne1",
-            "to": "rwd",
-            "effects": [
-              {
-                "resource": "r3",
-                "delta": 0.5
-              }
-            ],
-            "guard": {
-              "resource": "r3",
-              "lt": 1
-            }
-          }
-        ]
-      },
-      "storyboard": [
-        {
-          "phase": "today",
-          "screen": "s10",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "e14",
-              "text": "User attempts to generate image with 0 credits."
-            }
-          ],
-          "caption": "The user is out of image generation credits and cannot create more."
-        },
-        {
-          "phase": "change",
-          "screen": "s10",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "New 'Earn credit' button appears."
-            }
-          ],
-          "caption": "A new 'Earn credit' button is shown when the user reaches the limit."
-        },
-        {
-          "phase": "offer",
-          "screen": "ns1",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "invite",
-          "callouts": [
-            {
-              "node": "ns1",
-              "text": "Play 2 games to get 1 image credit."
-            }
-          ],
-          "caption": "The user opts into the rewarded offer bundle."
-        },
-        {
-          "phase": "ad",
-          "screen": "ns1",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 0
-            }
-          ],
-          "overlay": "game",
-          "callouts": [
-            {
-              "node": "ns1",
-              "text": "Luzia plays with you."
-            }
-          ],
-          "caption": "The user plays the first of two mini-games with Luzia."
-        },
-        {
-          "phase": "value",
-          "screen": "s10",
-          "counters": [
-            {
-              "resource": "r3",
-              "value": 1
-            }
-          ],
-          "overlay": "verified",
-          "callouts": [
-            {
-              "node": "e14",
-              "text": "Credit granted, balance updated."
-            }
-          ],
-          "caption": "The credit is granted after two completed games, enabling image generation."
-        }
-      ]
-    },
-    {
-      "id": "P3",
-      "version": 1,
-      "title": "Paywall-decline: Deep Reasoning Sample",
-      "oneLiner": "Offer a 1-hour trial of Deep Reasoning mode after declining the account signup wall.",
-      "case": "product-change",
-      "archetype": "AI-4",
-      "beyondBaseline": true,
-      "anchor": {
-        "moments": [
-          "m1",
-          "m9",
-          "m14"
-        ],
-        "economy": [
-          "r1"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Deep Reasoning Trial",
-          "description": "A time-boxed (1 hour) trial of Deep Reasoning mode triggered by an ad after the user declines the account signup wall on s07.",
-          "whyNeeded": "Deep Reasoning is a core premium differentiator; letting users experience it creates high conversion intent.",
-          "removesFreeValue": false
-        }
-      },
-      "surface": "s07",
-      "trigger": "After the user taps 'Close' to decline the account signup wall that appeared when they tried to toggle 'Deep reasoning' (m9) or 'Start a task' (m10).",
-      "eligibility": "Non-paying guests who are not currently on a subscription and have triggered the Luzia+ paywall.",
-      "offer": {
-        "title": "Try Deep Reasoning for free",
-        "body": "Play a quick 15-second game to unlock 1 hour of our premium Deep Reasoning mode.",
-        "cta": "Play Now",
-        "decline": "No thanks"
-      },
-      "simula": {
-        "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Luzia",
-        "minPlaySec": 15
-      },
-      "reward": {
-        "what": "1 hour of Deep Reasoning mode",
-        "duration": "1 hour",
-        "grantOn": "REWARD_VERIFIED"
-      },
-      "caps": {
-        "perDay": 1,
-        "cooldownMin": 1440
-      },
-      "cannibalizationGuard": "This offer is only presented to users who have already explicitly declined the paywall. It provides a limited, time-boxed trial rather than permanent access, protecting the subscription value and highlighting the benefit of Luzia+.",
-      "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 1.2,
-        "cogs": "text-premium",
-        "cogsUnitsPerView": 1
-      },
-      "kpis": {
-        "primary": "Premium conversion rate (Luzia+ Subscription)",
-        "guardrails": [
-          "Subscription conversion rate",
-          "Retention",
-          "Daily active users"
-        ],
-        "holdout": "5% user holdout for 4 weeks to measure revenue impact."
-      },
-      "precedents": [
-        "TAX-2",
-        "TAX-10",
-        "AI-4"
-      ],
-      "risks": [
-        "Ad availability (no-fill) may frustrate users who have just declined the paywall; mitigation is an immediate fallback to the original state.",
-        "High COGS for the premium model; mitigation is the 1-hour time box."
-      ],
-      "evidence": [
-        {
-          "obs": "s27",
-          "el": "e15",
-          "quote": "Deep reasoning",
-          "verified": true
-        },
-        {
-          "obs": "s07",
-          "quote": "To enjoy Luzia+ you need to create an account first.",
-          "verified": false
-        }
-      ],
-      "patch": {
-        "newScreens": [
-          {
-            "id": "ns1",
-            "kind": "modal",
-            "change": "A rewarded invitation modal informing the user they can unlock 1 hour of Deep Reasoning mode by playing a mini-game."
-          }
-        ],
-        "newElements": [
-          {
-            "id": "ne_reward_invitation",
-            "in": "ns1",
-            "place": "overlay",
-            "change": "Button 'Play Now' triggers the rewarded ad flow (SIM-RWD)."
-          }
-        ],
-        "newEdges": [
-          {
-            "from": "s07",
-            "el": "ne_decline_trigger",
-            "to": "ns1",
-            "effects": [
-              {
-                "resource": "Deep Reasoning Trial",
-                "delta": 1
-              }
-            ],
-            "guard": {
-              "resource": "r1",
-              "lt": 1
-            }
-          }
-        ]
-      },
-      "storyboard": [
-        {
-          "phase": "today",
-          "screen": "s27",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "e15",
-              "text": "User wants Deep Reasoning"
-            }
-          ],
-          "caption": "User taps 'Deep reasoning' in the attachment sheet."
-        },
-        {
-          "phase": "change",
-          "screen": "s07",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "s07",
-              "text": "User declines account signup"
-            }
-          ],
-          "caption": "Paywall appears, user taps 'Close' to decline."
-        },
-        {
-          "phase": "offer",
-          "screen": "ns1",
-          "counters": [],
-          "overlay": "invite",
-          "callouts": [
-            {
-              "node": "ne_reward_invitation",
-              "text": "1 hour free sample!"
-            }
-          ],
-          "caption": "Reward offer appears with clear 'Play Now' CTA."
-        },
-        {
-          "phase": "ad",
-          "screen": "s27",
-          "counters": [],
-          "overlay": "game",
-          "callouts": [
-            {
-              "node": "s27",
-              "text": "Quick mini-game with Luzia"
-            }
-          ],
-          "caption": "Luzia plays a mini-game with the user."
-        },
-        {
-          "phase": "value",
-          "screen": "s27",
-          "counters": [
-            {
-              "resource": "Deep Reasoning Trial",
-              "value": 1
-            }
-          ],
-          "overlay": "verified",
-          "callouts": [
-            {
-              "node": "e15",
-              "text": "Trial activated!"
-            }
-          ],
-          "caption": "Reward verified: 1 hour trial activated."
-        }
-      ],
-      "economics": {
-        "viewValueUsd": [
-          0.009,
-          0.015
-        ],
-        "rewardValueUsdAtList": null,
-        "rewardToViewRatio": null,
-        "maxDailyEarnUsdAtList": null,
-        "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0.009,
-        "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 1.2,
-          "impressionsPerDau": 0.36,
-          "arpdauUsd": 0.0043,
-          "annualPer1mDauUsd": 1576800,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
-        },
-        "flags": [
-          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
-        ]
-      }
-    },
-    {
-      "id": "P3",
-      "version": 2,
-      "title": "Paywall-decline: Deep Reasoning Sample",
-      "oneLiner": "Offer a 30-minute trial of Deep Reasoning mode after declining the account signup wall.",
-      "case": "product-change",
-      "archetype": "AI-4",
-      "beyondBaseline": true,
-      "anchor": {
-        "moments": [
-          "m1",
-          "m9",
-          "m14"
-        ],
-        "economy": [
-          "r1"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Deep Reasoning Trial",
-          "description": "A time-boxed (30 minutes) trial of Deep Reasoning mode triggered by an ad after the user declines the account signup wall on s07.",
-          "whyNeeded": "Deep Reasoning is a core premium differentiator; letting users experience it creates high conversion intent.",
-          "removesFreeValue": false
-        }
-      },
-      "surface": "s07",
-      "trigger": "After the user taps close to decline the account signup wall that appeared when they tried to toggle Deep reasoning (m9).",
-      "eligibility": "Non-paying guests who are not currently on a subscription and have triggered the Luzia+ paywall.",
-      "offer": {
-        "title": "Try Deep Reasoning free",
-        "body": "Play a quick 15-second game to unlock 30 minutes of Deep Reasoning mode.",
-        "cta": "Play Now",
-        "decline": "No thanks"
-      },
-      "simula": {
-        "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Luzia",
-        "minPlaySec": 15
-      },
-      "reward": {
-        "what": "30 minutes of Deep Reasoning mode",
-        "duration": "30 minutes",
-        "grantOn": "REWARD_VERIFIED"
-      },
-      "caps": {
-        "perDay": 1,
-        "cooldownMin": 1440
-      },
-      "cannibalizationGuard": "This offer is only presented to users who have already explicitly declined the paywall. It provides a limited 30-minute trial rather than permanent access, protecting the subscription value and highlighting the benefit of Luzia+.",
-      "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 1.2,
-        "cogs": "text-premium",
-        "cogsUnitsPerView": 1
-      },
-      "kpis": {
-        "primary": "Premium conversion rate (Luzia+ Subscription)",
-        "guardrails": [
-          "Subscription conversion rate",
-          "Retention",
-          "Daily active users"
-        ],
-        "holdout": "5% user holdout for 4 weeks to measure revenue impact."
-      },
-      "precedents": [
-        "TAX-2",
-        "TAX-10",
-        "AI-4"
-      ],
-      "risks": [
-        "Ad availability (no-fill) may frustrate users who have just declined the paywall; mitigation is an immediate fallback to the original state.",
-        "COGS for the premium model; mitigation is the reduced 30-minute time box."
-      ],
-      "evidence": [
-        {
-          "obs": "s27",
-          "el": "e15",
-          "quote": "Deep reasoning",
-          "verified": true
-        },
-        {
-          "obs": "s07",
-          "quote": "To enjoy Luzia+ you need to create an account first.",
-          "verified": false
-        }
-      ],
-      "patch": {
-        "newScreens": [
-          {
-            "id": "ns1",
-            "kind": "modal",
-            "change": "A rewarded invitation modal informing the user they can unlock 30 minutes of Deep Reasoning mode by playing a mini-game."
-          }
-        ],
-        "newElements": [
-          {
-            "id": "ne_close_paywall",
-            "in": "s07",
-            "place": "after",
-            "change": "Close button on the Create Account sheet triggering the rewarded invitation."
-          },
-          {
-            "id": "ne_reward_invitation",
-            "in": "ns1",
-            "place": "overlay",
-            "change": "Button 'Play Now' triggers the rewarded ad flow (SIM-RWD)."
-          }
-        ],
-        "newEdges": [
-          {
-            "from": "s07",
-            "el": "ne_close_paywall",
-            "to": "ns1",
-            "effects": [
-              {
-                "resource": "Deep Reasoning Trial",
-                "delta": 1
-              }
-            ],
-            "guard": {
-              "resource": "r1",
-              "lt": 1
-            }
-          }
-        ]
-      },
-      "storyboard": [
-        {
-          "phase": "today",
-          "screen": "s27",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "e15",
-              "text": "User wants Deep Reasoning"
-            }
-          ],
-          "caption": "User taps 'Deep reasoning' in the attachment sheet."
-        },
-        {
-          "phase": "change",
-          "screen": "s07",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "ne_close_paywall",
-              "text": "User declines account signup"
-            }
-          ],
-          "caption": "Paywall appears, user taps close to decline."
-        },
-        {
-          "phase": "offer",
-          "screen": "ns1",
-          "counters": [],
-          "overlay": "invite",
-          "callouts": [
-            {
-              "node": "ne_reward_invitation",
-              "text": "30 mins free trial!"
-            }
-          ],
-          "caption": "Reward offer appears with clear 'Play Now' CTA."
-        },
-        {
-          "phase": "ad",
-          "screen": "s27",
-          "counters": [],
-          "overlay": "game",
-          "callouts": [
-            {
-              "node": "e15",
-              "text": "Quick mini-game with Luzia"
-            }
-          ],
-          "caption": "Luzia plays a mini-game with the user."
-        },
-        {
-          "phase": "value",
-          "screen": "s27",
-          "counters": [
-            {
-              "resource": "Deep Reasoning Trial",
-              "value": 1
-            }
-          ],
-          "overlay": "verified",
-          "callouts": [
-            {
-              "node": "e15",
-              "text": "Trial activated!"
-            }
-          ],
-          "caption": "Reward verified: 30-minute trial activated."
-        }
-      ],
-      "economics": {
-        "viewValueUsd": [
-          0.009,
-          0.015
-        ],
-        "rewardValueUsdAtList": null,
-        "rewardToViewRatio": null,
-        "maxDailyEarnUsdAtList": null,
-        "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0.009,
-        "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 1.2,
-          "impressionsPerDau": 0.36,
-          "arpdauUsd": 0.0043,
-          "annualPer1mDauUsd": 1576800,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
-        },
-        "flags": [
-          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
-        ]
-      }
-    },
-    {
-      "id": "P4",
-      "version": 1,
-      "title": "Sponsored Advanced Services 30m Trial",
-      "oneLiner": "Offer a 30-minute trial of Luzia+ Advanced services after declining the account wall.",
-      "case": "product-change",
-      "archetype": "TAX-2",
-      "beyondBaseline": true,
-      "anchor": {
-        "moments": [
-          "m1",
-          "m10"
-        ],
-        "economy": [
-          "r1"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Trial Access",
-          "description": "After a user dismisses the Create Account wall, surface an opt-in rewarded ad to unlock 30 minutes of Luzia+ Advanced services (bookings/alerts).",
-          "whyNeeded": "Allows high-intent, cash-poor users to experience premium value, increasing conversion probability while monetizing users who would otherwise churn at the paywall.",
-          "removesFreeValue": false
-        }
-      },
-      "surface": "ns1",
-      "trigger": "User taps 'Maybe later' on the Create Account Sheet (s07) after attempting a premium-gated task.",
-      "eligibility": "Non-subscribers who have not hit the daily cap for rewarded trials.",
-      "offer": {
-        "title": "Try Advanced Services",
-        "body": "Watch a 15-second game to get 30 minutes of Advanced Services (bookings & alerts) for free.",
-        "cta": "Play Now",
-        "decline": "No thanks"
-      },
-      "simula": {
-        "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Luzia",
-        "minPlaySec": 15
-      },
-      "reward": {
-        "what": "30 minutes of Luzia+ Advanced services",
-        "resource": "r1",
-        "duration": "30 minutes",
-        "grantOn": "REWARD_VERIFIED"
-      },
-      "caps": {
-        "perDay": 1,
-        "cooldownMin": 60
-      },
-      "cannibalizationGuard": "The trial is time-boxed (30m) and limited to 1x/day, protecting the long-term value of the subscription while creating a clear sampling effect. The offer appears only as a fallback to account creation, ensuring purchase remains the primary path.",
-      "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 1.2,
-        "cogs": "text-premium",
-        "cogsUnitsPerView": 1
-      },
-      "kpis": {
-        "primary": "Trial-to-subscription conversion rate",
-        "guardrails": [
-          "Subscription purchase rate",
-          "Retention (D7, D30)",
-          "Total daily time spent"
-        ],
-        "holdout": "10% of non-subscribers for 8 weeks."
-      },
-      "precedents": [
-        "TAX-2",
-        "TAX-10",
-        "EX-MUSIC",
-        "EX-UTIL"
-      ],
-      "risks": [
-        "Advanced services are compute-intensive (text-premium COGS); trial usage must be throttled to prevent excess costs.",
-        "Users may perceive the ad path as sufficient and not upgrade."
-      ],
-      "evidence": [
-        {
-          "obs": "s07",
-          "el": "e7",
-          "quote": "Upgrade to Luzia+",
-          "verified": false
-        },
-        {
-          "obs": "s07",
-          "el": "e9",
-          "quote": "Continue with limited access",
-          "verified": false
-        }
-      ],
-      "patch": {
-        "newScreens": [
-          {
-            "id": "ns1",
-            "basedOn": "s07",
-            "kind": "modal",
-            "change": "Rewarded trial offer modal appearing after declining account creation on s07."
-          }
-        ],
-        "newElements": [
-          {
-            "id": "ne1",
-            "in": "ns1",
-            "place": "overlay",
-            "change": "Button for triggering rewarded trial: 'Play Now'"
-          }
-        ],
-        "newEdges": [
-          {
-            "from": "s07",
-            "el": "Maybe later",
-            "to": "ns1",
-            "effects": []
-          },
-          {
-            "from": "ns1",
+            "from": "s06",
             "el": "ne1",
             "to": "rwd",
             "effects": [
               {
                 "resource": "r1",
-                "delta": 0.5
+                "delta": 1
               }
-            ]
+            ],
+            "guard": {
+              "resource": "r1",
+              "lt": 1
+            }
           }
         ]
       },
       "storyboard": [
         {
           "phase": "today",
-          "screen": "s07",
-          "counters": [],
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
           "overlay": "none",
           "callouts": [
             {
-              "node": "e7",
-              "text": "User wants Advanced services but hits paywall."
+              "node": "e9",
+              "text": "Tapping Start new task opens the account creation sheet."
             }
           ],
-          "caption": "User tries to start an Advanced service task."
+          "caption": "User attempts to start a task and hits the account paywall."
         },
         {
           "phase": "change",
-          "screen": "ns1",
-          "counters": [],
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
           "overlay": "none",
           "callouts": [
             {
+              "node": "e9",
+              "text": "User returns to Services tab after tapping Maybe later."
+            },
+            {
               "node": "ne1",
-              "text": "Trial offer appears only after decline."
+              "text": "Rewarded invitation appears below the task button."
             }
           ],
-          "caption": "User declines account creation, sees rewarded offer."
+          "caption": "User dismisses the paywall and returns to the Services tab."
         },
         {
           "phase": "offer",
-          "screen": "ns1",
-          "counters": [],
+          "screen": "s06",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
           "overlay": "invite",
           "callouts": [
             {
               "node": "ne1",
-              "text": "Play 15s game for 30m of Advanced Services."
+              "text": "Invitation prompts user to play a 15-second mini-game."
             }
           ],
-          "caption": "User sees trial offer and opts in."
+          "caption": "Luzia offers a 15-minute trial of Luzia+ services via mini-game."
         },
         {
           "phase": "ad",
           "screen": "s06",
-          "counters": [],
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
           "overlay": "game",
           "callouts": [
             {
-              "node": "e6",
-              "text": "Luzia plays along in the game."
+              "node": "ne1",
+              "text": "User plays the 15-second interactive mini-game with Luzia."
             }
           ],
-          "caption": "Luzia partners with user to play mini-game."
+          "caption": "User plays a 15-second interactive mini-game with Luzia."
         },
         {
           "phase": "value",
@@ -1514,232 +726,15 @@
           "overlay": "verified",
           "callouts": [
             {
-              "node": "e6",
-              "text": "30 minutes of premium access granted!"
-            }
-          ],
-          "caption": "User gets temporary Advanced services."
-        }
-      ],
-      "economics": {
-        "viewValueUsd": [
-          0.009,
-          0.015
-        ],
-        "rewardValueUsdAtList": null,
-        "rewardToViewRatio": null,
-        "maxDailyEarnUsdAtList": null,
-        "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0.009,
-        "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 1.2,
-          "impressionsPerDau": 0.36,
-          "arpdauUsd": 0.0043,
-          "annualPer1mDauUsd": 1576800,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
-        },
-        "flags": [
-          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
-        ]
-      }
-    },
-    {
-      "id": "P4",
-      "version": 2,
-      "title": "Sponsored Advanced Services 15m Trial",
-      "oneLiner": "Offer a 15-minute trial of Luzia+ Advanced services after closing the account wall.",
-      "case": "product-change",
-      "archetype": "TAX-2",
-      "beyondBaseline": true,
-      "anchor": {
-        "moments": [
-          "m1",
-          "m10"
-        ],
-        "economy": [
-          "r1",
-          "r4 Advanced Service Trial Token (new)"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Trial Access",
-          "description": "After a user closes the Create Account sheet, surface an opt-in rewarded ad to unlock 15 minutes of Luzia+ Advanced services via a trial token.",
-          "whyNeeded": "Allows high-intent, cash-poor users to experience premium value, increasing conversion probability while monetizing users who would otherwise churn at the paywall.",
-          "removesFreeValue": false
-        }
-      },
-      "surface": "ns1",
-      "trigger": "User taps 'Close sheet' on the Create Account Sheet (s07) after attempting a premium-gated task.",
-      "eligibility": "Non-subscribers who have not hit the daily cap for rewarded trials.",
-      "offer": {
-        "title": "Try Advanced Services Free",
-        "body": "Play a quick 15-second game to unlock 15 minutes of Advanced Services.",
-        "cta": "Play Now",
-        "decline": "No thanks"
-      },
-      "simula": {
-        "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Luzia",
-        "minPlaySec": 15
-      },
-      "reward": {
-        "what": "15 minutes of Luzia+ Advanced services",
-        "resource": "r4 Advanced Service Trial Token (new)",
-        "duration": "15 minutes",
-        "grantOn": "REWARD_VERIFIED"
-      },
-      "caps": {
-        "perDay": 1,
-        "cooldownMin": 60
-      },
-      "cannibalizationGuard": "The trial is time-boxed (15m) and limited to 1x/day, protecting the long-term value of the subscription while creating a clear sampling effect. The offer appears only as a fallback to account creation, ensuring purchase remains the primary path.",
-      "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 1.2,
-        "cogs": "text-cheap",
-        "cogsUnitsPerView": 1
-      },
-      "kpis": {
-        "primary": "Trial-to-subscription conversion rate",
-        "guardrails": [
-          "Subscription purchase rate",
-          "Retention (D7, D30)",
-          "Total daily time spent"
-        ],
-        "holdout": "10% of non-subscribers for 8 weeks."
-      },
-      "precedents": [
-        "TAX-2",
-        "TAX-10",
-        "EX-MUSIC",
-        "EX-UTIL"
-      ],
-      "risks": [
-        "Advanced services use compute resources; trial usage must be monitored to ensure sustainable unit economics.",
-        "Users may perceive the ad path as sufficient and delay upgrading."
-      ],
-      "evidence": [
-        {
-          "obs": "s07",
-          "el": "e7",
-          "quote": "Upgrade to Luzia+",
-          "verified": false
-        },
-        {
-          "obs": "s07",
-          "el": "e9",
-          "quote": "Continue with limited access",
-          "verified": false
-        }
-      ],
-      "patch": {
-        "newScreens": [
-          {
-            "id": "ns1",
-            "basedOn": "s07",
-            "kind": "modal",
-            "change": "Rewarded trial offer modal appearing after closing account creation on s07."
-          }
-        ],
-        "newElements": [
-          {
-            "id": "ne1",
-            "in": "ns1",
-            "place": "overlay",
-            "change": "Button for triggering rewarded trial: 'Play Now'"
-          }
-        ],
-        "newEdges": [
-          {
-            "from": "s07",
-            "el": "Close sheet",
-            "to": "ns1",
-            "effects": []
-          },
-          {
-            "from": "ns1",
-            "el": "ne1",
-            "to": "rwd",
-            "effects": [
-              {
-                "resource": "r4 Advanced Service Trial Token (new)",
-                "delta": 1
-              }
-            ]
-          }
-        ]
-      },
-      "storyboard": [
-        {
-          "phase": "today",
-          "screen": "s07",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
+              "node": "ne2",
+              "text": "Indicator displays a 15-minute countdown for Luzia+ services."
+            },
             {
-              "node": "e7",
-              "text": "User wants Advanced services."
+              "node": "e9",
+              "text": "Start new task is now unlocked for a 15-minute guest window."
             }
           ],
-          "caption": "User tries an Advanced service task."
-        },
-        {
-          "phase": "change",
-          "screen": "ns1",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Trial offer appears on close."
-            }
-          ],
-          "caption": "User closes account sheet, sees offer."
-        },
-        {
-          "phase": "offer",
-          "screen": "ns1",
-          "counters": [],
-          "overlay": "invite",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Play 15s game for 15m trial."
-            }
-          ],
-          "caption": "User sees trial offer and opts in."
-        },
-        {
-          "phase": "ad",
-          "screen": "s06",
-          "counters": [],
-          "overlay": "game",
-          "callouts": [
-            {
-              "node": "e6",
-              "text": "Luzia plays along in game."
-            }
-          ],
-          "caption": "Luzia partners with user in mini-game."
-        },
-        {
-          "phase": "value",
-          "screen": "s06",
-          "counters": [
-            {
-              "resource": "r4 Advanced Service Trial Token (new)",
-              "value": 1
-            }
-          ],
-          "overlay": "verified",
-          "callouts": [
-            {
-              "node": "e6",
-              "text": "15 minutes of access granted!"
-            }
-          ],
-          "caption": "User gets temporary Advanced services."
+          "caption": "A 15-minute Luzia+ trial activates, enabling temporary task execution."
         }
       ],
       "economics": {
@@ -1753,389 +748,199 @@
         "cheapestPaidUnitUsd": null,
         "cogsPerViewUsd": 0.0018,
         "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 1.2,
-          "impressionsPerDau": 0.36,
-          "arpdauUsd": 0.0043,
-          "annualPer1mDauUsd": 1576800,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.15,
+          "arpdauUsd": 0.0018,
+          "annualPer1mDauUsd": 657000,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
         },
         "flags": []
       }
     },
     {
-      "id": "P4",
-      "version": 3,
-      "title": "Sponsored Advanced Services 15m Trial",
-      "oneLiner": "Offer a 15-minute trial of Luzia+ Advanced services after declining the account wall.",
-      "case": "product-change",
-      "archetype": "TAX-2",
-      "beyondBaseline": true,
-      "anchor": {
-        "moments": [
-          "m1",
-          "m2",
-          "m9",
-          "m10"
-        ],
-        "economy": [
-          "r1",
-          "r4 Advanced Service Trial Token (new)"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Trial Access",
-          "description": "After a user declines the Create Account sheet via back navigation, surface an opt-in rewarded ad to unlock 15 minutes of Luzia+ Advanced services.",
-          "whyNeeded": "Allows high-intent, cash-poor users to experience premium value, increasing conversion probability while monetizing users who would otherwise churn at the paywall.",
-          "removesFreeValue": false
-        }
-      },
-      "surface": "ns1",
-      "trigger": "User initiates back navigation (a07_9) on the Create Account Sheet (s07) after attempting a premium-gated task.",
-      "eligibility": "Non-subscribers who have not hit the daily cap for rewarded trials.",
-      "offer": {
-        "title": "Try Advanced Services Free",
-        "body": "Play a quick 15-second game to unlock 15 minutes of Advanced Services.",
-        "cta": "Play Now",
-        "decline": "No thanks"
-      },
-      "simula": {
-        "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Luzia",
-        "minPlaySec": 15
-      },
-      "reward": {
-        "what": "15 minutes of Luzia+ Advanced services",
-        "resource": "r4 Advanced Service Trial Token (new)",
-        "duration": "15 minutes",
-        "grantOn": "REWARD_VERIFIED"
-      },
-      "caps": {
-        "perDay": 1,
-        "cooldownMin": 60
-      },
-      "cannibalizationGuard": "The trial is time-boxed (15m) and limited to 1x/day, protecting the long-term value of the subscription while creating a clear sampling effect. The offer appears only as a fallback to account creation, ensuring purchase remains the primary path.",
-      "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 1.2,
-        "cogs": "text-cheap",
-        "cogsUnitsPerView": 1
-      },
-      "kpis": {
-        "primary": "Trial-to-subscription conversion rate",
-        "guardrails": [
-          "Subscription purchase rate",
-          "Retention (D7, D30)",
-          "Total daily time spent"
-        ],
-        "holdout": "10% of non-subscribers for 8 weeks."
-      },
-      "precedents": [
-        "TAX-2",
-        "TAX-10",
-        "EX-MUSIC",
-        "EX-UTIL"
-      ],
-      "risks": [
-        "Advanced services use compute resources; trial usage must be monitored to ensure sustainable unit economics.",
-        "Users may perceive the ad path as sufficient and delay upgrading."
-      ],
-      "evidence": [
-        {
-          "obs": "s07",
-          "el": "e7",
-          "quote": "Upgrade to Luzia+",
-          "verified": false
-        },
-        {
-          "obs": "s07",
-          "el": "e9",
-          "quote": "Continue with limited access",
-          "verified": false
-        }
-      ],
-      "patch": {
-        "newScreens": [
-          {
-            "id": "ns1",
-            "basedOn": "s07",
-            "kind": "modal",
-            "change": "Rewarded trial offer modal appearing after declining account creation."
-          }
-        ],
-        "newElements": [
-          {
-            "id": "ne1",
-            "in": "ns1",
-            "place": "overlay",
-            "change": "Button for triggering rewarded trial: 'Play Now'"
-          }
-        ],
-        "newEdges": [
-          {
-            "from": "s07",
-            "el": "a07_9",
-            "to": "ns1",
-            "effects": []
-          },
-          {
-            "from": "ns1",
-            "el": "ne1",
-            "to": "rwd",
-            "effects": [
-              {
-                "resource": "r4 Advanced Service Trial Token (new)",
-                "delta": 1
-              }
-            ]
-          }
-        ]
-      },
-      "storyboard": [
-        {
-          "phase": "today",
-          "screen": "s07",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "e7",
-              "text": "User wants Advanced services."
-            }
-          ],
-          "caption": "User tries an Advanced service task."
-        },
-        {
-          "phase": "change",
-          "screen": "ns1",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Trial offer appears on decline."
-            }
-          ],
-          "caption": "User declines account sheet, sees offer."
-        },
-        {
-          "phase": "offer",
-          "screen": "ns1",
-          "counters": [],
-          "overlay": "invite",
-          "callouts": [
-            {
-              "node": "ne1",
-              "text": "Play 15s game for 15m trial."
-            }
-          ],
-          "caption": "User sees trial offer and opts in."
-        },
-        {
-          "phase": "ad",
-          "screen": "s06",
-          "counters": [],
-          "overlay": "game",
-          "callouts": [
-            {
-              "node": "e6",
-              "text": "Luzia plays along in game."
-            }
-          ],
-          "caption": "Luzia partners with user in mini-game."
-        },
-        {
-          "phase": "value",
-          "screen": "s06",
-          "counters": [
-            {
-              "resource": "r4 Advanced Service Trial Token (new)",
-              "value": 1
-            }
-          ],
-          "overlay": "verified",
-          "callouts": [
-            {
-              "node": "e6",
-              "text": "15 minutes of access granted!"
-            }
-          ],
-          "caption": "User gets temporary Advanced services."
-        }
-      ],
-      "economics": {
-        "viewValueUsd": [
-          0.009,
-          0.015
-        ],
-        "rewardValueUsdAtList": null,
-        "rewardToViewRatio": null,
-        "maxDailyEarnUsdAtList": null,
-        "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0.0018,
-        "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 1.2,
-          "impressionsPerDau": 0.36,
-          "arpdauUsd": 0.0043,
-          "annualPer1mDauUsd": 1576800,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
-        },
-        "flags": []
-      }
-    },
-    {
-      "id": "P5",
+      "id": "P2",
       "version": 1,
-      "title": "Save a Favorite Message with Ad",
-      "oneLiner": "Allow non-registered users to save favorite messages by watching a short game, increasing engagement without forcing signup.",
-      "case": "product-change",
-      "archetype": "AI-11",
+      "title": "Custom Bestie Slot Unlock on Signup Decline",
+      "oneLiner": "Offer guest users a single Custom Bestie creation slot after they dismiss the signup sheet.",
+      "case": "existing",
+      "archetype": "TAX-7",
       "beyondBaseline": true,
       "anchor": {
         "moments": [
-          "m5"
+          "m7",
+          "m8"
         ],
         "economy": [
-          "w3",
-          "r2 (Account Access)"
-        ],
-        "newMechanic": {
-          "name": "Rewarded Favorite",
-          "description": "Unlock individual favorite message saves without a full account.",
-          "whyNeeded": "Allows casual users to utilize the favorites feature without immediate friction of signup, lowering entry barriers.",
-          "removesFreeValue": false
-        }
+          "r2",
+          "w4",
+          "of2"
+        ]
       },
-      "surface": "s21",
-      "trigger": "User taps 'Favorite' on a message, and the 'Favorite messages' (s21) wall is triggered because they lack an account.",
-      "eligibility": "Non-registered users only; users who have not yet signed up.",
+      "surface": "s02",
+      "trigger": "When a guest user taps 'Close sheet' on the Custom Bestie signup sheet without signing up.",
+      "eligibility": "Guest users without an account who decline the signup prompt on the Custom Bestie sheet.",
       "offer": {
-        "title": "Save to Favorites?",
-        "body": "Play a 15-second game with Luzia to save this message to your favorites for free.",
-        "cta": "Play Now",
+        "title": "Create One Custom Bestie",
+        "body": "Play a 15-second mini-game to unlock one Custom Bestie slot without an account. Customize your AI companion immediately.",
+        "cta": "Play Mini-Game",
         "decline": "No thanks"
       },
       "simula": {
         "unit": "SIM-RWD",
-        "entry": "button",
+        "entry": "invitation",
         "gamePartner": "Luzia",
         "minPlaySec": 15
       },
       "reward": {
-        "what": "1 favorite message save",
-        "resource": "saved_message_slot",
+        "what": "1 Custom Bestie slot",
+        "resource": "r2",
         "amount": 1,
         "grantOn": "REWARD_VERIFIED"
       },
       "caps": {
-        "perDay": 3,
-        "cooldownMin": 10
+        "perDay": 1,
+        "cooldownMin": 1440
       },
-      "cannibalizationGuard": "Limits rewards to 3 saves per day, ensuring heavy users are still incentivized to create an account for unlimited storage; only available to non-registered users.",
+      "cannibalizationGuard": "Surfaced strictly after the user declines the full signup sheet (m8), ensuring users with intent to sign up do so first [TAX-10]. Sized to a single creation slot, leaving multi-persona management, cloud backup, and Luzia+ features gated [CANN-1, AI-8].",
       "assumptions": {
-        "engagedShare": 0.2,
-        "viewsPerEngager": 2,
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1,
         "cogs": "none",
-        "cogsUnitsPerView": 1
+        "cogsUnitsPerView": 0
       },
       "kpis": {
-        "primary": "Daily active users saving messages",
+        "primary": "Custom Bestie creations by guest users",
         "guardrails": [
-          "Paid account conversion rate",
-          "Retention (D7, D30)"
+          "Account signup conversion rate non-inferiority (-2% relative)",
+          "D7 user retention",
+          "Luzia+ paid trial conversion rate"
         ],
-        "holdout": "10% of users excluded from rewarded path for 4 weeks."
+        "holdout": "User-level 10% holdout of guest users declining Custom Bestie signup for 28 days"
       },
       "precedents": [
-        "AI-11",
-        "TAX-3",
-        "EX-DUO"
+        "TAX-7",
+        "TAX-10",
+        "AI-8",
+        "TRIG-1",
+        "TRIG-5",
+        "POL-2",
+        "POL-8",
+        "CANN-1"
       ],
       "risks": [
-        "Users may find the 3-save limit restrictive and churn.",
-        "Lower perceived value of account signup."
+        "Guest users might lose their custom bestie if local storage is cleared before creating an account.",
+        "Slight risk of delaying immediate account signup for users satisfied with a single custom persona."
       ],
       "evidence": [
         {
-          "obs": "s21",
-          "el": "e6",
-          "quote": "Sign up to start saving your favorite messages. It",
+          "obs": "s02",
+          "el": "e2",
+          "quote": "Close sheet",
+          "verified": true
+        },
+        {
+          "obs": "s02",
+          "quote": "Sign up to personalize your Bestie's look, personality and interests.",
+          "verified": true
+        },
+        {
+          "obs": "s01",
+          "el": "e26",
+          "quote": "Custom Bestie",
+          "verified": true
+        },
+        {
+          "obs": "s01",
+          "el": "e27",
+          "quote": "Make an AI expert tailored to you",
           "verified": true
         }
       ],
       "patch": {
-        "newScreens": [],
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s02",
+            "kind": "sheet",
+            "change": "Fallback offer sheet shown upon tapping close on s02, offering a single guest custom bestie slot in exchange for playing a mini-game."
+          }
+        ],
         "newElements": [
           {
             "id": "ne1",
-            "in": "s21",
-            "near": "e10",
-            "place": "before",
-            "change": "Add a MiniGameButton to trigger the rewarded flow."
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Simula MiniGameInvitation card with title 'Create One Custom Bestie', Luzia Game Partner avatar, play CTA, and 'No thanks' decline button."
           }
         ],
         "newEdges": [
           {
-            "from": "s21",
+            "from": "s02",
+            "el": "e2",
+            "to": "ns1",
+            "effects": [],
+            "guard": {
+              "resource": "r2",
+              "lt": 1
+            }
+          },
+          {
+            "from": "ns1",
             "el": "ne1",
             "to": "rwd",
             "effects": [
               {
-                "resource": "saved_message_slot",
+                "resource": "r2",
                 "delta": 1
               }
-            ],
-            "guard": {
-              "resource": "saved_message_slot",
-              "lt": 3
-            }
+            ]
           }
         ]
       },
       "storyboard": [
         {
           "phase": "today",
-          "screen": "s21",
+          "screen": "s02",
           "counters": [
             {
-              "resource": "favorite_slot",
+              "resource": "r2",
               "value": 0
             }
           ],
           "overlay": "none",
           "callouts": [
             {
-              "node": "e6",
-              "text": "Sign-up wall prevents saving favorites."
+              "node": "e2",
+              "text": "Guest taps Close sheet after declining signup prompt"
             }
           ],
-          "caption": "Currently, only registered users can save favorite messages."
+          "caption": "Guest user opens Custom Bestie creator and encounters the mandatory signup wall."
         },
         {
           "phase": "change",
-          "screen": "s21",
+          "screen": "s02",
           "counters": [
             {
-              "resource": "favorite_slot",
+              "resource": "r2",
               "value": 0
             }
           ],
           "overlay": "none",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "New button allows saving with an ad."
+              "node": "e2",
+              "text": "Dismissing signup triggers the fallback value-exchange check"
             }
           ],
-          "caption": "A 'Save for free' option is added to the wall."
+          "caption": "Dismissing the signup sheet triggers the fallback value-exchange check."
         },
         {
           "phase": "offer",
-          "screen": "s21",
+          "screen": "ns1",
           "counters": [
             {
-              "resource": "favorite_slot",
+              "resource": "r2",
               "value": 0
             }
           ],
@@ -2143,17 +948,17 @@
           "callouts": [
             {
               "node": "ne1",
-              "text": "User taps to unlock."
+              "text": "Offer card invites user to play for one bestie slot"
             }
           ],
-          "caption": "The user is offered a short game to get a save."
+          "caption": "Luzia invites user to play a quick mini-game to unlock creation."
         },
         {
           "phase": "ad",
-          "screen": "s21",
+          "screen": "ns1",
           "counters": [
             {
-              "resource": "favorite_slot",
+              "resource": "r2",
               "value": 0
             }
           ],
@@ -2161,28 +966,28 @@
           "callouts": [
             {
               "node": "ne1",
-              "text": "15-second mini-game."
+              "text": "Interactive 15-second mini-game with Luzia as Game Partner"
             }
           ],
-          "caption": "Luzia joins the game as the partner."
+          "caption": "User plays the interactive mini-game with Luzia for fifteen seconds."
         },
         {
           "phase": "value",
-          "screen": "s21",
+          "screen": "s01",
           "counters": [
             {
-              "resource": "favorite_slot",
+              "resource": "r2",
               "value": 1
             }
           ],
           "overlay": "verified",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "1 save unlocked."
+              "node": "e26",
+              "text": "Unlocked Custom Bestie creation slot is ready to use"
             }
           ],
-          "caption": "Message saved successfully without signing up."
+          "caption": "The single Custom Bestie creation slot is unlocked and ready."
         }
       ],
       "economics": {
@@ -2196,12 +1001,1936 @@
         "cheapestPaidUnitUsd": null,
         "cogsPerViewUsd": 0,
         "scenario": {
-          "engagedShare": 0.2,
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.15,
+          "arpdauUsd": 0.0018,
+          "annualPer1mDauUsd": 657000,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P3",
+      "version": 1,
+      "title": "Single Deep Reasoning Query Unlock",
+      "oneLiner": "Unlock a single high-intelligence Deep Reasoning query by playing a quick partner mini-game.",
+      "case": "existing",
+      "archetype": "TAX-2",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m14",
+          "m9"
+        ],
+        "economy": [
+          "r1",
+          "Deep reasoning query (new)"
+        ]
+      },
+      "surface": "s27",
+      "trigger": "When the user taps the disabled 'Deep reasoning' option (e15) on s27 while not subscribed to Luzia+.",
+      "eligibility": "Non-paying guest or free users who do not have the Luzia+ Subscription (r1).",
+      "offer": {
+        "title": "Try Deep Reasoning Free",
+        "body": "Play a 15-second game with Luzia to unlock 1 smarter, deeper answer.",
+        "cta": "Play & Unlock",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Deep reasoning query",
+        "resource": "Deep reasoning query",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 60
+      },
+      "cannibalizationGuard": "The reward is strictly capped at 3 single-use queries per day, keeping the unlimited Deep Reasoning mode highly attractive under the main Luzia+ subscription. It also acts as a sampling mechanism to demonstrate the intelligence of premium answers.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1.5,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Deep reasoning trial opt-in rate",
+        "guardrails": [
+          "Luzia+ Subscription conversion rate",
+          "D7 user retention",
+          "Average session length"
+        ],
+        "holdout": "User-level holdout, 10% of global non-paying DAU, active for 28 days"
+      },
+      "precedents": [
+        "TAX-2",
+        "EX-DUO",
+        "AI-4",
+        "TRIG-1"
+      ],
+      "risks": [
+        "Slightly increased LLM inference costs for premium reasoning models",
+        "Minor cannibalization if 1 query satisfies the user's immediate daily need"
+      ],
+      "evidence": [
+        {
+          "obs": "m14",
+          "el": "e15",
+          "quote": "Deep reasoning",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s27",
+            "kind": "sheet",
+            "change": "An offer sheet overlay displayed when tapping Deep reasoning on s27, prompting the user to play a 15s game to unlock 1 query."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "An interactive button displaying 'Play & Unlock' as the primary CTA next to 'No thanks'."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s27",
+            "el": "e15",
+            "to": "ns1",
+            "effects": [],
+            "guard": {
+              "resource": "r1",
+              "lt": 1
+            }
+          },
+          {
+            "from": "ns1",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Deep reasoning query",
+                "delta": 1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s27",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e15",
+              "text": "Deep reasoning toggle is locked."
+            }
+          ],
+          "caption": "Guests tapping the Deep reasoning toggle are redirected to the paywall."
+        },
+        {
+          "phase": "change",
+          "screen": "s27",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e15",
+              "text": "Tapping toggle now prompts a trial."
+            }
+          ],
+          "caption": "Tapping the toggle now triggers a rewarded trial offer."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            },
+            {
+              "resource": "Deep reasoning query",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Tap Play & Unlock to start."
+            }
+          ],
+          "caption": "Luzia offers 1 free query for playing a 15-second game."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            },
+            {
+              "resource": "Deep reasoning query",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The Simula SDK launches a 15-second interactive playable mini-game."
+        },
+        {
+          "phase": "value",
+          "screen": "s27",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            },
+            {
+              "resource": "Deep reasoning query",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e15",
+              "text": "Deep reasoning query is unlocked."
+            }
+          ],
+          "caption": "One Deep reasoning query is granted and the toggle activates."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.009,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.225,
+          "arpdauUsd": 0.0027,
+          "annualPer1mDauUsd": 985500,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P3",
+      "version": 2,
+      "title": "Single Deep Reasoning Query Unlock",
+      "oneLiner": "Unlock a single high-intelligence Deep Reasoning query by playing a quick partner mini-game.",
+      "case": "existing",
+      "archetype": "TAX-2",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m14",
+          "m9"
+        ],
+        "economy": [
+          "r1",
+          "Deep reasoning query (new)"
+        ]
+      },
+      "surface": "s27",
+      "trigger": "When the user taps the disabled 'Deep reasoning' option (e15) on s27 while not subscribed to Luzia+.",
+      "eligibility": "Non-paying guest or free users who do not have the Luzia+ Subscription (r1).",
+      "offer": {
+        "title": "Try Deep Reasoning Free",
+        "body": "Play 2 quick 15-second games with Luzia to unlock 1 smarter, deeper answer.",
+        "cta": "Play & Unlock",
+        "decline": "No thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "invitation",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Deep reasoning query",
+        "resource": "Deep reasoning query",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 60
+      },
+      "cannibalizationGuard": "The reward is strictly capped at 3 single-use queries per day, keeping the unlimited Deep Reasoning mode highly attractive under the main Luzia+ subscription. It also acts as a sampling mechanism to demonstrate the intelligence of premium answers. Paid conversion is protected by requiring a 2-ad bundle and gating to non-payers.",
+      "assumptions": {
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1.5,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Deep reasoning trial opt-in rate",
+        "guardrails": [
+          "Luzia+ Subscription conversion rate",
+          "D7 user retention",
+          "Average session length"
+        ],
+        "holdout": "User-level holdout, 10% of global non-paying DAU, active for 28 days"
+      },
+      "precedents": [
+        "TAX-2",
+        "EX-DUO",
+        "AI-4",
+        "TRIG-1"
+      ],
+      "risks": [
+        "Slightly increased LLM inference costs for reasoning models",
+        "Database engineering lift required to track and decrement individual query credits for non-payers"
+      ],
+      "evidence": [
+        {
+          "obs": "m14",
+          "el": "e15",
+          "quote": "Deep reasoning",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s27",
+            "kind": "sheet",
+            "change": "An offer sheet overlay displayed when tapping Deep reasoning on s27, prompting the user to play 2 games to unlock 1 query."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "An interactive button displaying 'Play & Unlock' as the primary CTA next to 'No thanks'."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s27",
+            "el": "e15",
+            "to": "ns1",
+            "effects": [],
+            "guard": {
+              "resource": "r1",
+              "lt": 1
+            }
+          },
+          {
+            "from": "ns1",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "Deep reasoning query",
+                "delta": 1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s27",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e15",
+              "text": "Deep reasoning toggle is locked."
+            }
+          ],
+          "caption": "Guests tapping the Deep reasoning toggle are redirected to the paywall."
+        },
+        {
+          "phase": "change",
+          "screen": "s27",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e15",
+              "text": "Tapping toggle now prompts a trial."
+            }
+          ],
+          "caption": "Tapping the toggle now triggers a rewarded trial offer."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            },
+            {
+              "resource": "Deep reasoning query",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Tap Play & Unlock to start."
+            }
+          ],
+          "caption": "Luzia offers 1 free query for playing 2 quick games."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            },
+            {
+              "resource": "Deep reasoning query",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The Simula SDK launches the playable mini-games."
+        },
+        {
+          "phase": "value",
+          "screen": "s27",
+          "counters": [
+            {
+              "resource": "r1",
+              "value": 0
+            },
+            {
+              "resource": "Deep reasoning query",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "e15",
+              "text": "Deep reasoning query is unlocked."
+            }
+          ],
+          "caption": "One Deep reasoning query is granted and the toggle activates."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.009,
+        "scenario": {
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.225,
+          "arpdauUsd": 0.0027,
+          "annualPer1mDauUsd": 985500,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P4",
+      "version": 1,
+      "title": "Daily Check-In Image Generation Hub",
+      "oneLiner": "Introduce a daily check-in banner on the Chats Home tab that rewards users with 2 AI Image Credits for playing a quick mini-game, incentivizing daily retention and introducing soft currency monetization.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m16"
+        ],
+        "economy": [
+          "r3",
+          "r4 AI Image Credits (new)"
+        ],
+        "newMechanic": {
+          "name": "Daily AI Check-In",
+          "description": "A daily loyalty calendar where users check in to earn free AI Image Credits, which are capped and spent on image creation.",
+          "whyNeeded": "Creates a recurring engagement hook and provides a structured way for free users to experience image generation without abusing the system, while opening up a high-value rewarded ad placement.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s01",
+      "trigger": "User taps the Daily Check-In banner on Chats Home to open the check-in modal and initiates the claim.",
+      "eligibility": "Non-paying, free guests and signed-up users who have not claimed today's check-in reward.",
+      "offer": {
+        "title": "Claim Your Daily Credits",
+        "body": "Play a quick 15-second game to unlock 2 free AI Image Credits.",
+        "cta": "Play Now",
+        "decline": "Maybe Later"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "2 AI Image Credits",
+        "resource": "r4",
+        "amount": 2,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "The daily check-in limits free credits to just 2 per day, which is enough for only two standard images. High-volume creation and advanced options still require a Luzia+ subscription, preventing any devaluing of the premium tier.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1,
+        "cogs": "image",
+        "cogsUnitsPerView": 2
+      },
+      "kpis": {
+        "primary": "D7 and D30 user retention rate",
+        "guardrails": [
+          "Paid subscription conversion rate",
+          "Average daily active users",
+          "Image generation cost per user"
+        ],
+        "holdout": "User-level 10% holdout group kept ineligible for the daily check-in feature for a duration of 28 days."
+      },
+      "precedents": [
+        "TAX-9",
+        "AI-3",
+        "EX-DUO"
+      ],
+      "risks": [
+        "High image generation API costs if daily active user adoption spikes rapidly, which we mitigate by using a lower-cost compressed image model.",
+        "Cannibalization of direct sign-ups, which we control by keeping the daily credit limit strict and showcasing Luzia+ premium styling inside the generation flow."
+      ],
+      "evidence": [
+        {
+          "obs": "m16",
+          "quote": "Chats",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "sheet",
+            "change": "Create a Daily Check-In sheet with a weekly progression calendar."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s01",
+            "near": "e11",
+            "place": "after",
+            "change": "Add a compact 'Daily Check-In Banner' under the welcome text showing today's unclaimed reward."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Add a prominent 'Claim Reward' button that triggers the rewarded video/playable flow."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "Add a rewards display showing the earned '2 AI Image Credits' with an animation after completion."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s01",
+            "el": "ne1",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "r4",
+                "delta": 2
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s01",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e11",
+              "text": "Luzia welcomes the user to the chat."
+            }
+          ],
+          "caption": "Luzia Chats Home today lacks a daily retention loop or tokens."
+        },
+        {
+          "phase": "change",
+          "screen": "s01",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New check-in banner appears here."
+            }
+          ],
+          "caption": "We add a daily check-in banner on Chats Home tab."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Claim button initiates ad playable."
+            }
+          ],
+          "caption": "Tapping the banner displays a weekly check-in calendar to user."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Simula rewarded mini-game plays."
+            }
+          ],
+          "caption": "The user plays a 15-second sponsored game with Luzia."
+        },
+        {
+          "phase": "value",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 2
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne3",
+              "text": "New balance shows 2 credits."
+            }
+          ],
+          "caption": "Once completed, the user receives 2 free AI Image Credits."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.05,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.25,
+          "arpdauUsd": 0.003,
+          "annualPer1mDauUsd": 1095000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0500) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P4",
+      "version": 2,
+      "title": "Daily Check-In Image Generation Hub",
+      "oneLiner": "Introduce a daily check-in banner on Chats Home that rewards returning users with 1 AI Image Credit using low-cost generation models, hidden in session 1.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m16"
+        ],
+        "economy": [
+          "r3",
+          "r4 AI Image Credits (new)"
+        ],
+        "newMechanic": {
+          "name": "Daily AI Check-In",
+          "description": "A daily loyalty calendar where returning users check in to earn 1 free AI Image Credit, capped and spent on low-cost image creation.",
+          "whyNeeded": "Creates a recurring engagement hook and provides a structured way for free returning users to experience image generation using highly compressed, low-cost models, reducing API server costs below $0.003.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s01",
+      "trigger": "User taps the Daily Check-In banner on Chats Home (hidden in Session 1) to open the check-in modal and initiates the claim.",
+      "eligibility": "Non-paying, returning users in their 2nd or later active session who have not claimed today's check-in reward.",
+      "offer": {
+        "title": "Claim Your Daily Credit",
+        "body": "Play a quick 15-second game to unlock 1 free AI Image Credit.",
+        "cta": "Play Now",
+        "decline": "Maybe Later"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 AI Image Credit",
+        "resource": "r4",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "The daily check-in limits free credits to just 1 per day, enough for a single compressed image. Higher volume, custom styles, and uncompressed creation require a Luzia+ subscription, protecting paid tiers [CANN-2] [TRIG-4].",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1,
+        "cogs": "image",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "D7 and D30 user retention rate",
+        "guardrails": [
+          "Paid subscription conversion rate",
+          "Average daily active users",
+          "Image generation cost per user"
+        ],
+        "holdout": "User-level 10% holdout group kept ineligible for the daily check-in feature for a duration of 28 days."
+      },
+      "precedents": [
+        "TAX-9",
+        "AI-3",
+        "EX-DUO",
+        "TRIG-2",
+        "TRIG-4"
+      ],
+      "risks": [
+        "Potential image generation API cost increases if adoption is too rapid, mitigated by using a heavily compressed, low-cost model under $0.003.",
+        "Accidental exposure to new users, mitigated by strict session gating to completely hide the banner in Session 1."
+      ],
+      "evidence": [
+        {
+          "obs": "m16",
+          "quote": "Chats",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "sheet",
+            "change": "Create a Daily Check-In sheet with a weekly progression calendar."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s01",
+            "near": "e11",
+            "place": "after",
+            "change": "Add a compact 'Daily Check-In Banner' under the welcome text showing today's unclaimed reward, hidden in Session 1."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Add a prominent 'Claim Reward' button that triggers the rewarded video/playable flow."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "Add a rewards display showing the earned '1 AI Image Credit' with an animation after completion."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s01",
+            "el": "ne1",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "r4",
+                "delta": 1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s01",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e11",
+              "text": "Luzia welcomes the user to the chat."
+            }
+          ],
+          "caption": "Luzia Chats Home today lacks a daily retention loop or tokens."
+        },
+        {
+          "phase": "change",
+          "screen": "s01",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New check-in banner appears here."
+            }
+          ],
+          "caption": "We add a daily check-in banner on Chats Home tab."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Claim button initiates ad playable."
+            }
+          ],
+          "caption": "Tapping the banner displays a weekly check-in calendar to user."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Simula rewarded mini-game plays."
+            }
+          ],
+          "caption": "The user plays a 15-second sponsored game with Luzia."
+        },
+        {
+          "phase": "value",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne3",
+              "text": "New balance shows 1 credit."
+            }
+          ],
+          "caption": "Once completed, the user receives 1 free AI Image Credit."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.025,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.25,
+          "arpdauUsd": 0.003,
+          "annualPer1mDauUsd": 1095000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P4",
+      "version": 3,
+      "title": "Daily Check-In Image Generation Hub",
+      "oneLiner": "Introduce a daily check-in banner on Chats Home that rewards returning users with 1 AI Image Credit via a 3-ad bundle.",
+      "case": "product-change",
+      "archetype": "TAX-9",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m16"
+        ],
+        "economy": [
+          "r3",
+          "r4 AI Image Credits (new)"
+        ],
+        "newMechanic": {
+          "name": "Daily AI Check-In",
+          "description": "A daily check-in loop where users complete a 3-ad bundle to earn 1 AI Image Credit used in the Image Creation Hub.",
+          "whyNeeded": "Bundling 3 ads ensures gross ad revenue covers the image generation API cost, making the reward sustainable.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s01",
+      "trigger": "User taps the Daily Check-In banner on Chats Home to open the check-in modal and initiates the claim.",
+      "eligibility": "Non-paying, returning users in their 2nd or later active session who have not claimed today's check-in reward.",
+      "offer": {
+        "title": "Claim Your Daily Credit",
+        "body": "Play 3 quick games to unlock 1 free AI Image Credit.",
+        "cta": "Play Now",
+        "decline": "Maybe Later"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 AI Image Credit",
+        "resource": "r4",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 1,
+        "cooldownMin": 1440
+      },
+      "cannibalizationGuard": "Free credits are limited to 1 per day and require 3 ad completions. Unlimited generation and advanced styles require a Luzia+ subscription [CANN-2] [TRIG-4].",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 3,
+        "cogs": "image",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "D7 and D30 user retention rate",
+        "guardrails": [
+          "Paid subscription conversion rate",
+          "Average daily active users",
+          "Image generation cost per user"
+        ],
+        "holdout": "User-level 10% holdout group kept ineligible for the daily check-in feature for a duration of 28 days."
+      },
+      "precedents": [
+        "TAX-9",
+        "AI-3",
+        "EX-DUO",
+        "TRIG-2",
+        "TRIG-4",
+        "POL-2"
+      ],
+      "risks": [
+        "Users might find a 3-ad bundle tedious, mitigated by a clear progress bar and engaging Simula mini-games.",
+        "Potential image generation API cost increases, mitigated by requiring 3 ad completions to fully fund the COGS."
+      ],
+      "evidence": [
+        {
+          "obs": "s01",
+          "el": "e7",
+          "quote": "Chats",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [
+          {
+            "id": "ns1",
+            "kind": "sheet",
+            "change": "Create a Daily Check-In sheet with a weekly progression calendar."
+          }
+        ],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s01",
+            "near": "e11",
+            "place": "after",
+            "change": "Add a compact 'Daily Check-In Banner' under the welcome text, hidden in Session 1."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Add a prominent 'Claim Reward' button that triggers the rewarded playable flow."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "Add a rewards display showing the earned credit after 3 ad completions."
+          },
+          {
+            "id": "ne4",
+            "in": "s10",
+            "near": "e14",
+            "place": "after",
+            "change": "Add a 'Create with Credit' button next to the standard create button."
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s01",
+            "el": "ne1",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "r4",
+                "delta": 1
+              }
+            ]
+          },
+          {
+            "from": "s10",
+            "el": "ne4",
+            "to": "s14",
+            "effects": [
+              {
+                "resource": "r4",
+                "delta": -1
+              }
+            ]
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s01",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e11",
+              "text": "Luzia welcomes the user to the chat."
+            }
+          ],
+          "caption": "Luzia Chats Home lacks a daily retention loop."
+        },
+        {
+          "phase": "change",
+          "screen": "s01",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "New check-in banner appears here."
+            }
+          ],
+          "caption": "We add a daily check-in banner on Chats Home."
+        },
+        {
+          "phase": "offer",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Claim button initiates 3-ad bundle."
+            }
+          ],
+          "caption": "Tapping the banner displays the daily check-in calendar."
+        },
+        {
+          "phase": "ad",
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Simula rewarded mini-game plays 3 times."
+            }
+          ],
+          "caption": "The user plays 3 quick 15-second games with Luzia."
+        },
+        {
+          "phase": "value",
+          "screen": "s10",
+          "counters": [
+            {
+              "resource": "r4",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne4",
+              "text": "The new 'Create with Credit' button is unlocked."
+            }
+          ],
+          "caption": "The user earns 1 credit to generate an image."
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "version": 1,
+      "title": "Anima Video Generation Export Boost",
+      "oneLiner": "Users can play a quick Simula game to earn an extra Anima video generation credit when they hit the daily free limit.",
+      "case": "product-change",
+      "archetype": "TAX-4",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m20"
+        ],
+        "economy": [
+          "r_anima_credit (new)"
+        ],
+        "newMechanic": {
+          "name": "Anima Generation Limits",
+          "description": "Introduce a daily limit of 1 free video animation per day, with additional exports costing 1 Anima Video Credit.",
+          "whyNeeded": "Protects high-COGS GPU resources on video generation while providing a clear monetization path for free users.",
+          "removesFreeValue": true
+        }
+      },
+      "surface": "s09",
+      "trigger": "When the user taps the generate button with 0 Anima Video Credits remaining.",
+      "eligibility": "Non-paying free tier users who have exhausted their daily video generation limit.",
+      "offer": {
+        "title": "Out of Anima Credits",
+        "body": "Play a 15-second game to get 1 Anima Video Credit and export now.",
+        "cta": "Play Now",
+        "decline": "No Thanks"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Anima Video Credit",
+        "resource": "r_anima_credit",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 3,
+        "cooldownMin": 15
+      },
+      "cannibalizationGuard": "Video generation limits are completely distinct from the main Luzia+ core reasoning or chat features, ensuring subscribers still maintain exclusive access to faster models and advanced custom services.",
+      "assumptions": {
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1.5,
+        "cogs": "image",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Anima Generation Ad Revenue",
+        "guardrails": [
+          "Luzia+ Subscription Conversion Rate",
+          "s09 Screen Churn Rate",
+          "D7 Retention"
+        ],
+        "holdout": "User-level randomized holdout group, 10% allocation, evaluated over 28 days."
+      },
+      "precedents": [
+        "TAX-4",
+        "EX-UTIL",
+        "TRIG-5",
+        "POL-8"
+      ],
+      "risks": [
+        "Introducing limits on video generation may cause initial user backlash, similar to Duolingo's Energy change.",
+        "High video generation infrastructure costs might exceed ad payout in low-eCPM regions if not geographically capped."
+      ],
+      "evidence": [
+        {
+          "obs": "m20",
+          "quote": "Animate Tool Screen (tab) is a place users return to (6 visits during exploration)",
+          "verified": false
+        },
+        {
+          "obs": "s09",
+          "el": "e14",
+          "quote": "Upload the pic you want to animate",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s09",
+            "near": "e34",
+            "place": "after",
+            "change": "Animate & Export Button"
+          },
+          {
+            "id": "ne2",
+            "in": "s09",
+            "near": "e12",
+            "place": "after",
+            "change": "Anima Credit Badge"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s09",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "r_anima_credit",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "r_anima_credit",
+              "lt": 1
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s09",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e14",
+              "text": "Users upload their picture and pick an animation option on this tab."
+            }
+          ],
+          "caption": "Currently, users can select styles like Clapping or Walking on the Anima Tool screen."
+        },
+        {
+          "phase": "change",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_anima_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Shows that the user has 0 Anima Credits remaining today."
+            },
+            {
+              "node": "ne1",
+              "text": "Generate Video is locked when the balance is 0."
+            }
+          ],
+          "caption": "We introduce a credit counter and block video generation once the daily allowance is exhausted."
+        },
+        {
+          "phase": "offer",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_anima_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Tapping this opens the Simula game invitation."
+            }
+          ],
+          "caption": "An explicit opt-in overlay appears, offering 1 credit for playing a 15-second game."
+        },
+        {
+          "phase": "ad",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_anima_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays the Simula interactive mini-game with Luzia for 15 seconds."
+        },
+        {
+          "phase": "value",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_anima_credit",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Credit is instantly updated to 1 after verification."
+            },
+            {
+              "node": "ne1",
+              "text": "The button is now unlocked and ready to export the video."
+            }
+          ],
+          "caption": "Upon game completion, the credit is granted and the user can generate their AI video animation immediately."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0.025,
+        "scenario": {
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.375,
+          "arpdauUsd": 0.0045,
+          "annualPer1mDauUsd": 1642500,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": [
+          "Cost to serve the reward ($0.0250) exceeds net revenue per view ($0.0063) at the low end."
+        ]
+      }
+    },
+    {
+      "id": "P5",
+      "version": 2,
+      "title": "Anima Queue Fast-Track Priority",
+      "oneLiner": "Users can play a quick Simula game with Luzia to earn Fast-Track Credits that bypass the animation processing queue during peak hours.",
+      "case": "product-change",
+      "archetype": "TAX-4",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m20"
+        ],
+        "economy": [
+          "r_fast_track_credit (new)"
+        ],
+        "newMechanic": {
+          "name": "Fast-Track Queue Priority",
+          "description": "Introduce a fast-track rendering queue for Anima animations. Free generation remains unlimited but experiences wait times during peak processing periods, which can be bypassed using Fast-Track Credits.",
+          "whyNeeded": "Protects user engagement by keeping free access intact while offering a zero-COGS progression utility that can be monetized via rewarded ads.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s09",
+      "trigger": "When the user taps the Animate & Export button during queue wait times.",
+      "eligibility": "Non-paying free tier users who want to skip the standard rendering queue.",
+      "offer": {
+        "title": "Skip the Animation Queue",
+        "body": "Play a 15-second game with Luzia to skip the wait and fast-track your animation.",
+        "cta": "Fast-Track Now",
+        "decline": "Wait in Queue"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Fast-Track Animation Credit",
+        "resource": "r_fast_track_credit",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 5,
+        "cooldownMin": 10
+      },
+      "cannibalizationGuard": "Standard generation remains fully free and functional, while Luzia+ subscribers automatically bypass the processing queue at all times without needing ads.",
+      "assumptions": {
+        "engagedShare": 0.35,
+        "viewsPerEngager": 2,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Anima Fast-Track Ad Revenue",
+        "guardrails": [
+          "Luzia+ Subscription Conversion Rate",
+          "s09 Screen Churn Rate",
+          "D7 Retention"
+        ],
+        "holdout": "User-level randomized holdout group, 10% allocation, evaluated over 28 days."
+      },
+      "precedents": [
+        "TAX-4",
+        "EX-UTIL",
+        "TRIG-5",
+        "POL-8"
+      ],
+      "risks": [
+        "If peak rendering queue wait times are negligible, the user's perceived value of Fast-Track Credits may diminish."
+      ],
+      "evidence": [
+        {
+          "obs": "s09",
+          "el": "e14",
+          "quote": "Upload the pic you want to animate",
+          "verified": true
+        },
+        {
+          "obs": "s08",
+          "el": "e16",
+          "quote": "Anima",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s09",
+            "near": "e34",
+            "place": "after",
+            "change": "Fast-Track Animate Button"
+          },
+          {
+            "id": "ne2",
+            "in": "s09",
+            "near": "e12",
+            "place": "after",
+            "change": "Fast-Track Credit Badge"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s09",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "r_fast_track_credit",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "r_fast_track_credit",
+              "lt": 1
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s09",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e14",
+              "text": "Users upload their picture and pick an animation style."
+            }
+          ],
+          "caption": "Currently, users choose animation styles on the Anima Tool screen."
+        },
+        {
+          "phase": "change",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Displays the user's current Fast-Track credits."
+            },
+            {
+              "node": "ne1",
+              "text": "Allows triggering a fast-track queue skip."
+            }
+          ],
+          "caption": "We introduce a Fast-Track credit system to bypass standard processing queues."
+        },
+        {
+          "phase": "offer",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Tapping this opens the Simula game invitation to earn 1 Fast-Track Credit."
+            }
+          ],
+          "caption": "When queues are active, users play a game to skip wait times."
+        },
+        {
+          "phase": "ad",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays the Simula interactive game with Luzia for fifteen seconds."
+        },
+        {
+          "phase": "value",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Credit balance is updated to 1."
+            },
+            {
+              "node": "ne1",
+              "text": "Fast-Track button is now unlocked to instantly render."
+            }
+          ],
+          "caption": "Once granted, the user can instantly bypass the queue and export."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.35,
           "viewsPerEngager": 2,
-          "impressionsPerDau": 0.4,
-          "arpdauUsd": 0.0048,
-          "annualPer1mDauUsd": 1752000,
-          "label": "Scenario, not a forecast: 20% of DAU engage, 2 views each, US mid eCPM after a 25% non-game haircut."
+          "impressionsPerDau": 0.7,
+          "arpdauUsd": 0.0084,
+          "annualPer1mDauUsd": 3066000,
+          "label": "Scenario, not a forecast: 35% of DAU engage, 2 views each, US mid eCPM after a 25% non-game haircut."
+        },
+        "flags": []
+      }
+    },
+    {
+      "id": "P5",
+      "version": 3,
+      "title": "Anima Queue Fast-Track Priority",
+      "oneLiner": "Users can play a quick Simula game with Luzia to earn Fast-Track Credits that bypass the animation processing queue during peak hours.",
+      "case": "product-change",
+      "archetype": "TAX-4",
+      "beyondBaseline": true,
+      "anchor": {
+        "moments": [
+          "m20"
+        ],
+        "economy": [
+          "r_fast_track_credit (new)"
+        ],
+        "newMechanic": {
+          "name": "Fast-Track Queue Priority",
+          "description": "Introduce a fast-track rendering queue for Anima animations. Free generation remains unlimited but experiences wait times during peak processing periods, which can be bypassed using Fast-Track Credits.",
+          "whyNeeded": "Protects user engagement by keeping free access intact while offering a zero-COGS progression utility that can be monetized via rewarded ads.",
+          "removesFreeValue": false
+        }
+      },
+      "surface": "s09",
+      "trigger": "When the user selects an animation style like 'Clapping' (e24) or taps 'Animate' (e13) during periods where active rendering queue wait times exceed 10 seconds.",
+      "eligibility": "Non-paying free tier users who want to skip the standard rendering queue during peak hours.",
+      "offer": {
+        "title": "Skip the Animation Queue",
+        "body": "Play a quick game to skip wait times and fast-track your animation.",
+        "cta": "Fast-Track Now",
+        "decline": "Wait in Queue"
+      },
+      "simula": {
+        "unit": "SIM-RWD",
+        "entry": "button",
+        "gamePartner": "Luzia",
+        "minPlaySec": 15
+      },
+      "reward": {
+        "what": "1 Fast-Track Animation Credit",
+        "resource": "r_fast_track_credit",
+        "amount": 1,
+        "grantOn": "REWARD_VERIFIED"
+      },
+      "caps": {
+        "perDay": 5,
+        "cooldownMin": 10
+      },
+      "cannibalizationGuard": "Standard generation remains fully free and functional. Wait times only surface during authentic backend rendering congestion to prevent artificial friction, and Luzia+ subscribers always bypass processing queues.",
+      "assumptions": {
+        "engagedShare": 0.08,
+        "viewsPerEngager": 1.5,
+        "cogs": "none",
+        "cogsUnitsPerView": 1
+      },
+      "kpis": {
+        "primary": "Anima Fast-Track Ad Revenue",
+        "guardrails": [
+          "Luzia+ Subscription Conversion Rate",
+          "s09 Screen Churn Rate",
+          "D7 Retention"
+        ],
+        "holdout": "User-level randomized holdout group, 10% allocation, evaluated over 28 days."
+      },
+      "precedents": [
+        "TAX-4",
+        "EX-UTIL",
+        "TRIG-5",
+        "POL-8"
+      ],
+      "risks": [
+        "If peak rendering queue wait times are negligible, the user's perceived value of Fast-Track Credits may diminish."
+      ],
+      "evidence": [
+        {
+          "obs": "s09",
+          "el": "e14",
+          "quote": "Upload the pic you want to animate",
+          "verified": true
+        },
+        {
+          "obs": "s08",
+          "el": "e16",
+          "quote": "Anima",
+          "verified": true
+        },
+        {
+          "obs": "s09",
+          "el": "e13",
+          "quote": "Animate",
+          "verified": true
+        }
+      ],
+      "patch": {
+        "newScreens": [],
+        "newElements": [
+          {
+            "id": "ne1",
+            "in": "s09",
+            "near": "e13",
+            "place": "after",
+            "change": "Fast-Track Animate Button"
+          },
+          {
+            "id": "ne2",
+            "in": "s09",
+            "near": "e12",
+            "place": "after",
+            "change": "Fast-Track Credit Badge"
+          }
+        ],
+        "newEdges": [
+          {
+            "from": "s09",
+            "el": "ne1",
+            "to": "rwd",
+            "effects": [
+              {
+                "resource": "r_fast_track_credit",
+                "delta": 1
+              }
+            ],
+            "guard": {
+              "resource": "r_fast_track_credit",
+              "lt": 1
+            }
+          }
+        ]
+      },
+      "storyboard": [
+        {
+          "phase": "today",
+          "screen": "s09",
+          "counters": [],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "e14",
+              "text": "Users upload their picture and pick an animation style."
+            }
+          ],
+          "caption": "Users currently choose animation styles on the Anima Tool screen."
+        },
+        {
+          "phase": "change",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Displays the user's current Fast-Track credits."
+            },
+            {
+              "node": "ne1",
+              "text": "Allows triggering a fast-track queue skip."
+            }
+          ],
+          "caption": "We introduce a Fast-Track credit system to bypass standard processing queues."
+        },
+        {
+          "phase": "offer",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "invite",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Tapping this opens the Simula game invitation to earn 1 Fast-Track Credit."
+            }
+          ],
+          "caption": "When queues are active, users play a game to skip wait times."
+        },
+        {
+          "phase": "ad",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 0
+            }
+          ],
+          "overlay": "game",
+          "callouts": [],
+          "caption": "The user plays the Simula interactive game with Luzia for fifteen seconds."
+        },
+        {
+          "phase": "value",
+          "screen": "s09",
+          "counters": [
+            {
+              "resource": "r_fast_track_credit",
+              "value": 1
+            }
+          ],
+          "overlay": "verified",
+          "callouts": [
+            {
+              "node": "ne2",
+              "text": "Credit balance is updated to 1."
+            },
+            {
+              "node": "ne1",
+              "text": "Fast-Track button is now unlocked to instantly render."
+            }
+          ],
+          "caption": "Once granted, the user can instantly bypass the queue and export."
+        }
+      ],
+      "economics": {
+        "viewValueUsd": [
+          0.009,
+          0.015
+        ],
+        "rewardValueUsdAtList": null,
+        "rewardToViewRatio": null,
+        "maxDailyEarnUsdAtList": null,
+        "cheapestPaidUnitUsd": null,
+        "cogsPerViewUsd": 0,
+        "scenario": {
+          "engagedShare": 0.08,
+          "viewsPerEngager": 1.5,
+          "impressionsPerDau": 0.12,
+          "arpdauUsd": 0.0014,
+          "annualPer1mDauUsd": 525600,
+          "label": "Scenario, not a forecast: 8% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
         },
         "flags": []
       }

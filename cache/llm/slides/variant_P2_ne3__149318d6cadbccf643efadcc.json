@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P2:ne3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne3\" style=\"position:relative;width:100%;padding:20px;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;flex-direction:column;gap:16px;\">\n  <!-- Close Button -->\n  <button data-new=\"ne3\" style=\"position:absolute;top:12px;right:12px;background:none;border:none;cursor:pointer;color:var(--c-muted);padding:4px;font-size:20px;\" aria-label=\"Dismiss\">×</button>\n  \n  <div data-new=\"ne3\" style=\"display:flex;gap:12px;align-items:start;margin-right:24px;\">\n    <!-- Icon Badge -->\n    <div data-new=\"ne3\" style=\"width:48px;height:48px;background:var(--c-accent);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:var(--c-on-accent);flex-shrink:0;\">\n      <svg data-new=\"ne3\" viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n        <rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"2\" />\n        <path d=\"M6 10h4M8 8v4M16 10h4M16 14h4\" />\n      </svg>\n    </div>\n    \n    <!-- Title and Value -->\n    <div data-new=\"ne3\" style=\"flex:1;\">\n      <div data-new=\"ne3\" style=\"font-weight:700;font-size:16px;color:var(--c-text);margin-bottom:4px;\">Go Ad-Free for 15 Minutes</div>\n      <div data-new=\"ne3\" style=\"font-size:14px;color:var(--c-text);line-height:1.4;\">Play a 15-second game for <b>+15 minutes ad-free reading</b>.</div>\n    </div>\n  </div>\n  \n  <!-- Action Buttons -->\n  <div data-new=\"ne3\" style=\"display:flex;gap:8px;align-items:center;\">\n    <button data-new=\"ne3\" class=\"btn btn-primary\" style=\"flex:1;height:48px;font-weight:600;font-size:16px;border-radius:var(--r-md);\">Start Sprint</button>\n    <button data-new=\"ne3\" style=\"height:48px;background:transparent;border:none;color:var(--c-muted);font-weight:500;padding:0 12px;cursor:pointer;\">No thanks</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 9445,
+  "output": 704,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 9239
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:24:14.885Z"
+}

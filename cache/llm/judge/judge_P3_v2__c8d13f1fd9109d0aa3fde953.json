@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal places the ad on s02 (Profile menu), which is a system/navigation surface. It uses 'Janitor' as the Game Partner, matching the app's brand."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '1 bonus frontier model swipe', which is an in-app utility used for roleplay content and is not cash-like. There are no mentions of rewarding clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses a daily check-in archetype (TAX-9) with a positive gain frame: 'Earn 1 daily bonus frontier model swipe'. There is no evidence of fake timers, forced ads, or 'support us' copy."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap a new 'Daily Check-in' card (ne1) on s02, which then displays an offer invitation with a 'Play Now' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body states: 'Play a 15-second game to claim 1 bonus frontier model swipe today.' This clearly discloses both the action length and the reward."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes an equally legible 'Maybe Later' decline button. Declining simply returns the user to the Profile menu (s02)."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The placement is on the Profile menu (s02), a static navigation surface, and is not triggered during a chat or generation flow."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility is restricted to 'Non-paying users who have not claimed today's check-in reward.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets 'Frontier model swipes', which the digest (of1) identifies as a core scarce benefit of the Janitor Plus subscription. Offering a single swipe via a check-in allows users to sample the premium model without hitting a hard wall (TAX-9).",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal adds a new 'Daily Check-in' card to the Profile menu. It does not interrupt chat flow or degrade existing free features. Using the 'Janitor' character as a game partner provides a native feel.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Safety is high due to the strict limit of 1 swipe per day (Janitor Plus offers 'generous monthly swipes'). However, it grants a direct 'frontier model' swipe, which is a core subscription pillar. A 5% holdout is planned.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Economics are highly marginal. Code-computed cost to serve ($0.0090) exceeds net revenue per view ($0.0063) at the low end. The proposal acknowledges this as a risk but frames it as a sampling investment.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The Profile menu (s02) is a 'frequent' surface (m4). While not the main chat screen, daily active users typically visit the profile for billing or settings, making it a viable hub for habit-building.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD with 'invitation' entry and 15s play. The patch targets s02 with a new element ne1. It requires database tracking for swipes for non-payers, which is noted as a feasibility risk.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like 'Janitor Plus', 'frontier model swipes', and 's02 (Profile menu)'. It explicitly uses 'Janitor' as the Game Partner ID.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strictly capped at 1 per day with a 1440-minute (24h) cooldown. No re-offer behavior is specified, which prevents nagging.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric is retention (D7/D30) on s02. It includes a 5% randomized user-level holdout and guards against conversion rate drops.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the cost-to-serve by switching the reward from a 'frontier model' swipe to a 'standard model' swipe, or increase the required play actions to 2 views per swipe to ensure positive net margin.",
+   "Implement the database changes required to track swipe usage for non-paying users as identified in the risk section.",
+   "Define a clear success threshold for the D7/D30 retention lift that would justify the marginal or negative unit economics."
+  ],
+  "topConcern": "The cost to serve a single frontier model swipe ($0.0090) frequently exceeds the net revenue per view ($0.0063), making this a loss-leader that relies entirely on unproven downstream retention gains."
+ },
+ "usage": {
+  "input": 34957,
+  "output": 1287,
+  "cacheRead": 20155,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:11:11.362Z"
+}

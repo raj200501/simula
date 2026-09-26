@@ -2,49 +2,49 @@
 
 Regime (computed): **no-scarcity**. 8 ideas, 3 written up.
 
-## Blind labels (fill in before reading the judgments)
+## Proposals at a glance
 
-Label each proposal SHIP, REVISE or REJECT from the write-ups below, before running `judge`. Copy the labels to `proposals/labels.json` as `[{"id":"P1","label":"SHIP"}]`.
+The write-ups are below. The verdicts are in `judgments.md`, so a reader can form a view first.
 
-| id | title | case | archetype | surface | reward | your label (SHIP/REVISE/REJECT) |
-|---|---|---|---|---|---|---|
-| P1 | Guest Comment Pass | product-change | TAX-3 | Add Comment Page (s05) | 1 guest comment post |  |
-| P2 | News Streak Multiplier | product-change | TAX-5 | News Feed Home (s13) | Daily Streak points doubled |  |
-| P3 | Bonus Save Slot | product-change | TAX-7 | Account Menu Sidebar (s11) | 5 extra save slots |  |
+| id | title | case | archetype | surface | reward |
+|---|---|---|---|---|---|
+| P1 | AOL Guest Commenter | product-change | TAX-3 | Add Comment Page (s05) | one guest comment submission |
+| P2 | AOL Ad-Free Sprint | product-change | TAX-2 | Account Menu Sidebar (s11) | 15 minutes of ad-free reading |
+| P3 | Daily Reader Streak | product-change | TAX-9 | Account Menu Sidebar (s11) | 10 News Credits |
 
 ## The obvious baseline (the bar to beat)
 
-- Watch a video to remove all native and banner ads for the next 30 minutes.
-- Watch an ad to unlock access to a single 'Premium' article from a partner publisher.
-- Watch a video to unlock additional font sizes and themes in the Article Detail Page settings.
+- Watch a video to remove banner ads for 30 minutes of news reading.
+- Watch an ad to unlock a 'Premium' news article otherwise hidden behind a wall.
+- Watch a video to earn 100 generic coins for a new profile customization shop.
 
 ## Moment sweep
 
 | moment | type | screen | value exchange | viable |
 |---|---|---|---|---|
-| m1 | desire | Home News Feed (s02) | None; reading headlines is already a free core loop action. | no |
-| m2 | desire | Account Menu Sidebar (s11) | None; unsubscribing is a utility/management function, not a rewardable desire. | no |
-| m3 | hub | Home News Feed (s01) | Unlock a temporary 'Ad-Light' browsing session for the Home News Feed. | yes |
-| m4 | hub | Home News Feed (s02) | Unlock an exclusive 'Lighter Side' interactive puzzle or sponsored mini-game. | yes |
-| m5 | hub | Home News Feed (s07) | Unlock an enhanced 'Local Radar' weather view to fix the weather error state. | yes |
-| m6 | hub | News Feed Home (s13) | Earn a 'Daily Read' multiplier to boost account engagement points. | yes |
-| m7 | hub | Home Feed (s14) | Unlock a 'Political Digest' summary for the current session. | yes |
-| m8 | first-value | Home News Feed (s01) | None; first-value moment must be offer-free. | no |
-| m9 | desire | Add Comment Page (s05) | Bypass the sign-up wall to post a single 'Guest Comment' on the current article. | yes |
-| m10 | hub | Account Menu Sidebar (s11) | Unlock a permanent extra slot for the Saved Articles list. | yes |
+| m1 | desire | Home News Feed (s02) | None; this is content text about an external fundraiser, not an in-app resource. | no |
+| m2 | desire | Account Menu Sidebar (s11) | Trade attention for a temporary ad-free reading period after dismissing subscription options. | yes |
+| m3 | hub | Home News Feed (s01) | None; this is the first value screen after launch where offers are prohibited. | no |
+| m4 | hub | Home News Feed (s02) | Proactive entry point for daily engagement rewards on the main entertainment feed. | yes |
+| m5 | hub | Home News Feed (s07) | Offer a local news 'sponsored session' where local ads are suppressed for a duration. | yes |
+| m6 | hub | News Feed Home (s13) | Proactive hub for earning news-related perks like priority alerts. | yes |
+| m7 | hub | Home Feed (s14) | Proactive entry for doubling reading activity rewards on the home feed. | yes |
+| m8 | first-value | Home News Feed (s01) | None; NO OFFERS ALLOWED on the first core content screen. | no |
+| m9 | desire | Add Comment Page (s05) | Unlock the ability to post a single comment without completing the sign-up flow. | yes |
+| m10 | hub | Account Menu Sidebar (s11) | A persistent sidebar hub for managing reward-earning tasks and 'Saved articles' capacity. | yes |
 
 ## All ideas
 
 | # | title | case | archetype | moment | reward | beyond baseline | selected because |
 |---|---|---|---|---|---|---|---|
-| 0 | Guest Comment Pass | product-change | TAX-3 | m9 | 1 guest comment post | yes | This targets a high-intent 'desire' moment where users are currently blocked by a hard sign-up wall. Allowing a single guest comment per ad view provides immediate value and samples the community features [TAX-3]. |
-| 1 | Ad-Light Session | product-change | TAX-2 | m3 | 30 minutes of reduced ads | no |  |
-| 2 | News Streak Multiplier | product-change | TAX-5 | m6 | 2x engagement points for today | yes | Introduces a habit-forming product change by rewarding streaks. A proactive multiplier on a frequent hub screen encourages daily returns without interrupting the reading flow [TAX-5, TRIG-1]. |
-| 3 | Pro Weather Radar | product-change | TAX-4 | m5 | 24h of detailed local radar | yes |  |
-| 4 | Priority User Badge | product-change | TAX-13 | m9 | Verified Guest badge for 1 hour | yes |  |
-| 5 | Bonus Save Slot | product-change | TAX-7 | m10 | +1 saved article slot | yes | Utility-based capacity expansion is a low-cannibalization reward for news apps. It encourages users to curate more content within the AOL ecosystem while providing a tangible permanent benefit [TAX-7]. |
-| 6 | Lighter Side Puzzle | product-change | TAX-3 | m4 | access to the Daily Crossword | yes |  |
-| 7 | Premium Reading Themes | product-change | TAX-13 | m10 | AOL Classic dark mode theme | no |  |
+| 0 | AOL Guest Commenter | product-change | TAX-3 | m9 | 1 Guest Comment | yes | It addresses the strongest friction point in the app: the mandatory sign-up to comment. Unlocking one 'Guest Comment' via an ad solves a moment-of-need problem [TAX-3]. |
+| 1 | AOL Ad-Free Sprint | product-change | TAX-2 | m2 | 15 minutes of Ad-free Reading | no | Ad-free sessions are the proven analog for media apps like Spotify and Pandora [EX-MUSIC]. Using it as a fallback on the account sidebar targets users already seeking to change their experience [TAX-2]. |
+| 2 | Daily Reader Streak | product-change | TAX-9 | m10 | 10 News Credits | yes | A proactive hub for 'Daily Reader Streaks' builds a retention loop in a no-scarcity environment, rewarding users with a new cosmetic or utility currency for their attention [TAX-9]. |
+| 3 | Headline Doubler | product-change | TAX-5 | m7 | 2x Activity Points | yes |  |
+| 4 | Saved List Expansion | product-change | TAX-7 | m10 | +5 Saved Articles slots | yes |  |
+| 5 | Inbox Priority Pass | product-change | TAX-4 | m6 | 1 hour of Priority News Alerts | yes |  |
+| 6 | Sports Spotlight Session | product-change | TAX-11 | m4 | Ad-free Entertainment feed | yes |  |
+| 7 | Comment sample fallback | product-change | TAX-10 | m9 | 1 Guest Reply | yes |  |
 
 ## Set checks (validateSet)
 
@@ -52,116 +52,115 @@ All checks pass.
 
 ## Proposals
 
-### P1 v1: Guest Comment Pass
+### P1 v1: AOL Guest Commenter
 
-> Allow users to post a single comment as a guest after viewing a rewarded ad, providing a taste of social engagement without sign-up.
+> Allow users to post a single news comment by playing a mini-game instead of signing up.
 
 - **Case:** product-change · **Archetype:** TAX-3 · **Beyond baseline:** yes
-- **Anchor:** moments m9; economy none
-- **New mechanic:** Guest Comment Pass: A temporary bypass that allows non-logged-in users to post one comment on an article without signing up for an AOL account, after viewing a rewarded ad. Why: Currently, commenting is gated behind a 'Sign Up to Post' wall, preventing unregistered users from engaging. This pass offers a low-friction entry to social features, potentially increasing engagement and driving future account creation.
-- **Surface:** Add Comment Page (s05) · **Trigger:** User finishes typing a comment on the Add Comment Page (s05) and sees the 'Sign Up to Post' button, indicating a wall. The new 'Post as Guest' button is offered as an alternative.
-- **Eligibility:** Non-logged-in users in their 2nd+ session, not in sensitive content contexts. Capped per user per day.
-- **Offer:** "Post Your Comment Now" / "Play a quick game with AOL to post this comment instantly, no sign-up required. Your post will appear as 'Guest User'." / [Play Game & Post] [No Thanks]
+- **Anchor:** moments m9; economy Account sign-in / verified user status (new)
+- **New mechanic:** Guest Posting: A temporary authorization to submit one comment to a news article discussion without a full AOL account registration. Why: The sign-up wall on the Add Comment Page (s05) prevents spontaneous interaction from guest users, losing valuable engagement data and ad opportunities.
+- **Surface:** Add Comment Page (s05) · **Trigger:** When a user land on the Add Comment Page and encounters the Sign Up to Post requirement.
+- **Eligibility:** Non-signed-in users who have entered text in the comment box.
+- **Offer:** "Post as a guest" / "Don't want to sign up right now? Play a quick 15-second game to post this comment as a guest." / [Play to Post] [Maybe later]
 - **Simula:** SIM-RWD, entry button, Game Partner: AOL, min play 15 s, grant on REWARD_VERIFIED
-- **Reward:** 1 guest comment post · **Caps:** 2/day, cooldown 180 min
-- **Cannibalization guard:** This feature provides access to an action currently unavailable to non-logged-in users, serving as a trial for the social aspect of the app. It does not replace any paid features as no subscription for commenting exists, nor does it grant full account benefits. It may encourage future sign-ups by showcasing community value.
+- **Reward:** one guest comment submission · **Caps:** 1/day, cooldown 1440 min
+- **Cannibalization guard:** The guest pass is limited to a single comment per day and does not grant account benefits like comment history, replies, or profile customization, maintaining the long-term value of a full AOL account.
 - Exchange rate: n/a (the reward is not a priced resource).
 - One completed US view earns $0.0090–$0.0150; the reward is worth n/a at list (n/ax a view); max per day n/a vs cheapest pack n/a.
-- Cost to serve per view: $0.0018 (text-cheap x 1).
-- Scenario, not a forecast: 5% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut. Impressions/DAU 0.075, ARPDAU $0.0009.
+- Cost to serve per view: $0.0000 (none x 1).
+- Scenario, not a forecast: 15% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut. Impressions/DAU 0.15, ARPDAU $0.0018.
 - Flags: none.
-- **KPIs:** Total comments posted by guest users (via rewarded ad) and subsequent account sign-up rate.. Guardrails: Logged-in user comment volume (non-inferiority); D7 / D30 retention for new users; Complaint rate regarding ads. Holdout: User-level randomized holdout (5-10% of non-logged-in users for 28 days)
-- **Precedents:** TAX-3, AI-11, EX-SERIAL, EX-UTIL · **Risks:** Potential for spam or low-quality guest comments if moderation is insufficient, impacting community quality. Low opt-in rate if users don't perceive enough value in a single guest comment. Brand safety concerns with user-generated content in proximity to ads. Requires robust content moderation for guest posts.
-- **Evidence:** m9 "User attempts to post a comment on an article and hits the sign-up wall." (unverified)
+- **KPIs:** Comments per DAU. Guardrails: Account sign-up rate; D1 retention. Holdout: user-level, 10%, 28 days
+- **Precedents:** TAX-3, TAX-10, EX-SERIAL · **Risks:** Potential for lower-quality comments from non-verified users User frustration if the guest post limit is hit
+- **Evidence:** s05/e141 "Sign Up to Post" ✓; m9 "User attempts to post a comment on an article and hits the sign-up wall." (unverified)
 
 **Patch**
 
-- new modal `ns1` based on Add Comment Page (s05): A modal overlay for the rewarded offer invitation, appearing above the Add Comment Page.
-- new element `ne1` in Add Comment Page (s05) before e15: A new button labeled 'Post as Guest' placed slightly above the existing 'Sign Up to Post' button.
-- edge s05/ne1 → rwd
+- new element `ne1` in Add Comment Page (s05) before e141: A Simula 'Play to Post' rewarded invitation button styled as a secondary action.
+- edge s05/ne1 → rwd (Guest Comment +1 on REWARD_VERIFIED)
 
 **Storyboard**
 
 | # | phase | screen | overlay | counters | callouts | caption |
 |---|---|---|---|---|---|---|
-| 1 | today | Add Comment Page (s05) | none |  | P: User drafts a comment, ready to post.; e15: The 'Sign Up to Post' button is the only path. | A user wants to post a comment, but the app requires them to sign in first, blocking their action. |
-| 2 | change | Add Comment Page (s05) | none |  | P: Comment draft is preserved.; ne1: A new 'Post as Guest' button appears.; e15: The 'Sign Up to Post' option remains. | A 'Post as Guest' button is added as an alternative, offering a new path to engagement. |
-| 3 | offer | Add Comment Page (s05) | invite |  | ns1: The rewarded ad offer appears after tapping 'Post as Guest'.; e15: Paid alternative is subtly visible. | The user taps 'Post as Guest' and is shown an invitation to play a game for a free comment. |
-| 4 | ad | Add Comment Page (s05) | game |  | SIM-RWD: User plays a short mini-game with AOL, the Game Partner. | The user opts in and completes a short rewarded mini-game. |
-| 5 | value | Conversation Screen (s04) | verified |  | e18: The user's comment is successfully posted. | Upon completion and verification, the user's comment is posted, and they are returned to the conversation screen. |
+| 1 | today | Conversation Screen (s04) | none |  | e18: User reading comments | The user reads interesting comments on a news article. |
+| 2 | change | Add Comment Page (s05) | none |  | e141: Forced sign-up to engage; ne1: New guest option | When trying to comment, they see the sign-up requirement but also a new guest option. |
+| 3 | offer | Add Comment Page (s05) | invite |  | ne1: Post without an account | The user chooses to play a quick game to unlock a guest post. |
+| 4 | ad | Add Comment Page (s05) | game |  |  | A fun 15-second AOL-themed mini-game plays. |
+| 5 | value | Conversation Screen (s04) | verified | Guest Comment=0 | e9: Comment successfully posted | The reward is verified and the user's comment is published immediately. |
 
-### P2 v1: News Streak Multiplier
+### P2 v1: AOL Ad-Free Sprint
 
-> Drive daily reading habit through a gamified streak mechanic that can be doubled by watching rewarded ads.
+> Enjoy 15 minutes of ad-free news reading after a quick game.
 
-- **Case:** product-change · **Archetype:** TAX-5 · **Beyond baseline:** yes
-- **Anchor:** moments m6; economy DAILY_STREAK_POINTS
-- **New mechanic:** Daily Reading Streak: Users earn 1 point for every day they read or save at least one article. Points accrue for achievements and profile badges. Why: Creates a meaningful, scarce engagement resource to anchor the rewarded ad value exchange.
-- **Surface:** News Feed Home (s13) · **Trigger:** After the user taps 'Save this article' (e38) on the News Feed Home screen (s13), confirming a daily reading action.
-- **Eligibility:** All non-paying users who have completed their daily reading goal (saved at least 1 article).
-- **Offer:** "Double Your Streak Points" / "Play a 15-second game to double your Daily Streak points for today." / [Play Now] [No thanks]
-- **Simula:** SIM-RWD, entry button, Game Partner: AOL News, min play 15 s, grant on REWARD_VERIFIED
-- **Reward:** Daily Streak points doubled · **Caps:** 1/day, cooldown 60 min
-- **Cannibalization guard:** The reward is a retention-focused meta-game point (engagement), not a substitute for a paid subscription tier or ad-free access. This creates positive sampling effects for the app without devaluing existing content.
+- **Case:** product-change · **Archetype:** TAX-2 · **Beyond baseline:** no
+- **Anchor:** moments m2, m10; economy AD TODAY native on Home News Feed (e42), AD TODAY banner on Article Ad View (e17), Ad-free Sprint (new)
+- **New mechanic:** Ad-free Sprint: A time-boxed entitlement that suppresses all native and banner advertisements across news feeds and article pages. Why: The app is currently high-density in advertisements but lacks a scarcity-based value exchange to drive engagement or sample premium benefits.
+- **Surface:** Account Menu Sidebar (s11) · **Trigger:** User opens the Account Menu Sidebar and views account options.
+- **Eligibility:** Non-paying users currently exposed to standard ad density.
+- **Offer:** "Go Ad-Free for 15 Minutes" / "Play a 15-second game to clear all ads from your news feed for a short sprint." / [Start Sprint] [No thanks]
+- **Simula:** SIM-RWD, entry button, Game Partner: AOL, min play 15 s, grant on REWARD_VERIFIED
+- **Reward:** 15 minutes of ad-free reading · **Caps:** 3/day, cooldown 60 min
+- **Cannibalization guard:** The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampling effect rather than a permanent replacement for ad-free tiers.
 - Exchange rate: n/a (the reward is not a priced resource).
 - One completed US view earns $0.0090–$0.0150; the reward is worth n/a at list (n/ax a view); max per day n/a vs cheapest pack n/a.
 - Cost to serve per view: $0.0000 (none x 0).
-- Scenario, not a forecast: 40% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut. Impressions/DAU 0.4, ARPDAU $0.0048.
+- Scenario, not a forecast: 15% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut. Impressions/DAU 0.225, ARPDAU $0.0027.
 - Flags: none.
-- **KPIs:** Daily Active Users (DAU). Guardrails: Article save rate; Session duration; Retention (D7, D30). Holdout: 10% of total users held out from the Streak Multiplier offer for 30 days.
-- **Precedents:** TAX-5, TAX-9, EX-DUO · **Risks:** Points may be perceived as trivial if they do not unlock tangible benefits like badges or profile themes. Potential for user fatigue if the multiplier is offered every day without sufficient engagement.
-- **Evidence:** s13/e38 "Save this article" ✓; s13/e37 "Takeaways from Trump-Xi summit: Lots of pomp and e" ✓
+- **KPIs:** Ad-free Sprint sessions started. Guardrails: Daily active news reading time; Native ad CTR (non-sprint); D7 Retention. Holdout: User-level holdout, 10% share, 21 days
+- **Precedents:** TAX-2, EX-MUSIC, CORE-2 · **Risks:** Users may grow accustomed to ad-free reading and find the return to standard density jarring. Potential revenue dip if sprint sessions overlap with peak reading times.
+- **Evidence:** s11 "Unsubscribe" ✓; s02/e47 "TEMU in Taboola advertising section" ✓
 
 **Patch**
 
-- new element `ns13_streak_meter` in News Feed Home (s13) after e14: Displays current daily reading streak count (e.g., 'Today's Streak: 3')
-- new element `ns13_multiplier_btn` in News Feed Home (s13) after e38: Button visible after saving an article: '2x Streak Multiplier'
-- edge s13/ns13_multiplier_btn → rwd (DAILY_STREAK_POINTS +1 on REWARD_VERIFIED) when DAILY_STREAK_POINTS < 2
+- new element `ne1` in Account Menu Sidebar (s11) before e52: A menu item with a lightning icon titled 'Ad-Free Sprint (15 min)' and a 'Play to Start' subtitle.
+- new element `ne2` in Home News Feed (s02) after e12: A small countdown timer badge next to the 'Home' title indicating remaining ad-free time.
+- edge s11/ne1 → rwd (Ad-free Sprint +15 on REWARD_VERIFIED)
 
 **Storyboard**
 
 | # | phase | screen | overlay | counters | callouts | caption |
 |---|---|---|---|---|---|---|
-| 1 | today | News Feed Home (s13) | none | DAILY_STREAK_POINTS=3 | ns13_streak_meter: Current 3-day streak shown. | User has a 3-day reading streak. |
-| 2 | change | News Feed Home (s13) | none | DAILY_STREAK_POINTS=3 | e38: User saves an article. | User saves a news story, triggering the streak multiplier opportunity. |
-| 3 | offer | News Feed Home (s13) | invite | DAILY_STREAK_POINTS=3 | ns13_multiplier_btn: Offer: Double your streak points? | A prompt invites the user to double their streak points by playing a short game. |
-| 4 | ad | News Feed Home (s13) | game | DAILY_STREAK_POINTS=3 | ns13_multiplier_btn: Game: 15s play session. | User plays a quick 15-second mini-game with the AOL partner. |
-| 5 | value | News Feed Home (s13) | verified | DAILY_STREAK_POINTS=4 | ns13_streak_meter: Points doubled: 4 points total. | The reward is verified and streak points are credited. |
+| 1 | today | Account Menu Sidebar (s11) | none |  | e52: User views standard account options. | The user explores the sidebar menu where news and account settings are managed. |
+| 2 | change | Account Menu Sidebar (s11) | none |  | ne1: New Ad-Free Sprint option appears. | A new 'Ad-Free Sprint' entry point is added to the menu, offering a premium benefit for attention. |
+| 3 | offer | Account Menu Sidebar (s11) | invite |  | ne1: User taps to see the value exchange. | Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward. |
+| 4 | ad | Account Menu Sidebar (s11) | game |  |  | The user plays a quick 15-second game with the AOL Game Partner character. |
+| 5 | value | Home News Feed (s02) | verified | Ad-free Sprint=15 | ne2: Ads are suppressed; timer begins. | The reward is granted; ads are hidden from the feed and a countdown timer confirms the sprint status. |
 
-### P3 v1: Bonus Save Slot
+### P3 v1: Daily Reader Streak
 
-> Watch a quick game to expand your article library.
+> Earn virtual credits daily to unlock premium news summaries by playing interactive mini-games.
 
-- **Case:** product-change · **Archetype:** TAX-7 · **Beyond baseline:** yes
-- **Anchor:** moments m10; economy SAVE_CAPACITY, ARTICLE_SAVE
-- **New mechanic:** Library Capacity Limit: Limit free account article saving to 50 slots. Why: Creates a scarce resource anchor for rewarded ads. **Removes free value (high risk).**
-- **Surface:** Account Menu Sidebar (s11) · **Trigger:** User opens the sidebar menu.
-- **Eligibility:** Logged-in free tier users.
-- **Offer:** "Expand Your Library" / "Play a quick game to add 5 more save slots." / [Play Now] [No thanks]
+- **Case:** product-change · **Archetype:** TAX-9 · **Beyond baseline:** yes
+- **Anchor:** moments m10; economy AD TODAY native on Home News Feed (e42), News Credits (new)
+- **New mechanic:** AOL News Credits: A habit-building virtual currency earned through daily streaks and rewarded ads, redeemable for ad-light reading sessions and advanced article summaries. Why: AOL currently has no scarce resource; News Credits create a value exchange to monetize non-paying attention via opt-in ads.
+- **Surface:** Account Menu Sidebar (s11) · **Trigger:** A user opens the Account Menu Sidebar to manage settings and sees a new Daily Streak progress card.
+- **Eligibility:** Non-signed-in users and signed-in non-subscribers who haven't claimed today's reward.
+- **Offer:** "Daily Reading Streak" / "Play a 15-second game with AOL to earn 10 News Credits and keep your streak alive!" / [Play Now] [No thanks]
 - **Simula:** SIM-RWD, entry button, Game Partner: AOL, min play 15 s, grant on REWARD_VERIFIED
-- **Reward:** 5 extra save slots · **Caps:** 3/day, cooldown 60 min
-- **Cannibalization guard:** The reward is additive, not subtractive. Saved article limit is a non-core engagement feature and does not impact ad-supported reading experience [TAX-7].
+- **Reward:** 10 News Credits · **Caps:** 1/day, cooldown 1440 min
+- **Cannibalization guard:** The reward is a small daily amount that cannot be stacked to replace the core subscription value; it acts as a sampling mechanic for premium features.
 - Exchange rate: n/a (the reward is not a priced resource).
 - One completed US view earns $0.0090–$0.0150; the reward is worth n/a at list (n/ax a view); max per day n/a vs cheapest pack n/a.
-- Cost to serve per view: $0.0000 (none x 5).
-- Scenario, not a forecast: 15% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut. Impressions/DAU 0.18, ARPDAU $0.0022.
+- Cost to serve per view: $0.0000 (none x 0).
+- Scenario, not a forecast: 20% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut. Impressions/DAU 0.2, ARPDAU $0.0024.
 - Flags: none.
-- **KPIs:** Total saved articles. Guardrails: D7 Retention; Daily ad revenue. Holdout: 10% user holdout for 4 weeks to measure total engagement.
-- **Precedents:** TAX-7, POL-2, TRIG-5 · **Risks:** Users may be frustrated by the introduction of a new limit on a previously unlimited feature.
-- **Evidence:** s11 "Account Menu Sidebar" (unverified)
+- **KPIs:** D7 Retention. Guardrails: Average Sessions Per DAU; Taboola Ad Click-Through Rate. Holdout: User-level randomization, 10% share, 28-day duration
+- **Precedents:** TAX-9, EX-SERIAL, AI-3 · **Risks:** User perceived value of credits may start low until redemption utility is expanded. Potential fatigue if the streak mechanic feels repetitive.
+- **Evidence:** s11 "Manage Accounts" ✓; s11/e31 "Settings" ✓
 
 **Patch**
 
-- new element `ne_storage_status` in Account Menu Sidebar (s11) after (no anchor): Add storage status (45/50 slots) and 'Expand Library' CTA button.
-- edge s11/ne_storage_status → rwd (SAVE_CAPACITY +5 on REWARD_VERIFIED)
+- new element `ne1` in Account Menu Sidebar (s11) after e36: Add a 'Daily Reader Streak' section with a progress bar and a 'Claim Credits' button.
+- edge s11/ne1 → rwd (News Credits +10 on REWARD_VERIFIED)
 
 **Storyboard**
 
 | # | phase | screen | overlay | counters | callouts | caption |
 |---|---|---|---|---|---|---|
-| 1 | today | Account Menu Sidebar (s11) | none | SAVE_CAPACITY=50 | ne_storage_status: Existing sidebar menu. | AOL sidebar today, providing general account navigation. |
-| 2 | change | Account Menu Sidebar (s11) | none | SAVE_CAPACITY=50 | ne_storage_status: New capacity tracker: 45/50 saved articles. | Introduce a 50-article save limit to the account menu. |
-| 3 | offer | Account Menu Sidebar (s11) | invite | SAVE_CAPACITY=50 | ne_storage_status: Play to unlock +5 slots! | When user nears the limit, the expansion offer appears. |
-| 4 | ad | Account Menu Sidebar (s11) | game | SAVE_CAPACITY=50 | ne_storage_status: 15s mini-game. | User plays the interactive rewarded mini-game. |
-| 5 | value | Account Menu Sidebar (s11) | verified | SAVE_CAPACITY=55 | ne_storage_status: Slots expanded to 55! | Library capacity is updated immediately upon verification. |
+| 1 | today | Account Menu Sidebar (s11) | none |  | e12: Existing accounts menu | A user opens the sidebar to access their settings or saved articles. |
+| 2 | change | Account Menu Sidebar (s11) | none | News Credits=0 | ne1: Daily Streak section | A new 'Daily Reader Streak' card appears below the settings menu. |
+| 3 | offer | Account Menu Sidebar (s11) | invite | News Credits=0 | ne1: Tap to claim rewards | The user taps to earn credits, triggering a Simula rewarded game invitation. |
+| 4 | ad | Account Menu Sidebar (s11) | game |  |  | The user plays a 15-second sponsored mini-game with the AOL game partner. |
+| 5 | value | Account Menu Sidebar (s11) | verified | News Credits=10 | ne1: Streak maintained! | After the game, the streak is updated and 10 News Credits are granted. |
 

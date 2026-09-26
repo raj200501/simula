@@ -36,6 +36,10 @@ describe("code gates", () => {
   test("gift-card reward -> policy lint (policy)", () => failsOnly(mutate(p => { p.reward.what = "A $1 gift card every 10 games"; }), "policy-lint", "policy", /gift card/));
   test("'tap the ad' copy -> policy lint", () => failsOnly(mutate(p => { p.offer.body = "Tap the ad to get 50 credits"; }), "policy-lint", "policy"));
   test("risks may say 'never reward installs' without tripping the lint", () => assert.deepEqual(failed(mutate(p => { p.risks = ["Never reward installs or clicks."]; })), []));
+  test("an observed ad placement may be cited by its digest label or its element; an unseen one fails grounding", () => {
+    assert.deepEqual(failed(mutate(p => { p.anchor.economy = [...p.anchor.economy, "AD TODAY native on Home (e6)", "Sponsored: SkyBank (e6)"]; })), []);
+    failsOnly(mutate(p => { p.anchor.economy = [...p.anchor.economy, "AD TODAY banner on Store (e9)"]; }), "grounding", "fixable", /e9/);
+  });
   test("unknown surface -> grounding", () => failsOnly(mutate(p => { p.surface = "s99"; }), "grounding", "fixable", /s99/));
   test("undeclared new element -> grounding", () => failsOnly(mutate(p => { p.patch.newEdges[0].el = "ne7"; }), "grounding", "fixable", /ne7/));
   test("unknown moment and economy ids -> grounding", () => failsOnly(mutate(p => { p.anchor.moments.push("m42"); }), "grounding", "fixable", /m42/));

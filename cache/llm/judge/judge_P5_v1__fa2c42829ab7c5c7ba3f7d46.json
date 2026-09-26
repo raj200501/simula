@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P5:v1",
+ "model": "gemini-3.8-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets screen s09 (Animate Tool Screen) via trigger 'When the user taps the generate button with 0 Anima Video Credits remaining.', which is an SFW creative animation tool with options like waving, clapping, and walking."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal grants '1 Anima Video Credit' (resource 'r_anima_credit') redeemable only in-app for video animation, with no cash, gift cards, or rewards for app installs or clicks."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses standard value framing without dark patterns or timers: 'title': 'Out of Anima Credits', 'body': 'Play a 15-second game to get 1 Anima Video Credit and export now.', 'cta': 'Play Now', 'decline': 'No Thanks'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Storyboard and offer define an explicit opt-in overlay where the user must tap the CTA: 'An explicit opt-in overlay appears, offering 1 credit for playing a 15-second game.' with 'cta': 'Play Now'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer disclosure specifies both the duration and the exact reward upfront: 'body': 'Play a 15-second game to get 1 Anima Video Credit and export now.'."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining is explicitly provided with 'decline': 'No Thanks', which dismisses the prompt without penalty or state change."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs before generation starts: 'When the user taps the generate button with 0 Anima Video Credits remaining.', never interrupting an active generation."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility is explicitly restricted: 'Non-paying free tier users who have exhausted their daily video generation limit.'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The user is blocked from exporting on s09 ('When the user taps the generate button with 0 Anima Video Credits remaining.') and is offered '1 Anima Video Credit' to immediately generate and export their video. However, the credit is an invented product change rather than an existing observed constraint.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal explicitly specifies 'removesFreeValue': true, declaring 'Introduce a daily limit of 1 free video animation per day'. Restricting previously unlimited free tool usage creates backlash, as noted in proposal risks: 'Introducing limits on video generation may cause initial user backlash, similar to Duolingo's Energy change.'",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Proposal restricts offers to 'Non-paying free tier users', caps rewards at 3 per day, and separates video generation from core Luzia+ subscription features ('deep reasoning' and 'services'). A 10% 28-day randomized holdout is planned.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed economics show that cost to serve per view is $0.0250 (image x 1), while US net revenue per view is only $0.0063 (gross $0.0090–$0.0150). The cost to serve significantly exceeds revenue per view, yielding an unsustainable negative margin.",
+    "score": 1
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Screen s09 ('Animate Tool Screen') is accessed via secondary flow f7 ('Apps Catalog -> Open Anima app'). While s09 had 6 visits during exploration, it is a specialized tool rather than the main chat feed, making the assumed 25% engaged DAU share optimistic.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to Simula 'SIM-RWD' with 'button' entry and 'REWARD_VERIFIED'. However, it requires implementing a full backend quota and credit system for Anima, and failed code grounding on moment m20.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Grounded in Luzia's actual screens and elements, referencing s09, e14 ('Upload the pic you want to animate'), animation styles like Clapping and Walking, with patches ne1 and ne2 placed near e34 and e12.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes explicit caps: 'caps': { 'perDay': 3, 'cooldownMin': 15 }, which limits fatigue and prevents runaway impressions.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies primary metric 'Anima Generation Ad Revenue', guardrails ('Luzia+ Subscription Conversion Rate', 's09 Screen Churn Rate', 'D7 Retention'), and a user-level 10% holdout over 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix unit economics: The cost to serve ($0.0250) exceeds net ad revenue ($0.0063). Bundle multiple ad views (e.g., watch 2-3 ads, fully disclosed) per generation credit, or reward a near-zero COGS perk like priority rendering queue or exclusive animation presets.",
+   "Resolve product integrity loss: Rather than taking away existing free generations by capping daily exports to 1 ('removesFreeValue': true), keep baseline free generations intact and apply the rewarded gate to premium tiers such as HD resolution, watermark-free export, or extended duration.",
+   "Fix evidence grounding: Replace evidence key 'm20' with verified digest screen IDs and element IDs (such as s09 and e14) to satisfy automated grounding verification."
+  ],
+  "topConcern": "Cost to serve per view ($0.0250) severely exceeds net ad revenue ($0.0063), creating an unsustainable, loss-making unit economic structure for each completed ad."
+ },
+ "usage": {
+  "input": 42709,
+  "output": 1579,
+  "cacheRead": 40417,
+  "cacheWrite": 0,
+  "thoughts": 7661
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:05:21.379Z"
+}

@@ -8,443 +8,340 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 
 | proposal | title | final | weighted | versions | summary |
 |---|---|---|---|---|---|
-| P1 | Context Memory Boost | **REJECT** | 5 | v1 → v2 → v3 | REJECT after 2 revisions: fixable gate failed: grounding (code); still REVISE after round 2. Top concern: grounding (code): reward resource "context_memory_5x" does not exist; edge effect on unknown resource "context_memory_5x"; storyboard value: counter on unknown resource "context_memory_5x" |
-| P2 | Paywall-Decline Priority Routing | **REJECT** | 4.45 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted +0.1, below +0.2) with the same gate failures. Top concern: grounding (code): reward resource "janitor_plus_priority_routing_time" does not exist; edge effect on unknown resource "janitor_plus_priority_routing_time"; storyboard value: counter on unknown resource "janitor_plus_priority_routing_time"; evidence "m2" is not an observation or screen in the model |
-| P3 | Premium Scenario Unlock | **REJECT** | 4.9 | v1 → v2 → v3 | REJECT after 2 revisions: policy gate failed: sfw (llm). Top concern: grounding (code): economy item "s09" does not exist; edge guard on unknown resource "JanitorPlus"; evidence element "Willson Wáng" is not on s09 |
+| P1 | Paywall Fallback Swipes | **REJECT** | 4.8 | v1 → v2 | REJECT after 1 revision: policy gate failed: sfw (llm). Top concern: grounding (code): economy item "plan" does not exist; economy item "base_swipes (new)" does not exist; reward resource "base_swipes" does not exist; edge effect on unknown resource "base_swipes"; storyboard today: counter on unknown resource "base_swipes"; storyboard change: counter on unknown resource "base_swipes"; storyboard offer: counter on unknown resource "base_swipes"; storyboard ad: counter on unknown resource "base_swipes" |
+| P2 | Session Context Boost | **REJECT** | 4.15 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted -0.35, below +0.2) with the same gate failures. Top concern: economics (code): Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end. |
+| P3 | Daily Check-in Swipe | **REJECT** | 4.35 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted +0.05, below +0.2) with the same gate failures. Top concern: economics (code): Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end. |
 
-## P1: Context Memory Boost — REJECT
+## P1: Paywall Fallback Swipes — REJECT
 
-> Unlock 15 minutes of 5x context memory via a rewarded mini-game.
+> Provide non-paying users with limited base model swipes in exchange for engagement when they decline a premium paywall.
 
-- existing · TAX-7 · surface More memory for
-long chats. (s03) · reward 15 minutes of 5x context memory for 15m · caps 2/day
+- existing · TAX-10 · surface ns1 · reward 3 base model swipes · caps 2/day
 
-#### Round 0 (v1): **REVISE** · weighted 4.7 · judged by llm
+#### Round 0 (v1): **REVISE** · weighted 3.5 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
 | schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | economy item "plan" does not exist; reward resource "plan" does not exist; edge effect on unknown resource "plan"; evidence "m1" is not an observation or screen in the model |
+| grounding | code | fixable | **FAIL** | economy item "plan" does not exist; economy item "swipes (new)" does not exist; reward resource "swipes" does not exist; edge effect on unknown resource "swipes"; storyboard today: counter on unknown resource "swipes"; storyboard change: counter on unknown resource "swipes"; storyboard offer: counter on unknown resource "swipes"; storyboard ad: counter on unknown resource "swipes" |
 | label | code | fixable | pass | cites observed economy items: of1, w1 |
+| already-exists | code | fixable | pass | no ad of this format on this surface today |
+| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
+| economics | code | fixable | **FAIL** | Cost to serve the reward ($0.0270) exceeds net revenue per view ($0.0063) at the low end. |
+| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
+| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
+| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
+| sfw | llm | policy | pass | "surface": "s04" |
+| no-incentivized-action | llm | policy | pass | "what": "3 frontier model swipes", "body": "Play a quick 15-second game to get 3 free swipes on our frontier models." |
+| no-loss-framing | llm | policy | pass | "title": "Want 3 free swipes?", "body": "Play a quick 15-second game to get 3 free swipes on our frontier models.", "cta": "Play Game", "decline": "No thanks" |
+| explicit-opt-in | llm | fixable | pass | "trigger": "Fires immediately after the user taps the decline option ('Not now') on the Janitor Plus paywall." |
+| disclosed | llm | fixable | pass | "body": "Play a quick 15-second game to get 3 free swipes on our frontier models." |
+| free-decline | llm | fixable | pass | "An equally legible secondary button labeled 'No thanks' that dismisses the fallback offer and routes the user back to their profile." |
+| no-stream-interrupt | llm | fixable | pass | "Fires immediately after the user taps the decline option ('Not now') on the Janitor Plus paywall." |
+| not-for-subscribers | llm | fixable | pass | "eligibility": "Non-paying, non-subscribed users who dismiss the premium subscription offer s04." |
+
+| criterion | weight | score | evidence |
+|---|---|---|---|
+| value-moment-fit | 20 | 4 | The proposal gates on the dismissal of paywall s04 (m3) and offers a temporary sample of 3 premium swipes. This is a classic TAX-10 paywall decline fallback. However, since the free tier currently does not track swipes, it requires introducing a new resource tracking mechanism. |
+| product-integrity | 15 | 4 | The modal ns1 intercepts the paywall decline to offer a rewarded ad. While intercepting a decline can be slightly intrusive, it is standard for TAX-10 and does not degrade the core roleplay experience. |
+| cannibalization-safety | 15 | 4 | Gated strictly to non-payers upon paywall decline, with a daily cap of 6 swipes total. A 5% holdout is planned over 28 days to monitor downstream conversion, ensuring the 'generous' paid tier remains superior. |
+| unit-economics | 10 | 1 | Cost to serve ($0.0270) exceeds the net ad revenue per view ($0.0063 at the low end, and $0.0150 at the absolute high end) because it uses premium model text generation. No mitigation or transition to a cheaper model is proposed. |
+| reach | 10 | 2 | Gated on s04 decline (Janitor Plus Paywall), which the digest identifies as a rare screen ('reach=rare'), meaning few users will encounter this specific trigger daily. |
+| feasibility | 10 | 2 | Maps cleanly to SIM-RWD. However, grounding fails because the free tier currently has no concept of swipes, requiring significant backend changes to introduce and enforce a new consumable swipe currency. |
+| specificity | 10 | 5 | Highly specific to Janitor Plus, referencing screen s04, element e12 ('Not now'), and e8 ('Generous monthly swipes with our frontier models'). |
+| frequency-fatigue | 5 | 5 | Implements a daily cap of 2 entries and a 12-hour cooldown (720 min) to prevent user fatigue and repetitive prompts. |
+| measurability | 5 | 5 | Excellent experiment design featuring a 5% user-level holdout group for 28 days, with Ad ARPDAU as primary and purchase conversion and retention as guardrails. |
+
+- **Verdict reasons (code):** fixable gate failed: grounding (code); fixable gate failed: economics (code); unit-economics scored 1 (< 3); reach scored 2 (< 3); feasibility scored 2 (< 3); weighted 3.5 < 3.8
+- **Required changes:**
+  - Reduce the reward cost by switching from premium frontier swipes to cheaper base model swipes to ensure cost to serve ($0.0270) does not exceed net ad revenue ($0.0090-$0.0150).
+  - Expand the placement to include s03 ('More memory for long chats'), which is a more frequent paywall entry point than the rare s04 paywall.
+  - Ground the new swipes resource by detailing how free swipes are tracked on the backend and displayed to users in the UI.
+- **Top concern:** The cost to serve 3 premium model swipes ($0.0270) is more than double the maximum gross ad revenue generated from a single completed view ($0.0150), resulting in highly negative unit economics with no mitigation plan.
+
+#### Changes v1 → v2 (revise() saw the required changes, never the scores)
+
+- `oneLiner`: "Provide non-paying users with limited frontier model swipes in exchange for engagement..." → "Provide non-paying users with limited base model swipes in exchange for engagement whe..."
+- `anchor.moments[0]`: "m3" → "m1"
+- `anchor.economy[3]`: "swipes (new)" → "base_swipes (new)"
+- `surface`: "s04" → "ns1"
+- `trigger`: "Fires immediately after the user taps the decline option ('Not now') on the Janitor Pl..." → "Fires immediately after the user taps the decline option ('Close paywall' on s03 or 'N..."
+- `eligibility`: "Non-paying, non-subscribed users who dismiss the premium subscription offer s04." → "Non-paying, non-subscribed users who dismiss the premium subscription offer from s03 o..."
+- `offer.body`: "Play a quick 15-second game to get 3 free swipes on our frontier models." → "Play a quick 15-second game to get 3 free swipes on our base models."
+- `reward.what`: "3 frontier model swipes" → "3 base model swipes"
+- `reward.resource`: "swipes" → "base_swipes"
+- `cannibalizationGuard`: "The offer is gated purely on paywall decline (TAX-10). It is strictly capped at 2 inst..." → "The offer is gated purely on paywall decline (TAX-10). It is strictly capped at 2 inst..."
+- `assumptions.cogs`: "text-premium" → "text-cheap"
+- `kpis.guardrails[0]`: "Paywall s04 purchase conversion rate" → "Paywall s03 and s04 purchase conversion rate"
+- `patch.newEdges[1].from`: "ns1" → "s03"
+- `patch.newEdges[1].el`: "ne1" → "e3"
+- `patch.newEdges[1].to`: "rwd" → "ns1"
+- `patch.newEdges[1].effects[0].resource`: "swipes" → (none)
+- `patch.newEdges[1].effects[0].delta`: 3 → (none)
+- `patch.newEdges[2].el`: "ne2" → "ne1"
+- `patch.newEdges[2].to`: "s02" → "rwd"
+- `storyboard[0].counters[0].resource`: "swipes" → "base_swipes"
+- `storyboard[0].caption`: "Today, when a user declines Janitor Plus on the paywall screen, they are returned dire..." → "Today, when a user declines Janitor Plus on either paywall screen (s03 or s04), they a..."
+- `storyboard[1].counters[0].resource`: "swipes" → "base_swipes"
+- `storyboard[1].caption`: "We introduce a product change that intercepts the paywall decline action to offer a re..." → "We introduce a product change that intercepts paywall decline actions from both s03 an..."
+- `storyboard[2].counters[0].resource`: "swipes" → "base_swipes"
+- `storyboard[2].caption`: "The fallback modal ns1 appears, explicitly offering 3 free frontier swipes for playing..." → "The fallback modal ns1 appears, explicitly offering 3 free base model swipes for playi..."
+- `storyboard[3].counters[0].resource`: "swipes" → "base_swipes"
+- `storyboard[4].counters[0].resource`: "swipes" → "base_swipes"
+- `storyboard[4].callouts[0].node`: "e6" → "ne3"
+- `storyboard[4].callouts[0].text`: "User gets 3 swipes credited to their account." → "User gets 3 base model swipes credited. Counter visible on Profile menu."
+- `storyboard[4].caption`: "Upon REWARD_VERIFIED, 3 swipes are credited, and the user is redirected to s02 to begi..." → "Upon REWARD_VERIFIED, 3 base model swipes are credited, and the user is redirected to ..."
+- ... and 21 more changes
+
+#### Round 1 (v2): **REJECT** · weighted 4.8 · judged by llm
+
+| gate | by | severity | result | evidence |
+|---|---|---|---|---|
+| schema | code | policy | pass | parses as a Proposal |
+| grounding | code | fixable | **FAIL** | economy item "plan" does not exist; economy item "base_swipes (new)" does not exist; reward resource "base_swipes" does not exist; edge effect on unknown resource "base_swipes"; storyboard today: counter on unknown resource "base_swipes"; storyboard change: counter on unknown resource "base_swipes"; storyboard offer: counter on unknown resource "base_swipes"; storyboard ad: counter on unknown resource "base_swipes" |
+| label | code | fixable | pass | cites observed economy items: of1, w1 |
+| already-exists | code | fixable | pass | no ad of this format on this surface today |
+| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
+| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
+| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
+| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
+| sfw | llm | policy | **FAIL** | While screens s03 and s04 are generic paywalls, the app contains characters and scenarios involving 'cancer' (s09) and 'neglectful family' (s12). The proposal lacks mention of topic-sensitivity screening or moderation-score gating required to keep ads away from sensitive topics [POL-7, SAFE-1]. |
+| no-incentivized-action | llm | policy | pass | The reward is '3 base model swipes', an in-app consumable with no cash-like value or incentive for installs/clicks. |
+| no-loss-framing | llm | policy | pass | The proposal uses a positive fallback frame ('Want 3 free swipes?') with an 'equally legible secondary button' for declining, avoiding dark patterns or 'support us' copy. |
+| explicit-opt-in | llm | fixable | pass | The user must tap the primary button labeled 'Play Game' on screen ns1 before any ad is served. |
+| disclosed | llm | fixable | pass | The invitation explicitly states the reward and the action: 'Play a quick 15-second game to get 3 free swipes on our base models.' |
+| free-decline | llm | fixable | pass | Declining via 'No thanks' returns the user to the profile menu (s02) without penalty or loss of functionality. |
+| no-stream-interrupt | llm | fixable | pass | The trigger is 'Paywall decline', which is a transition boundary occurring after the user dismisses a blocked context memory/swipe wall (m1/m3). |
+| not-for-subscribers | llm | fixable | pass | Eligibility is restricted to 'Non-paying, non-subscribed users' who are not already entitled to the premium 'frontier model swipes'. |
+
+| criterion | weight | score | evidence |
+|---|---|---|---|
+| value-moment-fit | 20 | 5 | The reward (swipes) perfectly addresses the user's immediate intent when they hit a context memory/swipe wall and then decline the premium subscription. |
+| product-integrity | 15 | 5 | The proposal preserves the roleplay flow by triggering only on paywall dismissal and uses an additive 'base model' reward that doesn't degrade existing free value. |
+| cannibalization-safety | 15 | 5 | Gating on paywall decline (TAX-10), restricted to a 'base model' and capped at 2 instances/day ensures Janitor Plus remains the superior option. Includes a 5% holdout. |
+| unit-economics | 10 | 4 | Cost to serve ($0.0054) is 45-60% of US net revenue per view. This is within safe bounds but above the 30% threshold for a top score. |
+| reach | 10 | 5 | Triggers from paywall decline (m2), which is categorized as 'frequent' reach in the product digest. |
+| feasibility | 10 | 4 | Maps to SIM-RWD and uses a standard invitation entry, though it requires backend logic for a new 'base model' swipe type and daily counter. |
+| specificity | 10 | 5 | Heavily leverages app-specific nouns like 'Janitor Plus', 'frontier model swipes', and navigates precisely between s03/s04 and the profile (s02). |
+| frequency-fatigue | 5 | 5 | Explicitly caps at 2 per day with a 12-hour cooldown to prevent repetitive prompting. |
+| measurability | 5 | 5 | Proposes Ad ARPDAU as the primary KPI, includes purchase conversion guardrails, and specifies a user-level holdout. |
+
+- **Verdict reasons (code):** policy gate failed: sfw (llm)
+- **Required changes:**
+  - Add brand-safety controls to suppress the rewarded offer if the preceding character interaction or session context involves sensitive topics such as health, self-harm, or politics [POL-7].
+  - Implement moderation-score gating to ensure the ad surface is only triggered on SFW-rated characters and pass the 'nsfw' flag to the Simula SDK.
+  - Clarify that the 'base model swipes' reward does not grant access to 'Limitless' or NSFW model capabilities if those are reserved for Janitor Plus.
+- **Top concern:** Adjacency to sensitive content. The app features roleplay themes including 'cancer' and 'neglectful family'; the proposal must incorporate moderation filters to prevent ad delivery in these sensitive contexts.
+
+
+## P2: Session Context Boost — REJECT
+
+> Unlock 30 minutes of 5x context memory by playing a quick mini-game after declining the Janitor Plus paywall.
+
+- existing · TAX-2 · surface More memory for
+long chats. (s03) · reward 30 minutes of 5x context for better memory · caps 2/day
+
+#### Round 0 (v1): **REVISE** · weighted 4.5 · judged by llm
+
+| gate | by | severity | result | evidence |
+|---|---|---|---|---|
+| schema | code | policy | pass | parses as a Proposal |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | cites observed economy items: of1 |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
 | economics | code | fixable | **FAIL** | Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end. |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | The proposal targets the memory wall on s03, which is a standard utility feature for the service. |
-| no-incentivized-action | llm | policy | pass | The reward is for playing a mini-game, not for clicking or installing ads. |
-| no-loss-framing | llm | policy | pass | The proposal uses gain framing ('Unlock 5x Memory') rather than threatening to delete existing content. |
-| explicit-opt-in | llm | fixable | pass | The proposal includes an explicit opt-in via a new 'Try for free' button and an invite screen. |
-| disclosed | llm | fixable | pass | The invitation discloses the action (15s game) and the reward (30 mins of memory). |
-| free-decline | llm | fixable | pass | The UI design includes a 'Not Now' button, fulfilling the requirement for free decline. |
-| no-stream-interrupt | llm | fixable | pass | The offer is placed on the memory paywall screen, not during a chat generation. |
-| not-for-subscribers | llm | fixable | pass | The eligibility is explicitly restricted to non-paying users. |
+| sfw | llm | policy | pass | surface: s03", "eligibility: Non-subscribers who dismiss the Janitor Plus paywall. |
+| no-incentivized-action | llm | policy | pass | Play a quick 15-second game for 30 minutes of 5x context. |
+| no-loss-framing | llm | policy | pass | Title: Boost Memory for 30 Minutes", "decline: No Thanks |
+| explicit-opt-in | llm | fixable | pass | cta: Play Now", "decline: No Thanks |
+| disclosed | llm | fixable | pass | Body: Play a quick 15-second game for 30 minutes of 5x context. |
+| free-decline | llm | fixable | pass | newElements: [{id: ne3, in: ns1, near: ne2, place: after, change: No Thanks button to return to core flow.}], newEdges: [{from: ns1, el: ne3, to: s01, effects: []}] |
+| no-stream-interrupt | llm | fixable | pass | trigger: User taps Close paywall (e3) on s03 without purchasing a subscription. |
+| not-for-subscribers | llm | fixable | pass | eligibility: Non-subscribers who dismiss the Janitor Plus paywall. |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 5 | The offer is placed directly on the memory wall (s03), providing exactly what the user needs when they are blocked. |
-| product-integrity | 15 | 5 | The rewarded play is additive to the free tier without degrading the existing chat experience or quality. |
-| cannibalization-safety | 15 | 5 | The reward is strictly time-boxed (30m) and capped (2/day), which clearly differentiates it from the 'Janitor Plus' permanent entitlement. |
-| unit-economics | 10 | 2 | The cost to serve is $0.0090, which exceeds the low-end net revenue per view ($0.0063) computed in code. |
-| reach | 10 | 5 | Memory context is a core bottleneck for roleplay, making the wall a high-frequency trigger. |
-| feasibility | 10 | 5 | Maps to SIM-RWD units using existing screen surfaces. |
-| specificity | 10 | 5 | References Janitor Plus subscription, memory context, and s03 correctly. |
-| frequency-fatigue | 5 | 5 | Explicit daily cap of 2 and 60-minute cooldown defined. |
-| measurability | 5 | 5 | Includes primary metrics and a user-level holdout experiment plan. |
+| value-moment-fit | 20 | 5 | The user just declined a paywall (s03, m2) offering "5x context for better memory" (e10). The reward is "30 minutes of 5x context for better memory". This directly addresses one of the key benefits just seen on the paywall and desired by the user. [TAX-2] |
+| product-integrity | 15 | 5 | The proposal triggers after dismissing a paywall, not during core chat, preserving the flow and user input. The reward is a time-boxed boost of an existing feature (5x context). The 'Game Partner' is "Janitor", which can integrate natively with the app's branding. The offer is an overlay, so it doesn't remove value from the free experience. |
+| cannibalization-safety | 15 | 5 | Eligibility is restricted to "Non-subscribers who dismiss the Janitor Plus paywall." The reward is "30 minutes of 5x context", which is time-boxed and temporary, contrasting with the permanent benefits of the subscription (of1). A "5% randomized user-level holdout for 30 days" is planned. [CANN-4, TAX-2, MEAS-5] |
+| unit-economics | 10 | 1 | The cost to serve per view is $0.0090 (text-premium x 1). One completed US view earns $0.0090–$0.0150. The computed low-end net revenue per view is $0.0063, which is less than the $0.0090 COGS, indicating the reward is unprofitable at the low end. [TRIG-4, MEAS-4] |
+| reach | 10 | 4 | The trigger moment is m2: "The user dismisses More memory for long chats. ('Close paywall')", which is described as "reach=frequent" in the digest. This indicates a common path for non-subscribers. |
+| feasibility | 10 | 5 | The proposal uses an existing Simula unit (SIM-RWD) with an 'invitation' entry point and specified minPlaySec and Game Partner. It describes new screens as overlays and defines clear new edges, including server-side verification with REWARD_VERIFIED. This maps well to existing SDK capabilities and an iterative development approach. |
+| specificity | 10 | 5 | The proposal uses specific nouns from the digest: 'Janitor Plus' (of1), '5x context for better memory' (e10 from s03), and targets screen 's03' with element 'e3'. It names 'Janitor' as the Game Partner. This is tailored to the app. |
+| frequency-fatigue | 5 | 5 | The proposal includes explicit caps of 'perDay: 2' and a 'cooldownMin: 120', which are reasonable limits for a time-boxed premium unlock and prevent overuse or user annoyance. [TRIG-3] |
+| measurability | 5 | 5 | The proposal clearly defines a 'primary' KPI (Rewarded ad revenue per DAU from paywall decliners), 'guardrails' (Janitor Plus subscription conversion rate, D7 chat retention), and a 'holdout' strategy ('5% randomized user-level holdout for 30 days'). [MEAS-5] |
 
-- **Verdict reasons (code):** fixable gate failed: grounding (code); fixable gate failed: economics (code); unit-economics scored 2 (< 3)
+- **Verdict reasons (code):** fixable gate failed: economics (code); unit-economics scored 1 (< 3)
 - **Required changes:**
-  - Resize the reward or switch to a cheaper inference model, as the current cost to serve ($0.0090) exceeds the net revenue per view ($0.0063).
-  - Update economy references to valid items; 'plan' is not a valid economy item in the digest.
-- **Top concern:** The unit economics are currently negative; the cost of providing premium memory context via the rewarded view is higher than the net revenue earned per view.
+  - Adjust reward COGS or quantity: The current cost of the 'text-premium' reward ($0.0090) exceeds the low-end net revenue per view ($0.0063). This should be addressed by either using a cheaper model for the '5x context' boost, reducing the implied usage of the premium model per view, or providing a quantified justification for this as a loss-leader investment for conversion.
+- **Top concern:** The reward's cost to serve exceeds the net revenue per view at the low end, making the proposal potentially unprofitable.
 
 #### Changes v1 → v2 (revise() saw the required changes, never the scores)
 
-- `oneLiner`: "Unlock 30 minutes of 5x context memory for roleplay via a rewarded mini-game." → "Unlock 15 minutes of 5x context memory via a rewarded mini-game."
-- `anchor.economy[2]`: "plan" → (none)
-- `offer.title`: "Unlock 5x Memory Now" → "Unlock Memory Boost"
-- `offer.body`: "Play a quick 15-second game to get 5x context memory for the next 30 minutes." → "Play a quick 15-second game to get 5x context memory for the next 15 minutes."
-- `reward.what`: "30 minutes of 5x context memory" → "15 minutes of 5x context memory"
-- `reward.resource`: "plan" → "memory_boost"
-- `reward.duration`: "30m" → "15m"
-- `cannibalizationGuard`: "The reward is strictly time-boxed to 30 minutes and capped at 2 uses per day, ensuring..." → "The reward is strictly time-boxed to 15 minutes and capped at 2 uses per day, ensuring..."
-- `assumptions.cogs`: "text-premium" → "text-cheap"
-- `risks[0]`: "Increased inference costs due to 5x context size per user session [TRIG-4]." → "Increased inference costs, mitigated by using a cost-optimized text-cheap model for th..."
-- `risks[1]`: "Potential devaluation of the Janitor Plus subscription if 30 minutes satisfies core ro..." → "Potential devaluation of the Janitor Plus subscription if frequent usage satisfies cor..."
-- `patch.newElements[0].change`: "Add a MiniGameButton styled as 'Try 30 mins for free' below the context feature descri..." → "Add a MiniGameButton styled as 'Try 15 mins for free' below the context feature descri..."
-- `patch.newEdges[0].effects[0].resource`: "plan" → "memory_boost"
-- `storyboard[0].callouts[0].text`: "Memory context is currently locked for free users." → "Memory context is locked for free users."
-- `storyboard[2].caption`: "The invite screen discloses the 15s play time and the 30-minute reward." → "The invite screen discloses the 15s play time and the 15-minute reward."
-- `storyboard[4].callouts[0].text`: "Memory unlocked for 30 minutes." → "Memory unlocked for 15 minutes."
-- `storyboard[4].caption`: "Upon verification, the user receives 30 minutes of enhanced roleplay memory." → "Upon verification, the user receives 15 minutes of enhanced roleplay memory."
+- `reward.resource`: "of1" → "premium_context_30min"
+- `risks[0]`: "Inference COGS for 5x context during the 30-minute window must be offset by US/Tier-1 ..." → "The average inference COGS for providing 30 minutes of 5x context using a cheaper mode..."
+- `patch.newEdges[1].effects[0].resource`: "of1" → "premium_context_30min"
+- `anchor.economy[1]`: (none) → "premium_context_30min (new)"
 - `reward.amount`: (none) → 1
-- `storyboard[4].counters[0].resource`: (none) → "memory_boost"
-- `storyboard[4].counters[0].value`: (none) → 1
 
-#### Round 1 (v2): **REVISE** · weighted 4.6 · judged by llm
+#### Round 1 (v2): **REVISE** · weighted 4.15 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
 | schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | reward resource "memory_boost" does not exist; edge effect on unknown resource "memory_boost"; storyboard value: counter on unknown resource "memory_boost"; evidence "m1" is not an observation or screen in the model |
-| label | code | fixable | pass | cites observed economy items: of1, w1 |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | cites observed economy items: of1 |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| economics | code | fixable | **FAIL** | Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end. |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | Trigger: When the user lands on the memory paywall screen (s03) and is blocked from advanced context. |
-| no-incentivized-action | llm | policy | pass | simula: { "unit": "SIM-RWD", "entry": "button", "gamePartner": "Janitor", "minPlaySec": 15 } |
-| no-loss-framing | llm | policy | pass | body: "Play a quick 15-second game to get 5x context memory for the next 15 minutes." |
-| explicit-opt-in | llm | fixable | pass | cta: "Play Now", decline: "Not Now" |
-| disclosed | llm | fixable | pass | body: "Play a quick 15-second game to get 5x context memory for the next 15 minutes." |
-| free-decline | llm | fixable | pass | decline: "Not Now" |
-| no-stream-interrupt | llm | fixable | pass | trigger: "When the user lands on the memory paywall screen (s03) and is blocked from advanced context." |
-| not-for-subscribers | llm | fixable | pass | eligibility: "Non-paying users reaching the memory wall." |
+| sfw | llm | policy | pass | The proposal focuses on Janitor's roleplay platform and offers a 30-minute context boost. All surfaces mentioned (s03) are for subscription management. |
+| no-incentivized-action | llm | policy | pass | The reward is for in-app benefits (context memory) and not for clicks, installs, or cash-like rewards. |
+| no-loss-framing | llm | policy | pass | The proposal uses a standard paywall-decline fallback and avoids dark patterns or hostaging. |
+| explicit-opt-in | llm | fixable | pass | The proposal specifies an explicit 'Play Now' CTA (ne2) and a decline option (ne3). |
+| disclosed | llm | fixable | pass | The offer text 'Play a quick 15-second game for 30 minutes of 5x context' clearly states the reward and the action before the ad. |
+| free-decline | llm | fixable | pass | A 'No Thanks' button returns the user to the core flow (s01). |
+| no-stream-interrupt | llm | fixable | pass | The trigger is a paywall decline (s03), which is at a navigation boundary, not mid-chat. |
+| not-for-subscribers | llm | fixable | pass | Eligibility is strictly gated to 'Non-subscribers who dismiss the Janitor Plus paywall'. |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 4 | Proposal matches paywall screen s03 ('More memory for long chats.') where advanced context is locked (e10: '5× context for better memory'), directly addressing the exact paywall hit. |
-| product-integrity | 15 | 5 | Placed on paywall screen s03, avoiding any streaming response interruption. Uses Simula SIM-RWD with Janitor as game partner playing a 15s game, keeping the experience native. |
-| cannibalization-safety | 15 | 5 | Strictly gated to non-paying users reaching the memory wall, time-boxed to 15 minutes, capped at 2 uses per day, ensuring Janitor Plus (of1) remains the permanent option. |
-| unit-economics | 10 | 5 | Cost to serve per view is $0.0018 (text-cheap x 1), which is well below the US net revenue per view ($0.0090–$0.0150). |
-| reach | 10 | 4 | Triggered on paywall s03 when users hit the memory wall (frequent moment m1), capturing engaged free users hitting context limits. |
-| feasibility | 10 | 5 | Maps cleanly to SIM-RWD with button entry, Janitor game partner, 15s play, REWARD_VERIFIED, and remote config caps. |
-| specificity | 10 | 4 | Targets screen s03, economy item of1 (Janitor Plus) and w1, quotes e10 ('5× context for better memory'), and uses app character Janitor as game partner. |
-| frequency-fatigue | 5 | 5 | Explicit caps (perDay: 2, cooldownMin: 60), decline button present, no re-offer loop. |
-| measurability | 5 | 5 | Named primary metric (rewarded_impressions_per_dau), guardrails (subscription_conversion_rate, average_session_length), and a user-level holdout (10% share, 21 days). |
+| value-moment-fit | 20 | 5 | Fits TAX-10 perfectly. The user hits a wall for memory (s03) and is offered memory as a trial immediately upon dismissal. |
+| product-integrity | 15 | 4 | The offer is an overlay on a paywall. It does not break the chat flow, preserve the user's current session state, and adds to the experience. |
+| cannibalization-safety | 15 | 4 | Strictly limited to paywall decliners, capped at 2/day, and time-boxed to 30 minutes. It leaves the permanent plan (of1) clearly superior. |
+| unit-economics | 10 | 2 | The code flags that cost-to-serve ($0.0090) exceeds the net revenue floor ($0.0063). While the proposer acknowledges this and suggests using a cheaper model, the current economics in the proposal are unverified and risky. |
+| reach | 10 | 3 | Triggered by paywall declines, which is a high-intent segment but represents a small percentage of total DAU daily. |
+| feasibility | 10 | 5 | Maps directly to SIM-RWD unit, using standard game partner and reward verification logic. |
+| specificity | 10 | 5 | References 'Janitor Plus' (of1), '5x context' (of1), and screen 's03' explicitly. |
+| frequency-fatigue | 5 | 5 | Explicit daily cap of 2 and a 120-minute cooldown. |
+| measurability | 5 | 4 | Includes primary metrics, guardrails, and a specific user-level holdout plan. |
 
-- **Verdict reasons (code):** fixable gate failed: grounding (code)
+- **Verdict reasons (code):** fixable gate failed: economics (code); unit-economics scored 2 (< 3)
 - **Required changes:**
-  - Align the resource identifier in the patch and storyboard (currently 'memory_boost') with valid feature entitlement nomenclature matching the paywall feature (e10).
-  - Correct the evidence array entry referencing 'm1', as moment IDs are not valid observations or screen IDs in the model digest.
-- **Top concern:** The proposal references an ungrounded resource name ('memory_boost') and an invalid evidence identifier ('m1') in its patch and evidence arrays, causing gate validation failures despite a strong economic and UX design.
+  - Reduce the reward duration (e.g., to 15 minutes) or require a multi-ad bundle (e.g., 2 ads for 30 minutes) to bring the cost-to-serve below the net revenue per view.
+  - Explicitly define the expected COGS for the proposed 'text-cheap' model if it is to be used as the basis for the trial, rather than relying on the general premium model cost.
+- **Top concern:** The proposed reward currently costs more to serve than the net revenue generated per view, rendering the monetization design unsustainable.
 
-#### Changes v2 → v3 (revise() saw the required changes, never the scores)
 
-- `reward.resource`: "memory_boost" → "context_memory_5x"
-- `evidence[1].obs`: "m1" → "s03"
-- `evidence[1].el`: (none) → "e3"
-- `evidence[1].quote`: "Access advanced chat memory and priority is blocked" → "Close paywall"
-- `patch.newEdges[0].effects[0].resource`: "memory_boost" → "context_memory_5x"
-- `storyboard[4].counters[0].resource`: "memory_boost" → "context_memory_5x"
+## P3: Daily Check-in Swipe — REJECT
 
-#### Round 2 (v3): **REJECT** · weighted 5 · judged by llm
+> Earn 1 daily bonus frontier model swipe by playing a 15-second mini-game in the Profile menu.
+
+- product-change · TAX-9 · surface Profile menu (s02) · reward 1 bonus frontier model swipe · caps 1/day
+
+#### Round 0 (v1): **REVISE** · weighted 4.3 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
 | schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | reward resource "context_memory_5x" does not exist; edge effect on unknown resource "context_memory_5x"; storyboard value: counter on unknown resource "context_memory_5x" |
-| label | code | fixable | pass | cites observed economy items: of1, w1 |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | declares new mechanic "Daily Check-in Swipes" |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| economics | code | fixable | **FAIL** | Cost to serve the reward ($0.0450) exceeds net revenue per view ($0.0063) at the low end. |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | The proposal focuses on s03 (Memory Wall), which is a standard paywall screen for roleplay features. |
-| no-incentivized-action | llm | policy | pass | The reward is for playing a 15-second mini-game, not for clicks or installs. |
-| no-loss-framing | llm | policy | pass | The proposal uses a gain-framed title 'Unlock Memory Boost'. |
-| explicit-opt-in | llm | fixable | pass | The user taps 'Play Now' after disclosure. |
-| disclosed | llm | fixable | pass | The proposal clearly states: 'Play a quick 15-second game to get 5x context memory for the next 15 minutes.' |
-| free-decline | llm | fixable | pass | The offer includes a 'Not Now' button. |
-| no-stream-interrupt | llm | fixable | pass | The offer is triggered at the paywall (s03), not during an active chat stream. |
-| not-for-subscribers | llm | fixable | pass | The proposal specifies eligibility for 'Non-paying users reaching the memory wall.' |
+| sfw | llm | policy | pass | The surface is s02 (Profile menu). Profile menu is a generic, SFW settings/profile page containing elements like 'Settings', 'Billing', 'Main navigation'. |
+| no-incentivized-action | llm | policy | pass | Earn 5 daily bonus frontier model swipes by playing a 15-second mini-game in the Profile menu. The reward is a virtual utility, not cash-like, and is given for playing, not clicking or installing. |
+| no-loss-framing | llm | policy | pass | Daily swipes are strictly capped at 5 per day, which lets non-payers sample frontier AI responses. There is no loss framing or countdown pressure, and the decline option is a standard 'Maybe Later'. |
+| explicit-opt-in | llm | fixable | pass | User taps the 'Daily Check-in' card on s02 (Profile menu). This opens the Simula invitation modal where the user must explicitly tap 'Play Now'. |
+| disclosed | llm | fixable | pass | Play a 15-second game to claim 5 bonus frontier model swipes today. |
+| free-decline | llm | fixable | pass | The decline option is 'Maybe Later'. Tapping it dismisses the modal and returns the user to the profile screen without any penalties. |
+| no-stream-interrupt | llm | fixable | pass | The trigger is placed on s02 (Profile menu) which is outside of any active character chat, preventing any interruptions to streaming responses. |
+| not-for-subscribers | llm | fixable | pass | Eligibility: Non-paying users who have not claimed today's check-in reward. |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 5 | The trigger is exactly at the friction point (s03), providing the user with the feature they are currently missing (enhanced memory). |
-| product-integrity | 15 | 5 | The reward (time-boxed memory) fits perfectly within the roleplay ecosystem and the existing s03 wall without disrupting the core loop. |
-| cannibalization-safety | 15 | 5 | Strictly time-boxed to 15 minutes with a cap of 2/day, leaving the Janitor Plus permanent upgrade as the vastly superior option. |
-| unit-economics | 10 | 5 | COGS ($0.0018) is well below the revenue per view ($0.009–0.015). |
-| reach | 10 | 5 | The memory wall is a core constraint for Janitor users, ensuring a large addressable audience. |
-| feasibility | 10 | 5 | Maps directly to SIM-RWD; standard implementation pattern using existing entitlement logic. |
-| specificity | 10 | 5 | References 'Janitor Plus' and '5x context' appropriately from the digest. |
-| frequency-fatigue | 5 | 5 | Caps of 2/day and 60m cooldowns are appropriately conservative. |
-| measurability | 5 | 5 | Includes specific KPIs, guardrails, and a planned holdout. |
+| value-moment-fit | 20 | 4 | The reward consists of 5 bonus frontier model swipes, which are highly valued and gated behind Janitor Plus (of1). Since this is placed as a proactive check-in (TAX-9) in the profile menu s02, it is a habit loop rather than a reactive moment-of-need trigger. |
+| product-integrity | 15 | 5 | Daily Check-in Swipes is additive and does not degrade the core free experience. Gating the reward behind a silent profile menu card prevents chat interruptions and respects user roleplay immersion. |
+| cannibalization-safety | 15 | 5 | Eligibility is restricted to non-payers. Daily swipes are capped at 5 per day (1 check-in per day), which is a tiny fraction compared to Janitor Plus's 'generous monthly swipes' and leaves other features like 5x context completely behind the paywall. A 5% holdout is scheduled. |
+| unit-economics | 10 | 2 | Code-computed economics reveal that the cost to serve 5 frontier swipes is $0.0450 (text-premium x 5), which is 5x higher than the low-end net reward revenue of $0.0063. The net margins are deeply negative. |
+| reach | 10 | 4 | The trigger occurs on s02 (Profile menu) which is frequently visited as part of character discovery navigation (f1). The proposed engaged share of 25% is realistic for a free daily utility. |
+| feasibility | 10 | 4 | The setup maps easily to SIM-RWD and uses standard invitation kits. However, Janitor's backend currently does not track swipe counts or quotas for free users, which requires introducing a database tracking layer for non-payers. |
+| specificity | 10 | 5 | The proposal refers specifically to Janitor Plus, s02 Profile Menu, Main Navigation, and 'frontier model swipes' which directly align with Janitor's current subscription offerings. |
+| frequency-fatigue | 5 | 5 | Strictly limited to a daily cap of 1 claim per day with a 1440-minute cooldown. The UI does not push invasive popups upon app open or navigation transitions. |
+| measurability | 5 | 5 | Well-designed metrics including D7/D30 active retention, Janitor Plus conversion rates as a guardrail, API token costs, and a robust 5% randomized user-level holdout over 30 days. |
 
-- **Verdict reasons (code):** fixable gate failed: grounding (code); still REVISE after round 2
+- **Verdict reasons (code):** fixable gate failed: economics (code); unit-economics scored 2 (< 3)
 - **Required changes:**
-  - Correct the resource identifier 'context_memory_5x' in the patch and storyboard to align with the actual entitlement system string, as it was not found in the product model digest.
-  - Explicitly document the technical check to ensure Janitor Plus subscribers are completely excluded from seeing the offer, even if they hit a wall (e.g., via session-level remote config).
-- **Top concern:** The resource identifier 'context_memory_5x' is non-grounded; it must match the existing entitlement system exactly to function.
-
-
-## P2: Paywall-Decline Priority Routing — REJECT
-
-> Offer a 15-minute priority routing pass when users decline the Janitor Plus subscription paywall.
-
-- existing · TAX-10 · surface More memory for
-long chats. (s03) · reward 15 minutes of priority routing · caps 2/day
-
-#### Round 0 (v1): **REVISE** · weighted 4.35 · judged by llm
-
-| gate | by | severity | result | evidence |
-|---|---|---|---|---|
-| schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | edge effect on unknown resource "priority_routing_min"; storyboard value: counter on unknown resource "priority_routing_min"; evidence "m2" is not an observation or screen in the model |
-| label | code | fixable | pass | cites observed economy items: of1, w1 |
-| already-exists | code | fixable | pass | no ad of this format on this surface today |
-| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
-| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
-| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
-| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | Offer a 15-minute priority routing pass when users decline the Janitor Plus subscription paywall. |
-| no-incentivized-action | llm | policy | pass | Play a quick 15-second game to unlock 15 minutes of priority routing. |
-| no-loss-framing | llm | policy | pass | Gated strictly to paywall decliners and non-payers, time-boxed to 15 minutes, preserving the full permanent subscription value. |
-| explicit-opt-in | llm | fixable | pass | CTA: Play Now |
-| disclosed | llm | fixable | pass | Play a quick 15-second game to unlock 15 minutes of priority routing. |
-| free-decline | llm | fixable | pass | Decline: No thanks |
-| no-stream-interrupt | llm | fixable | pass | When the user taps 'Close paywall' on the Janitor Plus subscription screen without subscribing. |
-| not-for-subscribers | llm | fixable | pass | Eligibility: Non-payers who decline the Janitor Plus subscription paywall. |
-
-| criterion | weight | score | evidence |
-|---|---|---|---|
-| value-moment-fit | 20 | 4 | Proposal P2 targets moment m2 on s03 when declining the Janitor Plus subscription paywall by offering 15 minutes of priority routing. |
-| product-integrity | 15 | 4 | Proposal P2 time-boxes the priority routing feature to 15 minutes, preserving permanent subscription value without degrading the free experience. |
-| cannibalization-safety | 15 | 5 | Proposal P2 restricts the offer strictly to non-payers who decline the paywall, capping it at 15 minutes and 2 per day. |
-| unit-economics | 10 | 5 | Economics computed in code show Cost to serve per view is $0.0000, and one completed US view earns $0.0090-$0.0150. |
-| reach | 10 | 3 | Code computes impressions/DAU 0.375 with 25% engaged share and 1.5 views each for paywall decliners. |
-| feasibility | 10 | 5 | Proposal P2 maps to SIM-RWD with button entry, gamePartner 'Janitor', and minPlaySec 15. |
-| specificity | 10 | 4 | Proposal P2 references screen s03, economy items of1 and w1, and Janitor Plus feature priority routing. |
-| frequency-fatigue | 5 | 5 | Proposal P2 sets explicit caps of 2 per day and 60 minutes cooldown. |
-| measurability | 5 | 5 | Proposal P2 defines primary KPIs, guardrails, and a 5% user-level holdout for 28 days. |
-
-- **Verdict reasons (code):** fixable gate failed: grounding (code)
-- **Required changes:**
-  - Fix resource name in patch and storyboard: align the resource identifier 'priority_routing_min' with the baseline economy model.
-- **Top concern:** Resource naming mismatch in the patch/storyboard edge and counter ('priority_routing_min' is not defined in the baseline economy model).
+  - Reduce the daily check-in reward size from 5 frontier model swipes to 1 frontier model swipe. This drops the cost to serve per view to $0.0090, aligning it with the expected gross revenue ($0.0090–$0.0150) and preventing massive economic losses.
+  - Implement database fields and tracking structures for free users on the backend to log and consume 'Frontier Swipes' before running the ad integration.
+- **Top concern:** The cost to serve 5 frontier model swipes ($0.0450) is roughly 5 to 7 times higher than the net revenue earned per completed rewarded view ($0.0063), making the proposal economically unsustainable without downsizing the reward.
 
 #### Changes v1 → v2 (revise() saw the required changes, never the scores)
 
-- `patch.newEdges[0].effects[0].resource`: "priority_routing_min" → "janitor_plus_priority_routing_time"
-- `storyboard[4].counters[0].resource`: "priority_routing_min" → "janitor_plus_priority_routing_time"
-- `reward.resource`: (none) → "janitor_plus_priority_routing_time"
-- `reward.amount`: (none) → 15
+- `title`: "Daily Check-in Swipes" → "Daily Check-in Swipe"
+- `oneLiner`: "Earn 5 daily bonus frontier model swipes by playing a 15-second mini-game in the Profi..." → "Earn 1 daily bonus frontier model swipe by playing a 15-second mini-game in the Profil..."
+- `anchor.newMechanic.description`: "A daily check-in feature on the Profile menu where users claim 5 bonus frontier model ..." → "A daily check-in feature on the Profile menu where users claim 1 bonus frontier model ..."
+- `anchor.newMechanic.whyNeeded`: "Janitor currently gates frontier model swipes behind the Janitor Plus subscription wit..." → "Janitor gates frontier model swipes behind Janitor Plus; this provides a small, ad-sup..."
+- `offer.title`: "Daily Check-in Swipes" → "Daily Check-in Swipe"
+- `offer.body`: "Play a 15-second game to claim 5 bonus frontier model swipes today." → "Play a 15-second game to claim 1 bonus frontier model swipe today."
+- `reward.what`: "5 bonus frontier model swipes" → "1 bonus frontier model swipe"
+- `reward.amount`: 5 → 1
+- `cannibalizationGuard`: "Daily swipes are strictly capped at 5 per day, which lets non-payers sample frontier A..." → "The reward is strictly limited to 1 swipe per day, ensuring the Janitor Plus subscript..."
+- `assumptions.cogsUnitsPerView`: 5 → 1
+- `kpis.primary`: "Daily active user retention (D7/D30) and check-in completion rate on s02." → "Daily active user retention (D7/D30) on s02."
+- `kpis.guardrails[1]`: "Non-payer D30 retention rate" → "Frontier model API token cost per active user"
+- `kpis.guardrails[2]`: "Frontier model API token cost per active user" → (none)
+- `risks[0]`: "Frontier model LLM token costs for 5 swipes per completed view" → "Frontier model LLM token cost for 1 swipe per view remains near the break-even ceiling..."
+- `risks[1]`: "User disappointment if daily check-in swipes do not roll over to the next day" → "Requirement for backend database changes to track frontier swipe usage for non-payers"
+- `patch.newElements[0].change`: "Add a Daily Check-in card displaying title 'Daily Check-in' and CTA 'Claim 5 Frontier ..." → "Add a Daily Check-in card displaying title 'Daily Check-in' and CTA 'Claim 1 Frontier ..."
+- `patch.newEdges[0].effects[0].delta`: 5 → 1
+- `patch.newEdges[0].guard.lt`: 5 → 1
+- `storyboard[0].caption`: "Profile menu s02 displays navigation and subscription options." → "Profile menu s02 displays current navigation and subscription options."
+- `storyboard[1].caption`: "Daily check-in module ne1 appears on Profile menu s02." → "A new daily check-in module ne1 appears on Profile menu s02."
+- `storyboard[2].caption`: "Tapping check-in displays Simula reward offer with clear disclosures." → "Tapping check-in displays the Simula reward offer with exact terms."
+- `storyboard[3].caption`: "User plays 15-second mini-game with Game Partner Janitor." → "User plays a 15-second mini-game with Game Partner Janitor."
+- `storyboard[4].counters[0].value`: 5 → 1
+- `storyboard[4].callouts[0].text`: "5 Frontier Swipes verified and credited." → "1 Frontier Swipe verified and credited."
+- `storyboard[4].caption`: "REWARD_VERIFIED event credits 5 Frontier Swipes instantly." → "REWARD_VERIFIED event credits 1 Frontier Swipe instantly to the user."
 
-#### Round 1 (v2): **REVISE** · weighted 4.45 · judged by llm
-
-| gate | by | severity | result | evidence |
-|---|---|---|---|---|
-| schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | reward resource "janitor_plus_priority_routing_time" does not exist; edge effect on unknown resource "janitor_plus_priority_routing_time"; storyboard value: counter on unknown resource "janitor_plus_priority_routing_time"; evidence "m2" is not an observation or screen in the model |
-| label | code | fixable | pass | cites observed economy items: of1, w1 |
-| already-exists | code | fixable | pass | no ad of this format on this surface today |
-| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
-| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
-| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
-| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | The paywall screen s03 is a standard subscription-gated interface, which is SFW. |
-| no-incentivized-action | llm | policy | pass | The reward is 'priority routing' (an in-app feature), not a cash-like item or ad-interaction incentive. |
-| no-loss-framing | llm | policy | pass | The offer is a positive path forward upon paywall decline ('Play for Priority Routing'), with no threat of loss. |
-| explicit-opt-in | llm | fixable | pass | The user must tap 'Play Now' to start the rewarded session. |
-| disclosed | llm | fixable | pass | The proposal states: 'Play a quick 15-second game to unlock 15 minutes of priority routing.' |
-| free-decline | llm | fixable | pass | The 'No thanks' button is provided, returning the user to the previous state. |
-| no-stream-interrupt | llm | fixable | pass | The ad appears on the s03 paywall screen, which is not a streaming or generative AI response surface. |
-| not-for-subscribers | llm | fixable | pass | The proposal explicitly limits eligibility to non-payers/decliners. |
-
-| criterion | weight | score | evidence |
-|---|---|---|---|
-| value-moment-fit | 20 | 4 | The user is hitting a paywall for 'More memory for long chats' (s03). Offering 'Priority routing' (a key Plus benefit) directly addresses the user's desire for an enhanced chat experience at the point of obstruction. |
-| product-integrity | 15 | 4 | The design uses a reactive TAX-10 trigger on a paywall. It does not interrupt live chat streams. Using 'Janitor' as the Game Partner is a logical brand-aligned choice. |
-| cannibalization-safety | 15 | 5 | Gated to decliners, time-boxed to 15 minutes, and capped at 2 per day. This effectively protects the long-term value of the Janitor Plus subscription. |
-| unit-economics | 10 | 5 | COGS is 0 for priority routing. Revenue per view in the US is ~$0.009-0.015, which is well above the cost to serve. |
-| reach | 10 | 4 | s03 is a frequently hit paywall surface for non-payers attempting to access enhanced chat features, reaching the core loop of subscription-seekers. |
-| feasibility | 10 | 5 | The proposal maps clearly to standard SIM-RWD architecture, using SSV and a remote-config-ready offer. |
-| specificity | 10 | 4 | Uses s03 (More memory for long chats) as the anchor and references Janitor Plus features. The resource name 'janitor_plus_priority_routing_time' is slightly generic but clearly mapped to the entitlement. |
-| frequency-fatigue | 5 | 5 | Includes an explicit cap of 2 per day and a 60-minute cooldown, adhering to non-game rewarded ad best practices. |
-| measurability | 5 | 5 | Includes primary metrics, guardrails (subscription conversion), and a 5% holdout for 28 days as required. |
-
-- **Verdict reasons (code):** fixable gate failed: grounding (code)
-- **Required changes:**
-  - Define the 'Game Partner' more specifically; if using a specific character (e.g., a mascot), ensure it is defined in the product model or consistent with Janitor branding.
-  - Ensure the reward resource name maps explicitly to the 'Priority routing' entitlement defined in Janitor Plus.
-  - Add a 'Plus' comparison line (e.g., 'Get unlimited priority routing with Janitor Plus') to the grant/reward screen to maintain subscription upsell pressure.
-- **Top concern:** Ensuring the reward resource name (currently 'janitor_plus_priority_routing_time') explicitly aligns with the known Janitor Plus 'Priority routing' entitlement to ensure clean fulfillment tracking and fulfillment.
-
-
-## P3: Premium Scenario Unlock — REJECT
-
-> Watch a quick game to unlock exclusive premium scenarios for 72 hours.
-
-- product-change · TAX-3 · surface Character Details (s09) · reward 72-hour access to Premium Scenario for 72 hours · caps 3/day
-
-#### Round 0 (v1): **REVISE** · weighted 3.1 · judged by llm
+#### Round 1 (v2): **REVISE** · weighted 4.35 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
 | schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | economy item "s09" does not exist; new element "ne1" is placed near "Willson Wáng", which is not an element on s09; edge guard on unknown resource "JanitorPlus"; evidence element "Willson Wáng" is not on s09 |
-| label | code | fixable | pass | declares new mechanic "Premium Scenario Lock" |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | declares new mechanic "Daily Check-in Swipes" |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| economics | code | fixable | **FAIL** | Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end. |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | The surface s09 (Character Details) for Willson Wáng is SFW and age-appropriate. |
-| no-incentivized-action | llm | policy | pass | The offer rewards playing a mini-game to unlock content, with no incentivized clicks, installs, or cash-like rewards. |
-| no-loss-framing | llm | policy | pass | The offer uses gain framing ('Unlock Premium Scenario') with a clear decline option ('No thanks'). |
-| explicit-opt-in | llm | fixable | pass | The user must tap 'Play Now' on the offer card to initiate the ad. |
-| disclosed | llm | fixable | pass | The exact reward (72-hour access) and action (play a quick game / 15s) are disclosed prior to the ad. |
-| free-decline | llm | fixable | pass | An equally legible decline button 'No thanks' is present and returns the user to the screen without penalty. |
-| no-stream-interrupt | llm | fixable | pass | The offer triggers on a button tap in character details before chat starts, never during a streaming response. |
-| not-for-subscribers | llm | fixable | pass | Eligibility is explicitly restricted to non-subscribers only. |
+| sfw | llm | policy | pass | The proposal places the ad on s02 (Profile menu), which is a system/navigation surface. It uses 'Janitor' as the Game Partner, matching the app's brand. |
+| no-incentivized-action | llm | policy | pass | The reward is '1 bonus frontier model swipe', which is an in-app utility used for roleplay content and is not cash-like. There are no mentions of rewarding clicks or installs. |
+| no-loss-framing | llm | policy | pass | The proposal uses a daily check-in archetype (TAX-9) with a positive gain frame: 'Earn 1 daily bonus frontier model swipe'. There is no evidence of fake timers, forced ads, or 'support us' copy. |
+| explicit-opt-in | llm | fixable | pass | The user must tap a new 'Daily Check-in' card (ne1) on s02, which then displays an offer invitation with a 'Play Now' CTA. |
+| disclosed | llm | fixable | pass | The offer body states: 'Play a 15-second game to claim 1 bonus frontier model swipe today.' This clearly discloses both the action length and the reward. |
+| free-decline | llm | fixable | pass | The offer includes an equally legible 'Maybe Later' decline button. Declining simply returns the user to the Profile menu (s02). |
+| no-stream-interrupt | llm | fixable | pass | The placement is on the Profile menu (s02), a static navigation surface, and is not triggered during a chat or generation flow. |
+| not-for-subscribers | llm | fixable | pass | The eligibility is restricted to 'Non-paying users who have not claimed today's check-in reward.' |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 3 | Unlocking scenarios on character details aligns with content needs (TAX-3), but introduces a new monetization anchor not present in the base app. |
-| product-integrity | 15 | 2 | The proposal specifies removesFreeValue: true, gating previously free content behind ads, which harms user trust and product integrity. |
-| cannibalization-safety | 15 | 4 | Gated to non-subscribers with a 72-hour expiry and daily cap of 3, protecting subscription value. |
-| unit-economics | 10 | 4 | Cost to serve per view is $0.0000, well below US revenue per view ($0.0090–$0.0150). |
-| reach | 10 | 3 | Triggered when viewing character details (m6), which occurs regularly in the discovery loop. |
-| feasibility | 10 | 3 | Maps to SIM-RWD unit, but introduces ungrounded UI elements and edge cases noted in code gates. |
-| specificity | 10 | 2 | References character 'Willson Wáng' from digest, but assumes scenario locking mechanics that do not exist in Janitor. |
-| frequency-fatigue | 5 | 4 | Includes explicit per-day cap of 3 and 60-minute cooldown. |
-| measurability | 5 | 4 | Defines primary metric (Scenario views per DAU), guardrails, and a 10% user-level holdout for 4 weeks. |
+| value-moment-fit | 20 | 5 | The proposal targets 'Frontier model swipes', which the digest (of1) identifies as a core scarce benefit of the Janitor Plus subscription. Offering a single swipe via a check-in allows users to sample the premium model without hitting a hard wall (TAX-9). |
+| product-integrity | 15 | 5 | The proposal adds a new 'Daily Check-in' card to the Profile menu. It does not interrupt chat flow or degrade existing free features. Using the 'Janitor' character as a game partner provides a native feel. |
+| cannibalization-safety | 15 | 4 | Safety is high due to the strict limit of 1 swipe per day (Janitor Plus offers 'generous monthly swipes'). However, it grants a direct 'frontier model' swipe, which is a core subscription pillar. A 5% holdout is planned. |
+| unit-economics | 10 | 2 | Economics are highly marginal. Code-computed cost to serve ($0.0090) exceeds net revenue per view ($0.0063) at the low end. The proposal acknowledges this as a risk but frames it as a sampling investment. |
+| reach | 10 | 4 | The Profile menu (s02) is a 'frequent' surface (m4). While not the main chat screen, daily active users typically visit the profile for billing or settings, making it a viable hub for habit-building. |
+| feasibility | 10 | 4 | Maps to SIM-RWD with 'invitation' entry and 15s play. The patch targets s02 with a new element ne1. It requires database tracking for swipes for non-payers, which is noted as a feasibility risk. |
+| specificity | 10 | 5 | Uses app-specific nouns like 'Janitor Plus', 'frontier model swipes', and 's02 (Profile menu)'. It explicitly uses 'Janitor' as the Game Partner ID. |
+| frequency-fatigue | 5 | 5 | Strictly capped at 1 per day with a 1440-minute (24h) cooldown. No re-offer behavior is specified, which prevents nagging. |
+| measurability | 5 | 5 | Primary metric is retention (D7/D30) on s02. It includes a 5% randomized user-level holdout and guards against conversion rate drops. |
 
-- **Verdict reasons (code):** fixable gate failed: grounding (code); product-integrity scored 2 (< 3); specificity scored 2 (< 3); weighted 3.1 < 3.8
+- **Verdict reasons (code):** fixable gate failed: economics (code); unit-economics scored 2 (< 3)
 - **Required changes:**
-  - Ground the proposal in existing Janitor features or explicitly document the product change required to introduce scenario gating.
-  - Remove removesFreeValue: true or apply scenario locking only to newly created premium scenarios to prevent user churn and backlash.
-  - Correct the UI element grounding to match actual elements on screen s09.
-- **Top concern:** Introducing a product change that removes free access to existing character scenarios (removesFreeValue: true) creates severe trust and churn risk for free users.
-
-#### Changes v1 → v2 (revise() saw the required changes, never the scores)
-
-- `oneLiner`: "Watch a quick game to unlock a premium scenario for 72 hours." → "Watch a quick game to unlock exclusive premium scenarios for 72 hours."
-- `anchor.newMechanic.name`: "Premium Scenario Lock" → "Premium Scenario Category"
-- `anchor.newMechanic.description`: "Gating character-specific scenarios behind a premium requirement, accessible via rewar..." → "Introduces an 'Exclusive Premium' tag for creator scenarios. These are optional, bonus..."
-- `anchor.newMechanic.whyNeeded`: "Leverages character-specific content as high-intent content anchors to drive monetizat..." → "Creates a monetizable content anchor that creators can opt into, providing value witho..."
-- `anchor.newMechanic.removesFreeValue`: true → false
-- `trigger`: "User taps 'Unlock Scenario' on a premium-gated character scenario in Character Details." → "User taps 'Unlock Scenario' on a Premium-tagged character scenario in Character Details."
-- `eligibility`: "Non-subscribers only." → "Non-subscribers only. Applies only to new 'Premium' tagged scenarios; existing free sc..."
-- `offer.body`: "Play a quick game to unlock this premium scenario for 72 hours." → "Play a 15-second game with Willson Wáng to unlock this premium scenario for 72 hours."
-- `reward.resource`: "UnlockedScenario" → "PremiumScenarioAccess"
-- `cannibalizationGuard`: "Non-subscribers only; gated by 72-hour expiry and daily frequency cap. Includes clear ..." → "Non-subscribers only; gated to new content (no existing free scenarios removed); frequ..."
-- `kpis.primary`: "Scenario views per DAU" → "Premium scenario unlocks per DAU"
-- `risks[0]`: "High risk: gating content creates friction for free users; requires clear communication." → "Requires creator adoption to tag scenarios as 'Premium'."
-- `risks[1]`: "Potential churn if scenario selection feels predatory." → "Potential perceived 'gating' if premium tag is misunderstood by the community."
-- `evidence[0].quote`: "Willson.. Stop growing a tail please." → "Willson Wáng"
-- `patch.newElements[0].near`: "Willson Wáng" → "e6"
-- `patch.newEdges[0].effects[0].resource`: "UnlockedScenario" → "PremiumScenarioAccess"
-- `storyboard[1].caption`: "Unlock button added to scenario details." → "Premium unlock button added to scenario details."
-
-#### Round 1 (v2): **REVISE** · weighted 4.9 · judged by llm
-
-| gate | by | severity | result | evidence |
-|---|---|---|---|---|
-| schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | economy item "s09" does not exist; edge guard on unknown resource "JanitorPlus"; evidence element "Willson Wáng" is not on s09 |
-| label | code | fixable | pass | declares new mechanic "Premium Scenario Category" |
-| already-exists | code | fixable | pass | no ad of this format on this surface today |
-| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
-| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
-| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
-| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | Proposal targets general scenario content for 'Willson Wáng' on screen s09. Content is SFW. |
-| no-incentivized-action | llm | policy | pass | Reward is access to a premium scenario, granted in-app, with no cash or click-to-earn incentives. |
-| no-loss-framing | llm | policy | pass | Neutral framing: 'Unlock Premium Scenario'. No dark patterns or manufactured scarcity. |
-| explicit-opt-in | llm | fixable | pass | User initiates by tapping 'Unlock Scenario' button, followed by an offer screen with a clear 'Play Now' CTA. |
-| disclosed | llm | fixable | pass | Offer screen explicitly states: 'Play a 15-second game with Willson Wáng to unlock this premium scenario for 72 hours.' |
-| free-decline | llm | fixable | pass | Offer contains a clearly legible 'No thanks' button that exits the offer flow. |
-| no-stream-interrupt | llm | fixable | pass | Offered in character details (s09), not during an active chat or generation. |
-| not-for-subscribers | llm | fixable | pass | Eligibility restricts the offer to 'Non-subscribers only'. |
-
-| criterion | weight | score | evidence |
-|---|---|---|---|
-| value-moment-fit | 20 | 5 | The offer triggers directly when the user seeks to access a premium scenario (s09), which is the exact moment of need. |
-| product-integrity | 15 | 5 | Adds an 'Exclusive Premium' tag to creator scenarios; does not degrade existing free content or disrupt current chat flows. |
-| cannibalization-safety | 15 | 5 | Gated to non-subscribers, time-boxed (72h), capped at 3/day, and leaves the full premium subscription as the primary unlimited path. |
-| unit-economics | 10 | 5 | Cost to serve is zero for content access. Revenue per view is sufficient for the reward type. |
-| reach | 10 | 4 | Placed on character details (s09), which is a high-traffic intersection in the discovery-to-chat flow. |
-| feasibility | 10 | 5 | Uses SIM-RWD; logic relies on tagging and standard gate access, which is well-supported. |
-| specificity | 10 | 5 | References specific character 'Willson Wáng' (e6 in s09) and screen s09 correctly. |
-| frequency-fatigue | 5 | 5 | Caps at 3 per day with a 60-minute cooldown; provides clear frequency management. |
-| measurability | 5 | 5 | Includes primary metric, guardrails, and a explicit plan for a 10% user-level holdout. |
-
-- **Verdict reasons (code):** fixable gate failed: grounding (code)
-- **Required changes:**
-  - Define the 'Exclusive Premium' tagging system for creators to ensure scenarios are clearly marked prior to the trigger.
-  - Clarify how the UI handles Premium-tagged scenarios in search results so free users do not feel frustrated by 'gated' content visibility.
-- **Top concern:** Operational dependency on creator adoption for the 'Premium' scenario tagging, which may impact the initial inventory volume available for the ad path.
-
-#### Changes v2 → v3 (revise() saw the required changes, never the scores)
-
-- `anchor.newMechanic.name`: "Premium Scenario Category" → "Premium Scenario Tagging & Badge System"
-- `anchor.newMechanic.description`: "Introduces an 'Exclusive Premium' tag for creator scenarios. These are optional, bonus..." → "Creators flag new optional bonus scenarios as 'Premium' in the creation flow. These ar..."
-- `anchor.newMechanic.whyNeeded`: "Creates a monetizable content anchor that creators can opt into, providing value witho..." → "It provides a clear value exchange for creators to offer high-quality bonus content, w..."
-- `cannibalizationGuard`: "Non-subscribers only; gated to new content (no existing free scenarios removed); frequ..." → "Non-subscribers only; gated to new content (no existing free scenarios removed); frequ..."
-- `risks[1]`: "Potential perceived 'gating' if premium tag is misunderstood by the community." → "Initial inventory may be limited until creators adopt the new tagging system."
-- `storyboard[1].callouts[0].text`: "Unlock premium scenario" → "Premium Scenario Unlock"
-- `storyboard[1].caption`: "Premium unlock button added to scenario details." → "New 'Unlock Scenario' button added to character details."
-- `storyboard[2].caption`: "Offer appears for non-subscribers." → "Offer appears to non-subscribers."
-- `storyboard[3].caption`: "User plays a 15-second mini-game with Willson Wáng." → "User plays a 15-second mini-game."
-- `storyboard[4].caption`: "Scenario access granted for 72 hours." → "Premium scenario unlocked successfully."
-- `patch.newElements[1].id`: (none) → "ne2"
-- `patch.newElements[1].in`: (none) → "s05"
-- `patch.newElements[1].near`: (none) → "e12"
-- `patch.newElements[1].place`: (none) → "after"
-- `patch.newElements[1].change`: (none) → "Premium Scenario Badge"
-- `patch.newElements[2].id`: (none) → "ne3"
-- `patch.newElements[2].in`: (none) → "s07"
-- `patch.newElements[2].near`: (none) → "e12"
-- `patch.newElements[2].place`: (none) → "after"
-- `patch.newElements[2].change`: (none) → "Premium Scenario Badge"
-- `patch.newElements[3].id`: (none) → "ne4"
-- `patch.newElements[3].in`: (none) → "s08"
-- `patch.newElements[3].near`: (none) → "e12"
-- `patch.newElements[3].place`: (none) → "after"
-- `patch.newElements[3].change`: (none) → "Premium Scenario Badge"
-- `patch.newElements[4].id`: (none) → "ne5"
-- `patch.newElements[4].in`: (none) → "s11"
-- `patch.newElements[4].near`: (none) → "e12"
-- `patch.newElements[4].place`: (none) → "after"
-- `patch.newElements[4].change`: (none) → "Premium Scenario Badge"
-- ... and 5 more changes
-
-#### Round 2 (v3): **REJECT** · weighted 4.9 · judged by llm
-
-| gate | by | severity | result | evidence |
-|---|---|---|---|---|
-| schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | economy item "s09" does not exist; edge guard on unknown resource "JanitorPlus"; evidence element "Willson Wáng" is not on s09 |
-| label | code | fixable | pass | declares new mechanic "Premium Scenario Tagging & Badge System" |
-| already-exists | code | fixable | pass | no ad of this format on this surface today |
-| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
-| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
-| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
-| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | **FAIL** | The proposal introduces 'Premium' scenarios but fails to explicitly guarantee they will be SFW-compliant. Given the platform is an AI roleplay site with potentially adult content, this risks placing ads on non-compliant, unsafe inventory, violating [SAFE-1]. |
-| no-incentivized-action | llm | policy | pass | The proposal uses a standard rewarded ad for content access; no clicks, installs, or cash-like rewards are offered. |
-| no-loss-framing | llm | policy | pass | The proposal uses a gain-framing approach (unlocking exclusive content) rather than a loss-framing one. |
-| explicit-opt-in | llm | fixable | pass | The offer requires the user to tap 'Play Now' after disclosure. |
-| disclosed | llm | fixable | pass | The offer clearly states the reward (72-hour access) and action (play 15-second game). |
-| free-decline | llm | fixable | pass | The offer includes a clear 'No thanks' button that closes the prompt without penalty. |
-| no-stream-interrupt | llm | fixable | pass | The offer is placed on the Character Details screen (s09), which is static, not mid-conversation. |
-| not-for-subscribers | llm | fixable | pass | The proposal explicitly excludes subscribers via the 'Non-subscribers only' eligibility rule. |
-
-| criterion | weight | score | evidence |
-|---|---|---|---|
-| value-moment-fit | 20 | 5 | The trigger occurs exactly when a user is evaluating a scenario they wish to access, making it highly contextually relevant. |
-| product-integrity | 15 | 5 | The integration is native to the existing character details screen and creates a new content tier without degrading the free experience. |
-| cannibalization-safety | 15 | 5 | The reward is time-boxed to 72 hours, capped at 3 per day, and explicitly gated to non-subscribers. |
-| unit-economics | 10 | 5 | Cost to serve is zero, and revenue is net-positive compared to zero-ad baseline. |
-| reach | 10 | 4 | Character details are a core part of the exploration loop, ensuring high exposure. |
-| feasibility | 10 | 5 | Maps directly to existing SIM-RWD implementation with a standard button entry. |
-| specificity | 10 | 5 | Uses specific app nouns like 'Willson Wáng' and targets the Character Details screen (s09). |
-| frequency-fatigue | 5 | 5 | Includes a strict daily cap of 3 and a 60-minute cooldown. |
-| measurability | 5 | 5 | Includes a primary metric (scenario unlocks), guardrails, and a 10% holdout plan. |
-
-- **Verdict reasons (code):** policy gate failed: sfw (llm)
-- **Required changes:**
-  - Explicitly restrict 'Premium' scenarios to SFW-rated content that passes content moderation for brand safety, in accordance with the brand-safety requirements in [SAFE-1].
-  - Correct the 'JanitorPlus' resource name to 'Janitor Plus' in the edge guard to match the actual subscription resource name.
-- **Top concern:** The proposal lacks explicit brand-safety guardrails for the new 'Premium' scenario content type, which could result in rewarded ads being shown alongside non-compliant or adult content.
+  - Reduce the cost-to-serve by switching the reward from a 'frontier model' swipe to a 'standard model' swipe, or increase the required play actions to 2 views per swipe to ensure positive net margin.
+  - Implement the database changes required to track swipe usage for non-paying users as identified in the risk section.
+  - Define a clear success threshold for the D7/D30 retention lift that would justify the marginal or negative unit economics.
+- **Top concern:** The cost to serve a single frontier model swipe ($0.0090) frequently exceeds the net revenue per view ($0.0063), making this a loss-leader that relies entirely on unproven downstream retention gains.
 

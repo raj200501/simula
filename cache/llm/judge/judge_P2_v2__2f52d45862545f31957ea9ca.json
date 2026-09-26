@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The news feed is SFW and age-appropriate."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is ad-free reading time, not a cash-like incentive."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer is gain-framed as an 'Ad-free Sprint'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Requires a tap on 'Start Sprint'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Discloses 'Play a 15-second game' prior to the start."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Includes a 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed in the feed header, not during article reading."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Explicitly eligibility-gated to 'Non-paying users'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is browsing the feed and seeing ad density; the reward is removing that density. It fits the user's immediate state.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "It suppresses native and banner ads, preserving the content flow natively. No degradation occurs.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Time-boxed to 15 minutes with a cap of 3/day. This is a clear sample, not an unlimited replacement.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero, revenue is positive.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on the main home news feed, which is the core loop.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD; implies ad rendering engine control but fits standard rewarded formats.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses 'Ad-free Sprint' and references specific Taboola units (e47, e48), though references to e42 and e17 in the economy section were misaligned with screen element IDs.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps of 3 per day and 60-minute cooldowns are appropriate.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric and guardrails defined with a 21-day user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the Economy element references (e42, e17) to match the screen IDs actually present in s02 (e47, e48, e22).",
+   "Refine the trigger to be more specific, perhaps after N scroll-events past Taboola units, rather than just browsing."
+  ],
+  "topConcern": "The alignment of references to ad-units (Taboola IDs) with the available screen IDs; ensure the ad-suppression implementation explicitly targets the IDs present in the current view."
+ },
+ "usage": {
+  "input": 35100,
+  "output": 939,
+  "cacheRead": 32251,
+  "cacheWrite": 0,
+  "thoughts": 1295
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:18:57.845Z"
+}

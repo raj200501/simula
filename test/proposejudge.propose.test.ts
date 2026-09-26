@@ -101,6 +101,12 @@ describe("propose helpers", () => {
     assert.equal(q.patch.newEdges[0].effects[0].resource, "r1");
     assert.deepEqual(q.storyboard[0].callouts.map(c => c.node), ["e2", "Pay later"]);
     assert.ok(changes.length >= 3, changes.join("; "));
+    const marked = structuredClone(p);
+    marked.reward.resource = "boost_30m (new)";
+    marked.anchor.economy = ["boost_30m (new)"];
+    const r = canonicalIds(marked, m).p;
+    assert.equal(r.reward.resource, "boost_30m", "(new) is not part of a reward's id");
+    assert.deepEqual(r.anchor.economy, ["boost_30m (new)"], "the anchor keeps its (new) mark");
   });
 
   test("canonicalIds: a time box that names its entitlement only in its effects gets it as its reward resource", async () => {

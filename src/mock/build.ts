@@ -83,13 +83,24 @@ const STATUS_ICONS = `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidde
   + `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M3 20h3v-4H3zm5 0h3v-8H8zm5 0h3V8h-3zm5 0h3V4h-3z"/></svg>`
   + `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M16 6H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm4 3h1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-1z"/></svg>`;
 
+/** The fragment's root is a full-screen layer: inset 0, fixed, or absolutely placed and 100% tall. */
+export function coversScreen(html: string): boolean {
+  const style = /^\s*(?:<!--[\s\S]*?-->\s*)*<[a-z][^>]*\sstyle\s*=\s*"([^"]*)"/i.exec(html)?.[1] ?? "";
+  if (/(?:^|;)\s*inset\s*:\s*0(?:px)?\s*(?:;|$)|position\s*:\s*fixed/i.test(style)) return true;
+  return /position\s*:\s*absolute/i.test(style) && /(?:^|;)\s*height\s*:\s*100(?:%|vh)/i.test(style);
+}
+
 function proposalScript(input: ProposalInput): { pid: string; js: string } {
   const p = "proposal" in input ? input.proposal : input;
   const frags = "proposal" in input ? input.html ?? [] : [];
   const html: Record<string, string> = {};
   for (const f of frags) {
+    const isScreen = p.patch.newScreens.some(s => s.id === f.id);
+    // A new element is a control on an existing screen: one that covers the whole screen (a scrim, a
+    // modal) would hide the screen on every slide. Drop it; the runtime then draws the default control.
+    if (!isScreen && coversScreen(f.html)) continue;
     // Fragments are model output too: same sanitizing as screens (new screens keep a root, elements don't need one).
-    html[f.id] = sanitizeFragment(f.html, f.id, { wrap: p.patch.newScreens.some(s => s.id === f.id) }).html;
+    html[f.id] = sanitizeFragment(f.html, f.id, { wrap: isScreen }).html;
   }
   const data = JSON.stringify({ proposal: p, html }).replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
   return { pid: p.id, js: `window.__PATCHES = window.__PATCHES || {};\nwindow.__PATCHES[${JSON.stringify(p.id)}] = ${data};\n` };

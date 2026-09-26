@@ -4,77 +4,10 @@ One section per app, all produced by the same pipeline with no per-app code. Thi
 
 | App | State | Explored | Regime | Verdicts | QA fidelity · flows |
 |---|---|---|---|---|---|
-| [AOL](#aol) | complete | 17 screens · 58 transitions | no-scarcity | 0 SHIP · 0 REVISE · 3 REJECT | 0.77 · 22/22 |
-| [Janitor](#janitor) | complete | 16 screens · 60 transitions | subscription-gated | 2 SHIP · 0 REVISE · 1 REJECT | 0.90 · 45/45 |
-| [Luzia](#luzia) | complete | 38 screens · 171 transitions | subscription-gated | 2 SHIP · 0 REVISE · 3 REJECT | 0.72 · 134/135 |
+| [Luzia](#luzia) | complete | 38 screens · 171 transitions | subscription-gated | 1 SHIP · 0 REVISE · 4 REJECT | 0.72 · 134/135 |
+| [AOL](#aol) | complete | 17 screens · 58 transitions | no-scarcity | 2 SHIP · 0 REVISE · 1 REJECT | 0.77 · 22/22 |
+| [Janitor](#janitor) | complete | 16 screens · 60 transitions | subscription-gated | 0 SHIP · 0 REVISE · 3 REJECT | 0.90 · 45/45 |
 | [OOC](#ooc) | blocked | – | – | – | – |
-
-## AOL
-
-AOL mobile app for browsing curated news feeds, reading articles, viewing comments, and managing personal account feeds. Regime: **no-scarcity**. Profile: shallow.
-
-[Numbers](aol/NUMBERS.md) · [Product model digest](aol/model/digest.md) · [Candidates](aol/proposals/candidates.md) · [Judgments (every score, with evidence)](aol/proposals/judgments.md) · [Trajectory](aol/trajectory.md) · [Slides (PDF)](aol/slides/deck.pdf)
-
-<details><summary>Recommendation slide</summary>
-
-![Recommendation](aol/slides/png/01-recommendation.png)
-
-</details>
-
-### Mock fidelity (real app vs. generated mock)
-
-| Screen | Real app | Mock | Score |
-|---|---|---|---|
-| Home News Feed | <img src="aol/qa/s01/original.png" width="180"> | <img src="aol/qa/s01/best.png" width="180"> | 0.73 (html) |
-| Home News Feed | <img src="aol/qa/s02/original.png" width="180"> | <img src="aol/qa/s02/best.png" width="180"> | 0.79 (html) |
-| Home News Feed | <img src="aol/qa/s07/original.png" width="180"> | <img src="aol/qa/s07/best.png" width="180"> | 0.65 (html) |
-| News Feed Home | <img src="aol/qa/s13/original.png" width="180"> | <img src="aol/qa/s13/best.png" width="180"> | 0.90 (html) |
-
-Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 22/22 navigation edges replay correctly.
-
-**Human notes:**
-
-- Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
-
-## Janitor
-
-An AI character roleplay and exploration platform offering custom chat scenarios, community-created bots, and subscription perks. Regime: **subscription-gated**. Profile: shallow.
-
-[Numbers](janitor/NUMBERS.md) · [Product model digest](janitor/model/digest.md) · [Candidates](janitor/proposals/candidates.md) · [Judgments (every score, with evidence)](janitor/proposals/judgments.md) · [Trajectory](janitor/trajectory.md) · [Slides (PDF)](janitor/slides/deck.pdf)
-
-### P3 in motion
-
-<img src="janitor/slides/flow-P3.gif" width="300" alt="P3: Subscription Feature Sampling via Rewarded Ad, played in the generated mock">
-
-_The lead flow played in the generated mock: today → what changed → the offer → the game → the reward confirmed in-app._
-
-### Shipped flows
-
-**P3: Subscription Feature Sampling via Rewarded Ad**
-
-![P3: Subscription Feature Sampling via Rewarded Ad](janitor/slides/png/03-flow-P3.png)
-
-**P2: Daily Character Quest Hub**
-
-![P2: Daily Character Quest Hub](janitor/slides/png/05-flow-P2.png)
-
-<details><summary>Recommendation slide</summary>
-
-![Recommendation](janitor/slides/png/01-recommendation.png)
-
-</details>
-
-### Mock fidelity (real app vs. generated mock)
-
-| Screen | Real app | Mock | Score |
-|---|---|---|---|
-| Build, Share, Explore | <img src="janitor/qa/s01/original.png" width="180"> | <img src="janitor/qa/s01/best.png" width="180"> | 0.94 (html) |
-| @your_handle | <img src="janitor/qa/s02/original.png" width="180"> | <img src="janitor/qa/s02/best.png" width="180"> | 0.92 (html) |
-| More memory for
-long chats. | <img src="janitor/qa/s03/original.png" width="180"> | <img src="janitor/qa/s03/best.png" width="180"> | 0.91 (html) |
-| Janitor Plus Paywall | <img src="janitor/qa/s04/original.png" width="180"> | <img src="janitor/qa/s04/best.png" width="180"> | 0.83 (html) |
-
-Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 45/45 navigation edges replay correctly.
 
 ## Luzia
 
@@ -82,21 +15,17 @@ Luzia is an AI assistant providing chat capabilities, creative content generatio
 
 [Numbers](luzia/NUMBERS.md) · [Product model digest](luzia/model/digest.md) · [Candidates](luzia/proposals/candidates.md) · [Judgments (every score, with evidence)](luzia/proposals/judgments.md) · [Judge self-check](luzia/proposals/judge-eval.md) · [Trajectory](luzia/trajectory.md) · [Slides (PDF)](luzia/slides/deck.pdf)
 
-### P1 in motion
+### P5 in motion
 
-<img src="luzia/slides/flow-P1.gif" width="300" alt="P1: Start Task with Rewarded Refill, played in the generated mock">
+<img src="luzia/slides/flow-P5.gif" width="300" alt="P5: Anima Queue Fast-Track Priority, played in the generated mock">
 
 _The lead flow played in the generated mock: today → what changed → the offer → the game → the reward confirmed in-app._
 
 ### Shipped flows
 
-**P1: Start Task with Rewarded Refill**
+**P5: Anima Queue Fast-Track Priority**
 
-![P1: Start Task with Rewarded Refill](luzia/slides/png/03-flow-P1.png)
-
-**P4: Daily Character Quest & Credits**
-
-![P4: Daily Character Quest & Credits](luzia/slides/png/05-flow-P4.png)
+![P5: Anima Queue Fast-Track Priority](luzia/slides/png/03-flow-P5.png)
 
 <details><summary>Recommendation slide</summary>
 
@@ -119,12 +48,84 @@ Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 1
 
 **Human notes:**
 
-- luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
-- luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 
-- luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log
+- luzia-eval-judge failed (exit 1): npm: no such script.
 - luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed
+- Logged after the fact: Luzia was explored 7 times on 2026-09-25 (runs ex0925-021459 to ex0925-130556). Between runs a person had the explorer fixed and re-ran it: typing on a real Android keyboard and the drain probe (commits 0c25fbf, 1feb09a, edcac2a, 9253e0e). The product model comes from the last run, ex0925-130556.
+- Logged after the fact: after reviewing the judged proposals, a person had the proposer and judge rules tightened in code on 2026-09-26 (commit e7d0da6 and the commit that adds this note: no offer beside a sign-up button, no cheaper cost label on revision, the reward's resource sets a floor on its cost class, knowledge-base lines naming the test apps removed), then re-ran propose, judge, eval-judge and slides.
 - Resolved: the eval-judge failure above was a script-name typo in the unattended run script (the command is `npm run eval:judge`); it was re-run and wrote proposals/judge-eval.md.
 - Resolved: slides failed because the Mac slept mid-call (fetch failed). propose, judge and slides were then re-run with live Gemini from the committed model (proposals had fallen back to stubs during the Mac run because of Gemini 503s).
+
+## AOL
+
+AOL mobile app for browsing curated news feeds, reading articles, viewing comments, and managing personal account feeds. Regime: **no-scarcity**. Profile: shallow.
+
+[Numbers](aol/NUMBERS.md) · [Product model digest](aol/model/digest.md) · [Candidates](aol/proposals/candidates.md) · [Judgments (every score, with evidence)](aol/proposals/judgments.md) · [Judge self-check](aol/proposals/judge-eval.md) · [Trajectory](aol/trajectory.md) · [Slides (PDF)](aol/slides/deck.pdf)
+
+### P3 in motion
+
+<img src="aol/slides/flow-P3.gif" width="300" alt="P3: Daily Reader Streak & Ad-Free Access, played in the generated mock">
+
+_The lead flow played in the generated mock: today → what changed → the offer → the game → the reward confirmed in-app._
+
+### Shipped flows
+
+**P3: Daily Reader Streak & Ad-Free Access**
+
+![P3: Daily Reader Streak & Ad-Free Access](aol/slides/png/03-flow-P3.png)
+
+**P2: AOL Ad-Free Sprint**
+
+![P2: AOL Ad-Free Sprint](aol/slides/png/05-flow-P2.png)
+
+<details><summary>Recommendation slide</summary>
+
+![Recommendation](aol/slides/png/01-recommendation.png)
+
+</details>
+
+### Mock fidelity (real app vs. generated mock)
+
+| Screen | Real app | Mock | Score |
+|---|---|---|---|
+| Home News Feed | <img src="aol/qa/s01/original.png" width="180"> | <img src="aol/qa/s01/best.png" width="180"> | 0.73 (html) |
+| Home News Feed | <img src="aol/qa/s02/original.png" width="180"> | <img src="aol/qa/s02/best.png" width="180"> | 0.79 (html) |
+| Home News Feed | <img src="aol/qa/s07/original.png" width="180"> | <img src="aol/qa/s07/best.png" width="180"> | 0.65 (html) |
+| News Feed Home | <img src="aol/qa/s13/original.png" width="180"> | <img src="aol/qa/s13/best.png" width="180"> | 0.90 (html) |
+
+Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 22/22 navigation edges replay correctly.
+
+**Human notes:**
+
+- Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
+- Logged after the fact: after reviewing the judged proposals, a person had the proposer and judge rules tightened in code on 2026-09-26 (commit e7d0da6 and the commit that adds this note: no offer beside a sign-up button, no cheaper cost label on revision, the reward's resource sets a floor on its cost class, knowledge-base lines naming the test apps removed), then re-ran propose, judge, eval-judge and slides.
+
+## Janitor
+
+An AI character roleplay and exploration platform offering custom chat scenarios, community-created bots, and subscription perks. Regime: **subscription-gated**. Profile: shallow.
+
+[Numbers](janitor/NUMBERS.md) · [Product model digest](janitor/model/digest.md) · [Candidates](janitor/proposals/candidates.md) · [Judgments (every score, with evidence)](janitor/proposals/judgments.md) · [Judge self-check](janitor/proposals/judge-eval.md) · [Trajectory](janitor/trajectory.md) · [Slides (PDF)](janitor/slides/deck.pdf)
+
+<details><summary>Recommendation slide</summary>
+
+![Recommendation](janitor/slides/png/01-recommendation.png)
+
+</details>
+
+### Mock fidelity (real app vs. generated mock)
+
+| Screen | Real app | Mock | Score |
+|---|---|---|---|
+| Build, Share, Explore | <img src="janitor/qa/s01/original.png" width="180"> | <img src="janitor/qa/s01/best.png" width="180"> | 0.94 (html) |
+| @your_handle | <img src="janitor/qa/s02/original.png" width="180"> | <img src="janitor/qa/s02/best.png" width="180"> | 0.92 (html) |
+| More memory for long chats. | <img src="janitor/qa/s03/original.png" width="180"> | <img src="janitor/qa/s03/best.png" width="180"> | 0.91 (html) |
+| Janitor Plus Paywall | <img src="janitor/qa/s04/original.png" width="180"> | <img src="janitor/qa/s04/best.png" width="180"> | 0.83 (html) |
+
+Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: 45/45 navigation edges replay correctly.
+
+**Human notes:**
+
+- Logged after the fact: before the 2026-09-25 explore run, a person signed in to Janitor AI on the emulator with Google (apps/janitor.json sets login: manual; the explorer never types credentials). The account handle and join date were then redacted in every artifact: text replaced, screenshots blurred.
+- Logged after the fact: after reviewing the judged proposals, a person had the proposer and judge rules tightened in code on 2026-09-26 (commit e7d0da6 and the commit that adds this note: no offer beside a sign-up button, no cheaper cost label on revision, the reward's resource sets a floor on its cost class, knowledge-base lines naming the test apps removed), then re-ran propose, judge, eval-judge and slides.
 
 ## OOC
 

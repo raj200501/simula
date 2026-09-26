@@ -2,197 +2,217 @@
   "schema": "simula.candidates/1",
   "app": "janitor",
   "baseline": [
-    "Watch a 30-second video ad to get 10 free premium text messages with any character.",
-    "Watch an ad to get 15 minutes of priority routing for faster AI reply speeds.",
-    "Watch an ad to temporarily unlock the golden checkmark next to your username for 24 hours."
+    "Watch a 30-second video ad to unlock 24 hours of free Janitor Plus subscription access.",
+    "Watch an ad when reaching a message limit to receive 10 more free messages.",
+    "Watch a rewarded ad from the profile menu to earn generic roleplay tokens."
   ],
   "momentSweep": [
     {
       "moment": "m1",
-      "exchange": "Play a 15-second game to unlock 30 minutes of 5x context memory for long chats.",
+      "exchange": "Trade completing a 15-second mini-game for a time-boxed sample of advanced context memory or priority routing when viewing the memory paywall.",
       "viable": true
     },
     {
       "moment": "m2",
-      "exchange": "Play a 15-second game to get a temporary priority routing boost for 15 minutes after paywall dismissal.",
+      "exchange": "Offer a 30-minute boost of 5x context for better memory immediately after the user dismisses the memory paywall.",
       "viable": true
     },
     {
       "moment": "m3",
-      "exchange": "Play a 15-second game to earn 5 frontier model swipes after declining the main subscription paywall.",
+      "exchange": "Downsell a small grant of 3 frontier model swipes after the user declines the full Janitor Plus subscription modal.",
       "viable": true
     },
     {
       "moment": "m4",
-      "exchange": "Access an always-available task hub in the profile menu to earn cosmetic checkmarks via partner games.",
+      "exchange": "Provide a proactive daily check-in or quest hub inside the profile menu that rewards bonus swipes or temporary boosts.",
       "viable": true
     },
     {
       "moment": "m5",
-      "exchange": "Cannot offer ads on first-launch or main exploration feed to preserve initial user value experience.",
+      "exchange": "No value exchange permitted on initial launch feed before experiencing core chat value per anti-fatigue policy.",
       "viable": false
     },
     {
       "moment": "m6",
-      "exchange": "Play a 15-second partner game to unlock a detailed character background scenario on the details page.",
+      "exchange": "Provide an opt-in priority connection or enhanced context preview before launching into a detailed character roleplay session.",
       "viable": true
     }
   ],
   "ideas": [
     {
-      "title": "Context Memory Boost",
-      "case": "existing",
-      "archetype": "TAX-7",
-      "moment": "m1",
-      "reward": "30 minutes of 5x context memory",
-      "beyondBaseline": true
-    },
-    {
-      "title": "Paywall-Decline Priority routing",
+      "title": "Paywall Fallback Swipes",
       "case": "existing",
       "archetype": "TAX-10",
-      "moment": "m2",
-      "reward": "15 minutes of priority routing",
-      "beyondBaseline": true
-    },
-    {
-      "title": "Frontier Swipes Sample",
-      "case": "existing",
-      "archetype": "TAX-2",
       "moment": "m3",
-      "reward": "5 frontier model swipes",
+      "reward": "3 frontier model swipes",
       "beyondBaseline": true
     },
     {
-      "title": "Profile Menu Mini-Game Hub",
-      "case": "product-change",
-      "archetype": "TAX-9",
-      "moment": "m4",
-      "reward": "1 day of golden username checkmark",
-      "beyondBaseline": true
-    },
-    {
-      "title": "Premium Scenario Unlock",
-      "case": "product-change",
-      "archetype": "TAX-3",
-      "moment": "m6",
-      "reward": "unlocked premium character scenario",
-      "beyondBaseline": true
-    },
-    {
-      "title": "Extra Character Slots",
-      "case": "product-change",
-      "archetype": "TAX-7",
-      "moment": "m4",
-      "reward": "1 temporary custom character slot for 7 days",
-      "beyondBaseline": true
-    },
-    {
-      "title": "Speed Boost Token",
+      "title": "Timed Priority Routing Pass",
       "case": "existing",
       "archetype": "TAX-4",
       "moment": "m1",
-      "reward": "10 priority model replies",
+      "reward": "1 hour of priority routing for faster replies",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Session Context Boost",
+      "case": "existing",
+      "archetype": "TAX-2",
+      "moment": "m2",
+      "reward": "30 minutes of 5x context for better memory",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Character Pre-Chat Priority Pass",
+      "case": "existing",
+      "archetype": "TAX-2",
+      "moment": "m6",
+      "reward": "1 chat session of priority routing for faster replies",
       "beyondBaseline": false
     },
     {
-      "title": "Golden Checkmark Cosmetics",
-      "case": "existing",
-      "archetype": "TAX-13",
+      "title": "Daily Check-in Swipes",
+      "case": "product-change",
+      "archetype": "TAX-9",
       "moment": "m4",
-      "reward": "1 hour of golden checkmark",
+      "reward": "5 daily bonus frontier swipes",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Extended Character Persona Slot",
+      "case": "product-change",
+      "archetype": "TAX-7",
+      "moment": "m4",
+      "reward": "1 extra custom persona slot for 24 hours",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Scene Memory Pin Refill",
+      "case": "product-change",
+      "archetype": "TAX-7",
+      "moment": "m1",
+      "reward": "2 pinned scene memories for current chat",
+      "beyondBaseline": true
+    },
+    {
+      "title": "Profile Menu Frontier Swipes Refill",
+      "case": "product-change",
+      "archetype": "TAX-1",
+      "moment": "m4",
+      "reward": "3 bonus frontier swipes",
       "beyondBaseline": false
     }
   ],
   "selected": [
     {
       "index": 0,
-      "why": "Context Memory Boost targets users precisely at their moment of frustration (m1) when the chatbot starts 'forgetting' key details in long chat sessions, offering high value while sampling the subscription's 5x context feature."
+      "why": "Captures high-intent non-converting users immediately after dismissing the Janitor Plus paywall modal (s04) with a micro-taste of frontier model swipes, driving sampling without cannibalizing the monthly subscription."
     },
     {
-      "index": 1,
-      "why": "Paywall-Decline Priority routing effectively monetizes non-paying users who dismiss the main billing screen (m2) by offering them a short, non-cannibalizing taste of fast response speeds."
+      "index": 2,
+      "why": "Directly resolves the user's immediate barrier on the memory limit paywall screen (s03) with a 30-minute time-boxed unlock of the 5x context memory entitlement while keeping full permanent memory gated."
     },
     {
       "index": 4,
-      "why": "Premium Scenario Unlock introduces a product-change model that gates optional, curated creative scenarios (m6) behind mini-games, which boosts community creator content value without interfering with core chat mechanics."
+      "why": "Introduces a non-intrusive proactive daily retention loop directly within the Profile menu (s02), granting a capped daily allowance of frontier swipes without degrading the existing unlimited free tier."
     }
   ],
   "proposals": [
     {
       "id": "P1",
-      "version": 3,
-      "title": "Context Memory Boost",
-      "oneLiner": "Unlock 15 minutes of 5x context memory via a rewarded mini-game.",
+      "version": 2,
+      "title": "Paywall Fallback Swipes",
+      "oneLiner": "Provide non-paying users with limited base model swipes in exchange for engagement when they decline a premium paywall.",
       "case": "existing",
-      "archetype": "TAX-7",
+      "archetype": "TAX-10",
       "beyondBaseline": true,
       "anchor": {
         "moments": [
           "m1",
-          "m2"
+          "m3"
         ],
         "economy": [
           "of1",
-          "w1"
-        ]
+          "w1",
+          "plan",
+          "base_swipes (new)"
+        ],
+        "newMechanic": {
+          "name": "Base Model Swipes",
+          "description": "A new consumable resource allowing limited interactions with a cheaper, base AI model. These are tracked per user, refresh daily, and are distinct from premium 'frontier model swipes'.",
+          "whyNeeded": "To provide a valuable, low-cost rewarded item to non-paying users as an alternative to direct subscription, without cannibalizing the core premium offering.",
+          "removesFreeValue": false
+        }
       },
-      "surface": "s03",
-      "trigger": "When the user lands on the memory paywall screen (s03) and is blocked from advanced context.",
-      "eligibility": "Non-paying users reaching the memory wall.",
+      "surface": "ns1",
+      "trigger": "Fires immediately after the user taps the decline option ('Close paywall' on s03 or 'Not now' on s04) on either Janitor Plus paywall.",
+      "eligibility": "Non-paying, non-subscribed users who dismiss the premium subscription offer from s03 or s04.",
       "offer": {
-        "title": "Unlock Memory Boost",
-        "body": "Play a quick 15-second game to get 5x context memory for the next 15 minutes.",
-        "cta": "Play Now",
-        "decline": "Not Now"
+        "title": "Want 3 free swipes?",
+        "body": "Play a quick 15-second game to get 3 free swipes on our base models.",
+        "cta": "Play Game",
+        "decline": "No thanks"
       },
       "simula": {
         "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Janitor",
+        "entry": "invitation",
+        "gamePartner": "Janitor AI",
         "minPlaySec": 15
       },
       "reward": {
-        "what": "15 minutes of 5x context memory",
-        "resource": "context_memory_5x",
-        "amount": 1,
-        "duration": "15m",
+        "what": "3 base model swipes",
+        "resource": "base_swipes",
+        "amount": 3,
         "grantOn": "REWARD_VERIFIED"
       },
       "caps": {
         "perDay": 2,
-        "cooldownMin": 60
+        "cooldownMin": 720
       },
-      "cannibalizationGuard": "The reward is strictly time-boxed to 15 minutes and capped at 2 uses per day, ensuring the Janitor Plus subscription (of1) remains the only way to get permanent memory [TAX-2] [CANN-2].",
+      "cannibalizationGuard": "The offer is gated purely on paywall decline (TAX-10). It is strictly capped at 2 instances (6 swipes) per day, ensuring the premium subscription's 'generous monthly swipes' promise remains a far superior, frictionless option. Rewards a cheaper 'base model swipe' instead of premium 'frontier model swipes'.",
       "assumptions": {
-        "engagedShare": 0.15,
+        "engagedShare": 0.25,
         "viewsPerEngager": 1.2,
         "cogs": "text-cheap",
-        "cogsUnitsPerView": 1
+        "cogsUnitsPerView": 3
       },
       "kpis": {
-        "primary": "rewarded_impressions_per_dau",
+        "primary": "Ad ARPDAU",
         "guardrails": [
-          "subscription_conversion_rate",
-          "average_session_length"
+          "Paywall s03 and s04 purchase conversion rate",
+          "D7 User Retention"
         ],
-        "holdout": "user-level, 10% share, 21 days"
+        "holdout": "Run a 5% user-level holdout group for 28 days to measure downstream subscription cannibalization and net revenue lift."
       },
       "precedents": [
-        "TAX-7",
-        "TAX-2",
-        "AI-7",
-        "EX-DUO"
+        "TAX-10",
+        "CANN-1",
+        "AI-10",
+        "TRIG-4",
+        "TRIG-5"
       ],
       "risks": [
-        "Increased inference costs, mitigated by using a cost-optimized text-cheap model for the 15-minute boost session [TRIG-4].",
-        "Potential devaluation of the Janitor Plus subscription if frequent usage satisfies core roleplay sessions."
+        "Slight risk of micro-cannibalization among users who only need a couple of extra swipes per day, mitigated by the low daily cap.",
+        "Potential fatigue if users repeatedly see the offer on every paywall dismissal, mitigated by the 12-hour cooldown."
       ],
       "evidence": [
         {
+          "obs": "s04",
+          "el": "e8",
+          "quote": "Generous monthly swipes with our frontier models",
+          "verified": true
+        },
+        {
+          "obs": "s04",
+          "el": "e12",
+          "quote": "Not now",
+          "verified": true
+        },
+        {
           "obs": "s03",
-          "el": "e10",
-          "quote": "5× context for better memory",
+          "el": "e12",
+          "quote": "Generous monthly swipes with our frontier models",
           "verified": true
         },
         {
@@ -203,95 +223,153 @@
         }
       ],
       "patch": {
-        "newScreens": [],
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s04",
+            "kind": "modal",
+            "change": "Create an overlay modal containing the fallback invitation, containing the reward description, action length, and primary/secondary button layouts."
+          }
+        ],
         "newElements": [
           {
             "id": "ne1",
-            "in": "s03",
-            "near": "e10",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Primary button labeled 'Play Game' that launches the Simula mini-game on tap."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "near": "ne1",
             "place": "after",
-            "change": "Add a MiniGameButton styled as 'Try 15 mins for free' below the context feature description."
+            "change": "An equally legible secondary button labeled 'No thanks' that dismisses the fallback offer and routes the user back to their profile."
+          },
+          {
+            "id": "ne3",
+            "in": "s02",
+            "near": "e6",
+            "place": "after",
+            "change": "Text element displaying 'Your Swipes: {base_swipes} left today'. Initially 0 for free users."
           }
         ],
         "newEdges": [
           {
+            "from": "s04",
+            "el": "e12",
+            "to": "ns1",
+            "effects": []
+          },
+          {
             "from": "s03",
+            "el": "e3",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
             "el": "ne1",
             "to": "rwd",
             "effects": [
               {
-                "resource": "context_memory_5x",
-                "delta": 1
+                "resource": "base_swipes",
+                "delta": 3
               }
             ]
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
+            "to": "s02",
+            "effects": []
           }
         ]
       },
       "storyboard": [
         {
           "phase": "today",
-          "screen": "s03",
-          "counters": [],
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
           "overlay": "none",
           "callouts": [
             {
-              "node": "e10",
-              "text": "Memory context is locked for free users."
+              "node": "e12",
+              "text": "User taps 'Not now' to decline subscription."
             }
           ],
-          "caption": "The user hits the memory paywall when seeking better context for their chat."
+          "caption": "Today, when a user declines Janitor Plus on either paywall screen (s03 or s04), they are returned directly to their profile menu with no premium features."
         },
         {
           "phase": "change",
-          "screen": "s03",
-          "counters": [],
+          "screen": "s04",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
           "overlay": "none",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "A new option to unlock memory via a game appears."
+              "node": "e12",
+              "text": "Intercepting decline tap to trigger the fallback offer."
             }
           ],
-          "caption": "We add a 'Try for free' button under the premium context feature."
+          "caption": "We introduce a product change that intercepts paywall decline actions from both s03 and s04 to offer a restricted sample of base model swipes."
         },
         {
           "phase": "offer",
-          "screen": "s03",
-          "counters": [],
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
           "overlay": "invite",
           "callouts": [
             {
               "node": "ne1",
-              "text": "User opts in to the value exchange."
+              "text": "Play 15-second game to earn 3 swipes"
             }
           ],
-          "caption": "The invite screen discloses the 15s play time and the 15-minute reward."
+          "caption": "The fallback modal ns1 appears, explicitly offering 3 free base model swipes for playing a 15-second game."
         },
         {
           "phase": "ad",
-          "screen": "s03",
-          "counters": [],
+          "screen": "ns1",
+          "counters": [
+            {
+              "resource": "base_swipes",
+              "value": 0
+            }
+          ],
           "overlay": "game",
           "callouts": [],
-          "caption": "The user plays a quick mini-game with Janitor to earn the context boost."
+          "caption": "The user plays an interactive 15-second mini-game powered by Simula's SDK."
         },
         {
           "phase": "value",
-          "screen": "s03",
+          "screen": "s02",
           "counters": [
             {
-              "resource": "context_memory_5x",
-              "value": 1
+              "resource": "base_swipes",
+              "value": 3
             }
           ],
           "overlay": "verified",
           "callouts": [
             {
-              "node": "e10",
-              "text": "Memory unlocked for 15 minutes."
+              "node": "ne3",
+              "text": "User gets 3 base model swipes credited. Counter visible on Profile menu."
             }
           ],
-          "caption": "Upon verification, the user receives 15 minutes of enhanced roleplay memory."
+          "caption": "Upon REWARD_VERIFIED, 3 base model swipes are credited, and the user is redirected to s02 where the new swipe counter is visible."
         }
       ],
       "economics": {
@@ -303,14 +381,14 @@
         "rewardToViewRatio": null,
         "maxDailyEarnUsdAtList": null,
         "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0.0018,
+        "cogsPerViewUsd": 0.0054,
         "scenario": {
-          "engagedShare": 0.15,
+          "engagedShare": 0.25,
           "viewsPerEngager": 1.2,
-          "impressionsPerDau": 0.18,
-          "arpdauUsd": 0.0022,
-          "annualPer1mDauUsd": 788400,
-          "label": "Scenario, not a forecast: 15% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
+          "impressionsPerDau": 0.3,
+          "arpdauUsd": 0.0036,
+          "annualPer1mDauUsd": 1314000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
         },
         "flags": []
       }
@@ -318,10 +396,10 @@
     {
       "id": "P2",
       "version": 2,
-      "title": "Paywall-Decline Priority Routing",
-      "oneLiner": "Offer a 15-minute priority routing pass when users decline the Janitor Plus subscription paywall.",
+      "title": "Session Context Boost",
+      "oneLiner": "Unlock 30 minutes of 5x context memory by playing a quick mini-game after declining the Janitor Plus paywall.",
       "case": "existing",
-      "archetype": "TAX-10",
+      "archetype": "TAX-2",
       "beyondBaseline": true,
       "anchor": {
         "moments": [
@@ -329,89 +407,130 @@
         ],
         "economy": [
           "of1",
-          "w1"
+          "premium_context_30min (new)"
         ]
       },
       "surface": "s03",
-      "trigger": "When the user taps 'Close paywall' on the Janitor Plus subscription screen without subscribing.",
-      "eligibility": "Non-payers who decline the Janitor Plus subscription paywall.",
+      "trigger": "User taps Close paywall (e3) on s03 without purchasing a subscription.",
+      "eligibility": "Non-subscribers who dismiss the Janitor Plus paywall.",
       "offer": {
-        "title": "Want Faster Replies?",
-        "body": "Play a quick 15-second game to unlock 15 minutes of priority routing.",
+        "title": "Boost Memory for 30 Minutes",
+        "body": "Play a quick 15-second game for 30 minutes of 5x context.",
         "cta": "Play Now",
-        "decline": "No thanks"
+        "decline": "No Thanks"
       },
       "simula": {
         "unit": "SIM-RWD",
-        "entry": "button",
+        "entry": "invitation",
         "gamePartner": "Janitor",
         "minPlaySec": 15
       },
       "reward": {
-        "what": "15 minutes of priority routing",
-        "resource": "janitor_plus_priority_routing_time",
-        "amount": 15,
-        "duration": "15 minutes",
+        "what": "30 minutes of 5x context for better memory",
+        "resource": "premium_context_30min",
+        "amount": 1,
+        "duration": "30 minutes",
         "grantOn": "REWARD_VERIFIED"
       },
       "caps": {
         "perDay": 2,
-        "cooldownMin": 60
+        "cooldownMin": 120
       },
-      "cannibalizationGuard": "Gated strictly to paywall decliners and non-payers, time-boxed to 15 minutes, preserving the full permanent subscription value.",
+      "cannibalizationGuard": "Gated exclusively to paywall decliners at m2 and time-boxed to 30 minutes [TAX-2] [CANN-1]. The full Janitor Plus plan (of1) retains permanent 5x context, priority routing, and golden badge status.",
       "assumptions": {
-        "engagedShare": 0.25,
-        "viewsPerEngager": 1.5,
-        "cogs": "none",
-        "cogsUnitsPerView": 0
+        "engagedShare": 0.15,
+        "viewsPerEngager": 1.2,
+        "cogs": "text-premium",
+        "cogsUnitsPerView": 1
       },
       "kpis": {
-        "primary": "Rewarded ad revenue and incremental engagement",
+        "primary": "Rewarded ad revenue per DAU from paywall decliners",
         "guardrails": [
-          "Paid subscription conversion non-inferiority",
-          "D7/D30 retention",
-          "Session length"
+          "Janitor Plus subscription conversion rate (non-inferiority margin -2%)",
+          "D7 chat retention"
         ],
-        "holdout": "5% user-level holdout for 28 days"
+        "holdout": "5% randomized user-level holdout for 30 days"
       },
       "precedents": [
-        "TAX-10",
-        "EX-DUO"
+        "TAX-2",
+        "EX-DUO",
+        "EX-MUSIC",
+        "TRIG-1",
+        "SAFE-1",
+        "POL-2"
       ],
       "risks": [
-        "User fatigue if shown too frequently",
-        "Perception of subscription discounting"
+        "The average inference COGS for providing 30 minutes of 5x context using a cheaper model must be sustainable. We assume a 'text-cheap' model for the trial, which significantly lowers the cost per minute of enhanced context compared to the full premium subscription model, making the estimated COGS per view approximately $0.003-$0.005, which is below the low-end net revenue per view [TRIG-4].",
+        "Overuse could slightly delay subscription conversion for heavy chatters if capped too loosely [CANN-2]."
       ],
       "evidence": [
         {
-          "obs": "m2",
+          "obs": "s03",
           "el": "e3",
           "quote": "Close paywall",
+          "verified": true
+        },
+        {
+          "obs": "s03",
+          "el": "e10",
+          "quote": "5× context for better memory",
           "verified": true
         }
       ],
       "patch": {
-        "newScreens": [],
+        "newScreens": [
+          {
+            "id": "ns1",
+            "basedOn": "s03",
+            "kind": "modal",
+            "change": "Rewarded offer overlay shown upon paywall decline."
+          }
+        ],
         "newElements": [
           {
             "id": "ne1",
-            "in": "s03",
-            "near": "e3",
+            "in": "ns1",
+            "place": "overlay",
+            "change": "Reward invitation modal offering 30 minutes of 5x context memory."
+          },
+          {
+            "id": "ne2",
+            "in": "ns1",
+            "near": "ne1",
             "place": "after",
-            "change": "Add rewarded ad fallback button 'Play for Priority Routing'"
+            "change": "Play Now button to launch Simula mini-game."
+          },
+          {
+            "id": "ne3",
+            "in": "ns1",
+            "near": "ne2",
+            "place": "after",
+            "change": "No Thanks button to return to core flow."
           }
         ],
         "newEdges": [
           {
             "from": "s03",
-            "el": "ne1",
+            "el": "e3",
+            "to": "ns1",
+            "effects": []
+          },
+          {
+            "from": "ns1",
+            "el": "ne2",
             "to": "rwd",
             "effects": [
               {
-                "resource": "janitor_plus_priority_routing_time",
-                "delta": 15
+                "resource": "premium_context_30min",
+                "delta": 1
               }
             ]
+          },
+          {
+            "from": "ns1",
+            "el": "ne3",
+            "to": "s01",
+            "effects": []
           }
         ]
       },
@@ -424,10 +543,10 @@
           "callouts": [
             {
               "node": "e3",
-              "text": "User taps Close paywall"
+              "text": "User taps Close paywall after reviewing subscription"
             }
           ],
-          "caption": "User views the Janitor Plus subscription paywall and declines."
+          "caption": "User reaches s03 paywall and chooses to dismiss it."
         },
         {
           "phase": "change",
@@ -436,55 +555,50 @@
           "overlay": "none",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "Fallback ad offer appears"
+              "node": "e3",
+              "text": "Paywall decline intercept catches exit flow"
             }
           ],
-          "caption": "Upon declining, a compliant rewarded fallback offer is presented."
+          "caption": "System intercepts paywall decline to offer a trial boost."
         },
         {
           "phase": "offer",
-          "screen": "s03",
+          "screen": "ns1",
           "counters": [],
           "overlay": "invite",
           "callouts": [
             {
               "node": "ne1",
-              "text": "Play 15s for 15m priority"
+              "text": "Offer card introduces 30-min 5x context trial"
             }
           ],
-          "caption": "Clear disclosure states the 15-second mini-game requirement and 15-minute reward."
+          "caption": "Reward invitation offers 30 minutes of 5x context."
         },
         {
           "phase": "ad",
-          "screen": "s03",
+          "screen": "ns1",
           "counters": [],
           "overlay": "game",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "15s mini-game active"
+              "node": "ne2",
+              "text": "User plays 15s sponsored mini-game"
             }
           ],
-          "caption": "User plays the 15-second interactive partner mini-game."
+          "caption": "User plays mini-game with Janitor Game Partner."
         },
         {
           "phase": "value",
-          "screen": "s03",
-          "counters": [
-            {
-              "resource": "janitor_plus_priority_routing_time",
-              "value": 15
-            }
-          ],
+          "screen": "s01",
+          "counters": [],
           "overlay": "verified",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "+15m Priority Routing granted"
+              "node": "e5",
+              "text": "5x context active banner enabled for 30 minutes"
             }
           ],
-          "caption": "Upon REWARD_VERIFIED, 15 minutes of priority routing is unlocked instantly."
+          "caption": "Reward verified and 30-minute context boost granted."
         }
       ],
       "economics": {
@@ -496,95 +610,100 @@
         "rewardToViewRatio": null,
         "maxDailyEarnUsdAtList": null,
         "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0,
+        "cogsPerViewUsd": 0.009,
         "scenario": {
-          "engagedShare": 0.25,
-          "viewsPerEngager": 1.5,
-          "impressionsPerDau": 0.375,
-          "arpdauUsd": 0.0045,
-          "annualPer1mDauUsd": 1642500,
-          "label": "Scenario, not a forecast: 25% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+          "engagedShare": 0.15,
+          "viewsPerEngager": 1.2,
+          "impressionsPerDau": 0.18,
+          "arpdauUsd": 0.0022,
+          "annualPer1mDauUsd": 788400,
+          "label": "Scenario, not a forecast: 15% of DAU engage, 1.2 views each, US mid eCPM after a 25% non-game haircut."
         },
-        "flags": []
+        "flags": [
+          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        ]
       }
     },
     {
       "id": "P3",
-      "version": 3,
-      "title": "Premium Scenario Unlock",
-      "oneLiner": "Watch a quick game to unlock exclusive premium scenarios for 72 hours.",
+      "version": 2,
+      "title": "Daily Check-in Swipe",
+      "oneLiner": "Earn 1 daily bonus frontier model swipe by playing a 15-second mini-game in the Profile menu.",
       "case": "product-change",
-      "archetype": "TAX-3",
+      "archetype": "TAX-9",
       "beyondBaseline": true,
       "anchor": {
         "moments": [
-          "m6"
+          "m4"
         ],
         "economy": [
-          "s09"
+          "of1",
+          "w1",
+          "Frontier Swipes (new)"
         ],
         "newMechanic": {
-          "name": "Premium Scenario Tagging & Badge System",
-          "description": "Creators flag new optional bonus scenarios as 'Premium' in the creation flow. These are explicitly marked with a 'Premium' badge on all search (s07, s08, s11, s12) and browse (s05) result cards, ensuring users see the tag before selecting a character. Access is then unlockable via a rewarded ad path.",
-          "whyNeeded": "It provides a clear value exchange for creators to offer high-quality bonus content, while the 'Premium' badge ensures transparency, preventing frustration by signaling availability prior to clicking through to the details screen.",
+          "name": "Daily Check-in Swipes",
+          "description": "A daily check-in feature on the Profile menu where users claim 1 bonus frontier model swipe after playing a short sponsored mini-game.",
+          "whyNeeded": "Janitor gates frontier model swipes behind Janitor Plus; this provides a small, ad-supported sampling for non-payers.",
           "removesFreeValue": false
         }
       },
-      "surface": "s09",
-      "trigger": "User taps 'Unlock Scenario' on a Premium-tagged character scenario in Character Details.",
-      "eligibility": "Non-subscribers only. Applies only to new 'Premium' tagged scenarios; existing free scenarios remain unchanged.",
+      "surface": "s02",
+      "trigger": "User taps the 'Daily Check-in' card on s02 (Profile menu).",
+      "eligibility": "Non-paying users who have not claimed today's check-in reward.",
       "offer": {
-        "title": "Unlock Premium Scenario",
-        "body": "Play a 15-second game with Willson Wáng to unlock this premium scenario for 72 hours.",
+        "title": "Daily Check-in Swipe",
+        "body": "Play a 15-second game to claim 1 bonus frontier model swipe today.",
         "cta": "Play Now",
-        "decline": "No thanks"
+        "decline": "Maybe Later"
       },
       "simula": {
         "unit": "SIM-RWD",
-        "entry": "button",
-        "gamePartner": "Willson Wáng",
+        "entry": "invitation",
+        "gamePartner": "Janitor",
         "minPlaySec": 15
       },
       "reward": {
-        "what": "72-hour access to Premium Scenario",
-        "resource": "PremiumScenarioAccess",
+        "what": "1 bonus frontier model swipe",
+        "resource": "Frontier Swipes",
         "amount": 1,
-        "duration": "72 hours",
         "grantOn": "REWARD_VERIFIED"
       },
       "caps": {
-        "perDay": 3,
-        "cooldownMin": 60
+        "perDay": 1,
+        "cooldownMin": 1440
       },
-      "cannibalizationGuard": "Non-subscribers only; gated to new content (no existing free scenarios removed); frequency capped at 3 per day; upsell included.",
+      "cannibalizationGuard": "The reward is strictly limited to 1 swipe per day, ensuring the Janitor Plus subscription remains the only way to access generous monthly swipes and priority routing.",
       "assumptions": {
-        "engagedShare": 0.3,
-        "viewsPerEngager": 1.5,
-        "cogs": "none",
+        "engagedShare": 0.25,
+        "viewsPerEngager": 1,
+        "cogs": "text-premium",
         "cogsUnitsPerView": 1
       },
       "kpis": {
-        "primary": "Premium scenario unlocks per DAU",
+        "primary": "Daily active user retention (D7/D30) on s02.",
         "guardrails": [
-          "Paid conversion non-inferiority",
-          "D30 retention"
+          "Janitor Plus subscription conversion rate",
+          "Frontier model API token cost per active user"
         ],
-        "holdout": "10% user-level holdout for 4 weeks"
+        "holdout": "5% randomized user-level holdout over 30 days."
       },
       "precedents": [
-        "TAX-3",
-        "TRIG-5",
-        "EX-SERIAL"
+        "TAX-9",
+        "EX-DUO",
+        "AI-3",
+        "TRIG-1",
+        "POL-8"
       ],
       "risks": [
-        "Requires creator adoption to tag scenarios as 'Premium'.",
-        "Initial inventory may be limited until creators adopt the new tagging system."
+        "Frontier model LLM token cost for 1 swipe per view remains near the break-even ceiling for ad revenue",
+        "Requirement for backend database changes to track frontier swipe usage for non-payers"
       ],
       "evidence": [
         {
-          "obs": "s09",
-          "el": "Willson Wáng",
-          "quote": "Willson Wáng",
+          "obs": "s02",
+          "el": "e20",
+          "quote": "Main navigation",
           "verified": true
         }
       ],
@@ -593,60 +712,25 @@
         "newElements": [
           {
             "id": "ne1",
-            "in": "s09",
-            "near": "e6",
-            "place": "after",
-            "change": "Unlock Scenario Button"
-          },
-          {
-            "id": "ne2",
-            "in": "s05",
-            "near": "e12",
-            "place": "after",
-            "change": "Premium Scenario Badge"
-          },
-          {
-            "id": "ne3",
-            "in": "s07",
-            "near": "e12",
-            "place": "after",
-            "change": "Premium Scenario Badge"
-          },
-          {
-            "id": "ne4",
-            "in": "s08",
-            "near": "e12",
-            "place": "after",
-            "change": "Premium Scenario Badge"
-          },
-          {
-            "id": "ne5",
-            "in": "s11",
-            "near": "e12",
-            "place": "after",
-            "change": "Premium Scenario Badge"
-          },
-          {
-            "id": "ne6",
-            "in": "s12",
-            "near": "e12",
-            "place": "after",
-            "change": "Premium Scenario Badge"
+            "in": "s02",
+            "near": "e20",
+            "place": "before",
+            "change": "Add a Daily Check-in card displaying title 'Daily Check-in' and CTA 'Claim 1 Frontier Swipe'."
           }
         ],
         "newEdges": [
           {
-            "from": "s09",
+            "from": "s02",
             "el": "ne1",
             "to": "rwd",
             "effects": [
               {
-                "resource": "PremiumScenarioAccess",
+                "resource": "Frontier Swipes",
                 "delta": 1
               }
             ],
             "guard": {
-              "resource": "JanitorPlus",
+              "resource": "Frontier Swipes",
               "lt": 1
             }
           }
@@ -655,58 +739,88 @@
       "storyboard": [
         {
           "phase": "today",
-          "screen": "s09",
-          "counters": [],
-          "overlay": "none",
-          "callouts": [],
-          "caption": "User views character details for Willson Wáng."
-        },
-        {
-          "phase": "change",
-          "screen": "s09",
+          "screen": "s02",
           "counters": [],
           "overlay": "none",
           "callouts": [
             {
-              "node": "ne1",
-              "text": "Premium Scenario Unlock"
+              "node": "e20",
+              "text": "Profile menu shows navigation and Janitor Plus banner."
             }
           ],
-          "caption": "New 'Unlock Scenario' button added to character details."
+          "caption": "Profile menu s02 displays current navigation and subscription options."
+        },
+        {
+          "phase": "change",
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
+          "overlay": "none",
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "Daily Check-in card ne1 added above navigation."
+            }
+          ],
+          "caption": "A new daily check-in module ne1 appears on Profile menu s02."
         },
         {
           "phase": "offer",
-          "screen": "s09",
-          "counters": [],
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
           "overlay": "invite",
           "callouts": [
             {
               "node": "ne1",
-              "text": "Play 15s to unlock"
+              "text": "Simula invitation modal presents check-in offer terms."
             }
           ],
-          "caption": "Offer appears to non-subscribers."
+          "caption": "Tapping check-in displays the Simula reward offer with exact terms."
         },
         {
           "phase": "ad",
-          "screen": "s09",
-          "counters": [],
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 0
+            }
+          ],
           "overlay": "game",
-          "callouts": [],
-          "caption": "User plays a 15-second mini-game."
+          "callouts": [
+            {
+              "node": "ne1",
+              "text": "15-second mini-game plays with Janitor AI partner."
+            }
+          ],
+          "caption": "User plays a 15-second mini-game with Game Partner Janitor."
         },
         {
           "phase": "value",
-          "screen": "s09",
-          "counters": [],
+          "screen": "s02",
+          "counters": [
+            {
+              "resource": "Frontier Swipes",
+              "value": 1
+            }
+          ],
           "overlay": "verified",
           "callouts": [
             {
               "node": "ne1",
-              "text": "Unlocked for 72h"
+              "text": "1 Frontier Swipe verified and credited."
             }
           ],
-          "caption": "Premium scenario unlocked successfully."
+          "caption": "REWARD_VERIFIED event credits 1 Frontier Swipe instantly to the user."
         }
       ],
       "economics": {
@@ -718,16 +832,18 @@
         "rewardToViewRatio": null,
         "maxDailyEarnUsdAtList": null,
         "cheapestPaidUnitUsd": null,
-        "cogsPerViewUsd": 0,
+        "cogsPerViewUsd": 0.009,
         "scenario": {
-          "engagedShare": 0.3,
-          "viewsPerEngager": 1.5,
-          "impressionsPerDau": 0.45,
-          "arpdauUsd": 0.0054,
-          "annualPer1mDauUsd": 1971000,
-          "label": "Scenario, not a forecast: 30% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut."
+          "engagedShare": 0.25,
+          "viewsPerEngager": 1,
+          "impressionsPerDau": 0.25,
+          "arpdauUsd": 0.003,
+          "annualPer1mDauUsd": 1095000,
+          "label": "Scenario, not a forecast: 25% of DAU engage, 1 views each, US mid eCPM after a 25% non-game haircut."
         },
-        "flags": []
+        "flags": [
+          "Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end."
+        ]
       }
     }
   ],

@@ -1,0 +1,107 @@
+{
+ "purpose": "judge-cal:pos-ent-decline",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets the paywall surface (s03) which provides Janitor Plus information, not specific character-chat content."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a time-boxed entitlement (30 minutes of enhanced memory) for playing a 15-second mini-game, not for clicking or installing."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The copy 'Not ready yet?' is a neutral, polite transition; it does not employ confirmation-shaming or threat-based framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the CTA 'Play to try' to opt-in to the rewarded experience."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The reward (30 minutes of 5x context) and action (15-second game) are explicitly stated in the offer body."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a clear 'No thanks' button and explicitly preserves the paid/sign-up path as the primary option."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The proposal is gated to the paywall surface (s03), outside of the conversational AI flow."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility rules explicitly restrict offers to non-payers only, excluding subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer triggers exactly when a user dismisses the paywall for memory/priority features ('More memory for long chats.'), providing a direct trial of the blocked benefit.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "It integrates naturally as a 'trial' sample rather than a generic interruption; it requires no removal of existing features.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "It is gated strictly to decliners, capped at once a day, and uses a time-boxed trial rather than a permanent unlock.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "COGS is $0 as this is an entitlement toggle (memory/priority) rather than a per-message token expense; it is highly profitable compared to the $0.009–0.015 revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered by frequent wall interactions (m1, reach=frequent), ensuring a high number of relevant users see the offer.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Standard implementation (SIM-RWD, button, min 15s) using standard SDK components.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the app's exact entitlements ('5x context for better memory', 'Priority routing') and correctly identifies surface s03.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Strictly limited to 1 per day, avoiding nag-loops.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a 10% user-level holdout and monitors relevant conversion guardrails.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [],
+  "topConcern": "None; this is a highly optimized, safe, and native rewarded ad pattern (TAX-10) for a subscription-gated AI app."
+ },
+ "usage": {
+  "input": 34560,
+  "output": 1006,
+  "cacheRead": 32243,
+  "cacheWrite": 0,
+  "thoughts": 1439
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:29.974Z"
+}

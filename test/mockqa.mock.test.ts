@@ -8,7 +8,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { chromium, type Browser, type Page } from "playwright";
 import { generateMock } from "../src/mock/generate.ts";
-import { buildMock } from "../src/mock/build.ts";
+import { buildMock, coversScreen } from "../src/mock/build.ts";
 import { makeFixture, readJson, sampleProposal, type MockQaFixture } from "./helpers/mockqa-fixture.ts";
 
 let fx: MockQaFixture;
@@ -262,5 +262,15 @@ describe("mock: stub generation and runtime", () => {
     await open("?debug=1&screen=s01");
     assert.equal(await page.locator(".mock-debug-tag").count(), 8);
     assert.equal(errors.length, 0, errors.join("\n"));
+  });
+});
+
+describe("mock: new-element fragments", () => {
+  test("a new element that would cover the whole screen (a scrim or a modal) is dropped; a placed card is kept", () => {
+    assert.equal(coversScreen(`<div data-new="ne2" style="position: absolute; inset: 0; z-index: 9999;"><div>scrim</div></div>`), true);
+    assert.equal(coversScreen(`<!-- sheet --><div style="position:fixed;bottom:0;left:0;right:0">sheet</div>`), true);
+    assert.equal(coversScreen(`<div style="position:absolute;left:0;top:0;width:100%;height:100%">x</div>`), true);
+    assert.equal(coversScreen(`<div style="position:absolute;left:16px;top:320px;width:379px;">card</div>`), false);
+    assert.equal(coversScreen(`<button style="height:100%">fills its row</button>`), false);
   });
 });

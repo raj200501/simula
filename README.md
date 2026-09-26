@@ -195,7 +195,7 @@ Agents never message each other: stages share context only through typed, schema
   - latency;
   - whether it came from cache.
 
-  The Gemini free tier bills $0, but tokens are still logged, so the ledgers can be priced: at `claude-opus-5` list prices with no prompt caching, Luzia's ledger (every run, including repeated proposal and judge runs) comes to about $34, Janitor's $16 and AOL's $12. Cached calls replay at no cost, so `--llm replay` reproduces a run without a key.
+  The Gemini free tier bills $0, but tokens are still logged, so the ledgers can be priced: at `claude-opus-5` list prices with no prompt caching, Luzia's ledger (every run, including the repeated proposal and judge runs) comes to about $47, Janitor's $22 and AOL's $20. Cached calls replay at no cost, so `--llm replay` reproduces a run without a key.
 - **Trajectory.** `trace.jsonl` records every decision, failure, recovery, budget stop, human step and stop reason. `trajectory.md` renders it (phases, discovery over time, failures paired with recoveries, autonomy ratio). Each stage's `manifest.json` pins its inputs by sha256.
 - **HUMAN_LOG.** Anything a person did goes into `out/<app>/HUMAN_LOG.md` and the trace, through `npm run note -- --app <id> "…"`: a sign-in, a blocked app, a re-run after a code fix. Edits to the product model would go through `model/overrides.json` (a JSON-merge patch keyed by item id, re-applied on every load and logged as a human step); none of the committed models has one. The only hand edits to artifacts are privacy redactions.
 
@@ -247,8 +247,8 @@ With AI coding agents (Claude Code), which the brief allows. `docs/design/FINAL_
 
   | Tier | Model calls | All-in |
   |---|---|---|
-  | Prospect scan (explore, understand, judged proposals, no mock) | ≈ $8 | ≈ $10 |
-  | Full pitch pack | ≈ $16, plus about 1.5 h of emulator time | ≈ $70–120, including 45–60 min of human review |
+  | Prospect scan (explore, understand, judged proposals, no mock) | ≈ $12 | ≈ $15 |
+  | Full pitch pack | ≈ $18, plus about 1.5 h of emulator time | ≈ $70–120, including 45–60 min of human review |
 
   Model costs are from Luzia's token ledger priced at `claude-opus-5` list prices, one run of each stage (the repeated proposal and judge runs divided out), no prompt caching; `claude-sonnet-5` is about 40% of that.
 

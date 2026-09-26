@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P2:v1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "surface: \"s02\" triggers \"When a guest user taps 'Close sheet' on the Custom Bestie signup sheet without signing up.\""
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "reward: { \"what\": \"1 Custom Bestie slot\", \"resource\": \"r2\", \"amount\": 1 }"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "offer: { \"title\": \"Create One Custom Bestie\", \"decline\": \"No thanks\" }"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "cta: \"Play Mini-Game\""
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "body: \"Play a 15-second mini-game to unlock one Custom Bestie slot without an account.\""
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "decline: \"No thanks\""
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "trigger: \"When a guest user taps 'Close sheet' on the Custom Bestie signup sheet without signing up.\""
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "eligibility: \"Guest users without an account who decline the signup prompt on the Custom Bestie sheet.\""
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets m8 (decline of Custom Bestie signup) and offers '1 Custom Bestie slot' which violates Rule 7 by treating the Account Access entitlement as a currency.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The ad attempts to bypass the account signup wall ('without an account') to grant a core account-only feature, violating Rule 8 and degrading the structural gating of the app.",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Sized to a single creation slot and gated on signup decline (m8) [TAX-10], but giving away account features without signups risks cannibalizing the organic incentive to register.",
+    "score": 3
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve per view is $0.0000, which is perfectly safe and well below the gross revenue of $0.0090–$0.0150 per completed view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Targeting m8 (decline of Custom Bestie signup sheet) is frequent but limited strictly to the subset of guest users who reach the signup block and then decline it.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD, but trying to grant 'Account Access' (r2) without registering an account presents a major logical contradiction for the user system database.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses Luzia's specific screen 's02' and nouns like 'Custom Bestie', but receives zero specificity credit for the entitlement noun 'Account Access' or 'slot' due to Rule 7 violations.",
+    "score": 2
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Caps are set strictly at 1 view per day with a 1440-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a solid user-level 10% holdout of guest users for 28 days with clear primary metrics and guardrails like signup conversion rate.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Do not let the rewarded ad stand in for creating an account (violates Rule 8). The signup wall on Custom Bestie Signup Sheet must remain mandatory for profile features.",
+   "Do not treat entitlements or account access as a currency (violates Rule 7). Grant a time-box or a count of uses instead of '+1 slot' of Account Access.",
+   "Pivot the target moment to a logged-in premium wall decline, such as m2 (Services task blocked) or m9 (Toggle deep reasoning mode), rewarding the user with a time-boxed unlock of Luzia+ features like '30 minutes of Deep reasoning mode' or '3 tasks handled by Luzia'."
+  ],
+  "topConcern": "The proposal allows a rewarded ad to bypass mandatory account creation, violating the core rule that an ad cannot stand in for creating an account, while logically contradicting the system's database structure by granting account-level entitlements to guest users."
+ },
+ "usage": {
+  "input": 42861,
+  "output": 1224,
+  "cacheRead": 20210,
+  "cacheWrite": 0,
+  "thoughts": 2211
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:05:17.917Z"
+}

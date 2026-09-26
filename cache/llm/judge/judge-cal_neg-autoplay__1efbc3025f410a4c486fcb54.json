@@ -1,0 +1,112 @@
+{
+ "purpose": "judge-cal:neg-autoplay",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal offers context memory enhancement which is an SFW utility feature."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is for playing a mini-game, not for clicks, installs, or ratings."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": false,
+    "evidence": "Forced auto-playing ads are classified as dark patterns and disallowed."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": false,
+    "evidence": "The proposal states: 'The rewarded game auto-plays full-screen mid-response'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": false,
+    "evidence": "Disclosure cannot occur because the ad auto-plays without user initiation."
+   },
+   {
+    "gate": "free-decline",
+    "pass": false,
+    "evidence": "There is no mechanism for the user to decline, as the ad auto-plays."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": false,
+    "evidence": "The proposal states: 'auto-plays full-screen mid-response, while the answer is still streaming'."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal explicitly limits eligibility to 'Non-payers only'."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal targets the 5x context limit in the paywall, which is the correct moment of need, but the auto-play execution renders this null.",
+    "score": 1
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Interrupting an AI response with an auto-playing full-screen ad is a severe breach of immersion and product flow.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is time-boxed (30 mins) and capped (2 per day), which helps prevent cannibalization, but this does not excuse the UX failure.",
+    "score": 2
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is zero for the game-based reward, which is efficient and within the profitability range per view.",
+    "score": 4
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The offer targets a frequent paywall boundary that many free users encounter.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps to existing SIM-RWD units and standard paywall triggers.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses specific Janitor terms like '5x context for better memory' and 'Janitor Plus'.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicit daily caps and cooldowns are defined.",
+    "score": 3
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "A clear holdout strategy and primary KPIs (conversion) are defined.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Remove the auto-play mechanic immediately; the user must explicitly opt-in via a button tap.",
+   "Do not interrupt the AI response; trigger the offer only after the response is complete or at a natural interface boundary.",
+   "Provide a visible 'No thanks' button that exits the offer screen without penalty.",
+   "Add a disclosure that specifies the exact reward and required play time before the ad instance."
+  ],
+  "topConcern": "The proposal mandates auto-playing ads mid-response, which violates the fundamental rewarded ads policy requiring explicit user consent, flow preservation, and non-interruption of AI responses."
+ },
+ "usage": {
+  "input": 34524,
+  "output": 982,
+  "cacheRead": 32243,
+  "cacheWrite": 0,
+  "thoughts": 1153
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:33.924Z"
+}

@@ -1,0 +1,223 @@
+{
+ "purpose": "revise:P3:r1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Reader Streak & Ad-Free Access",
+  "oneLiner": "Earn News Credits daily via streaks to unlock 15-minute ad-free news reading sessions.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m10",
+    "m3"
+   ],
+   "economy": [
+    "AD TODAY native on Home News Feed (e42)",
+    "News Credits (new)",
+    "Ad-Free Reader Mode (new)"
+   ],
+   "newMechanic": {
+    "name": "AOL News Credits & Ad-Free Mode",
+    "description": "A habit-building virtual currency earned through daily streaks and rewarded ads. Credits are redeemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode.",
+    "whyNeeded": "AOL currently has no scarcity; News Credits and time-boxed Ad-Free sessions create a value exchange to monetize non-paying attention via opt-in rewarded ads.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s11",
+  "trigger": "Users interact with the Daily Streak card in the Account Sidebar (s11) to earn credits, or tap 'Go Ad-Free' in Article Details (s03) to redeem credits for ad-free reading.",
+  "eligibility": "Non-signed-in users and signed-in non-subscribers who have not claimed today's reward.",
+  "offer": {
+   "title": "Earn News Credits",
+   "body": "Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading!",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "10 News Credits",
+   "resource": "News Credits",
+   "amount": 10,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 3,
+   "cooldownMin": 30
+  },
+  "cannibalizationGuard": "The reward is a small, time-boxed sample of ad-free reading (15m) that provides a 'taste' of premium value, encouraging upgrade intent without giving away unlimited ad-free access. Offers are gated to non-subscribers.",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 2,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "D7 Retention",
+   "guardrails": [
+    "Average Sessions Per DAU",
+    "Paid Subscription Conversion Rate"
+   ],
+   "holdout": "User-level randomization, 10% share, 28-day duration"
+  },
+  "precedents": [
+   "TAX-9",
+   "TAX-2",
+   "EX-SERIAL",
+   "AI-3"
+  ],
+  "risks": [
+   "Users may find the redemption utility insufficient if not clearly communicated.",
+   "Potential fatigue if the streak mechanic is perceived as mandatory."
+  ],
+  "evidence": [
+   {
+    "obs": "s11",
+    "el": null,
+    "quote": "Account Menu Sidebar"
+   },
+   {
+    "obs": "s03",
+    "el": "e26",
+    "quote": "Ad"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s11",
+     "near": "e31",
+     "place": "after",
+     "change": "Add a 'Daily Reader Streak' section with a progress bar and 'Claim Credits' button."
+    },
+    {
+     "id": "ne2",
+     "in": "s03",
+     "near": "e12",
+     "place": "after",
+     "change": "Add 'Go Ad-Free' button that triggers Ad-Free Mode if credits balance allows, or offers a rewarded ad to earn more credits."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s11",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "News Credits",
+       "delta": 10
+      }
+     ],
+     "guard": null
+    },
+    {
+     "from": "s03",
+     "el": "ne2",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "News Credits",
+       "delta": 10
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e12",
+      "text": "Existing account menu"
+     }
+    ],
+    "caption": "User opens the account sidebar to view settings."
+   },
+   {
+    "phase": "change",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "News Credits",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New streak card"
+     }
+    ],
+    "caption": "Sidebar now displays Daily Reader Streak section."
+   },
+   {
+    "phase": "offer",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "News Credits",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Claim reward"
+     }
+    ],
+    "caption": "User taps Claim to start the rewarded ad flow."
+   },
+   {
+    "phase": "ad",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "User plays 15-second sponsored mini-game."
+   },
+   {
+    "phase": "value",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "News Credits",
+      "value": 10
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Streak earned!"
+     }
+    ],
+    "caption": "Credits granted; streak maintained."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35688,
+  "output": 1730,
+  "cacheRead": 30460,
+  "cacheWrite": 0,
+  "thoughts": 3294
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:21:54.135Z"
+}

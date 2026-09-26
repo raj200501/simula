@@ -1,10 +1,10 @@
 {
   "stage": "propose",
   "app": "luzia",
-  "runId": "pr0926-060210",
-  "gitSha": "0313056",
-  "startedAt": "2026-09-26T06:02:10.988Z",
-  "finishedAt": "2026-09-26T06:03:00.380Z",
+  "runId": "pr0926-072036",
+  "gitSha": "9fec3da",
+  "startedAt": "2026-09-26T07:20:36.868Z",
+  "finishedAt": "2026-09-26T07:20:37.474Z",
   "status": "ok",
   "inputs": [
     {
@@ -18,7 +18,7 @@
   ],
   "llm": {
     "calls": 6,
-    "cached": 0,
+    "cached": 6,
     "usd": 0,
     "mode": "record"
   }

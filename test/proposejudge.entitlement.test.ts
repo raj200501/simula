@@ -259,6 +259,11 @@ describe("reviewer-found holes in the judge", () => {
       q.patch.newEdges = q.patch.newEdges.map(e => ({ ...e, effects: [{ resource: "priority_15m", delta: 1 }] }));
     });
     assert.deepEqual(grounding(box, m).filter(x => /priority_15m/.test(x)), []);
+    const cited = plant(q => {
+      q.reward = { what: "30 minutes of 5x context", resource: "context_30min", duration: "30 minutes", grantOn: "REWARD_VERIFIED" };
+      q.anchor.economy = [...q.anchor.economy, "context_30min (new)"];
+    });
+    assert.deepEqual(grounding(cited, m).filter(x => /context_30min/.test(x)), [], "an existing-case time box may cite its own entitlement, marked (new)");
     const counted = plant(q => { q.reward = { what: "5 priority replies", resource: "priority_replies", amount: 5, grantOn: "REWARD_VERIFIED" }; });
     assert.ok(grounding(counted, m).some(x => /reward resource "priority_replies" does not exist/.test(x)));
   });
@@ -271,6 +276,8 @@ describe("reviewer-found holes in the judge", () => {
     assert.equal(k("AI Image credit"), "image");
     assert.equal(k("Photo edits"), "image");
     assert.equal(k("Deep Reasoning Trial"), "text-premium");
+    assert.equal(k("premium_context_30min"), "text-premium", "snake_case ids read as words");
+    assert.equal(k("image_credits"), "image");
   });
 
   test("the declared cost class is a floor: a reward whose resource is image generation is priced as image", () => {

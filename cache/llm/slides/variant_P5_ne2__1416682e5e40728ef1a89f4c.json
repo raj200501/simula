@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P5:ne2",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne2\" style=\"position: absolute; inset: 0; z-index: 9999; font-family: var(--font-body);\">\n  <!-- Scrim -->\n  <div style=\"position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(6px);\"></div>\n  \n  <!-- Sheet -->\n  <div style=\"position: absolute; bottom: 0; left: 0; right: 0; background: var(--c-surface); border-radius: 24px 24px 0 0; padding: 24px; display: flex; flex-direction: column; gap: 16px; color: var(--c-text);\">\n    <div style=\"width: 40px; height: 4px; background: var(--c-surface-variant); border-radius: 2px; margin: 0 auto 8px;\"></div>\n    \n    <!-- Icon Badge -->\n    <div style=\"width: 56px; height: 56px; border-radius: 16px; background: var(--c-accent); display: flex; align-items: center; justify-content: center; color: var(--c-on-accent);\">\n      <svg width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n        <rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"2\" />\n        <path d=\"M6 12h4m-2-2v4M15 11h2m-1 1h2\" />\n      </svg>\n    </div>\n\n    <!-- Title & Body -->\n    <h2 style=\"margin: 0; font-size: 24px; font-weight: 700;\">Skip the Animation Queue</h2>\n    <p style=\"margin: 0; font-size: 16px; color: var(--c-muted); line-height: 1.4;\">Play a quick game to skip wait times and fast-track your animation.</p>\n    \n    <!-- Value -->\n    <div style=\"font-size: 16px; color: var(--c-text); margin-bottom: 8px;\">Play a quick game for <b>+1 Fast-Track Animation Credit</b></div>\n    \n    <!-- CTA -->\n    <button style=\"width: 100%; height: 48px; border-radius: 24px; background: var(--c-accent); color: var(--c-on-accent); border: none; font-size: 16px; font-weight: 600; cursor: pointer;\">Fast-Track Now</button>\n    \n    <!-- Decline -->\n    <button style=\"width: 100%; height: 48px; border-radius: 24px; background: transparent; color: var(--c-muted); border: none; font-size: 16px; cursor: pointer;\">Wait in Queue</button>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 5736,
+  "output": 737,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4977
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:22:49.798Z"
+}

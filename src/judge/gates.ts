@@ -62,8 +62,17 @@ export function grounding(p: Proposal, m: ProductModel): string[] {
   if (!screenOk(p.surface)) bad.push(`surface "${p.surface}" is not a screen in the model nor declared in patch.newScreens`);
   for (const id of p.anchor.moments) if (!ix.moments.has(id)) bad.push(`moment "${id}" does not exist`);
   // A product change cites the resource it introduces (its reward resource, or an id marked "(new)").
-  const declaredNew = (id: string) => p.case === "product-change" && !!p.anchor.newMechanic && (id === p.reward.resource || /\(new\)\s*$/i.test(id));
-  for (const id of p.anchor.economy) if (!ix.economy.has(id) && !declaredNew(id)) bad.push(`economy item "${id}" does not exist`);
+  // A time box's own entitlement counts too, with or without the "(new)" mark (resourceOk agrees).
+  const declaredNew = (id: string) => (p.case === "product-change" && !!p.anchor.newMechanic && (id === p.reward.resource || /\(new\)\s*$/i.test(id)))
+    || (!!p.reward.duration && id.replace(/\s*\(new\)\s*$/i, "") === p.reward.resource);
+  // Ad placements have no ids: the digest lists each as "AD TODAY <format> on <screen> (<element>)", and a
+  // proposal may cite one by that label or by any text ending in the ad's element id.
+  const adEls = new Set(m.economy.ads.flatMap(a => (a.el ? [a.el] : [])));
+  const isAdRef = (id: string) => {
+    const el = /\((e\d+)\)\s*$/.exec(id)?.[1];
+    return el ? adEls.has(el) : /^AD TODAY\b/i.test(id) && m.economy.ads.length > 0;
+  };
+  for (const id of p.anchor.economy) if (!ix.economy.has(id) && !declaredNew(id) && !isAdRef(id)) bad.push(`economy item "${id}" does not exist`);
   if (p.reward.resource && !resourceOk(p.reward.resource)) bad.push(`reward resource "${p.reward.resource}" does not exist`);
 
   for (const d of [...newScreens, ...newEls].filter((x, i, a) => a.indexOf(x) !== i)) bad.push(`new id "${d}" is declared twice`);

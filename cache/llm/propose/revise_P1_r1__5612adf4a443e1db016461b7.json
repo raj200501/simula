@@ -1,0 +1,193 @@
+{
+ "purpose": "revise:P1:r1",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "title": "AOL Guest Commenter",
+  "oneLiner": "Allow users to post a single news comment by playing a mini-game instead of signing up.",
+  "case": "product-change",
+  "archetype": "TAX-3",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m9"
+   ],
+   "economy": [
+    "Account sign-in / verified user status",
+    "Guest Comment (new)"
+   ],
+   "newMechanic": {
+    "name": "Guest Posting",
+    "description": "A temporary authorization to submit one comment to a news article discussion without a full AOL account registration. Guest comments are processed via AOL's automated safety filters to prevent spam [SAFE-1].",
+    "whyNeeded": "The sign-up wall on the Add Comment Page (s05) prevents spontaneous interaction from guest users. Providing an ad-supported path monetizes high-intent non-signed-in users.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s05",
+  "trigger": "After entering text on the Add Comment Page when the sign-up modal appears.",
+  "eligibility": "Non-signed-in users who have entered text in the comment box on the Add Comment Page.",
+  "offer": {
+   "title": "Post as a guest",
+   "body": "Don't want to sign up right now? Play a quick 15-second game to post this comment as a guest.",
+   "cta": "Play and Post",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "interstitial",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "one guest comment submission",
+   "resource": "Guest Comment",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "The guest pass is limited to a single comment per day and does not grant account benefits like comment history, replies, or profile customization. A sign-in contrast line reminds users that a full AOL account is required for permanent features [CANN-4].",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1,
+   "cogs": "none",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Comments per DAU",
+   "guardrails": [
+    "Account sign-up rate",
+    "D1 retention"
+   ],
+   "holdout": "user-level, 10%, 28 days"
+  },
+  "precedents": [
+   "TAX-3",
+   "TAX-10",
+   "EX-SERIAL",
+   "SAFE-1",
+   "CANN-4"
+  ],
+  "risks": [
+   "Potential for lower-quality comments from non-verified users",
+   "Increased moderation load if automated filters fail"
+  ],
+  "evidence": [
+   {
+    "obs": "m9",
+    "el": null,
+    "quote": "User attempts to post a comment on an article and hits the sign-up wall."
+   },
+   {
+    "obs": "f1",
+    "el": null,
+    "quote": "Add Comment Page (Type a comment)"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s05",
+     "near": null,
+     "place": "overlay",
+     "change": "A SimulaRewardedAd interstitial invitation triggered by the sign-up modal on the Add Comment Page."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s05",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "Guest Comment",
+       "delta": 1
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s04",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e18",
+      "text": "User reading article comments"
+     }
+    ],
+    "caption": "The user reads interesting comments on a news article."
+   },
+   {
+    "phase": "change",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Sign-up wall appears"
+     }
+    ],
+    "caption": "When trying to comment, the user is blocked by a mandatory sign-up requirement."
+   },
+   {
+    "phase": "offer",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "New guest post option"
+     }
+    ],
+    "caption": "A Simula interstitial offers a single guest post in exchange for a game."
+   },
+   {
+    "phase": "ad",
+    "screen": "s05",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The user plays an AOL-themed mini-game for 15 seconds."
+   },
+   {
+    "phase": "value",
+    "screen": "s04",
+    "counters": [
+     {
+      "resource": "Guest Comment",
+      "value": 0
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "e9",
+      "text": "Comment posted successfully"
+     }
+    ],
+    "caption": "The comment is published. A message suggests signing in to track comment history."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35709,
+  "output": 1488,
+  "cacheRead": 22846,
+  "cacheWrite": 0,
+  "thoughts": 5726
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:14:10.539Z"
+}

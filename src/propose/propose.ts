@@ -266,9 +266,12 @@ export function costFloor(p: Proposal, m: ProductModel): Proposal {
  */
 export function canonicalIds(p: Proposal, m: ProductModel): { p: Proposal; changes: string[] } {
   const changes: string[] = [];
+  let inAnchor = false;
   const economy = new Set([...m.economy.resources, ...m.economy.sinks, ...m.economy.sources, ...m.economy.offers, ...m.economy.walls].map(x => x.id));
   const idOf = (id: string | undefined): string | undefined => {
     if (!id || economy.has(id)) return id;
+    // "(new)" marks a new resource in anchor.economy; in a reward, an edge or a counter it is not part of the id.
+    if (/\s*\(new\)\s*$/i.test(id) && !inAnchor) { const bare = id.replace(/\s*\(new\)\s*$/i, ""); changes.push(`"${id}" -> ${bare}`); return bare; }
     const named = /^(\S+)\s*\(([^)]+)\)\s*$/.exec(id);
     if (named && economy.has(named[1]) && !/^new$/i.test(named[2].trim())) { changes.push(`"${id}" -> ${named[1]}`); return named[1]; }
     return id;
@@ -283,7 +286,9 @@ export function canonicalIds(p: Proposal, m: ProductModel): { p: Proposal; chang
     return el;
   };
   const q: Proposal = structuredClone(p);
+  inAnchor = true;
   q.anchor.economy = q.anchor.economy.map(x => idOf(x)!);
+  inAnchor = false;
   q.reward.resource = idOf(q.reward.resource);
   q.patch.newElements = q.patch.newElements.map(e => ({ ...e, near: elOf(e.in, e.near) }));
   q.patch.newEdges = q.patch.newEdges.map(e => ({

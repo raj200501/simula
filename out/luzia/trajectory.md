@@ -1,6 +1,6 @@
 # Trajectory: luzia
 
-Autonomous decisions: **635**. Human interventions: **2**. Autonomy ratio: **99.7%**. Sign-in walls noted for a human and skipped: 18 (11 distinct).
+Autonomous decisions: **654**. Human interventions: **4**. Autonomy ratio: **99.4%**. Sign-in walls noted for a human and skipped: 18 (11 distinct).
 
 ## Stage runs
 
@@ -24,7 +24,7 @@ Autonomous decisions: **635**. Human interventions: **2**. Autonomy ratio: **99.
 | qa | qa0925-140405 | 18:04:05 | 18:14:02 | 79 | 14 | plateau |
 | propose | pr0925-141402 | 18:14:02 | 18:25:57 | 28 | 9 |  |
 | judge | ju0925-142558 | 18:25:58 | 18:47:29 | 42 | 13 | revision stalled: weighted 4.05 -> 4.05 |
-| human | manual | 18:47:29 | 18:47:31 | 2 | 0 |  |
+| human | manual | 18:47:29 | 06:31:12 | 4 | 0 |  |
 | slides | sl0925-144730 | 18:47:30 | 18:47:30 | 3 | 1 |  |
 | judge | ju0925-151754 | 19:17:54 | 19:19:57 | 66 | 14 | revision stalled: weighted 4.2 -> 4.25 |
 | eval-judge | ev0925-151958 | 19:19:58 | 19:21:29 | 47 | 7 |  |
@@ -39,7 +39,19 @@ Autonomous decisions: **635**. Human interventions: **2**. Autonomy ratio: **99.
 | judge | ju0926-055314 | 05:53:14 | 05:53:55 | 31 | 4 | revision stalled: weighted 4.4 -> 4.5 |
 | eval-judge | ev0926-055939 | 05:59:39 | 05:59:39 | 15 | 0 |  |
 | propose | pr0926-060210 | 06:02:10 | 06:03:00 | 16 | 0 |  |
-| judge | ju0926-060301 | 06:03:01 | 06:03:47 | 34 | 5 |  |
+| judge | ju0926-060301 | 06:03:01 | 06:05:29 | 57 | 8 | revision stalled: weighted 4.35 -> 4.5 |
+| propose | pr0926-070211 | 07:02:11 | 07:04:22 | 34 | 12 |  |
+| judge | ju0926-070423 | 07:04:23 | 07:09:02 | 114 | 38 | revision stalled: weighted 4.05 -> 4 |
+| eval-judge | ev0926-071514 | 07:15:14 | 07:17:12 | 48 | 6 |  |
+| propose | pr0926-071814 | 07:18:14 | 07:18:15 | 10 | 0 |  |
+| judge | ju0926-071816 | 07:18:16 | 07:18:16 | 37 | 0 | revision stalled: weighted 4.05 -> 4 |
+| eval-judge | ev0926-071915 | 07:19:15 | 07:19:16 | 15 | 0 |  |
+| propose | pr0926-072036 | 07:20:36 | 07:20:37 | 10 | 0 |  |
+| judge | ju0926-072038 | 07:20:38 | 07:20:38 | 37 | 0 | revision stalled: weighted 4.05 -> 4 |
+| eval-judge | ev0926-072203 | 07:22:03 | 07:22:04 | 15 | 0 |  |
+| slides | sl0926-072218 | 07:22:18 | 07:23:05 | 14 | 0 |  |
+| slides | sl0926-072700 | 07:27:00 | 07:27:16 | 8 | 0 |  |
+| slides | sl0926-072826 | 07:28:26 | 07:28:42 | 8 | 0 |  |
 
 ## New states discovered over time
 
@@ -711,12 +723,141 @@ Autonomous decisions: **635**. Human interventions: **2**. Autonomy ratio: **99.
   - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
 - 06:03:47 **gemini:revise:P4:r1**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
   - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 06:03:52 **gemini:judge:P3:v2**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 06:04:03 **gemini:judge:P4:v2**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 06:04:04 **gemini:judge:P4:v2**: 429 on gemini-3.5-flash-lite (attempt 2/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: all fallback models busy; waiting 56s before another lap
+
+### propose · run pr0926-070211
+
+- 07:02:32 **gemini:breadth**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:02:40 **gemini:breadth**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:03:17 **gemini:depth:P4**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:03:22 **gemini:depth:P3**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:03:23 **gemini:depth:P2**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:03:25 **gemini:depth:P4**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:03:28 **gemini:depth:P3**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:03:41 **gemini:depth:P3**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:03:41 **gemini:depth:P5**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:03:46 **gemini:depth:P5**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:03:55 **gemini:depth:P4**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:04:04 **gemini:depth:P5**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+
+### judge · run ju0926-070423
+
+- 07:04:40 **gemini:judge:P2:v1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:04:43 **gemini:judge:P3:v1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:04:43 **gemini:judge:P2:v1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:05:02 **gemini:judge:P2:v1**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:05:02 **gemini:revise:P1:r1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:05:03 **gemini:judge:P3:v1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:05:05 **gemini:revise:P1:r1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:05:06 **gemini:judge:P3:v1**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:05:12 **gemini:judge:P4:v1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:05:18 **gemini:revise:P1:r1**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:05:20 **gemini:judge:P4:v1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:05:27 **gemini:revise:P5:r1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:05:34 **gemini:judge:P4:v1**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:05:42 **gemini:revise:P3:r1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:05:43 **gemini:revise:P3:r1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:05:51 **gemini:judge:P1:v2**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:05:52 **gemini:revise:P5:r1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:05:54 **gemini:revise:P4:r1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:05:58 **gemini:revise:P3:r1**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:06:00 **gemini:revise:P4:r1**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:06:08 **gemini:revise:P4:r1**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:06:11 **gemini:revise:P5:r1**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:06:22 **gemini:revise:P1:r2**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:06:30 **gemini:revise:P1:r2**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:06:31 **gemini:judge:P3:v2**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:06:35 **gemini:judge:P4:v2**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:06:44 **gemini:revise:P1:r2**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:06:51 **gemini:judge:P4:v2**: 503 on gemini-3.7-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:06:58 **gemini:judge:P4:v2**: 503 on gemini-3.6-flash (attempt 3/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:07:01 **gemini:revise:P5:r2**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:07:09 **gemini:revise:P5:r2**: 503 on gemini-3.6-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:07:27 **gemini:revise:P4:r2**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:07:28 **gemini:judge:P1:v3**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:07:37 **gemini:judge:P1:v3**: 503 on gemini-3.6-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:07:37 **gemini:judge:P5:v3**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:07:51 **gemini:revise:P4:r2**: 503 on gemini-3.6-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:08:31 **gemini:judge:P4:v3**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+- 07:08:46 **gemini:judge:P4:v3**: 503 on gemini-3.6-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+
+### eval-judge · run ev0926-071514
+
+- 07:16:02 **gemini:judge-cal:neg-oversized**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 07:16:08 **gemini:judge-cal:neg-loss-framing**: 429 on gemini-2.5-flash (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.1-flash-lite (next fallback model)
+- 07:16:15 **gemini:judge-cal:neg-autoplay**: 429 on gemini-2.5-flash (attempt 2/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.1-flash-lite (next fallback model)
+- 07:16:21 **gemini:judge-cal:neg-subscribers**: 429 on gemini-2.5-flash (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.1-flash-lite (next fallback model)
+- 07:16:55 **gemini:judge-cal:neg-entitlement-amount**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 07:17:01 **gemini:judge-cal:neg-account-swap**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
 
 
 ## Human interventions
 
 - 2026-09-25T18:47:29 [human] luzia-eval-judge failed (exit 1): npm error To see a list of scripts, run: npm error   npm run npm error A complete log of this run can be found in: ~/.npm/_logs/2026-09-25T18_47_29_487Z-debug-0.log 
 - 2026-09-25T18:47:31 [human] luzia-slides failed (exit 1): [slides] failure {"where":"stage:slides","error":"fetch failed"} ✘ fetch failed 
+- 2026-09-26T06:31:11 [human] Logged after the fact: Luzia was explored 7 times on 2026-09-25 (runs ex0925-021459 to ex0925-130556). Between runs a person had the explorer fixed and re-ran it: typing on a real Android keyboard and the drain probe (commits 0c25fbf, 1feb09a, edcac2a, 9253e0e). The product model comes from the last run, ex0925-130556.
+- 2026-09-26T06:31:12 [human] Logged after the fact: after reviewing the judged proposals, a person had the proposer and judge rules tightened in code on 2026-09-26 (commit e7d0da6 and the commit that adds this note: no offer beside a sign-up button, no cheaper cost label on revision, the reward's resource sets a floor on its cost class, knowledge-base lines naming the test apps removed), then re-ran propose, judge, eval-judge and slides.
 
 ## Sign-in walls skipped
 

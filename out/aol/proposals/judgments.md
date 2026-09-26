@@ -8,283 +8,372 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 
 | proposal | title | final | weighted | versions | summary |
 |---|---|---|---|---|---|
-| P1 | Guest Comment Pass | **REJECT** | 4.65 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted -0.15, below +0.2) with the same gate failures. Top concern: grounding (code): evidence "m9" is not an observation or screen in the model |
-| P2 | News Streak Multiplier | **SHIP** | 4.6 | v1 | SHIP at 4.6 (v1). |
-| P3 | Bonus Save Slot | **REJECT** | 3.1 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted -0.5, below +0.2) with the same gate failures. Top concern: grounding (code): economy item "ARTICLE_SAVE" does not exist |
+| P1 | AOL Guest Commenter | **REJECT** | 3.4 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted -1.2, below +0.2) with the same gate failures. Top concern: grounding (code): economy item "Account sign-in / verified user status" does not exist; evidence "m9" is not an observation or screen in the model; evidence "f1" is not an observation or screen in the model |
+| P2 | AOL Ad-Free Sprint | **SHIP** | 4.2 | v1 → v2 | SHIP at 4.2 (v2 after 1 revision). |
+| P3 | Daily Reader Streak & Ad-Free Access | **SHIP** | 4.8 | v1 → v2 | SHIP at 4.8 (v2 after 1 revision). |
 
-## P1: Guest Comment Pass — REJECT
+## P1: AOL Guest Commenter — REJECT
 
-> Allow users to post a single comment as a guest after viewing a rewarded ad, providing a taste of social engagement without sign-up.
+> Allow users to post a single news comment by playing a mini-game instead of signing up.
 
-- product-change · TAX-3 · surface Conversation Screen (s04) · reward 1 guest comment post · caps 2/day
+- product-change · TAX-3 · surface Add Comment Page (s05) · reward one guest comment submission · caps 1/day
 
-#### Round 0 (v1): **REVISE** · weighted 4.8 · judged by llm
+#### Round 0 (v1): **REVISE** · weighted 4.6 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
 | schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | storyboard today: callout node "P" is not on s05 and not declared; storyboard change: callout node "P" is not on s05 and not declared; storyboard ad: callout node "SIM-RWD" is not on s05 and not declared; evidence "m9" is not an observation or screen in the model |
-| label | code | fixable | pass | declares new mechanic "Guest Comment Pass" |
+| grounding | code | fixable | **FAIL** | new element "ne1" is placed near "e141", which is not an element on s05; storyboard change: callout node "e141" is not on s05 and not declared; evidence element "e141" is not on s05; evidence "m9" is not an observation or screen in the model |
+| label | code | fixable | pass | declares new mechanic "Guest Posting" |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
 | economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | The proposal includes explicit eligibility checks for sensitive content contexts. |
-| no-incentivized-action | llm | policy | pass | The reward is an in-app feature (posting a comment), not cash, gift cards, or other incentivized clicks/installs. |
-| no-loss-framing | llm | policy | pass | No loss framing is used; the approach is a gain-framed opportunity to engage as a guest. |
-| explicit-opt-in | llm | fixable | pass | The user must tap the 'Post as Guest' button, which is clearly labeled, to trigger the rewarded ad offer. |
-| disclosed | llm | fixable | pass | The offer clearly states: 'Play a quick game with AOL to post this comment instantly'. |
-| free-decline | llm | fixable | pass | A 'No Thanks' button is clearly provided. |
-| no-stream-interrupt | llm | fixable | pass | The offer appears at the comment posting wall, not during article reading or AI generation. |
-| not-for-subscribers | llm | fixable | pass | Eligibility is restricted to non-logged-in users. |
+| sfw | llm | policy | pass | The proposal targets 's05' (Add Comment Page) which is a standard news interaction surface and is not flagged as a sensitive context. |
+| no-incentivized-action | llm | policy | pass | The reward is 'one guest comment submission', which is an in-app interaction and not a 'direct monetary item' like cash or gift cards [POL-2 #8]. |
+| no-loss-framing | llm | policy | pass | The proposal uses a 'Play to Post' invitation with a 'Maybe later' decline option, avoiding 'confirmshaming' or 'hostage' framing [ANTI-9, ANTI-10]. |
+| explicit-opt-in | llm | fixable | pass | The user must tap the 'Play to Post' button before the ad unit is triggered [POL-1]. |
+| disclosed | llm | fixable | pass | The offer card states: 'Play a quick 15-second game to post this comment as a guest', disclosing both the action length and the reward [POL-2 #2]. |
+| free-decline | llm | fixable | pass | The decline option is 'Maybe later' and the proposal states it is for 'Non-signed-in users', returning them to the previous blocked state without penalty [POL-2 #5]. |
+| no-stream-interrupt | llm | fixable | pass | The trigger occurs 'When a user land on the Add Comment Page' as a reaction to a blocked action, not during an active AI generation [POL-9]. |
+| not-for-subscribers | llm | fixable | pass | Eligibility is restricted to 'Non-signed-in users', ensuring authenticated users are not prompted for ads [TRIG-2]. |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 5 | The offer appears at the exact moment a user hits the sign-up wall, offering a solution to their immediate goal. |
-| product-integrity | 15 | 5 | The guest comment pass feels native to the article discussion flow, preserving the draft and user input. |
-| cannibalization-safety | 15 | 5 | Gated to non-logged-in users only; no substitution for paid tiers, as AOL has no commenting subscription. |
-| unit-economics | 10 | 5 | COGS ($0.0018) is significantly below the US net revenue per view ($0.0090–$0.0150). |
-| reach | 10 | 5 | Commenting is part of the core article loop, though hit rates depend on users who choose to comment. |
-| feasibility | 10 | 4 | Integration is straightforward, though it requires a backend mechanism for handling temporary guest comment posting. |
-| specificity | 10 | 4 | Uses the AOL app context, though it could be more descriptive regarding the specific AOL-branded Game Partner characters. |
-| frequency-fatigue | 5 | 5 | Explicitly capped at 2 per day. |
-| measurability | 5 | 5 | Includes primary KPIs, guardrails, and a user-level holdout for validation. |
+| value-moment-fit | 20 | 5 | The proposal anchors to 'm9' where a user attempts to comment and hits a wall; the reward provides the exact solution needed for that friction point [TRIG-1]. |
+| product-integrity | 15 | 5 | It preserves the user's intent ('entered text in the comment box') and provides a 'secondary action' that doesn't remove existing free value from the 'no-scarcity' regime [AI-X]. |
+| cannibalization-safety | 15 | 5 | The reward is 'limited to a single comment per day' and excludes account benefits like 'history, replies, or profile customization', maintaining the premium value of a full account [TAX-10, CANN-4]. |
+| unit-economics | 10 | 5 | Computed COGS is '$0.0000' while one completed US view earns up to '$0.0150', representing a high-margin digital unlock [TRIG-4]. |
+| reach | 10 | 5 | The trigger m9 is located on the 'Add Comment Page' which is part of the 'core-loop' (f1) for article engagement. |
+| feasibility | 10 | 4 | Maps directly to 'SIM-RWD' with a 15s threshold. However, it requires a 'product-change' to support 'Guest Posting' permissions which is correctly identified. |
+| specificity | 10 | 2 | The proposal uses 's05' and 'm9' from the digest, but relies on invented element ID 'e141' which does not exist in the product model (s05 IDs were uncaptured due to the login wall). |
+| frequency-fatigue | 5 | 5 | Implements a strict daily cap of '1 per day' and a '1440' minute cooldown [TRIG-3]. |
+| measurability | 5 | 5 | Includes a 'user-level holdout' of '10%' over '28 days' with 'Account sign-up rate' as a primary guardrail [MEAS-5]. |
 
-- **Verdict reasons (code):** fixable gate failed: grounding (code)
+- **Verdict reasons (code):** fixable gate failed: grounding (code); specificity scored 2 (< 3)
 - **Required changes:**
-  - Correct the references from s05 to s04 (Conversation Screen) to match the provided product model.
-  - Update storyboard to reflect actual elements existing on s04, ensuring the 'Post as Guest' button is defined as a new element addition to the existing conversation UI.
-- **Top concern:** The proposal incorrectly references non-existent screen 's05', which should be updated to 's04' to accurately align with the provided product model.
+  - Remove reliance on invented element ID 'e141'; since s05 IDs are uncaptured due to the login wall, use a full-screen Rewarded Interstitial (SIM-INT) or anchor to a descriptive layout position.
+  - Clarify the technical 'Guest Posting' implementation to ensure comments can be moderated without a verified account to satisfy safety requirements [SAFE-1].
+  - Add a 'Plus' or 'Sign-in' contrast line to the reward grant screen to highlight the benefits of a full account [CANN-4].
+- **Top concern:** The proposal fails grounding by referencing non-existent element IDs (e141) and moment evidence (m9 as a screen) which are not part of the verified product model.
 
 #### Changes v1 → v2 (revise() saw the required changes, never the scores)
 
-- `surface`: "s05" → "s04"
-- `trigger`: "User finishes typing a comment on the Add Comment Page (s05) and sees the 'Sign Up to ..." → "User taps the 'Reply' button (e47) on the Conversation Screen (s04) while not logged i..."
-- `patch.newScreens[0].basedOn`: "s05" → "s04"
-- `patch.newScreens[0].change`: "A modal overlay for the rewarded offer invitation, appearing above the Add Comment Page." → "A modal overlay for the rewarded offer invitation, appearing above the Conversation Sc..."
-- `patch.newElements[0].in`: "s05" → "s04"
-- `patch.newElements[0].near`: "e15" → "e47"
-- `patch.newElements[0].change`: "A new button labeled 'Post as Guest' placed slightly above the existing 'Sign Up to Po..." → "A new 'Post as Guest' button added next to the 'Reply' (e47) action."
-- `patch.newEdges[0].from`: "s05" → "s04"
-- `storyboard[0].screen`: "s05" → "s04"
-- `storyboard[0].callouts[0].node`: "P" → "e47"
-- `storyboard[0].callouts[0].text`: "User drafts a comment, ready to post." → "User taps Reply to post a comment."
-- `storyboard[0].callouts[1].node`: "e15" → "e47"
-- `storyboard[0].callouts[1].text`: "The 'Sign Up to Post' button is the only path." → "Requires a sign-in to post."
-- `storyboard[1].screen`: "s05" → "s04"
-- `storyboard[1].callouts[0].node`: "P" → "ne1"
-- `storyboard[1].callouts[0].text`: "Comment draft is preserved." → "New 'Post as Guest' button added here."
-- `storyboard[1].callouts[1].node`: "ne1" → "e47"
-- `storyboard[1].callouts[1].text`: "A new 'Post as Guest' button appears." → "The Reply button remains."
-- `storyboard[1].callouts[2].node`: "e15" → (none)
-- `storyboard[1].callouts[2].text`: "The 'Sign Up to Post' option remains." → (none)
-- `storyboard[2].screen`: "s05" → "s04"
-- `storyboard[2].callouts[0].text`: "The rewarded ad offer appears after tapping 'Post as Guest'." → "Rewarded offer appears after tapping 'Post as Guest'."
-- `storyboard[2].callouts[1].node`: "e15" → (none)
-- `storyboard[2].callouts[1].text`: "Paid alternative is subtly visible." → (none)
-- `storyboard[3].screen`: "s05" → "s04"
-- `storyboard[3].callouts[0].node`: "SIM-RWD" → "ne1"
-- `storyboard[3].callouts[0].text`: "User plays a short mini-game with AOL, the Game Partner." → "User completes the mini-game."
-- `storyboard[3].caption`: "The user opts in and completes a short rewarded mini-game." → "The user opts in and completes a short rewarded mini-game with AOL as the Game Partner."
-- `storyboard[4].callouts[0].node`: "e18" → "e47"
-- `storyboard[4].callouts[0].text`: "The user's comment is successfully posted." → "The comment is now posted."
-- ... and 1 more changes
+- `anchor.economy[0]`: "Account sign-in / verified user status (new)" → "Account sign-in / verified user status"
+- `anchor.newMechanic.description`: "A temporary authorization to submit one comment to a news article discussion without a..." → "A temporary authorization to submit one comment to a news article discussion without a..."
+- `anchor.newMechanic.whyNeeded`: "The sign-up wall on the Add Comment Page (s05) prevents spontaneous interaction from g..." → "The sign-up wall on the Add Comment Page (s05) prevents spontaneous interaction from g..."
+- `trigger`: "When a user land on the Add Comment Page and encounters the Sign Up to Post requirement." → "After entering text on the Add Comment Page when the sign-up modal appears."
+- `eligibility`: "Non-signed-in users who have entered text in the comment box." → "Non-signed-in users who have entered text in the comment box on the Add Comment Page."
+- `offer.cta`: "Play to Post" → "Play and Post"
+- `offer.decline`: "Maybe later" → "No thanks"
+- `simula.entry`: "button" → "interstitial"
+- `cannibalizationGuard`: "The guest pass is limited to a single comment per day and does not grant account benef..." → "The guest pass is limited to a single comment per day and does not grant account benef..."
+- `risks[1]`: "User frustration if the guest post limit is hit" → "Increased moderation load if automated filters fail"
+- `evidence[0].obs`: "s05" → "m9"
+- `evidence[0].el`: "e141" → (none)
+- `evidence[0].quote`: "Sign Up to Post" → "User attempts to post a comment on an article and hits the sign-up wall."
+- `evidence[1].obs`: "m9" → "f1"
+- `evidence[1].quote`: "User attempts to post a comment on an article and hits the sign-up wall." → "Add Comment Page (Type a comment)"
+- `patch.newElements[0].near`: "e141" → (none)
+- `patch.newElements[0].place`: "before" → "overlay"
+- `patch.newElements[0].change`: "A Simula 'Play to Post' rewarded invitation button styled as a secondary action." → "A SimulaRewardedAd interstitial invitation triggered by the sign-up modal on the Add C..."
+- `storyboard[0].callouts[0].text`: "User reading comments" → "User reading article comments"
+- `storyboard[1].callouts[0].node`: "e141" → "ne1"
+- `storyboard[1].callouts[0].text`: "Forced sign-up to engage" → "Sign-up wall appears"
+- `storyboard[1].callouts[1].node`: "ne1" → (none)
+- `storyboard[1].callouts[1].text`: "New guest option" → (none)
+- `storyboard[1].caption`: "When trying to comment, they see the sign-up requirement but also a new guest option." → "When trying to comment, the user is blocked by a mandatory sign-up requirement."
+- `storyboard[2].callouts[0].text`: "Post without an account" → "New guest post option"
+- `storyboard[2].caption`: "The user chooses to play a quick game to unlock a guest post." → "A Simula interstitial offers a single guest post in exchange for a game."
+- `storyboard[3].caption`: "A fun 15-second AOL-themed mini-game plays." → "The user plays an AOL-themed mini-game for 15 seconds."
+- `storyboard[4].callouts[0].text`: "Comment successfully posted" → "Comment posted successfully"
+- `storyboard[4].caption`: "The reward is verified and the user's comment is published immediately." → "The comment is published. A message suggests signing in to track comment history."
+- `anchor.economy[1]`: (none) → "Guest Comment (new)"
+- ... and 2 more changes
 
-#### Round 1 (v2): **REVISE** · weighted 4.65 · judged by llm
+#### Round 1 (v2): **REVISE** · weighted 3.4 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
 | schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | evidence "m9" is not an observation or screen in the model |
-| label | code | fixable | pass | declares new mechanic "Guest Comment Pass" |
+| grounding | code | fixable | **FAIL** | economy item "Account sign-in / verified user status" does not exist; evidence "m9" is not an observation or screen in the model; evidence "f1" is not an observation or screen in the model |
+| label | code | fixable | pass | declares new mechanic "Guest Posting" |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
 | economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | The proposal focuses on a 'Guest Comment Pass' for a news application, which is an age-appropriate surface for general news readers. |
-| no-incentivized-action | llm | policy | pass | The reward is a one-time guest comment posting privilege, which is an in-app action, not a click, install, or cash reward. |
-| no-loss-framing | llm | policy | pass | The proposal uses gain framing (play a game to post) rather than threatening content deletion or loss of access. |
-| explicit-opt-in | llm | fixable | pass | Users must explicitly tap the 'Post as Guest' button and then 'Play Game & Post' to initiate the ad. |
-| disclosed | llm | fixable | pass | The offer clearly states: 'Play a quick game with AOL to post this comment instantly'. |
-| free-decline | llm | fixable | pass | The proposal includes an explicit 'No Thanks' button that returns the user to the conversation screen. |
-| no-stream-interrupt | llm | fixable | pass | The offer is presented as a gated action at the comment reply boundary, not mid-stream. |
-| not-for-subscribers | llm | fixable | pass | Targeted specifically at non-logged-in users; it is not offered to subscribers. |
+| sfw | llm | policy | pass | Guest comments are processed via AOL's automated safety filters to prevent spam [SAFE-1]. |
+| no-incentivized-action | llm | policy | pass | Reward: one guest comment submission |
+| no-loss-framing | llm | policy | pass | Don't want to sign up right now? Play a quick 15-second game to post this comment as a guest. |
+| explicit-opt-in | llm | fixable | pass | cta: 'Play and Post', decline: 'No thanks' |
+| disclosed | llm | fixable | pass | Play a quick 15-second game to post this comment as a guest. |
+| free-decline | llm | fixable | pass | decline: 'No thanks' |
+| no-stream-interrupt | llm | fixable | pass | After entering text on the Add Comment Page when the sign-up modal appears. |
+| not-for-subscribers | llm | fixable | pass | eligibility: 'Non-signed-in users who have entered text in the comment box on the Add Comment Page.' |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 5 | The proposal correctly identifies the friction point (the sign-up wall when attempting to comment) and provides an immediate, relevant solution. |
-| product-integrity | 15 | 4 | The pass allows engagement without sign-up. The proposal acknowledges risks (spam) which implies the need for moderation, essential for maintaining integrity. |
-| cannibalization-safety | 15 | 5 | The proposal targets non-logged-in users for a guest pass, which is additive and does not cannibalize a paid subscription (none exists). |
-| unit-economics | 10 | 5 | Cost to serve is $0.0018 per view, which is ~12-20% of the US revenue per view ($0.009-$0.015), well within the 30% margin target. |
-| reach | 10 | 4 | Commenting on news articles is a core loop action. The sign-up wall is a common exit point; offering a path forward here captures high-intent users. |
-| feasibility | 10 | 4 | Maps to SIM-RWD. Requires backend development for guest posting and moderation, which is a moderate lift. |
-| specificity | 10 | 5 | References screen 's04' (Conversation Screen) and the 'Reply' button 'e47', aligning directly with the AOL digest. |
-| frequency-fatigue | 5 | 5 | Includes an explicit cap of 2 per day and a 180-minute cooldown. |
-| measurability | 5 | 5 | Defines primary metrics and guardrails, and specifies a user-level randomized holdout. |
+| value-moment-fit | 20 | 1 | Code gate 'FAIL grounding': economy item "Account sign-in / verified user status" does not exist; evidence "m9" is not an observation or screen in the model; evidence "f1" is not an observation or screen in the model. The proposal's core anchoring to a moment of need ('m9') and a user flow ('f1') is explicitly flagged as ungrounded by the code gates. |
+| product-integrity | 15 | 5 | newMechanic.description: 'A temporary authorization to submit one comment... without a full AOL account registration. Guest comments are processed via AOL's automated safety filters...'. The proposal is additive, introducing a 'Guest Posting' mechanic without removing existing free value. |
+| cannibalization-safety | 15 | 5 | eligibility: 'Non-signed-in users'. caps.perDay: 1. cannibalizationGuard: 'The guest pass is limited to a single comment per day and does not grant account benefits like comment history, replies, or profile customization. A sign-in contrast line reminds users that a full AOL account is required for permanent features [CANN-4].' |
+| unit-economics | 10 | 5 | Code: 'Cost to serve per view: $0.0000 (none x 1).' Code: 'One completed US view earns $0.0090–$0.0150'. The COGS is zero, making the economics highly favorable. |
+| reach | 10 | 1 | Code gate 'FAIL grounding': evidence 'm9' is not an observation or screen in the model; evidence 'f1' is not an observation or screen in the model. The claimed core-loop reach is unverified by the system's grounding check. |
+| feasibility | 10 | 5 | simula.unit: 'SIM-RWD', entry: 'interstitial', minPlaySec: 15. reward.grantOn: 'REWARD_VERIFIED'. The patch proposes an overlay on s05. This leverages standard Simula units and lifecycle. |
+| specificity | 10 | 1 | Code gate 'FAIL grounding': economy item "Account sign-in / verified user status" does not exist; evidence "m9" is not an observation or screen in the model; evidence "f1" is not an observation or screen in the model. The proposal refers to app-specific nouns but these are not recognized as grounded in the model. |
+| frequency-fatigue | 5 | 5 | caps.perDay: 1, cooldownMin: 1440. The daily cap of one comment per day with a long cooldown ensures minimal fatigue. |
+| measurability | 5 | 5 | kpis.primary: 'Comments per DAU', kpis.guardrails: ['Account sign-up rate', 'D1 retention'], kpis.holdout: 'user-level, 10%, 28 days'. Clear KPIs, guardrails, and a holdout are defined. |
 
-- **Verdict reasons (code):** fixable gate failed: grounding (code)
+- **Verdict reasons (code):** fixable gate failed: grounding (code); value-moment-fit scored 1 (< 3); reach scored 1 (< 3); specificity scored 1 (< 3); weighted 3.4 < 3.8
 - **Required changes:**
-  - Include a specific commitment to implement robust automated spam/moderation filtering for guest posts to protect community quality, as this is a major operational risk.
-  - Clarify that 'Post as Guest' is an optional path to avoid confusing users who might prefer to sign in.
-- **Top concern:** The potential for low-quality guest comments or spam is the primary risk; without automated moderation and clear community guidelines, the feature could degrade the comment section (the core value of the social flow).
+  - Re-ground the proposal's anchor, trigger, and economy item references (m9, f1, 'Account sign-in / verified user status') to align with verified elements in the product model.
+  - Explicitly add a contrast line in the offer text, directing users to sign in for full account features as mentioned in the cannibalization guard.
+- **Top concern:** The core grounding of the proposal to the app's observed model (as reported by the code gates) is failing, which means the proposal cannot be verified as relevant or actionable in its current form.
 
 
-## P2: News Streak Multiplier — SHIP
+## P2: AOL Ad-Free Sprint — SHIP
 
-> Drive daily reading habit through a gamified streak mechanic that can be doubled by watching rewarded ads.
+> Enjoy 15 minutes of ad-free news reading after a quick game.
 
-- product-change · TAX-5 · surface News Feed Home (s13) · reward Daily Streak points doubled · caps 1/day
+- product-change · TAX-2 · surface Home News Feed (s02) · reward 15 minutes of ad-free reading · caps 3/day
 
-#### Round 0 (v1): **SHIP** · weighted 4.6 · judged by llm
+#### Round 0 (v1): **REVISE** · weighted 3.65 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
 | schema | code | policy | pass | parses as a Proposal |
 | grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
-| label | code | fixable | pass | declares new mechanic "Daily Reading Streak" |
+| label | code | fixable | pass | declares new mechanic "Ad-free Sprint" |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
 | economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | AOL is a general news reader app; the daily reading streak mechanic is SFW and age-appropriate. |
-| no-incentivized-action | llm | policy | pass | The reward is for a daily reading streak (engagement), not for clicks, installs, or ratings. Points are in-app and non-cash. |
-| no-loss-framing | llm | policy | pass | The proposal uses gain framing ('Double Your Streak Points') and offers a 'No thanks' decline option. |
-| explicit-opt-in | llm | fixable | pass | The offer screen presents a 'Play Now' CTA for the rewarded ad, acting as the explicit opt-in. |
-| disclosed | llm | fixable | pass | The offer body explicitly states: 'Play a 15-second game to double your Daily Streak points'. |
-| free-decline | llm | fixable | pass | The offer screen includes a 'No thanks' button which returns the user to the News Feed. |
-| no-stream-interrupt | llm | fixable | pass | The trigger is the user tapping 'Save this article' (e38), which is an action boundary, not mid-reading. |
-| not-for-subscribers | llm | fixable | pass | The proposal restricts eligibility to non-paying users. |
+| sfw | llm | policy | pass | News feed content is rated for general audiences and adheres to SFW standards. |
+| no-incentivized-action | llm | policy | pass | The reward is in-app ad-free access, not cash, gift cards, or clicks. |
+| no-loss-framing | llm | policy | pass | The offer uses gain framing (ad-free sprint) and provides a clear decline option. |
+| explicit-opt-in | llm | fixable | pass | User initiates the flow by tapping a dedicated item in the sidebar, followed by the invitation confirmation. |
+| disclosed | llm | fixable | pass | The proposal states: 'Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward.' |
+| free-decline | llm | fixable | pass | The proposal includes an explicit 'No thanks' button in the invitation flow. |
+| no-stream-interrupt | llm | fixable | pass | The offer is triggered from the Account Menu Sidebar, not during article reading. |
+| not-for-subscribers | llm | fixable | pass | Eligibility is explicitly set to 'Non-paying users'. |
+
+| criterion | weight | score | evidence |
+|---|---|---|---|
+| value-moment-fit | 20 | 2 | Triggering from the sidebar menu (m2/m10) is a passive, proactive discovery rather than a reactive moment-of-need when ads are perceived as intrusive. |
+| product-integrity | 15 | 4 | The time-boxed ad suppression is a clean, non-intrusive value exchange that does not interfere with reading flow. |
+| cannibalization-safety | 15 | 4 | 15-minute time-boxing is a low-risk, high-intent sampling format; AOL has no clearly defined subscription tier to cannibalize. |
+| unit-economics | 10 | 5 | COGS is effectively zero for ad-suppression, which is well below the US revenue per view ($0.009–$0.015). |
+| reach | 10 | 2 | The trigger is a menu item in the Account sidebar, which has occasional reach compared to the core Home News Feed. |
+| feasibility | 10 | 5 | Maps directly to SIM-RWD; implementation requires simple UI updates in the sidebar and a flag for the ad-server. |
+| specificity | 10 | 4 | References sidebar menu s11 and the Home News Feed s02 correctly using established UI patterns. |
+| frequency-fatigue | 5 | 4 | Daily cap of 3 with a 60-minute cooldown effectively prevents spam. |
+| measurability | 5 | 5 | Includes a clear primary metric, relevant guardrails, and a 21-day user-level holdout plan. |
+
+- **Verdict reasons (code):** value-moment-fit scored 2 (< 3); reach scored 2 (< 3); weighted 3.65 < 3.8
+- **Required changes:**
+  - Move or duplicate the 'Ad-Free Sprint' entry point to the Home News Feed (e.g., as a native component near Taboola ads) to capture users when they are actually reading news and seeing advertisements.
+  - Clarify how the ad-suppression will be enforced (e.g., via a global variable or remote config) to ensure the 15-minute timer consistently removes banner/native ads.
+- **Top concern:** The current trigger (Account Menu Sidebar) is buried and disconnected from the moment of friction (reading ads). Placing the entry point where the ads actually appear (the feed) would significantly improve value-moment fit and reach.
+
+#### Changes v1 → v2 (revise() saw the required changes, never the scores)
+
+- `anchor.moments[1]`: "m10" → "m3"
+- `anchor.newMechanic.description`: "A time-boxed entitlement that suppresses all native and banner advertisements across n..." → "A time-boxed entitlement managed via a remote config flag (isAdFree) that toggles the ..."
+- `surface`: "s11" → "s02"
+- `trigger`: "User opens the Account Menu Sidebar and views account options." → "User identifies a native ad unit in the Home News Feed (s02) and taps the 'Ad-Free Spr..."
+- `cannibalizationGuard`: "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampl..." → "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampl..."
+- `patch.newElements[0].near`: "e52" → "e37"
+- `patch.newElements[0].place`: "before" → "after"
+- `storyboard[0].screen`: "s11" → "s02"
+- `storyboard[0].callouts[0].node`: "e52" → "e47"
+- `storyboard[0].callouts[0].text`: "User views standard account options." → "User sees a native ad in the Home News Feed."
+- `storyboard[0].caption`: "The user explores the sidebar menu where news and account settings are managed." → "The user reads news headlines and encounters standard Taboola native advertisement uni..."
+- `storyboard[1].screen`: "s11" → "s02"
+- `storyboard[1].callouts[0].node`: "ne1" → "ne3"
+- `storyboard[1].callouts[0].text`: "New Ad-Free Sprint option appears." → "New Ad-Free Sprint entry point appears."
+- `storyboard[1].caption`: "A new 'Ad-Free Sprint' entry point is added to the menu, offering a premium benefit fo..." → "A new 'Ad-Free Sprint' call-to-action is added to the feed, offering an ad-free experi..."
+- `storyboard[2].screen`: "s11" → "s02"
+- `storyboard[2].callouts[0].node`: "ne1" → "ne3"
+- `storyboard[2].callouts[0].text`: "User taps to see the value exchange." → "User taps to start the sprint."
+- `storyboard[2].caption`: "Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-min..." → "Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-min..."
+- `storyboard[3].screen`: "s11" → "s02"
+- `storyboard[4].callouts[0].text`: "Ads are suppressed; timer begins." → "Timer active; ads removed."
+- `storyboard[4].caption`: "The reward is granted; ads are hidden from the feed and a countdown timer confirms the..." → "The reward is granted; native ad units are suppressed via remote config, and a countdo..."
+- `anchor.moments[2]`: (none) → "m4"
+- `anchor.moments[3]`: (none) → "m10"
+- `patch.newElements[2].id`: (none) → "ne3"
+- `patch.newElements[2].in`: (none) → "s02"
+- `patch.newElements[2].near`: (none) → "e47"
+- `patch.newElements[2].place`: (none) → "before"
+- `patch.newElements[2].change`: (none) → "A call-to-action button: 'Play game for 15m ad-free reading'."
+- `patch.newEdges[1].from`: (none) → "s02"
+- ... and 4 more changes
+
+#### Round 1 (v2): **SHIP** · weighted 4.2 · judged by llm
+
+| gate | by | severity | result | evidence |
+|---|---|---|---|---|
+| schema | code | policy | pass | parses as a Proposal |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | declares new mechanic "Ad-free Sprint" |
+| already-exists | code | fixable | pass | no ad of this format on this surface today |
+| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
+| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
+| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
+| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
+| sfw | llm | policy | pass | AOL is a general news app; the proposal targets news feeds and article views. |
+| no-incentivized-action | llm | policy | pass | The reward is '15 minutes of ad-free reading'; there is no incentive for clicks, installs, or external actions. |
+| no-loss-framing | llm | policy | pass | The proposal uses gain framing ('Go Ad-Free for 15 Minutes'). |
+| explicit-opt-in | llm | fixable | pass | The user must tap 'Start Sprint' on the invitation screen. |
+| disclosed | llm | fixable | pass | The offer explicitly states: 'Play a 15-second game to clear all ads... for a short sprint'. |
+| free-decline | llm | fixable | pass | The proposal states the decline option is 'No thanks' (standard Simula behavior). |
+| no-stream-interrupt | llm | fixable | pass | AOL content is static text/article reading; no live streams or AI chats are interrupted. |
+| not-for-subscribers | llm | fixable | pass | Eligibility is restricted to 'Non-paying users currently exposed to standard ad density'. |
+| portfolio-distinct | code | fixable | pass | distinct from P3 (surface, reward, archetype family; offer copy overlap < 0.7) |
+
+| criterion | weight | score | evidence |
+|---|---|---|---|
+| value-moment-fit | 20 | 4 | This is a proactive 'sponsored session' pattern (TAX-2) which fits the news reading rhythm well, though AOL does not have a hard ad-wall today. It provides utility by removing frequent native ad units (e47). |
+| product-integrity | 15 | 4 | The implementation disables specific Taboola units (e47-e50) via remote config. This feels native and preserves the user flow, though it requires precise UI cleanup to prevent layout gaps where ads were removed. |
+| cannibalization-safety | 15 | 4 | 15 minutes is a tight time-box, limiting the 'free ride' potential. Caps (3/day) and the 60m cooldown further mitigate the risk of devaluing the ad-supported reading experience. |
+| unit-economics | 10 | 4 | The reward has zero COGS and provides a positive (if smaller than non-Sprint) value exchange, assuming user-level holdouts validate that revenue lost from 15 minutes of ad impressions is offset by retention gains. |
+| reach | 10 | 4 | Native ads are frequent in AOL's feed (s02, s03). By triggering near ad units, the offer reaches the majority of DAU. |
+| feasibility | 10 | 5 | The proposal uses standard SIM-RWD units and remote config toggles to control ad rendering; the implementation footprint is minimal. |
+| specificity | 10 | 4 | References specific AOL elements like the 'Account Menu Sidebar' (s11) and Taboola native ad units (e47, e48, e49, e50) by ID. |
+| frequency-fatigue | 5 | 5 | Strict frequency caps (3/day) and a 60-minute cooldown prevent 'nagging' and keep the sprint feature feeling like a treat rather than an obligation. |
+| measurability | 5 | 5 | Primary metric (sessions started), guardrails (CTR, D7), and a 21-day user-level holdout provide a robust experimental framework. |
+
+- **Verdict reasons (code):** weighted 4.2 >= 3.8, every criterion >= 3, all gates pass
+- **Required changes:**
+  - Add a guardrail to monitor 'Articles read per session' and 'Ad-Supported Impression volume', as removing ad units for 15 minutes may impact inventory volume significantly for power users.
+  - Specify that the 'ne2' countdown timer badge UI must be implemented to gracefully collapse without shifting the 'Home' title layout when the timer expires.
+  - Define a fallback for the Ad-Free Sprint trigger (e.g., if a user triggers the sprint but no Taboola ads are currently loading, ensure the '15 minutes' still activates).
+- **Top concern:** The potential loss of native ad inventory volume during peak usage is the highest risk; if 15-minute sprints are too frequent for power readers, revenue degradation could exceed the retention uplift.
+
+
+## P3: Daily Reader Streak & Ad-Free Access — SHIP
+
+> Earn News Credits daily via streaks to unlock 15-minute ad-free news reading sessions.
+
+- product-change · TAX-9 · surface Account Menu Sidebar (s11) · reward 10 News Credits · caps 3/day
+
+#### Round 0 (v1): **REVISE** · weighted 4 · judged by llm
+
+| gate | by | severity | result | evidence |
+|---|---|---|---|---|
+| schema | code | policy | pass | parses as a Proposal |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | declares new mechanic "AOL News Credits" |
+| already-exists | code | fixable | pass | no ad of this format on this surface today |
+| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
+| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
+| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
+| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
+| sfw | llm | policy | pass | Proposal targets the AOL news reader app surface s11 (Account Menu Sidebar) which is SFW and age-appropriate. |
+| no-incentivized-action | llm | policy | pass | The reward is 10 News Credits earned by playing a 15-second sponsored mini-game; no clicks, installs, or cash-like rewards are involved. |
+| no-loss-framing | llm | policy | pass | The offer uses gain framing ('earn 10 News Credits') with an explicit 'No thanks' decline option and no dark patterns. |
+| explicit-opt-in | llm | fixable | pass | The user explicitly taps the 'Play Now' CTA button to initiate the rewarded experience. |
+| disclosed | llm | fixable | pass | The body text clearly discloses the required action and reward: 'Play a 15-second game with AOL to earn 10 News Credits and keep your streak alive!' |
+| free-decline | llm | fixable | pass | Declining is free via the 'No thanks' button, leaving the Account Menu Sidebar fully usable at its pre-offer state. |
+| no-stream-interrupt | llm | fixable | pass | AOL is a news reader app with no streaming AI chat responses; the offer is placed statically in the account menu. |
+| not-for-subscribers | llm | fixable | pass | AOL has no subscription tiers (no-scarcity app), and eligibility restricts claims to non-signed-in and non-subscribing users who haven't claimed today. |
+
+| criterion | weight | score | evidence |
+|---|---|---|---|
+| value-moment-fit | 20 | 3 | AOL is a traditional news feed app with no natural scarcity or currency. Introducing 'News Credits' via a streak hub in the account menu feels somewhat disconnected from immediate article-reading needs. |
+| product-integrity | 15 | 5 | Placed in the Account Menu Sidebar (s11) as a voluntary daily habit loop without removing any existing free news content. |
+| cannibalization-safety | 15 | 5 | AOL has no paid subscription tiers, and the reward is a small, capped daily amount (10 credits, 1/day) acting as a safe sampling mechanic. |
+| unit-economics | 10 | 5 | COGS is $0.0000 (virtual credits with zero marginal cost), which is well below the US view revenue of $0.0090–$0.0150. |
+| reach | 10 | 2 | The trigger occurs in the Account Menu Sidebar (s11), which has occasional reach rather than being part of the core news-browsing loop. |
+| feasibility | 10 | 4 | Uses Simula's SIM-RWD unit with a button entry point and standard SDK integration, though it requires building a virtual currency ledger for AOL. |
+| specificity | 10 | 3 | References screen s11 (Account Menu Sidebar), but 'News Credits' is a newly invented virtual currency that is generic to news apps. |
+| frequency-fatigue | 5 | 5 | Explicitly capped at 1 per day with a 1440-minute cooldown and no re-offers upon decline. |
+| measurability | 5 | 5 | Defines D7 Retention as primary, includes relevant guardrails (Sessions per DAU, Taboola Ad CTR), and specifies a 10% user-level holdout. |
+
+- **Verdict reasons (code):** reach scored 2 (< 3)
+- **Required changes:**
+  - Define and integrate the redemption utility of 'News Credits' directly into the article reading views (e.g., ad-light reading sessions) so users understand what the credits unlock.
+  - Consider adding a reactive trigger point directly within the news feed or article view (such as after viewing a set number of articles) to complement the occasional sidebar reach.
+- **Top concern:** Introducing a virtual currency ('News Credits') in a traditional news reader app with no prior scarcity requires robust redemption utility so users perceive the earned credits as valuable rather than arbitrary points.
+
+#### Changes v1 → v2 (revise() saw the required changes, never the scores)
+
+- `title`: "Daily Reader Streak" → "Daily Reader Streak & Ad-Free Access"
+- `oneLiner`: "Earn virtual credits daily to unlock premium news summaries by playing interactive min..." → "Earn News Credits daily via streaks to unlock 15-minute ad-free news reading sessions."
+- `anchor.newMechanic.name`: "AOL News Credits" → "AOL News Credits & Ad-Free Mode"
+- `anchor.newMechanic.description`: "A habit-building virtual currency earned through daily streaks and rewarded ads, redee..." → "A habit-building virtual currency earned through daily streaks and rewarded ads. Credi..."
+- `anchor.newMechanic.whyNeeded`: "AOL currently has no scarce resource; News Credits create a value exchange to monetize..." → "AOL currently has no scarcity; News Credits and time-boxed Ad-Free sessions create a v..."
+- `trigger`: "A user opens the Account Menu Sidebar to manage settings and sees a new Daily Streak p..." → "Users interact with the Daily Streak card in the Account Sidebar (s11) to earn credits..."
+- `eligibility`: "Non-signed-in users and signed-in non-subscribers who haven't claimed today's reward." → "Non-signed-in users and signed-in non-subscribers who have not claimed today's reward."
+- `offer.title`: "Daily Reading Streak" → "Earn News Credits"
+- `offer.body`: "Play a 15-second game with AOL to earn 10 News Credits and keep your streak alive!" → "Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free readi..."
+- `caps.perDay`: 1 → 3
+- `caps.cooldownMin`: 1440 → 30
+- `cannibalizationGuard`: "The reward is a small daily amount that cannot be stacked to replace the core subscrip..." → "The reward is a small, time-boxed sample of ad-free reading (15m) that provides a 'tas..."
+- `assumptions.viewsPerEngager`: 1 → 2
+- `kpis.guardrails[1]`: "Taboola Ad Click-Through Rate" → "Paid Subscription Conversion Rate"
+- `precedents[1]`: "EX-SERIAL" → "TAX-2"
+- `precedents[2]`: "AI-3" → "EX-SERIAL"
+- `risks[0]`: "User perceived value of credits may start low until redemption utility is expanded." → "Users may find the redemption utility insufficient if not clearly communicated."
+- `risks[1]`: "Potential fatigue if the streak mechanic feels repetitive." → "Potential fatigue if the streak mechanic is perceived as mandatory."
+- `evidence[0].quote`: "Manage Accounts" → "Account Menu Sidebar"
+- `evidence[1].obs`: "s11" → "s03"
+- `evidence[1].el`: "e31" → "e26"
+- `evidence[1].quote`: "Settings" → "Ad"
+- `patch.newElements[0].near`: "e36" → "e31"
+- `patch.newElements[0].change`: "Add a 'Daily Reader Streak' section with a progress bar and a 'Claim Credits' button." → "Add a 'Daily Reader Streak' section with a progress bar and 'Claim Credits' button."
+- `storyboard[0].callouts[0].text`: "Existing accounts menu" → "Existing account menu"
+- `storyboard[0].caption`: "A user opens the sidebar to access their settings or saved articles." → "User opens the account sidebar to view settings."
+- `storyboard[1].callouts[0].text`: "Daily Streak section" → "New streak card"
+- `storyboard[1].caption`: "A new 'Daily Reader Streak' card appears below the settings menu." → "Sidebar now displays Daily Reader Streak section."
+- `storyboard[2].callouts[0].text`: "Tap to claim rewards" → "Claim reward"
+- `storyboard[2].caption`: "The user taps to earn credits, triggering a Simula rewarded game invitation." → "User taps Claim to start the rewarded ad flow."
+- ... and 16 more changes
+
+#### Round 1 (v2): **SHIP** · weighted 4.8 · judged by llm
+
+| gate | by | severity | result | evidence |
+|---|---|---|---|---|
+| schema | code | policy | pass | parses as a Proposal |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | declares new mechanic "AOL News Credits & Ad-Free Mode" |
+| already-exists | code | fixable | pass | no ad of this format on this surface today |
+| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
+| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
+| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
+| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
+| sfw | llm | policy | pass | Proposal is for AOL news reading application, a general news feed service, and the ad surface is SFW. |
+| no-incentivized-action | llm | policy | pass | Reward is for game play/viewing, not for clicks or installs; currency is in-app and non-transferable. |
+| no-loss-framing | llm | policy | pass | Proposal uses positive gain framing ('Earn News Credits') rather than loss framing. |
+| explicit-opt-in | llm | fixable | pass | User explicitly interacts with 'Daily Reader Streak' card or 'Go Ad-Free' button to initiate the rewarded flow. |
+| disclosed | llm | fixable | pass | Proposal discloses 'Play a 15-second game with AOL' before the ad plays. |
+| free-decline | llm | fixable | pass | Offer card includes a 'No thanks' button as standard. |
+| no-stream-interrupt | llm | fixable | pass | Triggers are sidebar buttons or article buttons, which are user-initiated entry points, not mid-content interruptions. |
+| not-for-subscribers | llm | fixable | pass | Proposal explicitly states 'Offers are gated to non-subscribers'. |
 | portfolio-distinct | code | fixable | pass | the first SHIP of the portfolio |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 4 | Saving an article is a high-intent, active engagement gesture; rewarding this action with streak progress is a strong, positive feedback loop for a news-reading habit. |
-| product-integrity | 15 | 5 | Streaks and reading goals are native to news/content apps; the ad is opt-in and does not degrade the article content. |
-| cannibalization-safety | 15 | 5 | The reward is meta-game progress (streak points), which has no overlap with subscription or ad-free entitlements. |
-| unit-economics | 10 | 5 | The reward has zero COGS and provides a net profit of ~$0.009–$0.015 per view, well within profitable limits. |
-| reach | 10 | 3 | The trigger relies on the user performing a 'Save article' action, which is a secondary action rather than the primary core loop (reading), limiting reach. |
-| feasibility | 10 | 5 | Adding a streak meter and button to the news feed is a standard UI implementation; utilizes SIM-RWD units effectively. |
-| specificity | 10 | 5 | Properly references AOL elements like 'Save this article' (e38) and 'News Feed Home' (s13). |
-| frequency-fatigue | 5 | 5 | Capped at 1 per day with a 60-minute cooldown. |
-| measurability | 5 | 5 | Includes DAU as a primary metric, clear guardrails, and a planned holdout. |
+| value-moment-fit | 20 | 5 | News readers encounter Taboola ads; offering an ad-free session is the direct solution to that user pain point. |
+| product-integrity | 15 | 5 | Ad-free reader mode is a natural value-add for a news app; embedding entry points in the sidebar and article footer is non-intrusive. |
+| cannibalization-safety | 15 | 5 | 15-minute sessions are highly time-boxed and require active user effort, making them a 'taste' rather than a substitute for a full subscription. |
+| unit-economics | 10 | 5 | Cost to serve is nil; revenue per view ~$0.012; reward is highly profitable. |
+| reach | 10 | 4 | Article Detail Pages (s03) are a core loop location. Sidebar (s11) is used for account settings. |
+| feasibility | 10 | 5 | Maps directly to SIM-RWD on existing UI elements (article buttons, sidebar). |
+| specificity | 10 | 4 | References 'Article Details' (s03), 'Account Menu Sidebar' (s11), and 'News Credits' specific to the AOL reader context. |
+| frequency-fatigue | 5 | 5 | 3 per day limit with 30m cooldown prevents spamming. |
+| measurability | 5 | 5 | Clear KPI, guardrails, and 10% holdout plan. |
 
-- **Verdict reasons (code):** weighted 4.6 >= 3.8, every criterion >= 3, all gates pass
+- **Verdict reasons (code):** weighted 4.8 >= 3.8, every criterion >= 3, all gates pass
 - **Required changes:**
-  - Fix logic mismatch in reward definition: The proposal claims to 'Double' points, but the reward amount is '1'. If points are 3, it should grant +3 points.
-  - Clarify point utility: Define what 'Streak points' unlock (badges, profile themes) to ensure the reward is perceived as valuable.
-- **Top concern:** The logic mismatch between the 'Double' claim and the '1' reward amount needs correction; if the reward doesn't mathematically double the user's current points, the claim will be seen as deceptive.
-
-
-## P3: Bonus Save Slot — REJECT
-
-> Watch a quick game to expand your article library.
-
-- product-change · TAX-7 · surface Account Menu Sidebar (s11) · reward 5 extra save slots · caps 3/day
-
-#### Round 0 (v1): **REVISE** · weighted 3.6 · judged by llm
-
-| gate | by | severity | result | evidence |
-|---|---|---|---|---|
-| schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | economy item "ARTICLE_SAVE" does not exist |
-| label | code | fixable | pass | declares new mechanic "Library Capacity Limit" |
-| already-exists | code | fixable | pass | no ad of this format on this surface today |
-| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
-| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
-| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
-| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | Sidebar menu is a navigation surface and contains no mature or sensitive content. |
-| no-incentivized-action | llm | policy | pass | Reward is for game play to receive in-app save slots, not for clicks, installs, or ratings. |
-| no-loss-framing | llm | policy | pass | The proposal frames this as an 'expansion' ('Expand Library') rather than threatening deletion or removal of existing saved content. |
-| explicit-opt-in | llm | fixable | pass | Proposal explicitly includes 'Play Now' and 'No thanks' buttons. |
-| disclosed | llm | fixable | pass | The offer states 'Play a quick game to add 5 more save slots.' |
-| free-decline | llm | fixable | pass | Proposal explicitly allows 'No thanks' which closes the menu/offer without penalty. |
-| no-stream-interrupt | llm | fixable | pass | Trigger is the sidebar menu, not during content viewing or interaction. |
-| not-for-subscribers | llm | fixable | pass | Eligibility is strictly for 'Logged-in free tier users.' |
-
-| criterion | weight | score | evidence |
-|---|---|---|---|
-| value-moment-fit | 20 | 4 | Users who are active enough to save more than 50 articles (power users) are the ones likely to hit the limit and desire more, creating a high-intent moment. |
-| product-integrity | 15 | 2 | Imposing a new capacity limit on a feature previously available without restriction degrades the free experience for established users, which violates the spirit of keeping the core free experience intact [ANTI-10]. |
-| cannibalization-safety | 15 | 4 | Adding save slots is a secondary utility, not a core subscription benefit like ad-free news, making cannibalization risk low. |
-| unit-economics | 10 | 5 | With 0 COGS, even a single view is profitable. The reward (5 slots) is nominal. |
-| reach | 10 | 2 | Requires users to be logged in and to have saved more than 50 articles, which is a small subset of the total user base. |
-| feasibility | 10 | 3 | Maps to SIM-RWD, but requires building a new quota system for the 'Saved articles' library. |
-| specificity | 10 | 4 | Specifically references 'Account Menu Sidebar' (s11) and the 'Saved articles' feature. |
-| frequency-fatigue | 5 | 5 | 3 per day cap is reasonable. |
-| measurability | 5 | 5 | Primary metric 'Total saved articles' and D7 retention are appropriate; holdout is included. |
-
-- **Verdict reasons (code):** fixable gate failed: grounding (code); product-integrity scored 2 (< 3); reach scored 2 (< 3); weighted 3.6 < 3.8
-- **Required changes:**
-  - Clearly communicate on the limit-hit screen that existing saved articles are protected, and explicitly provide a path to view premium subscription plans to differentiate tiers.
-  - Add a monitor for 'Saved articles' usage to ensure that the 50-slot limit is actually reached by enough users to make the inventory viable.
-- **Top concern:** Introducing a new hard cap on a previously unlimited feature (saving articles) poses a significant product-integrity risk and may frustrate power users who currently rely on the feature, potentially leading to churn.
-
-#### Changes v1 → v2 (revise() saw the required changes, never the scores)
-
-- `anchor.newMechanic.description`: "Limit free account article saving to 50 slots." → "Limit free account article saving to 50 slots. Existing saved articles remain fully ac..."
-- `anchor.newMechanic.whyNeeded`: "Creates a scarce resource anchor for rewarded ads." → "Creates a scarce resource anchor for rewarded ads, distinguishing free from premium ti..."
-- `trigger`: "User opens the sidebar menu." → "User opens the sidebar menu, where capacity is displayed."
-- `offer.body`: "Play a quick game to add 5 more save slots." → "Library full (50/50). Play a game for +5 slots, or see premium plans."
-- `cannibalizationGuard`: "The reward is additive, not subtractive. Saved article limit is a non-core engagement ..." → "The reward is a partial, additive expansion for non-payers. Subscription plans remain ..."
-- `kpis.guardrails[0]`: "D7 Retention" → "CapacityHitRate"
-- `kpis.guardrails[1]`: "Daily ad revenue" → "D7 Retention"
-- `kpis.holdout`: "10% user holdout for 4 weeks to measure total engagement." → "10% user holdout for 4 weeks to measure capacity usage and revenue impact."
-- `risks[0]`: "Users may be frustrated by the introduction of a new limit on a previously unlimited f..." → "Frustration risk from capping previously unlimited storage; mitigated by clearly stati..."
-- `patch.newElements[0].change`: "Add storage status (45/50 slots) and 'Expand Library' CTA button." → "Add storage status indicator (e.g., 45/50 slots) with 'Upgrade' link and 'Play for Slo..."
-- `storyboard[1].callouts[0].text`: "New capacity tracker: 45/50 saved articles." → "New capacity tracker: 50/50 used. Upgrade or Play to unlock."
-- `storyboard[1].caption`: "Introduce a 50-article save limit to the account menu." → "Introduce a 50-article save limit, protecting existing content."
-- `storyboard[2].caption`: "When user nears the limit, the expansion offer appears." → "When user hits the 50-slot limit, the expansion offer appears."
-- `storyboard[4].caption`: "Library capacity is updated immediately upon verification." → "Library capacity is updated immediately upon successful ad completion."
-- `kpis.guardrails[2]`: (none) → "SubscriptionConversionRate"
-- `precedents[3]`: (none) → "AI-X"
-- `risks[1]`: (none) → "Low utilization if users do not save many articles; mitigated by capacity usage monito..."
-
-#### Round 1 (v2): **REVISE** · weighted 3.1 · judged by llm
-
-| gate | by | severity | result | evidence |
-|---|---|---|---|---|
-| schema | code | policy | pass | parses as a Proposal |
-| grounding | code | fixable | **FAIL** | economy item "ARTICLE_SAVE" does not exist |
-| label | code | fixable | pass | declares new mechanic "Library Capacity Limit" |
-| already-exists | code | fixable | pass | no ad of this format on this surface today |
-| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
-| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
-| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
-| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | The proposal targets the AOL account sidebar (s11) which contains general news navigation and account management, entirely SFW. |
-| no-incentivized-action | llm | policy | pass | Rewards playing a 15s mini-game for storage slots; no rewards for clicks, installs, or cash-like items. |
-| no-loss-framing | llm | policy | pass | Existing saved articles remain fully accessible; new saves are blocked at 50, avoiding data loss threats or hostage framing. |
-| explicit-opt-in | llm | fixable | pass | User taps explicit CTA 'Play Now' in the offer modal. |
-| disclosed | llm | fixable | pass | States exact reward (+5 slots) and required action (15s game) before opt-in. |
-| free-decline | llm | fixable | pass | Includes an equally legible 'No thanks' decline button which dismisses the offer without penalty. |
-| no-stream-interrupt | llm | fixable | pass | AOL is a news reading app; offers appear in the sidebar (s11), never interrupting AI streams. |
-| not-for-subscribers | llm | fixable | pass | Targeted strictly to logged-in free tier users. |
-
-| criterion | weight | score | evidence |
-|---|---|---|---|
-| value-moment-fit | 20 | 2 | AOL is a general news reader where article saving is normally unlimited; article saving limits and slot refills are weakly connected to urgent user intent. |
-| product-integrity | 15 | 2 | The proposal requires a product change that removes free value (removesFreeValue: true), capping previously unlimited free article saves at 50 slots. |
-| cannibalization-safety | 15 | 4 | Partial expansion (+5 slots per ad, capped at 3/day) for non-payers while subscription keeps unlimited storage; holdout planned. |
-| unit-economics | 10 | 5 | COGS is zero (storage capacity limit), well below net revenue per view ($0.009–$0.015). |
-| reach | 10 | 2 | Saving articles is an occasional or rare action for most general news readers, resulting in low trigger frequency. |
-| feasibility | 10 | 4 | Maps to SIM-RWD unit, button entry, and sidebar screen s11, though requires adding storage quota tracking. |
-| specificity | 10 | 2 | Fails grounding code gate because economy items 'ARTICLE_SAVE' and 'SAVE_CAPACITY' do not exist in the AOL digest. |
-| frequency-fatigue | 5 | 5 | Capped at 3 per day with a 60-minute cooldown and no re-offer after decline. |
-| measurability | 5 | 5 | Defines primary metric (Total saved articles), guardrails, and a 10% user holdout for 4 weeks. |
-
-- **Verdict reasons (code):** fixable gate failed: grounding (code); value-moment-fit scored 2 (< 3); product-integrity scored 2 (< 3); reach scored 2 (< 3); specificity scored 2 (< 3); weighted 3.1 < 3.8
-- **Required changes:**
-  - Remove the artificial article save limit, as capping previously unlimited free storage in a news app destroys free value and harms product trust.
-  - Re-anchor the rewarded ad exchange to an actual scarcity or feature in AOL (such as offline news digests, audio article listening minutes, or ad-free reading sessions) rather than inventing a storage capacity limit.
-  - Fix economy grounding by referencing valid economy items or aligning with the observed product model.
-- **Top concern:** Artificial capping of free article storage in a news app removes existing free value and creates negative user friction for a low-frequency feature.
+  - Define 'Ad-Free Reader Mode' clearly in the UI to specify that it suppresses the 'Taboola' native/banner advertising units mentioned in the digest.
+- **Top concern:** Ensure that the ad-free session does not inadvertently hide critical UI elements or cause layout shifts when Taboola ads are removed.
 

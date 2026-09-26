@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P3:v2",
+ "model": "gemini-3.7-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Proposal targets s27 ('Attachment and Mode Sheet') where digest observes: 'Allows users to attach photos or files and toggle deep reasoning mode.' Tapping 'Deep reasoning' (e15) on this standard utility surface is completely SFW and free of sensitive topics."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Proposal specifies 'reward': { 'what': '1 Deep reasoning query', 'resource': 'Deep reasoning query', 'amount': 1 } and 'cta': 'Play & Unlock'. No rewards are given for clicks, installs, ratings, or external cash-like items."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Proposal uses clean gain framing: 'offer': { 'title': 'Try Deep Reasoning Free', 'body': 'Play 2 quick 15-second games with Luzia to unlock 1 smarter, deeper answer.', 'cta': 'Play & Unlock', 'decline': 'No thanks' } without fake countdowns, nagging, or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Proposal includes explicit CTA: 'cta': 'Play & Unlock' with patch element ne1: 'An interactive button displaying \\'Play & Unlock\\' as the primary CTA next to \\'No thanks\\'.'"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Proposal clearly discloses the required action and reward before launch: 'body': 'Play 2 quick 15-second games with Luzia to unlock 1 smarter, deeper answer.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Proposal provides a visible decline path: 'decline': 'No thanks' that dismisses overlay ns1 back to s27 with zero penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Proposal trigger occurs before generation: 'When the user taps the disabled \\'Deep reasoning\\' option (e15) on s27 while not subscribed to Luzia+.' Never interrupts an in-progress stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Proposal gates eligibility strictly: 'eligibility': 'Non-paying guest or free users who do not have the Luzia+ Subscription (r1).'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Digest lists s27 element e15 'Deep reasoning' with signal upsell:'Deep reasoning' under Luzia+ entitlement 'Deep reasoning mode for smarter answers'. Proposal offers '1 Deep reasoning query' precisely when the user tries to toggle deep reasoning on s27.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Proposal introduces an opt-in trial sheet ns1 over s27 without degrading base messaging or interrupting chat. Digest shows deep reasoning is already gated behind Luzia+, so granting a single query trial preserves product integrity.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Proposal gates to non-subscribers ('eligibility': 'Non-paying guest or free users who do not have the Luzia+ Subscription (r1).'), limits unlocks to single queries ('caps': { 'perDay': 3, 'cooldownMin': 60 }), and maintains a 28-day user-level holdout.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed economics show: 'Cost to serve per view: $0.0090 (text-premium x 1)' and flag: 'Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end.' Although the copy mentions 2 games, assumptions set cogsUnitsPerView=1, leading to negative margin at the lower bound.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Digest records moment m14 on s27 as having 'reach=occasional: Attachment and Mode Sheet shows an upsell: \\'Deep reasoning\\''. Tapping the attachment sheet to toggle deep reasoning is an occasional secondary action rather than a high-frequency daily core loop wall.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Proposal maps cleanly to Simula SIM-RWD ('unit': 'SIM-RWD', 'entry': 'invitation', 'gamePartner': 'Luzia'). However, the code gate flagged grounding failures for 'Deep reasoning query (new)', and tracking per-query usage credits for guest sessions requires additional state management.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal uses exact screen s27, element e15 ('Deep reasoning'), partner 'Luzia', and entitlement 'Deep reasoning mode for smarter answers' directly from the Luzia product model digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Proposal sets explicit caps: 'caps': { 'perDay': 3, 'cooldownMin': 60 }, preventing spamming or repeated immediate prompts upon decline.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Proposal specifies primary metric 'Deep reasoning trial opt-in rate', guardrails 'Luzia+ Subscription conversion rate', 'D7 user retention', and 'holdout': 'User-level holdout, 10% of global non-paying DAU, active for 28 days'.",
+    "score": 4
+   }
+  ],
+  "requiredChanges": [
+   "Adjust assumptions to align with the 2-game bundle (setting cogsUnitsPerView to 0.5) so that the $0.0090 reasoning cost is amortized across 2 views ($0.0126–$0.0210 net revenue), resolving the unit economics flag.",
+   "Resolve grounding errors by defining the deep reasoning single-use credit within the app's supported state without ungrounded economy resource tags."
+  ],
+  "topConcern": "Cost to serve the premium reasoning model ($0.0090) exceeds net revenue per view ($0.0063) at the low end under the 1-view per-unit assumption."
+ },
+ "usage": {
+  "input": 42701,
+  "output": 1580,
+  "cacheRead": 40417,
+  "cacheWrite": 0,
+  "thoughts": 3120
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:06:56.862Z"
+}

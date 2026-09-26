@@ -46,7 +46,9 @@ export function tidyNote(n: string): string {
 
 export async function buildReport(appIds: string[], outRoot?: string): Promise<string> {
   const root = outRoot ? path.resolve(outRoot) : path.join(ROOT, "out");
-  const rows = appIds.map(id => collect(id, root));
+  // The deep app first, then the transfer apps, then blocked ones: the order a reader should meet them.
+  const depth = (r: AppRow) => ["deep", "medium", "shallow"].indexOf(r.profile) < 0 ? 9 : ["deep", "medium", "shallow"].indexOf(r.profile);
+  const rows = appIds.map(id => collect(id, root)).sort((a, b) => depth(a) - depth(b) || Number(!a.model) - Number(!b.model) || a.name.localeCompare(b.name));
   const file = path.join(root, "index.html");
   writeText(file, page(rows));
   writeText(path.join(root, "README.md"), galleryMd(rows, root));

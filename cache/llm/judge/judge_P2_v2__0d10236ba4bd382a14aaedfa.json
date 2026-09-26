@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P2:v2",
+ "model": "gemini-2.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Enjoy 15 minutes of ad-free news reading after a quick game. The app features high ad density without a path for users to earn a cleaner reading experience"
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward: 15 minutes of ad-free reading, resource: Ad-free Sprint"
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Offer: title: Go Ad-Free for 15 Minutes; Offer: decline: Keep ads"
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Simula: entry: button; Offer: cta: Start Sprint"
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Offer: body: Play a 15-second game with AOL to clear all ads from your news feed for a short sprint. Reward: what: 15 minutes of ad-free reading"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Offer: decline: Keep ads"
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Enjoy 15 minutes of ad-free news reading after a quick game. Ads are hidden from the feed and a timer confirms the sprint session is active."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility: Non-paying users currently exposed to standard native and banner ad density."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The app features high ad density without a path for users to earn a cleaner reading experience through a value exchange. The reward is '15 minutes of ad-free reading' directly addressing this pain point. The trigger is in the core news feed after two articles, a common moment of engagement.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal adds a new, desirable 'Ad-free Sprint' experience without removing existing free value. The integration includes a clear offer card and a countdown timer badge, making the feature intuitive and enhancing the user experience during the sprint. The 'AOL' Game Partner is in-world.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is strictly time-boxed (15 minutes) and capped (3 per day) for 'Non-paying users'. The digest states 'No priced packs observed' and no paid ad-free subscriptions exist, which effectively eliminates direct cannibalization risk.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The computed 'Cost to serve per view' is $0.0000, meaning the net revenue per view is 100% of the gross ($0.0090–$0.0150). The reward is an ad-free experience, not a directly priced resource, so COGS is negligible.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is 'A promotional card appears in the Home News Feed after the user scrolls past the first two articles' on screen 's02 (Home News Feed)', which is a 'core-loop' surface with 'frequent' visits, ensuring high visibility and frequent opportunities.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal leverages a standard 'SIM-RWD' unit, grants on 'REWARD_VERIFIED', and involves new UI elements like a feed card and a timer, which are straightforward to implement. The 'Ad-free Sprint' is a common time-boxed entitlement mechanic.",
+    "score": 5
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses 'AOL' as the Game Partner and directly targets existing 'Taboola ads' and 'banner advertisements' on 'news feeds and article pages' specific to the app's content. The 'Ad-Free Sprint' is tailored to AOL's ad-heavy experience.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "The proposal includes explicit caps: 'perDay: 3' and 'cooldownMin: 60'. It also acknowledges the risk of a 'JARring return to ads' but does not specify a mitigation for this transition.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "The proposal clearly defines a 'primary: Ad-free Sprint sessions started' metric, relevant 'guardrails' (news reading time, retention, ad impressions), and a 'User-level holdout, 10% share, 28 days' for a robust experiment.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Verify and explicitly describe how all existing ad elements (native, banner) across all relevant screens will be suppressed during the Ad-free Sprint, beyond just e47 as shown in the storyboard.",
+   "Propose a small UX mitigation for the 'JARring return to ads' risk at the end of the 15-minute session (e.g., a subtle fade-in or a brief notification).",
+   "Consider a more specific character name for the 'Game Partner' than just 'AOL' to enhance specificity and in-world narrative."
+  ],
+  "topConcern": "Verify and explicitly describe how all existing ad elements (native, banner) across all relevant screens will be suppressed during the Ad-free Sprint, beyond just e47 as shown in the storyboard."
+ },
+ "usage": {
+  "input": 35238,
+  "output": 1393,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4799
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:14:40.288Z"
+}

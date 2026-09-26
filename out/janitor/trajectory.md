@@ -1,6 +1,6 @@
 # Trajectory: janitor
 
-Autonomous decisions: **82**. Human interventions: **0**. Autonomy ratio: **100.0%**.
+Autonomous decisions: **96**. Human interventions: **2**. Autonomy ratio: **98.0%**.
 
 ## Stage runs
 
@@ -21,6 +21,19 @@ Autonomous decisions: **82**. Human interventions: **0**. Autonomy ratio: **100.
 | propose | pr0926-055629 | 05:56:29 | 05:57:35 | 24 | 4 |  |
 | judge | ju0926-055736 | 05:57:36 | 05:59:38 | 44 | 5 | revision stalled: weighted 4.35 -> 4.45 |
 | eval-judge | ev0926-055941 | 05:59:41 | 06:00:35 | 22 | 0 |  |
+| human | manual | 06:04:11 | 06:31:12 | 2 | 0 |  |
+| propose | pr0926-060529 | 06:05:29 | 06:05:29 | 1 | 0 |  |
+| propose | pr0926-070903 | 07:09:03 | 07:10:07 | 14 | 1 |  |
+| judge | ju0926-071008 | 07:10:08 | 07:12:18 | 36 | 4 | revision stalled: weighted 4.3 -> 4.35 |
+| eval-judge | ev0926-071713 | 07:17:13 | 07:18:02 | 23 | 1 |  |
+| propose | pr0926-071817 | 07:18:17 | 07:18:17 | 8 | 0 |  |
+| judge | ju0926-071818 | 07:18:18 | 07:18:28 | 28 | 0 | revision stalled: weighted 4.3 -> 4.35 |
+| eval-judge | ev0926-071917 | 07:19:17 | 07:19:17 | 10 | 0 |  |
+| propose | pr0926-072039 | 07:20:39 | 07:20:40 | 8 | 0 |  |
+| judge | ju0926-072041 | 07:20:41 | 07:20:41 | 22 | 0 | revision stalled: weighted 4.5 -> 4.15 |
+| eval-judge | ev0926-072205 | 07:22:05 | 07:22:05 | 10 | 0 |  |
+| slides | sl0926-072306 | 07:23:06 | 07:23:08 | 4 | 0 |  |
+| slides | sl0926-072843 | 07:28:43 | 07:28:45 | 4 | 0 |  |
 
 ## New states discovered over time
 
@@ -157,10 +170,32 @@ long chats."
 - 05:58:59 **gemini:judge:P1:v2**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
   - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
 
+### propose · run pr0926-070903
+
+- 07:09:26 **gemini:depth:P2**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+
+### judge · run ju0926-071008
+
+- 07:10:16 **gemini:judge:P2:v1**: 503 on gemini-3.5-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3-flash-preview (next fallback model)
+- 07:10:28 **gemini:judge:P2:v1**: 503 on gemini-3-flash-preview (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-2.5-flash (next fallback model)
+- 07:10:42 **gemini:revise:P1:r1**: 503 on gemini-3-flash-preview (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-2.5-flash (next fallback model)
+- 07:11:07 **gemini:revise:P2:r1**: 503 on gemini-3-flash-preview (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-2.5-flash (next fallback model)
+
+### eval-judge · run ev0926-071713
+
+- 07:17:55 **gemini:judge-cal:neg-generic**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+
 
 ## Human interventions
 
-None recorded.
+- 2026-09-26T06:04:11 [human] Logged after the fact: before the 2026-09-25 explore run, a person signed in to Janitor AI on the emulator with Google (apps/janitor.json sets login: manual; the explorer never types credentials). The account handle and join date were then redacted in every artifact: text replaced, screenshots blurred.
+- 2026-09-26T06:31:12 [human] Logged after the fact: after reviewing the judged proposals, a person had the proposer and judge rules tightened in code on 2026-09-26 (commit e7d0da6 and the commit that adds this note: no offer beside a sign-up button, no cheaper cost label on revision, the reward's resource sets a floor on its cost class, knowledge-base lines naming the test apps removed), then re-ran propose, judge, eval-judge and slides.
 
 ## Key exploration decisions (priority 3)
 

@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The news app content provided is standard general and entertainment news, and the proposal focuses on clearing advertisements, which is SFW."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is an in-app ad-free status; there is no incentive to click ads or install third-party apps."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing (ad-free time) rather than threatening content loss or account deletion."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal includes an offer card with a clear 'Start Sprint' button and an opt-out path."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer card clearly states: 'Play a 15-second game with our News Anchor to remove all feed and article advertisements.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer card includes a 'No thanks' button which dismisses the prompt without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The offer is placed in the feed (s02) after top stories, not mid-article or during interactive elements."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal limits eligibility to 'Non-signed-in users currently viewing high-density native and banner advertisements.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal triggers during browsing (s02) where ad density is high, matching the user's need for a clean reading experience.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Clearing ads from a news feed preserves content; the in-world 'News Anchor' interaction feels appropriate for a news app.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "15-minute bursts are sampling-oriented and limited (3/day), which unlikely cannibalizes long-term subscriptions.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Granting 15 minutes of ad-free time has zero COGS and provides revenue through the 15-second rewarded play, consistent with the economics provided.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is on the Home News Feed (s02), which is core to the application's loop.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps to SIM-RWD; however, element IDs listed in the 'economy' section (e42, e47, etc.) were flagged as not found in the digest.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses the app's 'Home News Feed' and 'AOL' branding, though relies on referencing element IDs that are not present in the digest.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a 3 per day limit and 60-minute cooldown.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a primary metric, guardrails, and a planned 28-day user-level holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Fix element ID references in the proposal to match the provided product model digest; current references (e42, e47, etc.) were marked as non-existent.",
+   "Specify that the 'No thanks' action suppresses the offer for the duration of the current session or until a new trigger boundary to prevent nagging."
+  ],
+  "topConcern": "The proposal references several element IDs in the economy section that were flagged as missing from the provided product model digest, creating a risk for implementation grounding."
+ },
+ "usage": {
+  "input": 35478,
+  "output": 1068,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:15:13.157Z"
+}

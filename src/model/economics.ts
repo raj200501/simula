@@ -77,7 +77,7 @@ export function deriveEconomy(e: Economy): Derived {
 /** Unit price range per resource from packs that grant it: priceUsd / amount. */
 /** Which cost-to-serve bucket a resource's unit falls in, from its own name/unit words. */
 export function cogsKindOf(r: { name: string; unit: string }): string | null {
-  const s = `${r.name} ${r.unit}`.toLowerCase();
+  const s = `${r.name} ${r.unit}`.toLowerCase().replace(/[_-]+/g, " "); // ids read as words
   // Whole words only: "credits" is not an edit, "start" and "smart" are not art.
   if (/\b(images?|photos?|pictures?|art|artwork|avatars?|videos?|animat\w*|edits?|editing)\b/.test(s)) return "image";
   if (/\b(voice|audio|calls?|speech)\b/.test(s)) return "voice";

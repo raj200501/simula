@@ -1,0 +1,251 @@
+{
+ "purpose": "depth:P1",
+ "model": "gemini-3.8-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Paywall Decline 30-Min Luzia+ Pass",
+  "oneLiner": "Offer a 30-minute Luzia+ trial pass via a rewarded mini-game after declining the account creation paywall.",
+  "case": "existing",
+  "archetype": "TAX-10",
+  "beyondBaseline": false,
+  "anchor": {
+   "moments": [
+    "m2"
+   ],
+   "economy": [
+    "r1",
+    "of1",
+    "w1",
+    "w6"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s06",
+  "trigger": "User taps Maybe later on Create Account Sheet and returns to Services Tab without subscribing.",
+  "eligibility": "Non-paying guest users who have dismissed the Create Account Sheet paywall and have no active Luzia+ entitlement.",
+  "offer": {
+   "title": "Try Luzia+ for 30 Minutes",
+   "body": "Play a 15-second mini-game to unlock 30 minutes of Luzia+ services. Experience bookings, reminders, and deeper reasoning before deciding to subscribe.",
+   "cta": "Play Mini-Game",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "30 minutes of Luzia+ access",
+   "resource": "r1",
+   "amount": null,
+   "duration": "30 minutes",
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "Only surfaces after an explicit paywall decline to self-select users unwilling to purchase immediately. Capped strictly at one 30-minute session per day so it samples premium value without substituting for a recurring subscription.",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1,
+   "cogs": "text-cheap",
+   "cogsUnitsPerView": 3
+  },
+  "kpis": {
+   "primary": "Luzia+ subscription conversion rate among paywall decliners over 28 days",
+   "guardrails": [
+    "Overall D7 and D30 user retention non-inferiority margin within -1%",
+    "Total paid subscription revenue per user (non-inferiority margin -3% relative)",
+    "Paywall decline churn rate"
+   ],
+   "holdout": "Randomized user-level 10% holdout group ineligible for rewarded fallback passes for 28 days"
+  },
+  "precedents": [
+   "TAX-10",
+   "TAX-2",
+   "EX-MUSIC",
+   "EX-DUO",
+   "AI-15",
+   "CORE-5"
+  ],
+  "risks": [
+   "Users may defer subscribing if a single 30-minute pass satisfies their immediate one-off assistant task.",
+   "Inference costs for complex assistant queries during the pass may exceed ad revenue if usage spikes.",
+   "User fatigue if the fallback invitation triggers on every single paywall dismissal."
+  ],
+  "evidence": [
+   {
+    "obs": "s07",
+    "el": null,
+    "quote": "Sign up so Luzia can start doing things for you."
+   },
+   {
+    "obs": "s07",
+    "el": null,
+    "quote": "Maybe later"
+   },
+   {
+    "obs": "s06",
+    "el": "e6",
+    "quote": "Let Luzia handle it!"
+   },
+   {
+    "obs": "s06",
+    "el": "e9",
+    "quote": "Start new task"
+   },
+   {
+    "obs": "s19",
+    "el": "e10",
+    "quote": "Upgrade to Luzia+"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s06",
+     "near": "e9",
+     "place": "after",
+     "change": "Add MiniGameInvitation card prompting user for 30-minute Luzia+ trial pass"
+    },
+    {
+     "id": "ne2",
+     "in": "s06",
+     "near": "e6",
+     "place": "before",
+     "change": "Add Luzia+ active trial countdown badge displaying remaining minutes"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s06",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "r1",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "r1",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e9",
+      "text": "Tapping Start new task opens the account creation sheet."
+     }
+    ],
+    "caption": "User attempts to start a task and hits the account paywall."
+   },
+   {
+    "phase": "change",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e9",
+      "text": "User returns to Services tab after tapping Maybe later."
+     },
+     {
+      "node": "ne1",
+      "text": "Rewarded trial invitation appears below the task button."
+     }
+    ],
+    "caption": "User dismisses the paywall and returns to the Services tab."
+   },
+   {
+    "phase": "offer",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Invitation prompts user to play a 15-second mini-game."
+     }
+    ],
+    "caption": "Luzia offers a 30-minute Luzia+ trial pass via mini-game."
+   },
+   {
+    "phase": "ad",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "User plays the 15-second interactive mini-game with Luzia."
+     }
+    ],
+    "caption": "User plays a 15-second interactive mini-game with Luzia."
+   },
+   {
+    "phase": "value",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "r1",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Luzia+ trial badge indicates 30 minutes of unlocked access."
+     },
+     {
+      "node": "e9",
+      "text": "Start new task is now enabled without the paywall."
+     }
+    ],
+    "caption": "Luzia+ activates for 30 minutes, unlocking assistant services."
+   }
+  ]
+ },
+ "usage": {
+  "input": 42772,
+  "output": 1951,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 11160
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:03:42.431Z"
+}

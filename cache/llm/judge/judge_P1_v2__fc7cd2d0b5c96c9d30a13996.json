@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P1:v2",
+ "model": "gemini-3.7-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Offered on s06 (Services Tab): 'Bookings, shopping, alerts and reminders, all done' with Luzia as Game Partner, which is SFW and free of sensitive topics."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "Reward is in-app task access: 'what': '1 free assistant task execution', 'resource': 'Guest Task Execution', with no cash, gift cards, or incentives for clicks/installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Positive trial framing: 'title': 'Try One Task for Free', 'body': 'Play a 15-second game to run one assistant task without creating an account.' with no fake timers or confirmshaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Explicit opt-in button provided: 'cta': 'Play Mini-Game'."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "Full disclosure of action and reward before start: 'Play a 15-second game to run one assistant task without creating an account.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Clearly labelled decline option: 'decline': 'No thanks', returning the user to s06 without penalties."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "Surfaced only at a navigation boundary: 'trigger': 'User taps Maybe later on Create Account Sheet and returns to Services Tab without subscribing.'"
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Gated to non-paying users: 'eligibility': 'Non-paying guest users without an account who have dismissed the Create Account Sheet paywall.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The user taps 'Start new task' (e9) on s06, hits the Create Account paywall (w6), dismisses it via m2, and is offered exactly '1 free assistant task execution' to sample the blocked feature.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal introduces an invitation card ne1 on s06 below e9 ('Start new task') after paywall decline. It preserves user flow, keeps core chat untouched, and uses Luzia as the Game Partner.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The offer is strictly gated to decliners of the account paywall, limited to 1 execution per day with a 1440 min cooldown, and protected with a 10% randomized holdout.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed economics show cost to serve is $0.0090 (text-premium x 1) against gross US revenue of $0.0090–$0.0150, triggering the flag: 'Cost to serve the reward ($0.0090) exceeds net revenue per view ($0.0063) at the low end.'",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Triggered on m2 after s06 Services Tab interaction. Services Tab had 7 visits during exploration (reach=frequent), but is secondary to the primary chat loop on s01.",
+    "score": 3
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD with invitation entry, 15s play, and REWARD_VERIFIED. However, executing assistant services in guest mode requires custom backend session handling since tasks normally require an account.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Cites actual digest elements and screens including s06, s07, e9 ('Start new task'), and wall w6, but introduces an invented resource name 'Guest Task Execution (new)'.",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Sets strict caps: 'perDay': 1 and 'cooldownMin': 1440, ensuring no nagging or unbounded ad prompts.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Primary metric 'Luzia+ subscription conversion rate among paywall decliners over 28 days', guardrails on D7/D30 retention (-1%) and paid revenue (-3%), backed by a 10% randomized holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce task execution COGS by routing guest trial tasks to a lower-cost model or requiring multiple rewarded views in low-eCPM regions to prevent negative margins against net revenue ($0.0063).",
+   "Fix grounding by defining the reward as a single-use entitlement sample of existing Luzia+ services (w6) rather than introducing an invented resource 'Guest Task Execution (new)'.",
+   "Clarify backend guest persistence for assistant tasks (bookings, shopping, reminders) that typically require an authenticated account."
+  ],
+  "topConcern": "Cost to serve the premium task execution ($0.0090) exceeds net revenue per view ($0.0063) at the low end, risking negative margin on guest task trials without lower-cost model routing."
+ },
+ "usage": {
+  "input": 42826,
+  "output": 1383,
+  "cacheRead": 40419,
+  "cacheWrite": 0,
+  "thoughts": 2532
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:06:06.482Z"
+}

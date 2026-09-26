@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-autoplay",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Luzia is a general AI assistant, and the proposed rewarded ad is for access to premium features (deep reasoning mode and advanced services)."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is access to premium feature entitlements, not cash, gift cards, or clicks."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": false,
+    "evidence": "The proposal states: 'The rewarded game auto-plays full-screen mid-response, while the answer is still streaming'."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal includes an explicit 'Play to try' CTA."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer body explicitly states: 'Play a 15-second game to unlock 30 minutes of Upgrade to Luzia+ today.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer provides an explicit 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": false,
+    "evidence": "The trigger explicitly forces the ad mid-response: 'The rewarded game auto-plays full-screen mid-response, while the answer is still streaming'."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal specifies eligibility for 'Signed-in non-subscribers... never subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer is placed when the user hits a subscription wall, which is a high-intent moment.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal dictates a full-screen game that auto-plays mid-response, which is highly interruptive and breaks the user's chat flow.",
+    "score": 1
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The reward is time-boxed (30 minutes) and capped, and a clear distinction is maintained between the reward and full subscription.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The cost to serve is zero, well within the economic limits for a view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The offer targets the subscription wall, which is a frequent interaction point for Luzia.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps to SIM-RWD and existing screens.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses app-specific nouns like 'Luzia+', 'Elias', and 'Deep reasoning mode'.",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes explicit caps of 2 per day.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics and guardrails, including a 10% holdout.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Remove the auto-play functionality. Ads must never auto-play or force-interrupt a streaming AI response.",
+   "Place the trigger at a safe boundary (e.g., after the response finishes, or when the composer is blocked by a limit), not during a streaming response."
+  ],
+  "topConcern": "The proposal violates core integrity rules by forcing an auto-playing, interruptive ad while the AI is in the middle of streaming a response to the user."
+ },
+ "usage": {
+  "input": 42172,
+  "output": 977,
+  "cacheRead": 24248,
+  "cacheWrite": 0,
+  "thoughts": 0
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:18.234Z"
+}

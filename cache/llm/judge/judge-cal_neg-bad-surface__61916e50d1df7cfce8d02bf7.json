@@ -1,0 +1,110 @@
+{
+ "purpose": "judge-cal:neg-bad-surface",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal focuses on providing an entitlement ('5x context for better memory') on a paywall screen; this is inherently SFW content."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is a 30-minute entitlement to an existing app feature, not cash or external incentives."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The offer uses gain-framing ('Play to try') after a paywall decline, avoiding hostage or loss framing."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal includes an explicit 'Play to try' button and a clear 'No thanks' decline option."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer clearly states: 'Play a 15-second game to try 30 minutes of 5x context for better memory now.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining is explicitly handled by a 'No thanks' button, leaving the user on the paywall screen without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The proposal triggers 'once any answer has finished' and after the paywall is dismissed."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The eligibility field specifies: 'Only non-payers... never subscribers.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is perfectly placed on the paywall dismissal ('m2'), exactly when the user has expressed interest in the feature but decided against paying immediately.",
+    "score": 5
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The reward (context memory) directly mirrors the subscription entitlement, making it a natural sampling experience without degrading free answers.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated strictly to non-payers who have already declined the paid path, with a once-per-day cap, which is highly protective of conversion.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The computed cost to serve is $0.00, well within the net revenue per view.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger relies on paywall-decline events; while frequent for non-payers, it is not as ubiquitous as core-loop interaction.",
+    "score": 4
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal defines the surface as 's99', which does not exist in the digest. The patch references 's03' correctly, creating a conflict.",
+    "score": 2
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Uses precise app nouns like '5x context for better memory' and 'More memory for long chats.'",
+    "score": 5
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Explicitly limited to one occurrence per day with no re-prompting.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Provides a comprehensive plan with a user-level holdout and explicit guardrails.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Correct the surface ID from 's99' to 's03' in the proposal metadata to match the patch and the screen referenced in the moments.",
+   "Ensure the implementation team understands the surface 's03' is the 'More memory for long chats.' screen."
+  ],
+  "topConcern": "The proposal uses a non-existent screen ID ('s99') as the designated surface, which creates a critical discrepancy with the actual product model and the provided patch."
+ },
+ "usage": {
+  "input": 34566,
+  "output": 1032,
+  "cacheRead": 32243,
+  "cacheWrite": 0,
+  "thoughts": 1186
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:17:54.837Z"
+}

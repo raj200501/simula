@@ -1,0 +1,111 @@
+{
+ "purpose": "judge-cal:neg-generic",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The proposal targets Settings (s19), which is an SFW surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is time-boxed access to premium features, not cash or clicks."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal offers a straightforward choice with no dark patterns or forced interaction."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap an explicit 'Try Upgrade to Luzia+' chip to begin the flow."
+   },
+   {
+    "gate": "disclosed",
+    "pass": false,
+    "evidence": "The offer copy reads 'Free coins!' and 'Watch a video to earn coins.', which contradicts the stated reward of '30 minutes of Upgrade to Luzia+'. The actual reward is not disclosed to the user."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer includes a clear 'No thanks' button."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger is placed in the Settings tab (s19), away from any chat stream."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal specifies eligibility is for non-subscribers only, excluding subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The trigger is on a settings page (m23) rather than at the point of usage (the actual wall for deep reasoning). Users are not in an active usage context for the premium feature here.",
+    "score": 2
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The offer copy is generic and misleading ('Free coins!'), which conflicts with the reward of an entitlement ('30 minutes of Upgrade to Luzia+').",
+    "score": 2
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The proposal time-boxes the reward and limits it to 2 per day, protecting the subscription value.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Cost to serve is effectively zero for an entitlement unlock; revenue per view is healthy ($0.009-$0.015).",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The offer is placed in Settings, which is not part of the core chat loop and has limited daily reach compared to the main interface.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "The proposal maps to existing UI patterns and can be implemented via a standard chip/button.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal uses generic placeholder copy ('Free coins!') despite referencing the app's specific 'Luzia+' plan.",
+    "score": 1
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes daily caps (2/day) and cooldowns.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines primary metrics, guardrails, and a robust holdout plan.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Rewrite the offer copy to accurately describe the reward (e.g., 'Get 30m of Deep Reasoning' instead of 'Free coins!').",
+   "Move the trigger from the Settings menu to the moment of need, such as the Deep Reasoning mode toggle on the Attachment and Mode Sheet (s27) or the Image Creation Hub (s10).",
+   "Use the app's specific nouns rather than generic 'coins' placeholders to ensure the proposal is specific to Luzia."
+  ],
+  "topConcern": "The offer copy is generic and actively misleading, promising 'Free coins' for an entitlement reward, which violates disclosure policy and creates poor user trust."
+ },
+ "usage": {
+  "input": 42157,
+  "output": 1046,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 1306
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:16:55.893Z"
+}

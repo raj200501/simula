@@ -762,11 +762,14 @@
       by[r] += Number(f.delta) || 0;
     });
     var gains = order.filter(function (r) { return by[r] > 0; });
-    if (gains.length) {
-      var parts = gains.map(function (r) { var c = counterOf(r); return "+" + fmt(by[r], "") + " " + ((c && (c.unit || c.name)) || r); });
+    var what = clean(cfg.reward).replace(/[.!]+$/, "");
+    // A counter the app already shows is named by its unit; a resource the proposal introduces has no
+    // counter yet, so it is named by the reward's own words, never by its id.
+    if (gains.length && gains.every(function (r) { return !!counterOf(r); })) {
+      var parts = gains.map(function (r) { var c = counterOf(r); return "+" + fmt(by[r], "") + " " + (c.unit || c.name); });
       return { title: parts.join(", ") + " added", resource: gains[0] };
     }
-    var what = clean(cfg.reward).replace(/[.!]+$/, "");
+    if (gains.length && what && what !== "a reward") return { title: "+" + what.replace(/^\+\s*/, "") + " added", resource: gains[0] };
     return { title: what && what !== "a reward" ? "Unlocked: " + what : "Reward added", resource: null };
   }
   function clearRewardToast() {

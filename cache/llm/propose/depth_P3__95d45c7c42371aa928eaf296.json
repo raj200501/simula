@@ -1,0 +1,201 @@
+{
+ "purpose": "depth:P3",
+ "model": "gemini-3-flash-preview",
+ "effort": "high",
+ "parsed": {
+  "title": "Daily Reader Streak",
+  "oneLiner": "Earn virtual credits daily to unlock premium news summaries by playing interactive mini-games.",
+  "case": "product-change",
+  "archetype": "TAX-9",
+  "beyondBaseline": true,
+  "anchor": {
+   "moments": [
+    "m10"
+   ],
+   "economy": [
+    "AD TODAY native on Home News Feed (e42)",
+    "News Credits (new)"
+   ],
+   "newMechanic": {
+    "name": "AOL News Credits",
+    "description": "A habit-building virtual currency earned through daily streaks and rewarded ads, redeemable for ad-light reading sessions and advanced article summaries.",
+    "whyNeeded": "AOL currently has no scarce resource; News Credits create a value exchange to monetize non-paying attention via opt-in ads.",
+    "removesFreeValue": false
+   }
+  },
+  "surface": "s11",
+  "trigger": "A user opens the Account Menu Sidebar to manage settings and sees a new Daily Streak progress card.",
+  "eligibility": "Non-signed-in users and signed-in non-subscribers who haven't claimed today's reward.",
+  "offer": {
+   "title": "Daily Reading Streak",
+   "body": "Play a 15-second game with AOL to earn 10 News Credits and keep your streak alive!",
+   "cta": "Play Now",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "button",
+   "gamePartner": "AOL",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "10 News Credits",
+   "resource": "News Credits",
+   "amount": 10,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "The reward is a small daily amount that cannot be stacked to replace the core subscription value; it acts as a sampling mechanic for premium features.",
+  "assumptions": {
+   "engagedShare": 0.2,
+   "viewsPerEngager": 1,
+   "cogs": "none",
+   "cogsUnitsPerView": 0
+  },
+  "kpis": {
+   "primary": "D7 Retention",
+   "guardrails": [
+    "Average Sessions Per DAU",
+    "Taboola Ad Click-Through Rate"
+   ],
+   "holdout": "User-level randomization, 10% share, 28-day duration"
+  },
+  "precedents": [
+   "TAX-9",
+   "EX-SERIAL",
+   "AI-3"
+  ],
+  "risks": [
+   "User perceived value of credits may start low until redemption utility is expanded.",
+   "Potential fatigue if the streak mechanic feels repetitive."
+  ],
+  "evidence": [
+   {
+    "obs": "s11",
+    "el": null,
+    "quote": "Manage Accounts"
+   },
+   {
+    "obs": "s11",
+    "el": "e31",
+    "quote": "Settings"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s11",
+     "near": "e36",
+     "place": "after",
+     "change": "Add a 'Daily Reader Streak' section with a progress bar and a 'Claim Credits' button."
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s11",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "News Credits",
+       "delta": 10
+      }
+     ],
+     "guard": null
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e12",
+      "text": "Existing accounts menu"
+     }
+    ],
+    "caption": "A user opens the sidebar to access their settings or saved articles."
+   },
+   {
+    "phase": "change",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "News Credits",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Daily Streak section"
+     }
+    ],
+    "caption": "A new 'Daily Reader Streak' card appears below the settings menu."
+   },
+   {
+    "phase": "offer",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "News Credits",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Tap to claim rewards"
+     }
+    ],
+    "caption": "The user taps to earn credits, triggering a Simula rewarded game invitation."
+   },
+   {
+    "phase": "ad",
+    "screen": "s11",
+    "counters": [],
+    "overlay": "game",
+    "callouts": [],
+    "caption": "The user plays a 15-second sponsored mini-game with the AOL game partner."
+   },
+   {
+    "phase": "value",
+    "screen": "s11",
+    "counters": [
+     {
+      "resource": "News Credits",
+      "value": 10
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Streak maintained!"
+     }
+    ],
+    "caption": "After the game, the streak is updated and 10 News Credits are granted."
+   }
+  ]
+ },
+ "usage": {
+  "input": 35242,
+  "output": 1510,
+  "cacheRead": 30430,
+  "cacheWrite": 0,
+  "thoughts": 1756
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:13:15.753Z"
+}

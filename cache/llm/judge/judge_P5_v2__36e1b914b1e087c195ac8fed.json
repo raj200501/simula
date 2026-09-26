@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P5:v2",
+ "model": "gemini-3.8-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The placement is on s09 (Animate Tool Screen) inside the creative mini-app catalog, quoting 'Upload the pic you want to animate', which is a standard creative generation surface away from sensitive topics."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '1 Fast-Track Animation Credit' (an in-app utility) granted for playing a 15-second mini-game with Luzia, with no rewards offered for clicking, downloading, or external actions."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "Free generation remains functional and unlimited ('Free generation remains unlimited but experiences wait times during peak processing periods'); the decline option is 'Wait in Queue' without confirmshaming or loss of user assets."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "Users explicitly opt in via the CTA button 'Fast-Track Now' after viewing the invitation."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The offer dialog states the required action and reward: 'Play a 15-second game with Luzia to skip the wait and fast-track your animation.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining via 'Wait in Queue' is completely free and allows standard generation to proceed without penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The trigger occurs at the submission boundary ('When the user taps the Animate & Export button during queue wait times'), before any rendering starts."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility explicitly targets 'Non-paying free tier users who want to skip the standard rendering queue' and notes that 'Luzia+ subscribers automatically bypass the processing queue at all times without needing ads.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The proposal applies TAX-4 progression acceleration by offering a queue bypass when rendering animations on s09. However, Luzia's digest shows no current server queue or wait times, making this mechanic contingent on creating an artificial bottleneck or waiting for peak backend traffic.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The proposal keeps free generation unlimited ('Free generation remains unlimited') and uses the native persona Luzia as the Game Partner. However, if the rendering delay feels synthetic rather than genuine load, it risks frustrating users.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Gated to non-paying users with a daily cap of 5 and a 10-minute cooldown. Luzia+ subscription's primary selling points in the digest are 'Deep reasoning mode' and 'advanced services (bookings, shopping)', so offering queue skips for a mini-app does not undermine the main subscription value.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "Code-computed cost to serve per view is $0.0000 (none x 1) against a net US revenue of $0.0090–$0.0150 per view, yielding 100% margin since queue reordering carries zero incremental compute COGS.",
+    "score": 5
+   },
+   {
+    "criterion": "reach",
+    "evidence": "Anima is a secondary tool within the Apps catalog (s08 -> s09), reached only after multiple navigation steps. The assumption that 35% of total DAU will encounter peak queue wait times in Anima and watch 2 ads each is an unrealistic reach estimate for a niche sub-feature.",
+    "score": 2
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "While SIM-RWD integrates via standard entry buttons and REWARD_VERIFIED callbacks, implementing a priority queue management system across asynchronous GPU video rendering clusters is a substantial backend undertaking.",
+    "score": 3
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Mentions screen s09 and quotes element e14 ('Upload the pic you want to animate') as well as 'Anima' from s08. However, it references an invented 'Animate & Export button' not present in the digest, placing element ne1 near e34 (a disclaimer text).",
+    "score": 3
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Specifies a cap of 5 grants per day and a 10-minute cooldown, ensuring users cannot spam views and limiting ad fatigue.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Defines a clear primary KPI ('Anima Fast-Track Ad Revenue'), relevant guardrails ('Luzia+ Subscription Conversion Rate', 's09 Screen Churn Rate', 'D7 Retention'), and a 10% randomized user-level holdout over 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Recalibrate reach assumptions: Anima on s09 is a secondary tool in the Apps tab, so assuming 35% DAU engagement with queue skips is an extreme overestimate compared to the core chat and image creation loops.",
+   "Ground the trigger on existing s09 UI states (such as style selection or the generation progress state) rather than referencing a non-existent 'Animate & Export' button.",
+   "Ensure queue wait times only surface during authentic backend rendering congestion to prevent the perception of artificial friction introduced purely to monetize."
+  ],
+  "topConcern": "Reach is very limited because Anima is an auxiliary tool within the Apps catalog rather than Luzia's core chat loop, and the 35% DAU engagement assumption is drastically overstated for a feature that only triggers during peak rendering queues."
+ },
+ "usage": {
+  "input": 42650,
+  "output": 1457,
+  "cacheRead": 40417,
+  "cacheWrite": 0,
+  "thoughts": 3650
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:06:58.614Z"
+}

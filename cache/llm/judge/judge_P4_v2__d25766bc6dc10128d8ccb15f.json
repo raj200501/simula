@@ -1,0 +1,111 @@
+{
+ "purpose": "judge:P4:v2",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "Chats Home (s01) is a general onboarding/chat starting tab, which is a standard SFW surface."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is '1 AI Image Credit' (r4), which is an in-app, non-transferable item and not cash-like. There is no incentive for clicks or installs."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The daily check-in uses a polite banner with an explicit opt-in and a clear decline button ('Maybe Later') without confirmshaming or fake timers."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The user must tap the 'Daily Check-In banner on Chats Home' to open the modal and then tap the 'Claim Reward' button to trigger the playable."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The modal explicitly states: 'Play a quick 15-second game to unlock 1 free AI Image Credit.'"
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "Declining is free and does not degrade the user experience; the decline button is 'Maybe Later' which returns the user exactly to s01."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The placement is on Chats Home (s01) and is initiated by a static banner, meaning it never interrupts an active conversation or streaming response."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "Eligibility is restricted to 'Non-paying, returning users in their 2nd or later active session', which completely excludes subscribers."
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "The offer is triggered from a static daily check-in banner on s01. This is a proactive hub (TAX-9) rather than a moment of immediate, blocked need, meaning the intent is moderate.",
+    "score": 3
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "The feature is completely additive, does not degrade free chat quality, and hides itself during the first session to preserve the onboarding experience.",
+    "score": 5
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "Eligibility is restricted to non-payers, capped strictly at 1 credit per day (cooldown 1440 min), and a 10% user-level holdout is configured. Higher quality and volume of images remain gated under the Luzia+ subscription.",
+    "score": 5
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The code-computed cost to serve ($0.0250) exceeds the net revenue per view ($0.0063 at the low end), resulting in negative margins. Although a low-cost model hypothesis is stated, the current numbers violate unit economic viability.",
+    "score": 2
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The daily check-in is situated on Chats Home (s01), which is the most highly-trafficked tab in the core loop (13 visits during exploration), ensuring substantial daily reach.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Maps cleanly to SIM-RWD using a 'button' entry point with ECDSA SSV verification. Creating a basic check-in calendar sheet represents a minimal engineering footprint.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "The proposal refers to 'Chats Home' (s01), the welcome text 'e11', and the character 'Luzia' as the game partner. It could, however, explicitly integrate with the existing 'Apps Catalog' (s08) image generation flows.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Capped strictly at 1 claim per 24 hours (1440 minutes) with non-nagging banners that can be easily bypassed. No aggressive re-prompts are specified.",
+    "score": 4
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Specifies D7 and D30 user retention rate as primary KPIs, with clear guardrails including paid subscription conversion rate and a randomized 10% user-level holdout over 28 days.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Reduce the COGS of the reward by switching to a near-zero cost asset (e.g., custom chat themes, voice minutes, or text answers) or require a multi-ad bundle (e.g., watch 3 ads to claim 1 Image Credit) to ensure cost to serve stays below net ad revenue.",
+   "Fix the grounding failure in the 'evidence' section of the JSON by referencing a valid screen ID like 's01' or a verified text element rather than a moment ID 'm16'.",
+   "Explicitly specify how 'r4 AI Image Credits' are consumed within the existing Image Creation Hub (s10) or Animate Tool Screen (s09) to ensure a closed-loop product experience."
+  ],
+  "topConcern": "The cost to serve the image generation reward ($0.0250) is significantly higher than the net ad revenue per view ($0.0063 at the low end), making the current economic model unsustainable."
+ },
+ "usage": {
+  "input": 42827,
+  "output": 1382,
+  "cacheRead": 40420,
+  "cacheWrite": 0,
+  "thoughts": 5251
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:07:24.701Z"
+}

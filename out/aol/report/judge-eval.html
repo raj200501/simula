@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AOL: judge evaluation</title><style>
+:root{--ink:#111827;--muted:#6B7280;--line:#E5E7EB;--soft:#F6F7F9;--accent:#4F46E5;--ship:#047857;--revise:#B45309;--reject:#B91C1C}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#fff}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+header{background:var(--soft);border-bottom:1px solid var(--line);padding:36px 0 28px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-size:36px;margin:6px 0 8px;letter-spacing:-.01em}
+h2{font-size:24px;margin:40px 0 12px;display:flex;align-items:center;gap:12px}
+h3{font-size:17px;margin:18px 0 6px}
+.lede{font-size:18px;color:#374151;max-width:900px;margin:0}
+.lede2{color:#374151;max-width:1000px}
+.pipe{list-style:none;display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:18px 0 0}
+.pipe li{background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600}
+.pipe li+li::before{content:"→";color:var(--muted);margin-right:8px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+.score th,.small th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);padding:8px 10px;white-space:nowrap}
+.score td,.small td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top;font-size:15px}
+.score tfoot td{font-weight:700;border-bottom:none}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted);font-size:13px}
+.why{max-width:260px}
+.note{font-size:14px;color:var(--muted);max-width:1000px}
+.state{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.state.complete{background:#ECFDF5;color:var(--ship)}.state.partial{background:#EFF6FF;color:#1D4ED8}.state.blocked{background:#FEF2F2;color:var(--reject)}
+.v{display:inline-block;font-size:12px;font-weight:700;padding:2px 7px;border-radius:999px;margin:1px 0;white-space:nowrap}
+.v.ship{background:#ECFDF5;color:var(--ship)}.v.revise{background:#FFFBEB;color:var(--revise)}.v.reject{background:#FEF2F2;color:var(--reject)}
+.stub{background:#FFFBEB;color:var(--revise);border-radius:4px;padding:0 5px}
+.how th{text-align:left;width:300px;padding:10px 16px 10px 0;border-bottom:1px solid var(--line);vertical-align:top;font-size:15px}
+.how td{padding:10px 0;border-bottom:1px solid var(--line);color:#374151}
+.app{border-top:1px solid var(--line);margin-top:28px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.lnk{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-weight:600;font-size:14px;text-decoration:none;color:var(--ink);background:#fff}
+a.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk.off{color:#9CA3AF;background:var(--soft);border-style:dashed}
+details{margin:10px 0;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+summary{cursor:pointer;font-weight:600}
+.notes li{font-size:15px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--soft);border-radius:14px;padding:16px 18px}
+.card ul{padding-left:18px;margin:6px 0 0;font-size:15px}
+footer{margin:48px 0 32px;font-size:13px;color:var(--muted)}
+.doc{padding-top:24px;padding-bottom:48px}
+.md table{margin:12px 0}
+.md th,.md td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top;font-size:14px}
+.md th{background:var(--soft)}
+.md pre{background:#0F172A;color:#E2E8F0;padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:13px}
+.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+.md blockquote{border-left:3px solid var(--line);margin:8px 0;padding:2px 14px;color:#374151}
+</style></head><body>
+<main class="wrap doc"><p><a href="../../index.html">← Run report</a></p><div class="md"><h1 id="judge-calibration-aol">Judge calibration: AOL</h1>
+<p>Single-fault confusion table. 0 positives adapted from the KB precedents that fit this app&#39;s economy, grounded in its ids; each negative changes exactly one field of a positive. Every item is judged once: code gates, then one judge (stub heuristic, no LLM) call (skipped when a policy gate already failed). No revision rounds, no Batch API.</p>
+<p>n = 0: no KB precedent fits this app&#39;s economy, so there is no known-good proposal to break here. The list under Counts says what each item needs.</p>
+<h2 id="confusion-table">Confusion table</h2>
+<table><thead><tr><th>item</th><th>kind</th><th>fault (field changed)</th><th>expected catch</th><th>verdict</th><th>weighted</th><th>caught by</th><th>lowest criterion</th><th>failed gates</th></tr></thead><tbody></tbody></table>
+<h2 id="counts">Counts</h2>
+<ul><li>Negatives caught (verdict is not SHIP): <strong>0 / 0</strong> — code only 0, judge only 0, both 0.</li><li>Caught by the layer expected to catch it: 0 / 0.</li><li>Negatives that would SHIP: 0.</li><li>Positives that SHIP: <strong>0 / 0</strong>.</li><li>Not applicable to this model: pos-serial (model lacks res.id, reward.amount); pos-music (model lacks res.id, reward.amount); pos-duo (model lacks res.id, reward.amount); pos-decline (model lacks res.id, decline.moment, reward.amount); pos-tasks (model lacks res.id, reward.amount); pos-ent-sample (model lacks gated.feature, gated.useScreen); pos-ent-decline (model lacks gated.feature, gated.declineMoment, gated.declineTo); pos-ent-tasks (model lacks gated.feature); neg-autoplay (base pos-serial not available; base pos-ent-sample not available); neg-no-decline (base pos-decline not available; base pos-ent-decline not available); neg-gift-card (base pos-duo not available; base pos-ent-sample not available); neg-loss-framing (base pos-tasks not available; base pos-ent-tasks not available); neg-oversized (base pos-serial not available; base pos-ent-sample not available); neg-subscribers (base pos-duo not available; base pos-ent-sample not available); neg-bad-surface (base pos-decline not available; base pos-ent-decline not available); neg-generic (base pos-music not available; base pos-ent-sample not available); neg-entitlement-amount (base pos-ent-sample not available); neg-account-swap (base pos-ent-sample not available).</li></ul>
+<h2 id="top-concern-per-item">Top concern per item</h2></div></main></body></html>

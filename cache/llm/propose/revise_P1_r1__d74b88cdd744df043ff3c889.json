@@ -1,0 +1,240 @@
+{
+ "purpose": "revise:P1:r1",
+ "model": "gemini-3.5-flash",
+ "effort": "high",
+ "parsed": {
+  "title": "Paywall Decline Guest Task Pass",
+  "oneLiner": "Offer a single guest task execution via a rewarded mini-game after a user declines the account setup paywall.",
+  "case": "existing",
+  "archetype": "TAX-10",
+  "beyondBaseline": false,
+  "anchor": {
+   "moments": [
+    "m2"
+   ],
+   "economy": [
+    "r1",
+    "of1",
+    "w1",
+    "w6",
+    "Guest Task Execution (new)"
+   ],
+   "newMechanic": null
+  },
+  "surface": "s06",
+  "trigger": "User taps Maybe later on Create Account Sheet and returns to Services Tab without subscribing.",
+  "eligibility": "Non-paying guest users without an account who have dismissed the Create Account Sheet paywall.",
+  "offer": {
+   "title": "Try One Task for Free",
+   "body": "Play a 15-second game to run one assistant task without creating an account.",
+   "cta": "Play Mini-Game",
+   "decline": "No thanks"
+  },
+  "simula": {
+   "unit": "SIM-RWD",
+   "entry": "invitation",
+   "gamePartner": "Luzia",
+   "minPlaySec": 15
+  },
+  "reward": {
+   "what": "1 free assistant task execution",
+   "resource": "Guest Task Execution",
+   "amount": 1,
+   "duration": null,
+   "grantOn": "REWARD_VERIFIED"
+  },
+  "caps": {
+   "perDay": 1,
+   "cooldownMin": 1440
+  },
+  "cannibalizationGuard": "Only surfaces after an explicit paywall decline as a guest-friendly fallback. Strictly capped at one single execution per day to ensure users with ongoing utility needs still convert to a premium subscription.",
+  "assumptions": {
+   "engagedShare": 0.15,
+   "viewsPerEngager": 1,
+   "cogs": "text-premium",
+   "cogsUnitsPerView": 1
+  },
+  "kpis": {
+   "primary": "Luzia+ subscription conversion rate among paywall decliners over 28 days",
+   "guardrails": [
+    "Overall D7 and D30 user retention non-inferiority margin within -1%",
+    "Total paid subscription revenue per user (non-inferiority margin -3% relative)",
+    "Paywall decline churn rate"
+   ],
+   "holdout": "Randomized user-level 10% holdout group ineligible for rewarded guest fallback passes for 28 days"
+  },
+  "precedents": [
+   "TAX-10",
+   "TAX-4",
+   "EX-UTIL",
+   "EX-MUSIC",
+   "CORE-5"
+  ],
+  "risks": [
+   "Users with infrequent task needs may defer signing up indefinitely if their daily task is satisfied.",
+   "Premium tool execution and model costs might outpace ad revenue in lower-eCPM regions."
+  ],
+  "evidence": [
+   {
+    "obs": "s07",
+    "el": null,
+    "quote": "Sign up so Luzia can start doing things for you."
+   },
+   {
+    "obs": "s07",
+    "el": null,
+    "quote": "Maybe later"
+   },
+   {
+    "obs": "s06",
+    "el": "e9",
+    "quote": "Start new task"
+   }
+  ],
+  "patch": {
+   "newScreens": [],
+   "newElements": [
+    {
+     "id": "ne1",
+     "in": "s06",
+     "near": "e9",
+     "place": "after",
+     "change": "Add MiniGameInvitation card prompting user for 1 free guest task execution"
+    },
+    {
+     "id": "ne2",
+     "in": "s06",
+     "near": "e6",
+     "place": "before",
+     "change": "Add guest task execution credit balance indicator displaying remaining free executions"
+    }
+   ],
+   "newEdges": [
+    {
+     "from": "s06",
+     "el": "ne1",
+     "to": "rwd",
+     "effects": [
+      {
+       "resource": "Guest Task Execution",
+       "delta": 1
+      }
+     ],
+     "guard": {
+      "resource": "Guest Task Execution",
+      "lt": 1
+     }
+    }
+   ]
+  },
+  "storyboard": [
+   {
+    "phase": "today",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "Guest Task Execution",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e9",
+      "text": "Tapping Start new task opens the account creation sheet."
+     }
+    ],
+    "caption": "User attempts to start a task and hits the account paywall."
+   },
+   {
+    "phase": "change",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "Guest Task Execution",
+      "value": 0
+     }
+    ],
+    "overlay": "none",
+    "callouts": [
+     {
+      "node": "e9",
+      "text": "User returns to Services tab after tapping Maybe later."
+     },
+     {
+      "node": "ne1",
+      "text": "Rewarded invitation appears below the task button."
+     }
+    ],
+    "caption": "User dismisses the paywall and returns to the Services tab."
+   },
+   {
+    "phase": "offer",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "Guest Task Execution",
+      "value": 0
+     }
+    ],
+    "overlay": "invite",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "Invitation prompts user to play a 15-second mini-game."
+     }
+    ],
+    "caption": "Luzia offers one free guest task execution via mini-game."
+   },
+   {
+    "phase": "ad",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "Guest Task Execution",
+      "value": 0
+     }
+    ],
+    "overlay": "game",
+    "callouts": [
+     {
+      "node": "ne1",
+      "text": "User plays the 15-second interactive mini-game with Luzia."
+     }
+    ],
+    "caption": "User plays a 15-second interactive mini-game with Luzia."
+   },
+   {
+    "phase": "value",
+    "screen": "s06",
+    "counters": [
+     {
+      "resource": "Guest Task Execution",
+      "value": 1
+     }
+    ],
+    "overlay": "verified",
+    "callouts": [
+     {
+      "node": "ne2",
+      "text": "Indicator displays 1 free task credit available."
+     },
+     {
+      "node": "e9",
+      "text": "Start new task is now enabled for a single guest execution."
+     }
+    ],
+    "caption": "Guest task credit activates, letting the user run one premium task."
+   }
+  ]
+ },
+ "usage": {
+  "input": 43684,
+  "output": 1780,
+  "cacheRead": 23138,
+  "cacheWrite": 0,
+  "thoughts": 4640
+ },
+ "stop": "STOP",
+ "ts": "2026-09-26T07:05:43.489Z"
+}

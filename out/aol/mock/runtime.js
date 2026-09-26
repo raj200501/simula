@@ -139,8 +139,9 @@
   // spec text: the label is the first quoted string in `change` ("Secondary button "▶ Play 15 s"…"),
   // else a five-word summary; the control kind (button / pill / card) comes from the words around it.
   function quotedIn(s) {
-    var out = [], re = /"([^"]{1,80})"|“([^”]{1,80})”|«([^»]{1,80})»/g, m;
-    while ((m = re.exec(s || ""))) out.push(clean(m[1] || m[2] || m[3]));
+    // double, curly and guillemet quotes; single quotes only around a phrase ('Play Now'), never an apostrophe
+    var out = [], re = /"([^"]{1,80})"|“([^”]{1,80})”|«([^»]{1,80})»|(?:^|[\s(])['‘]([^'‘’]{2,40})['’](?=[\s,.;:)!?]|$)/g, m;
+    while ((m = re.exec(s || ""))) out.push(clean(m[1] || m[2] || m[3] || m[4]));
     return out;
   }
   var SPEC_WORDS = /^(?:(?:one-time|dismissible|secondary|primary|inline|small|new|sponsored)\s+)*(?:button|pill|chip|badge|tag|card|row|task row|tile|banner|bubble|invitation bubble|character invitation bubble|link|cta|sheet|modal|screen|variant)\b[:\s]*/i;
@@ -761,11 +762,14 @@
       by[r] += Number(f.delta) || 0;
     });
     var gains = order.filter(function (r) { return by[r] > 0; });
-    if (gains.length) {
-      var parts = gains.map(function (r) { var c = counterOf(r); return "+" + fmt(by[r], "") + " " + ((c && (c.unit || c.name)) || r); });
+    var what = clean(cfg.reward).replace(/[.!]+$/, "");
+    // A counter the app already shows is named by its unit; a resource the proposal introduces has no
+    // counter yet, so it is named by the reward's own words, never by its id.
+    if (gains.length && gains.every(function (r) { return !!counterOf(r); })) {
+      var parts = gains.map(function (r) { var c = counterOf(r); return "+" + fmt(by[r], "") + " " + (c.unit || c.name); });
       return { title: parts.join(", ") + " added", resource: gains[0] };
     }
-    var what = clean(cfg.reward).replace(/[.!]+$/, "");
+    if (gains.length && what && what !== "a reward") return { title: "+" + what.replace(/^\+\s*/, "") + " added", resource: gains[0] };
     return { title: what && what !== "a reward" ? "Unlocked: " + what : "Reward added", resource: null };
   }
   function clearRewardToast() {

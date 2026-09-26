@@ -1,6 +1,6 @@
 # Trajectory: aol
 
-Autonomous decisions: **81**. Human interventions: **1**. Autonomy ratio: **98.8%**. Sign-in walls noted for a human and skipped: 2 (2 distinct).
+Autonomous decisions: **105**. Human interventions: **2**. Autonomy ratio: **98.1%**. Sign-in walls noted for a human and skipped: 2 (2 distinct).
 
 ## Stage runs
 
@@ -14,12 +14,24 @@ Autonomous decisions: **81**. Human interventions: **1**. Autonomy ratio: **98.8
 | propose | pr0925-151538 | 19:15:38 | 19:16:22 | 8 | 0 |  |
 | judge | ju0925-151622 | 19:16:22 | 19:17:38 | 33 | 5 | revision stalled: weighted 4.5 -> 4.3 |
 | slides | sl0925-151738 | 19:17:38 | 19:17:39 | 4 | 0 |  |
-| human | manual | 19:26:58 | 19:26:58 | 1 | 0 |  |
+| human | manual | 19:26:58 | 06:31:13 | 2 | 0 |  |
 | slides | sl0925-205159 | 20:51:59 | 20:52:01 | 4 | 0 |  |
 | slides | sl0925-210143 | 21:01:43 | 21:01:45 | 4 | 0 |  |
 | propose | pr0926-055437 | 05:54:37 | 05:55:31 | 17 | 0 |  |
 | judge | ju0926-055531 | 05:55:32 | 05:56:28 | 27 | 1 | revision stalled: weighted 3.6 -> 3.1 |
 | eval-judge | ev0926-055940 | 05:59:40 | 05:59:40 | 3 | 0 |  |
+| propose | pr0926-071219 | 07:12:19 | 07:13:15 | 17 | 1 |  |
+| judge | ju0926-071316 | 07:13:16 | 07:15:13 | 37 | 3 | revision stalled: weighted 4.1 -> 3.85 |
+| eval-judge | ev0926-071803 | 07:18:03 | 07:18:04 | 3 | 0 |  |
+| propose | pr0926-071829 | 07:18:29 | 07:18:30 | 9 | 0 |  |
+| judge | ju0926-071831 | 07:18:31 | 07:19:14 | 29 | 0 | revision stalled: weighted 4.6 -> 3.4 |
+| eval-judge | ev0926-071918 | 07:19:18 | 07:19:18 | 3 | 0 |  |
+| propose | pr0926-072042 | 07:20:42 | 07:20:42 | 9 | 0 |  |
+| judge | ju0926-072043 | 07:20:43 | 07:22:02 | 32 | 3 | revision stalled: weighted 4.6 -> 3.4 |
+| eval-judge | ev0926-072206 | 07:22:06 | 07:22:06 | 3 | 0 |  |
+| slides | sl0926-072309 | 07:23:09 | 07:24:35 | 18 | 0 |  |
+| slides | sl0926-072717 | 07:27:17 | 07:27:38 | 12 | 0 |  |
+| slides | sl0926-072846 | 07:28:46 | 07:29:07 | 12 | 0 |  |
 
 ## New states discovered over time
 
@@ -147,10 +159,34 @@ failed to get foreground
 - 05:56:06 **gemini:judge:P3:v2**: 429 on gemini-3.1-flash-lite (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
   - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
 
+### propose · run pr0926-071219
+
+- 07:12:25 **gemini:breadth**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+
+### judge · run ju0926-071316
+
+- 07:14:02 **gemini:judge:P2:v2**: 429 on gemini-3-flash-preview (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-2.5-flash (next fallback model)
+- 07:14:10 **gemini:judge:P1:v2**: 429 on gemini-3-flash-preview (attempt 1/12): {"error":{"code":429,"message":"You exceeded your current quota, please check your plan and billing details. For more information on this er
+  - recovered: retrying on gemini-2.5-flash (next fallback model)
+- 07:15:09 **gemini:judge:P2:v3**: 503 on gemini-2.5-flash (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.1-flash-lite (next fallback model)
+
+### judge · run ju0926-072043
+
+- 07:20:51 **gemini:judge:P3:v1**: 503 on gemini-3.6-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
+- 07:20:51 **gemini:judge:P3:v1**: 503 on gemini-3.1-flash-lite (attempt 2/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
+- 07:20:58 **gemini:judge:P2:v1**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.6-flash (next fallback model)
+
 
 ## Human interventions
 
 - 2026-09-25T19:26:58 [human] Removed out/aol/model/screens/ext-browser.png before commit: Chrome's first-run sign-in screen (opened as an external visit from AOL) showed the device owner's first name. The account name and email were also replaced with [name]/[email] in AOL's graph, trace, model and mock text.
+- 2026-09-26T06:31:13 [human] Logged after the fact: after reviewing the judged proposals, a person had the proposer and judge rules tightened in code on 2026-09-26 (commit e7d0da6 and the commit that adds this note: no offer beside a sign-up button, no cheaper cost label on revision, the reward's resource sets a floor on its cost class, knowledge-base lines naming the test apps removed), then re-ran propose, judge, eval-judge and slides.
 
 ## Sign-in walls skipped
 
