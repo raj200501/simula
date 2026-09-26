@@ -21,6 +21,11 @@ Code owns control flow, state identity, arithmetic and verdicts. Models answer n
 
 So on Luzia, code prices rewards by what they cost to serve against what a view earns, not by an in-app exchange rate.
 
+**What shipped** (every idea, rejected ones included, is in `out/<app>/proposals/judgments.md`; the flows are in [`out/README.md`](out/README.md)):
+- **Luzia, 1 of 5:** on the Animate tool, play a 15-second game to skip the rendering queue at peak times. It began as a free video render, which costs about four times what a view nets; the judge sent it back and the revision found a reward that costs nothing to serve.
+- **AOL, 2 of 3:** fifteen minutes of ad-free reading for one opt-in game, and a daily reader streak that earns ad-free time. AOL has nothing scarce, so both are product changes.
+- **Janitor, 0 of 3:** every reward cost more to serve than a view earns (swipes on frontier models, larger context), or failed the content-safety check.
+
 ---
 
 ## Brief → artifact
