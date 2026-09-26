@@ -9254,3 +9254,11 @@
 {"ts":"2026-09-26T07:28:39.338Z","app":"luzia","run":"sl0926-072826","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P5.gif"}}
 {"ts":"2026-09-26T07:28:42.162Z","app":"luzia","run":"sl0926-072826","stage":"slides","type":"info","data":{"stage":"slides","slides":8,"flowSlides":1,"deck":"slides/deck.html"}}
 {"ts":"2026-09-26T07:28:42.210Z","app":"luzia","run":"sl0926-072826","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":15943,"llm":{"calls":2,"cached":2,"usd":0,"mode":"record"}}}
+{"ts":"2026-09-26T07:48:53.156Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"record"}}
+{"ts":"2026-09-26T07:48:53.847Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"decision","data":{"stage":"slides","ships":["P5"],"why":"every final SHIP gets a flow slide; REVISE is never promoted"}}
+{"ts":"2026-09-26T07:48:53.848Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"llm_call","data":{"purpose":"variant:P5:ne1","key":"ab509dab36b610f1028727e1","cached":true,"usd":0}}
+{"ts":"2026-09-26T07:48:53.849Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"llm_call","data":{"purpose":"variant:P5:ne2","key":"1416682e5e40728ef1a89f4c","cached":true,"usd":0}}
+{"ts":"2026-09-26T07:48:58.060Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P5","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":5}}
+{"ts":"2026-09-26T07:49:06.456Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P5.gif"}}
+{"ts":"2026-09-26T07:49:09.368Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"info","data":{"stage":"slides","slides":8,"flowSlides":1,"deck":"slides/deck.html"}}
+{"ts":"2026-09-26T07:49:09.411Z","app":"luzia","run":"sl0926-074853","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":16255,"llm":{"calls":2,"cached":2,"usd":0,"mode":"record"}}}

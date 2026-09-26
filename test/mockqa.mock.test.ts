@@ -30,7 +30,12 @@ describe("mock: stub generation and runtime", () => {
     // s06 (daily check-in) becomes an image screen so hotspots and the badge are exercised too.
     fx = await makeFixture("mock", m => { m.screens.find(s => s.id === "s06")!.render = "image"; });
     ({ indexHtml } = await generateMock(fx.c, fx.m, fx.modelDir));
-    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal()] });
+    // P2 guards its offer on a resource the proposal introduces (no counter until the first grant).
+    const p2 = sampleProposal();
+    p2.id = "P2";
+    p2.reward = { what: "1 Queue skip", resource: "queue_skip", amount: 1, grantOn: "REWARD_VERIFIED" };
+    p2.patch.newEdges = [{ from: "s04", el: "n1", to: "rwd", effects: [{ resource: "queue_skip", delta: 1 }], guard: { resource: "queue_skip", lt: 1 } }];
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2] });
     browser = await chromium.launch();
     page = await browser.newPage({ viewport: { width: 411, height: 914 } });
     page.on("pageerror", e => errors.push(e.message));
@@ -159,6 +164,17 @@ describe("mock: stub generation and runtime", () => {
     assert.match(await node("s01", "e2").innerText(), /^750 credits$/, "bound counter repainted");
   });
 
+  test("a new resource starts empty: its guarded offer opens, and the grant is named by the reward's words", async () => {
+    await open("?frame=0&screen=s04&proposal=P2");
+    await node("s04", "n1").click();
+    assert.equal(await page.locator(".mock-rw").getAttribute("data-phase"), "invite", "the guard reads a missing counter as 0");
+    await ev(`window.__mock.openRewarded("verified", "P2")`);
+    await ev(`window.__mock.openRewarded("close", "P2")`);
+    await page.waitForTimeout(300);
+    assert.match((await page.locator(".mock-reward-toast").allInnerTexts()).join(" "), /\+1 Queue skip added/);
+    assert.doesNotMatch((await page.locator(".mock-reward-toast").allInnerTexts()).join(" "), /queue_skip/);
+  });
+
   test("proposal patch: new element is marked, opens the rewarded invite, reward granted on verify", async () => {
     await open("?frame=0&screen=s04&proposal=P1");
     const pill = node("s04", "n1");
@@ -272,5 +288,6 @@ describe("mock: new-element fragments", () => {
     assert.equal(coversScreen(`<div style="position:absolute;left:0;top:0;width:100%;height:100%">x</div>`), true);
     assert.equal(coversScreen(`<div style="position:absolute;left:16px;top:320px;width:379px;">card</div>`), false);
     assert.equal(coversScreen(`<button style="height:100%">fills its row</button>`), false);
+    assert.equal(coversScreen(`<div style="position:absolute;top:0;left:0"><div class="counter" style="position:absolute;left:50px">15m</div><div class="scrim" style="position:fixed;top:0;left:0;width:100%;height:100%">sheet</div></div>`), true, "a badge that carries a fixed scrim");
   });
 });

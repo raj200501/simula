@@ -638,7 +638,8 @@
       if (e.from !== screen || e.el !== el) return false;
       if (!e.guard) return true;
       var v = S.counters[resId(e.guard.resource)];
-      return typeof v === "number" && v < e.guard.lt;
+      if (typeof v !== "number") v = 0; // a resource the proposal introduces starts empty
+      return v < e.guard.lt;
     })[0] || null;
   }
 

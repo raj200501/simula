@@ -1,6 +1,6 @@
 # Trajectory: luzia
 
-Autonomous decisions: **654**. Human interventions: **4**. Autonomy ratio: **99.4%**. Sign-in walls noted for a human and skipped: 18 (11 distinct).
+Autonomous decisions: **655**. Human interventions: **4**. Autonomy ratio: **99.4%**. Sign-in walls noted for a human and skipped: 18 (11 distinct).
 
 ## Stage runs
 
@@ -52,6 +52,7 @@ Autonomous decisions: **654**. Human interventions: **4**. Autonomy ratio: **99.
 | slides | sl0926-072218 | 07:22:18 | 07:23:05 | 14 | 0 |  |
 | slides | sl0926-072700 | 07:27:00 | 07:27:16 | 8 | 0 |  |
 | slides | sl0926-072826 | 07:28:26 | 07:28:42 | 8 | 0 |  |
+| slides | sl0926-074853 | 07:48:53 | 07:49:09 | 8 | 0 |  |
 
 ## New states discovered over time
 

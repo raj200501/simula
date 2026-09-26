@@ -83,11 +83,15 @@ const STATUS_ICONS = `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidde
   + `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M3 20h3v-4H3zm5 0h3v-8H8zm5 0h3V8h-3zm5 0h3V4h-3z"/></svg>`
   + `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M16 6H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm4 3h1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-1z"/></svg>`;
 
-/** The fragment's root is a full-screen layer: inset 0, fixed, or absolutely placed and 100% tall. */
+/**
+ * The fragment puts a full-screen layer on the screen: its root is inset 0, fixed, or absolutely placed
+ * and 100% tall, or any element inside it is fixed (a scrim or a sheet that escapes the element's box).
+ */
 export function coversScreen(html: string): boolean {
   const style = /^\s*(?:<!--[\s\S]*?-->\s*)*<[a-z][^>]*\sstyle\s*=\s*"([^"]*)"/i.exec(html)?.[1] ?? "";
   if (/(?:^|;)\s*inset\s*:\s*0(?:px)?\s*(?:;|$)|position\s*:\s*fixed/i.test(style)) return true;
-  return /position\s*:\s*absolute/i.test(style) && /(?:^|;)\s*height\s*:\s*100(?:%|vh)/i.test(style);
+  if (/position\s*:\s*absolute/i.test(style) && /(?:^|;)\s*height\s*:\s*100(?:%|vh)/i.test(style)) return true;
+  return [...html.matchAll(/\sstyle\s*=\s*"([^"]*)"/gi)].some(m => /position\s*:\s*fixed/i.test(m[1]));
 }
 
 function proposalScript(input: ProposalInput): { pid: string; js: string } {
