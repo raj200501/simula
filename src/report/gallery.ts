@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { ProductModel } from "../core/schema.ts";
 import type { QaDigest } from "./data.ts";
+import { one } from "./numbers.ts";
 
 export interface GalleryRow {
   id: string;
@@ -48,10 +49,10 @@ export function galleryMd(all: GalleryRow[], root: string): string {
     L.push("", `## ${r.name}`, "");
     if (!r.model) {
       L.push(`**${r.state}.** ${r.why || "No outputs yet."}`);
-      for (const n of r.notes) L.push(`- ${n}`);
+      for (const n of r.notes) L.push(`- ${one(n)}`);
       continue;
     }
-    L.push(`${r.model.brief.oneLiner} Regime: **${r.model.regime}**. Profile: ${r.profile || "–"}.`, "");
+    L.push(`${one(r.model.brief.oneLiner)} Regime: **${r.model.regime}**. Profile: ${r.profile || "–"}.`, "");
     const links = [
       ["Numbers", "NUMBERS.md"], ["Product model digest", "model/digest.md"], ["Candidates", "proposals/candidates.md"],
       ["Judgments (every score, with evidence)", "proposals/judgments.md"], ["Judge self-check", "proposals/judge-eval.md"],
@@ -65,7 +66,7 @@ export function galleryMd(all: GalleryRow[], root: string): string {
     const gifs = fs.existsSync(path.join(dir, "slides")) ? fs.readdirSync(path.join(dir, "slides")).filter(f => /^flow-P\d+\.gif$/.test(f)) : [];
     for (const g of gifs) {
       const pid = /flow-(P\d+)\.gif$/.exec(g)![1];
-      const title = r.ships.find(s => s.id === pid)?.title ?? pid;
+      const title = one(r.ships.find(s => s.id === pid)?.title ?? pid);
       L.push(`### ${pid} in motion`, "", `<img src="${rel("slides", g)}" width="300" alt="${pid}: ${title.replace(/"/g, "&quot;")}, played in the generated mock">`, "",
         `_The lead flow played in the generated mock: today → what changed → the offer → the game → the reward confirmed in-app._`, "");
     }
@@ -73,7 +74,7 @@ export function galleryMd(all: GalleryRow[], root: string): string {
       L.push("### Shipped flows", "");
       for (const f of flows.slice(0, MAX_FLOWS)) {
         const pid = /flow-(P\d+)\.png$/.exec(f)![1];
-        const title = r.ships.find(s => s.id === pid)?.title ?? pid;
+        const title = one(r.ships.find(s => s.id === pid)?.title ?? pid);
         L.push(`**${pid}: ${title}**`, "", `![${pid}: ${title}](${rel("slides", "png", f)})`, "");
       }
       if (flows.length > MAX_FLOWS) L.push(`…and ${flows.length - MAX_FLOWS} more in [the deck](${rel("slides", "deck.pdf")}).`, "");
@@ -86,12 +87,12 @@ export function galleryMd(all: GalleryRow[], root: string): string {
       if (shots.length) {
         L.push("### Mock fidelity (real app vs. generated mock)", "", "| Screen | Real app | Mock | Score |", "|---|---|---|---|");
         for (const s of shots) {
-          L.push(`| ${s.name} | <img src="${rel("qa", s.id, "original.png")}" width="180"> | <img src="${rel("qa", s.id, "best.png")}" width="180"> | ${s.composite?.toFixed(2) ?? "–"} (${s.render}) |`);
+          L.push(`| ${one(s.name).replace(/\|/g, "\\|")} | <img src="${rel("qa", s.id, "original.png")}" width="180"> | <img src="${rel("qa", s.id, "best.png")}" width="180"> | ${s.composite?.toFixed(2) ?? "–"} (${s.render}) |`);
         }
         L.push("", `Composite = 0.35·layout IoU + 0.25·SSIM + 0.20·text + 0.20·color. Flow QA: ${r.qa.flowPassed}/${r.qa.flowTotal} navigation edges replay correctly.`);
       }
     }
-    if (r.notes.length) L.push("", "**Human notes:**", "", ...r.notes.map(n => `- ${n}`));
+    if (r.notes.length) L.push("", "**Human notes:**", "", ...r.notes.map(n => `- ${one(n)}`));
   }
   return L.join("\n") + "\n";
 }

@@ -47,8 +47,8 @@ export function numbersMd(x: NumbersInput): string {
       if (line) L.push(`- Exchange rate: **${line}**.`);
     }
     const screenName = (id: string) => m.screens.find(s => s.id === id)?.name ?? id;
-    for (const w of e.walls.slice(0, 4)) L.push(`- Wall: blocks "${w.blockedIntent}", shows ${/^s\d+$|^N\d+$/.test(w.shows) ? screenName(w.shows) : `"${w.shows}"`}.`);
-    for (const o of e.offers.slice(0, 4)) L.push(`- Offer: ${o.label} (${o.priceText}).`);
+    for (const w of e.walls) L.push(`- Wall: blocks "${one(w.blockedIntent)}", shows ${/^s\d+$|^N\d+$/.test(w.shows) ? screenName(w.shows) : `"${w.shows}"`}.`);
+    for (const o of e.offers.slice(0, 6)) L.push(`- Offer: ${one(o.label)} (${o.priceText}).`);
   }
 
   L.push("", "## Proposals and verdicts", "");
@@ -59,7 +59,7 @@ export function numbersMd(x: NumbersInput): string {
     if (x.cands) L.push(`- Obvious baseline ideas written first, to beat: ${x.cands.baseline.length}. Ideas considered: ${x.cands.ideas.length}; proposals written: ${x.cands.proposals.length}.`);
     for (const f of final) {
       const p = x.cands?.proposals.find(q => q.id === f.proposalId);
-      L.push(`- ${f.proposalId} **${f.verdict}**${f.weighted != null ? ` (${f.weighted.toFixed(2)})` : ""}: ${p?.title ?? f.summary}${p ? ` [${p.case}]` : ""}.`);
+      L.push(`- ${f.proposalId} **${f.verdict}**${f.weighted != null ? ` (${f.weighted.toFixed(2)})` : ""}: ${one(p?.title ?? f.summary)}${p ? ` [${p.case}]` : ""}.`);
     }
     const notShipped = final.filter(f => f.verdict !== "SHIP");
     if (notShipped.length) {
@@ -68,7 +68,7 @@ export function numbersMd(x: NumbersInput): string {
         const r = [...x.judgments.rounds].reverse().find(q => q.proposalId === f.proposalId);
         const failed = r?.gates.filter(g => !g.pass).map(g => g.gate) ?? [];
         const why = [r?.topConcern, ...(r?.reasons.slice(0, 2) ?? [])].filter(Boolean).join(" · ");
-        L.push(`- ${f.proposalId} (${f.verdict}): ${why || f.summary}${failed.length ? ` Failed gates: ${failed.join(", ")}.` : ""}`);
+        L.push(`- ${f.proposalId} (${f.verdict}): ${one(why || f.summary)}${failed.length ? ` Failed gates: ${failed.join(", ")}.` : ""}`);
       }
     }
   } else L.push("- Not judged yet.");
@@ -76,14 +76,17 @@ export function numbersMd(x: NumbersInput): string {
   L.push("", "## Judge self-check", "");
   const neg = /Negatives caught[^*]*\*\*(\d+) \/ (\d+)\*\*([^\n]*)/.exec(x.evalMd);
   const pos = /Positives that SHIP: \*\*(\d+) \/ (\d+)\*\*/.exec(x.evalMd);
-  if (neg || pos) {
+  if (neg && neg[2] === "0" && (!pos || pos[2] === "0")) {
+    L.push("- Not applicable: no KB precedent fits this app's economy, so there were no known-good proposals to break (listed in `proposals/judge-eval.md`).");
+  } else if (neg || pos) {
     if (neg) L.push(`- Caught **${neg[1]} of ${neg[2]}** single-fault broken proposals${neg[3].replace(/\.$/, "")}.`);
     if (pos) L.push(`- Shipped **${pos[1]} of ${pos[2]}** known-good proposals.`);
   } else L.push("- Not run for this app (`npm run eval:judge`).");
 
   L.push("", "## Mock and QA", "");
   if (x.qa) {
-    L.push(`- Mean fidelity (composite 0–1): **${x.qa.compositeMean != null ? x.qa.compositeMean.toFixed(2) : "–"}** over ${x.qa.screens.length} screens; ${x.qa.htmlShare != null ? `${Math.round(x.qa.htmlShare * 100)}%` : "–"} rebuilt as HTML.`);
+    const scored = x.qa.screens.filter(s => s.composite != null).length;
+    L.push(`- Mean fidelity (composite 0–1): **${x.qa.compositeMean != null ? x.qa.compositeMean.toFixed(2) : "–"}** over the ${scored} screen${scored === 1 ? "" : "s"} rebuilt as HTML${scored < x.qa.screens.length ? ` (of ${x.qa.screens.length}; the rest are the real screenshots with tap areas, and are not scored)` : ""}.`);
     L.push(`- Flow QA: **${x.qa.flowPassed} / ${x.qa.flowTotal}** navigation edges replay correctly in the mock.`);
     const best = [...x.qa.screens].filter(s => s.composite != null).sort((a, b) => b.composite! - a.composite!);
     if (best.length) L.push(`- Best: ${best[0].name} (${best[0].composite!.toFixed(2)}). Weakest: ${best[best.length - 1].name} (${best[best.length - 1].composite!.toFixed(2)}).`);
@@ -97,8 +100,13 @@ export function numbersMd(x: NumbersInput): string {
   for (const s of c.byStage) L.push(`- ${s.stage}: ${s.live} live, ${s.cached} cached.`);
   L.push(`- Trace: ${x.trace.decisions} decisions, ${x.trace.failures} failures, ${x.trace.recoveries} recoveries.`);
 
-  if (x.notes.length) L.push("", "## Human notes", "", ...x.notes.map(n => `- ${n}`));
+  if (x.notes.length) L.push("", "## Human notes", "", ...x.notes.map(n => `- ${one(n)}`));
   return L.join("\n") + "\n";
+}
+
+/** One line: model text can carry newlines, which would break a Markdown list item or table cell. */
+export function one(s: string): string {
+  return s.replace(/\s+/g, " ").trim();
 }
 
 function latestFinal(j: Judgments) {

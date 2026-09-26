@@ -191,8 +191,11 @@ export function judgeEvalMd(m: ProductModel, rows: CalRow[], skipped: { id: stri
   const L: string[] = [];
   L.push(`# Judge calibration: ${m.app.name}`, "");
   if (by.has("stub")) L.push("> **Judged by the deterministic stub heuristic (no LLM).** Re-run with `--llm record` for the LLM judge.", "");
-  L.push(`Single-fault confusion table. 5 positives adapted from KB precedents, grounded in this app's ids; each negative changes exactly one field of a positive. Every item is judged once: code gates, then one ${judgeName} call (skipped when a policy gate already failed). No revision rounds, no Batch API.`, "");
-  L.push(`n = ${rows.length} items from one run: this shows what each layer catches; it is not a statistical estimate of judge accuracy.`, "");
+  const nPos = rows.filter(r => r.item.kind === "positive").length;
+  L.push(`Single-fault confusion table. ${nPos} positive${nPos === 1 ? "" : "s"} adapted from the KB precedents that fit this app's economy, grounded in its ids; each negative changes exactly one field of a positive. Every item is judged once: code gates, then one ${judgeName} call (skipped when a policy gate already failed). No revision rounds, no Batch API.`, "");
+  L.push(rows.length
+    ? `n = ${rows.length} items from one run: this shows what each layer catches; it is not a statistical estimate of judge accuracy.`
+    : "n = 0: no KB precedent fits this app's economy, so there is no known-good proposal to break here. The list under Counts says what each item needs.", "");
 
   L.push("## Confusion table", "", "| item | kind | fault (field changed) | expected catch | verdict | weighted | caught by | lowest criterion | failed gates |", "|---|---|---|---|---|---|---|---|---|");
   for (const row of rows) {

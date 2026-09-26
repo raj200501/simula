@@ -20,6 +20,7 @@ import type { StageCtx } from "../core/run.ts";
 import { digest } from "../model/digest.ts";
 import { proposalEconomics } from "../model/economics.ts";
 import { kbSystemBlock } from "./kb.ts";
+import { elText } from "./anchors.ts";
 import { Breadth, LlmProposal, fromLlmProposal, normalizeStoryboard, toLlmProposal, verifyEvidence, type LlmIdea } from "./schemas.ts";
 import { validateSet } from "./validate.ts";
 import { stubCandidates, stubRevise, templates } from "./stub.ts";
@@ -66,6 +67,12 @@ including product changes that create a real value exchange.
     offer.body is at most 14 words; captions at most 12 words.
 13. simula.gamePartner is the character or persona the user already talks to on the surface (for example the
     chat's title), else the app's name. Never a placeholder like "the character".
+14. An ad never stands in for an account or a plan: the reward is never sign-in, account access or a
+    subscription itself, and an offer on a sign-up screen appears only after the user declines it (taps
+    "Maybe later" or closes it), never beside the sign-up button [ANTI-4] [CANN-2].
+15. A resource your product change introduces is the reward.resource, or is listed in anchor.economy with
+    " (new)" after it; every other economy id must exist in the digest. A time box ("15 minutes of X") sets
+    reward.duration and may name its own entitlement as reward.resource; nothing else may be invented.
 </rules>
 
 <simula_vocabulary>
@@ -231,8 +238,58 @@ async function depth(c: StageCtx, m: ProductModel, dig: string, idea: LlmIdea, p
 export function finishProposal(p: Proposal, m: ProductModel): Proposal {
   const { storyboard, repaired } = normalizeStoryboard(p);
   if (repaired) trace("recovery", { how: `storyboard of ${p.id} v${p.version} normalized to the 5 phases today/change/offer/ad/value` });
-  const q: Proposal = { ...p, storyboard, evidence: verifyEvidence(p.evidence, m), economics: undefined };
+  const fixed = canonicalIds({ ...p, storyboard }, m);
+  if (fixed.changes.length) trace("recovery", { how: `ids of ${p.id} v${p.version} written in the model's form: ${fixed.changes.slice(0, 6).join("; ")}` });
+  const q: Proposal = { ...fixed.p, evidence: verifyEvidence(fixed.p.evidence, m), economics: undefined };
   return Proposal.parse({ ...q, economics: proposalEconomics(q, m) });
+}
+
+/**
+ * Two slips models make when citing ids, written back in the model's form before anything checks them:
+ * an id with its name appended ("r3 (AI Usage Quota)" -> "r3"; "(new)" is kept, it declares a new
+ * resource), and an element cited by its on-screen label ("Maybe later" -> the one element on that
+ * screen with exactly that label). Anything else is left alone, so an invented id still fails grounding.
+ */
+export function canonicalIds(p: Proposal, m: ProductModel): { p: Proposal; changes: string[] } {
+  const changes: string[] = [];
+  const economy = new Set([...m.economy.resources, ...m.economy.sinks, ...m.economy.sources, ...m.economy.offers, ...m.economy.walls].map(x => x.id));
+  const idOf = (id: string | undefined): string | undefined => {
+    if (!id || economy.has(id)) return id;
+    const named = /^(\S+)\s*\(([^)]+)\)\s*$/.exec(id);
+    if (named && economy.has(named[1]) && !/^new$/i.test(named[2].trim())) { changes.push(`"${id}" -> ${named[1]}`); return named[1]; }
+    return id;
+  };
+  const newEls = new Set(p.patch.newElements.map(e => e.id));
+  const norm = (s: string) => s.toLowerCase().replace(/["'“”‘’]/g, "").replace(/\s+/g, " ").trim();
+  const elOf = (screen: string, el: string | undefined): string | undefined => {
+    const sc = m.screens.find(s => s.id === screen);
+    if (!el || !sc || newEls.has(el) || sc.elements.some(e => e.id === el)) return el;
+    const hits = sc.elements.filter(e => norm(elText(e)) === norm(el));
+    if (hits.length === 1) { changes.push(`"${el}" -> ${hits[0].id} on ${screen}`); return hits[0].id; }
+    return el;
+  };
+  const q: Proposal = structuredClone(p);
+  q.anchor.economy = q.anchor.economy.map(x => idOf(x)!);
+  q.reward.resource = idOf(q.reward.resource);
+  q.patch.newElements = q.patch.newElements.map(e => ({ ...e, near: elOf(e.in, e.near) }));
+  q.patch.newEdges = q.patch.newEdges.map(e => ({
+    ...e, el: elOf(e.from, e.el)!,
+    effects: e.effects.map(f => ({ ...f, resource: idOf(f.resource)! })),
+    guard: e.guard ? { ...e.guard, resource: idOf(e.guard.resource)! } : e.guard,
+  }));
+  q.storyboard = q.storyboard.map(b => ({
+    ...b,
+    counters: b.counters.map(c => ({ ...c, resource: idOf(c.resource)! })),
+    callouts: b.callouts.map(c => ({ ...c, node: elOf(b.screen, c.node)! })),
+  }));
+  q.evidence = q.evidence.map(e => ({ ...e, el: elOf(e.obs, e.el) }));
+  // A time box that grants one unnamed entitlement names it only in its effects: that is its resource.
+  if (q.reward.duration && !q.reward.resource) {
+    const unknown = [...new Set([...q.patch.newEdges.flatMap(e => e.effects.map(f => f.resource)), ...q.storyboard.flatMap(b => b.counters.map(c => c.resource))])]
+      .filter(r => !m.economy.resources.some(x => x.id === r));
+    if (unknown.length === 1) { q.reward.resource = unknown[0]; changes.push(`time box grants "${unknown[0]}"`); }
+  }
+  return { p: q, changes: [...new Set(changes)] };
 }
 
 // ------------------------------------------------------------------------------------------------

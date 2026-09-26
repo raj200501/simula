@@ -73,13 +73,15 @@ export function summarize(file: string, outMd: string): string {
   const byStage = new Map<string, TraceEvent[]>();
   for (const e of evs) byStage.set(`${e.stage}::${e.run}`, [...(byStage.get(`${e.stage}::${e.run}`) ?? []), e]);
   const fails = evs.filter(e => e.type === "failure");
-  const human = evs.filter(e => e.type === "human");
+  // A sign-in wall the explorer notes and moves past (waiting: false) is not a person acting.
+  const human = evs.filter(e => e.type === "human" && e.data.waiting !== false);
+  const walls = evs.filter(e => e.type === "human" && e.data.waiting === false);
   const decisions = evs.filter(e => e.type === "decision");
   const autonomous = decisions.length;
   const ratio = autonomous + human.length ? autonomous / (autonomous + human.length) : 1;
   const lines: string[] = [];
   lines.push(`# Trajectory: ${evs[0]?.app ?? "?"}`, "");
-  lines.push(`Autonomous decisions: **${autonomous}**. Human interventions: **${human.length}**. Autonomy ratio: **${(ratio * 100).toFixed(1)}%**.`, "");
+  lines.push(`Autonomous decisions: **${autonomous}**. Human interventions: **${human.length}**. Autonomy ratio: **${(ratio * 100).toFixed(1)}%**.${walls.length ? ` Sign-in walls noted for a human and skipped: ${walls.length} (${new Set(walls.map(w => String(w.data.state ?? w.data.note ?? ""))).size} distinct).` : ""}`, "");
   lines.push("## Stage runs", "", "| stage | run | start | end | events | failures | stop |", "|---|---|---|---|---|---|---|");
   for (const [k, list] of byStage) {
     const [stage, run] = k.split("::");
@@ -108,6 +110,10 @@ export function summarize(file: string, outMd: string): string {
   lines.push("", "## Human interventions", "");
   if (!human.length) lines.push("None recorded.");
   for (const h of human) lines.push(`- ${h.ts.slice(0, 19)} [${h.stage}] ${String(h.data.note ?? "")}`);
+  if (walls.length) {
+    lines.push("", "## Sign-in walls skipped", "", "The explorer never signs in. It records each wall for a human and explores elsewhere.", "");
+    for (const h of walls) lines.push(`- ${h.ts.slice(0, 19)} [${h.stage}] ${String(h.data.note ?? "")}`);
+  }
   const keyDecisions = decisions.filter(d => (d.data.priority as number) >= 3).slice(0, 40);
   if (keyDecisions.length) {
     lines.push("", "## Key exploration decisions (priority 3)", "");

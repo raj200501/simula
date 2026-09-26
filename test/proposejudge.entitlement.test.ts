@@ -11,9 +11,9 @@ import { proposalEconomics } from "../src/model/economics.ts";
 import { loadModel } from "../src/model/understand.ts";
 import { propose } from "../src/propose/propose.ts";
 import { isConsumable, resolveAnchors } from "../src/propose/anchors.ts";
-import { codeGates, rewardCoherence } from "../src/judge/gates.ts";
+import { codeGates, grounding, rewardCoherence } from "../src/judge/gates.ts";
 import { stubJudge } from "../src/judge/stub.ts";
-import { judgeAll } from "../src/judge/judge.ts";
+import { judgeAll, lockCost } from "../src/judge/judge.ts";
 import { calibrationItems, evalJudge } from "../src/judge/calibrate.ts";
 import { deriveEconomy, regimeOf } from "../src/model/economics.ts";
 import { quotaFromLimits } from "../src/model/quota.ts";
@@ -219,5 +219,59 @@ describe("guest message cap that ends on a sign-up sheet (stub)", () => {
       if (p.reward.resource === quota.id) assert.ok(!r.gates.some(g => g.gate === "not-for-account-wall" && !g.pass), `${p.id} round ${r.round}`);
     }
     assert.ok(!cands.baseline.join(" ").includes("free free"));
+  });
+});
+
+describe("reviewer-found holes in the judge", () => {
+  const m = entitlementModel();
+  let base: Proposal;
+  before(async () => { base = (await propose(ctx(tmpDir("ent-holes"), "deep"), m)).proposals.find(p => p.case === "existing")!; });
+  const plant = (f: (p: Proposal) => void) => { const p = structuredClone(base); f(p); return { ...p, economics: proposalEconomics({ ...p, economics: undefined }, m) }; };
+  const failed = (p: Proposal) => codeGates(p, m).filter(g => !g.pass).map(g => g.gate);
+
+  test("an offer beside the sign-up button of a feature's sign-up sheet fails; after the user declines, it may appear", () => {
+    const onSheet = (trigger: string) => plant(q => {
+      q.surface = "s04"; q.trigger = trigger;
+      q.reward = { what: "1 Deep reasoning answer (today)", resource: "r1", duration: "today", grantOn: "REWARD_VERIFIED" };
+      q.patch.newElements = [{ id: "ne1", in: "s04", near: "e3", place: "after", change: "Button" }];
+      q.patch.newEdges = [{ from: "s04", el: "ne1", to: "rwd", effects: [] }];
+      q.offer.body = "Play a 15-second game to try Deep reasoning once.";
+    });
+    assert.ok(failed(onSheet("Create Account Sheet opens when the user taps Deep reasoning")).includes("not-for-account-wall"));
+    assert.ok(!failed(onSheet("After the user taps \"Maybe later\" on the Create Account Sheet")).includes("not-for-account-wall"));
+  });
+
+  test("a product change may cite the resource it introduces", () => {
+    const p = plant(q => {
+      q.case = "product-change";
+      q.anchor.newMechanic = { name: "Reader points", description: "Points for reading", whyNeeded: "Nothing is scarce today", removesFreeValue: false };
+      q.reward = { what: "50 reader points", resource: "ReaderPoints", amount: 50, grantOn: "REWARD_VERIFIED" };
+      q.anchor.economy = ["ReaderPoints", "Streaks (new)"];
+    });
+    assert.deepEqual(grounding(p, m).filter(x => /economy item|reward resource/.test(x)), []);
+    const invented = plant(q => { q.case = "product-change"; q.anchor.economy = ["POST_WALL"]; });
+    assert.ok(grounding(invented, m).some(x => /economy item "POST_WALL" does not exist/.test(x)), "an invented existing id still fails");
+  });
+
+  test("a time-boxed reward may name its own entitlement; an amount-only reward may not invent one", () => {
+    const box = plant(q => {
+      q.reward = { what: "15 minutes of priority replies", resource: "priority_15m", duration: "15 minutes", grantOn: "REWARD_VERIFIED" };
+      q.patch.newEdges = q.patch.newEdges.map(e => ({ ...e, effects: [{ resource: "priority_15m", delta: 1 }] }));
+    });
+    assert.deepEqual(grounding(box, m).filter(x => /priority_15m/.test(x)), []);
+    const counted = plant(q => { q.reward = { what: "5 priority replies", resource: "priority_replies", amount: 5, grantOn: "REWARD_VERIFIED" }; });
+    assert.ok(grounding(counted, m).some(x => /reward resource "priority_replies" does not exist/.test(x)));
+  });
+
+  test("a revision cannot make the same reward cheaper to serve by relabelling it", () => {
+    const v1 = plant(q => { q.assumptions = { ...q.assumptions, cogs: "text-premium", cogsUnitsPerView: 1 }; });
+    const v2 = { ...v1, version: 2, assumptions: { ...v1.assumptions, cogs: "text-cheap" as const, cogsUnitsPerView: 0.5 } };
+    const locked = lockCost(v1, v2);
+    assert.equal(locked.assumptions.cogs, "text-premium");
+    assert.equal(locked.assumptions.cogsUnitsPerView, 1);
+    // a genuinely smaller reward may cost fewer units
+    const smaller = lockCost({ ...v1, reward: { ...v1.reward, amount: 4 } }, { ...v2, reward: { ...v1.reward, amount: 2 } });
+    assert.equal(smaller.assumptions.cogsUnitsPerView, 0.5);
+    assert.equal(smaller.assumptions.cogs, "text-premium");
   });
 });

@@ -8,7 +8,7 @@
 // that screen, and a short bold caption under each circle.
 import type { Candidates, Judgments, ProductModel, Proposal, ProposalEconomics } from "../core/schema.ts";
 import { escapeHtml as h } from "../core/io.ts";
-import { deriveEconomy, exchangeRateLine } from "../model/economics.ts";
+import { ECON, deriveEconomy, exchangeRateLine } from "../model/economics.ts";
 import type { CostRollup, QaDigest } from "../report/data.ts";
 import { fmtTokens, fmtUsd } from "../report/data.ts";
 import { PRODUCTIONIZATION } from "../report/content.ts";
@@ -139,9 +139,17 @@ function exchangeBand(d: DeckInput): string {
     : pack
       ? `<div class="stat-k">Cheapest pack</div><div class="stat-v">${h(pack.priceText)}</div><p>${h(pack.label)}. Rewards are capped per day so a full day of ads stays well below it.</p>`
       : `<div class="stat-k">Cheapest pack</div><p>No priced pack was observed, so there is no paid path to cannibalize in currency terms.</p>`;
+  // No rate in the app's own units (no prices and no measured allowance): say what a view is worth in
+  // dollars instead, which is the yardstick every reward on these slides was sized and judged against.
+  const [lo, hi] = derived.viewValueUsd.US, [llo, lhi] = derived.viewValueUsd.LATAM;
+  const usd = (x: number) => `$${+x.toPrecision(2)}`;
+  const left = line
+    ? `<div class="stat-k">Exchange rate</div><div class="stat-v">${h(line.replace(/ at list price$/, ""))}</div>
+<p>${/at cost to serve/.test(line) ? "The app shows no prices, so this is what a US rewarded view (after a non-game haircut) pays for at the cost of serving the reward." : "At list price, from the app's own packs and a US rewarded eCPM range after a non-game haircut. This is what one completed ad view is worth to the user."}</p>`
+    : `<div class="stat-k">One completed view earns</div><div class="stat-v">${h(`${usd(lo)}–${usd(hi)}`)}</div>
+<p>US rewarded eCPM after a non-game haircut, about ${h(usd(lo * (1 - ECON.platformShare)))} net at the low end. The app shows no prices, so there is no exchange rate in its own units; every reward on these slides costs less than that to serve. In LATAM a view earns ${h(`${usd(llo)}–${usd(lhi)}`)}.</p>`;
   return `<div class="band">
-<div class="panel"><div class="stat-k">Exchange rate</div><div class="stat-v">${h(line ? line.replace(/ at list price$/, "") : "Not computable")}</div>
-<p>${line ? "At list price, from the app's own packs and a US rewarded eCPM range after a non-game haircut. This is what one completed ad view is worth to the user." : h(derived.notes[0] ?? "No priced packs observed.")}</p></div>
+<div class="panel">${left}</div>
 <div class="panel">${right}</div></div>`;
 }
 

@@ -39,6 +39,11 @@ interface AppRow {
 // A human note that says the app could not be explored ("exits on launch", "blocked by ...").
 const BLOCKED_NOTE = /\b(blocked|could ?n[o']t (be )?explored?|cannot (be )?explored?|can'?t explore|not explorable|exits? on launch|crash(es|ed)? on (launch|start)|refuses to run|won'?t (run|launch|open))\b/i;
 
+/** A human note as one readable line: whitespace collapsed, npm's log-file boilerplate cut. */
+export function tidyNote(n: string): string {
+  return n.replace(/\bnpm error To see a list of scripts[\s\S]*$/i, "npm: no such script.").replace(/\s*npm error A complete log of this run[\s\S]*$/i, "").replace(/\s+/g, " ").trim();
+}
+
 export async function buildReport(appIds: string[], outRoot?: string): Promise<string> {
   const root = outRoot ? path.resolve(outRoot) : path.join(ROOT, "out");
   const rows = appIds.map(id => collect(id, root));
@@ -64,7 +69,7 @@ function collect(id: string, root: string): AppRow {
   const trace = traceStats(p.trace);
   const humanLog = exists(path.join(p.out, "HUMAN_LOG.md"))
     ? fs.readFileSync(path.join(p.out, "HUMAN_LOG.md"), "utf8").split("\n").map(l => l.replace(/^-\s*\S+Z?\s*/, "").trim()).filter(Boolean) : [];
-  const notes = [...new Set([...trace.humanNotes, ...humanLog])];
+  const notes = [...new Set([...trace.humanNotes, ...humanLog].map(tidyNote).filter(Boolean))];
 
   // Pre-render the Markdown artifacts to HTML pages next to this app's outputs.
   const rendered = (src: string, name: string, title: string) => {

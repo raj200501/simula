@@ -258,6 +258,21 @@ describe("deck.html", () => {
     assert.doesNotMatch(html, /(src|href)="https?:/);
   });
 
+  test("no prices and no measured allowance: the recommendation says what a view earns, US and LATAM", () => {
+    const bare = sampleModel();
+    bare.economy.offers = [];
+    bare.economy.sources = [];
+    bare.economy.sinks = [];
+    bare.economy.walls = [];
+    bare.economy.derived = undefined;
+    const h0 = renderDeck({ m: bare, cands: sampleCandidates(), j: sampleJudgments(), flows: flowsFor(), accent: accentOf(bare), shots: new Map(), qa: null, cost: noCost });
+    const rec = h0.split("</section>")[0];
+    assert.doesNotMatch(rec, /Not computable/);
+    assert.match(rec, /One completed view earns<\/div><div class="stat-v">\$0\.009–\$0\.015/);
+    assert.match(rec, /about \$0\.0063 net at the low end/);
+    assert.match(rec, /In LATAM a view earns \$0\.0015–\$0\.003\./);
+  });
+
   test("zero SHIPs: the deck says so plainly and the best REVISE is only in the table", () => {
     const j = sampleJudgments({ shipVerdict: "REVISE" });
     const h0 = renderDeck({ m, cands: sampleCandidates(), j, flows: flowsFor(j), accent: accentOf(m), shots: new Map(), qa: null, cost: noCost });

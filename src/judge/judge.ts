@@ -15,7 +15,7 @@ import { save, writeText } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
 import type { StageCtx } from "../core/run.ts";
 import { digest } from "../model/digest.ts";
-import { proposalEconomics } from "../model/economics.ts";
+import { ECON, proposalEconomics } from "../model/economics.ts";
 import { kbSystemBlock } from "../propose/kb.ts";
 import { revise } from "../propose/propose.ts";
 import { economicsLines } from "../propose/render.ts";
@@ -175,7 +175,7 @@ async function reviseLoop(c: StageCtx, m: ProductModel, j: ProposalJudgment, dig
     const p = j.versions[j.versions.length - 1];
     // "existing" without an observed anchor is relabelled before revision (FINAL_PLAN §9.1).
     const relabel = p.case === "existing" && r.gates.some(g => g.gate === "label" && !g.pass);
-    const next = await revise(c, m, relabel ? { ...p, case: "product-change" } : p, r.requiredChanges, r.topConcern, r.round + 1);
+    const next = lockCost(p, await revise(c, m, relabel ? { ...p, case: "product-change" } : p, r.requiredChanges, r.topConcern, r.round + 1));
     j.versions.push(next);
     let r2 = await judgeOnce(m, next, r.round + 1, dig, `judge:${next.id}:v${next.version}`);
     const x = extra?.(next);
@@ -223,6 +223,25 @@ async function portfolioCheck(c: StageCtx, m: ProductModel, results: ProposalJud
   }
 }
 
+/**
+ * A revision may change the reward, but not relabel what it costs to serve: the cost class and units per
+ * view never get cheaper than the previous version said for the same reward kind. (Otherwise the reviser
+ * could pass the economics gate by calling an agentic task "text-cheap".)
+ */
+export function lockCost(prev: Proposal, next: Proposal): Proposal {
+  const rate = (k: string) => ECON.cogsPerUnitUsd[k] ?? 0;
+  const a = prev.assumptions, b = next.assumptions;
+  if (!a || !b) return next;
+  const sameKind = (prev.reward.resource ?? "") === (next.reward.resource ?? "") && !!prev.reward.duration === !!next.reward.duration;
+  if (!sameKind) return next;
+  const cogs = rate(b.cogs) < rate(a.cogs) ? a.cogs : b.cogs;
+  const smaller = (next.reward.amount ?? 1) < (prev.reward.amount ?? 1);
+  const units = smaller ? b.cogsUnitsPerView : Math.max(a.cogsUnitsPerView, b.cogsUnitsPerView);
+  if (cogs === b.cogs && units === b.cogsUnitsPerView) return next;
+  trace("decision", { what: "cost locked across revision", proposal: next.id, from: `${b.cogs}x${b.cogsUnitsPerView}`, to: `${cogs}x${units}` });
+  return { ...next, assumptions: { ...b, cogs, cogsUnitsPerView: units }, economics: undefined };
+}
+
 function summary(j: ProposalJudgment): string {
   const last = j.rounds[j.rounds.length - 1];
   const revs = j.versions.length - 1;
@@ -232,7 +251,9 @@ function summary(j: ProposalJudgment): string {
   const d = dup && parseDuplicate(dup.evidence);
   if (d) return `REJECT${after}: still a near-duplicate of ${d.keeper}, which scored higher and ships; ${d.why}.`;
   if (last.judgedBy === "code-only") return `REJECT by code gate${after}: ${last.reasons[0] ?? ""}.`;
-  return `REJECT${after}: ${j.note || last.reasons.join("; ")}. Top concern: ${last.topConcern}`;
+  const gate = last.gates.find(g => !g.pass);
+  const concern = gate ? `${gate.gate} (${gate.by}): ${gate.evidence}` : last.topConcern;
+  return `REJECT${after}: ${j.note || last.reasons.join("; ")}. Top concern: ${concern}`;
 }
 
 export async function judgeAll(c: StageCtx, m: ProductModel, cands: Candidates): Promise<Judgments> {

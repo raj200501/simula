@@ -55,12 +55,15 @@ export function grounding(p: Proposal, m: ProductModel): string[] {
   const newEls = p.patch.newElements.map(e => e.id);
   const screenOk = (id: string) => ix.screens.has(id) || newScreens.includes(id);
   const elOn = (screen: string, el: string) => !!ix.screens.get(screen)?.elements.some(e => e.id === el) || newEls.includes(el);
-  // A product change may introduce one new resource; it is declared by anchor.newMechanic.
-  const resourceOk = (id: string) => ix.economy.get(id)?.kind === "resource" || (p.case === "product-change" && !!p.anchor.newMechanic && id === p.reward.resource);
+  // A product change may introduce one new resource; it is declared by anchor.newMechanic. A time-boxed
+  // reward ("15 minutes of X") declares its own temporary entitlement: the reward is that resource.
+  const resourceOk = (id: string) => ix.economy.get(id)?.kind === "resource" || (id === p.reward.resource && ((p.case === "product-change" && !!p.anchor.newMechanic) || !!p.reward.duration));
 
   if (!screenOk(p.surface)) bad.push(`surface "${p.surface}" is not a screen in the model nor declared in patch.newScreens`);
   for (const id of p.anchor.moments) if (!ix.moments.has(id)) bad.push(`moment "${id}" does not exist`);
-  for (const id of p.anchor.economy) if (!ix.economy.has(id)) bad.push(`economy item "${id}" does not exist`);
+  // A product change cites the resource it introduces (its reward resource, or an id marked "(new)").
+  const declaredNew = (id: string) => p.case === "product-change" && !!p.anchor.newMechanic && (id === p.reward.resource || /\(new\)\s*$/i.test(id));
+  for (const id of p.anchor.economy) if (!ix.economy.has(id) && !declaredNew(id)) bad.push(`economy item "${id}" does not exist`);
   if (p.reward.resource && !resourceOk(p.reward.resource)) bad.push(`reward resource "${p.reward.resource}" does not exist`);
 
   for (const d of [...newScreens, ...newEls].filter((x, i, a) => a.indexOf(x) !== i)) bad.push(`new id "${d}" is declared twice`);
@@ -147,6 +150,7 @@ export function rewardCoherence(p: Proposal, m: ProductModel): string[] {
 }
 
 const SKIP_SIGNUP = /\b(skip (?:the )?sign[- ]?(?:up|in)|instead of (?:signing|creating|logging|registering)|without (?:signing (?:up|in)|logging in|creating an account|an account)|no (?:account|sign[- ]?up|login) (?:needed|required)|continue as (?:a )?guest)\b/i;
+const AFTER_DECLINE = /\b(after|once|when)\b[^.]{0,60}\b(declin\w*|dismiss\w*|clos\w*|skip\w*|maybe later|not now|no,? thanks)\b/i;
 const stems = (x: string) => x.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 5).map(w => w.slice(0, 6));
 
 /** Rewarded ads cannot replace sign-up: no account for an ad, no account-only feature for an ad. */
@@ -160,6 +164,14 @@ export function accountWallProblems(p: Proposal, m: ProductModel): string[] {
     || m.economy.walls.some(w => w.shows === surface.id && (isAccountResource(res(w.resource)) || isSignupScreen(surface))));
   const skip = SKIP_SIGNUP.exec([p.offer.title, p.offer.body, p.offer.cta, p.reward.what, p.trigger].join("\n"));
   if (onAccountWall && skip) bad.push(`on the sign-up wall ${surface!.name}, the offer trades an ad for skipping sign-up ("${skip[0]}")`);
+  // A sign-up sheet that gates a FEATURE (not a used-up quota): an offer placed there, beside "Continue with
+  // Google", is an ad in place of the account. It may only appear after the user declines sign-up, and
+  // then it samples the feature. (A sheet that also ends a free quota may offer a refill of that quota.)
+  const wallsHere = m.economy.walls.filter(w => w.shows === surface?.id);
+  const featureWall = wallsHere.length > 0 && wallsHere.every(w => !isConsumable(res(w.resource)));
+  const afterDecline = AFTER_DECLINE.test(`${p.trigger} ${p.eligibility}`);
+  if (surface && isSignupScreen(surface) && featureWall && !afterDecline && !skip)
+    bad.push(`"${surface.name}" asks the user to sign up for a feature: an offer beside the sign-up button stands in for the account; show it only after the user declines (e.g. taps "Maybe later")`);
   // Features that only an account unlocks (saving, profile settings) cannot be earned with an ad.
   // A reward counted in a consumable ("+3 messages") is units of that resource, never the account
   // feature, whatever words the two share ("Save favorite messages").
