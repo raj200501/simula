@@ -3,6 +3,7 @@
 // self-check, QA fidelity, model calls), read from the artifacts and never typed by hand. Written by
 // the report stage next to the app's outputs, so it is always in step with the last run.
 import { exchangeRateLine } from "../model/economics.ts";
+import { inScopeEdges } from "../qa/flows.ts";
 import type { Candidates, Judgments, ProductModel } from "../core/schema.ts";
 import { fmtTokens, fmtUsd, type CostRollup, type QaDigest, type TraceStats } from "./data.ts";
 
@@ -88,6 +89,14 @@ export function numbersMd(x: NumbersInput): string {
     const scored = x.qa.screens.filter(s => s.composite != null).length;
     L.push(`- Mean fidelity (composite 0–1): **${x.qa.compositeMean != null ? x.qa.compositeMean.toFixed(2) : "–"}** over the ${scored} screen${scored === 1 ? "" : "s"} rebuilt as HTML${scored < x.qa.screens.length ? ` (of ${x.qa.screens.length}; the rest are the real screenshots with tap areas, and are not scored)` : ""}.`);
     L.push(`- Flow QA: **${x.qa.flowPassed} / ${x.qa.flowTotal}** navigation edges replay correctly in the mock.`);
+    if (m) {
+      // On a screenshot screen the router is built from the same edges, so the HTML-screen share is the real test.
+      const html = new Set(m.screens.filter(s => s.render === "html").map(s => s.id));
+      const fromHtml = inScopeEdges(m).test.filter(e => html.has(e.from));
+      const failed = new Set(x.qa.failures.map(f => f.edge));
+      if (fromHtml.length && fromHtml.length < x.qa.flowTotal)
+        L.push(`- Of those, **${fromHtml.filter(e => !failed.has(e.id)).length} / ${fromHtml.length}** start on a screen rebuilt as HTML; on screenshot screens the tap areas come from the same edges, so those mostly check consistency.`);
+    }
     const best = [...x.qa.screens].filter(s => s.composite != null).sort((a, b) => b.composite! - a.composite!);
     if (best.length) L.push(`- Best: ${best[0].name} (${best[0].composite!.toFixed(2)}). Weakest: ${best[best.length - 1].name} (${best[best.length - 1].composite!.toFixed(2)}).`);
     for (const f of x.qa.failures.slice(0, 3)) L.push(`- Flow miss: ${f.edge}: ${f.reason}`);

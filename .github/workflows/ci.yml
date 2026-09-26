@@ -29,7 +29,6 @@ jobs:
         with:
           name: fixture-demo
           path: |
-            out/index.html
-            out/fixture/
+            out/demo/
           if-no-files-found: ignore
           retention-days: 14

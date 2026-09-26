@@ -1,8 +1,8 @@
-# Local device setup (run by a Claude session on your Mac)
+# Local device setup (macOS, Apple silicon)
 
-This container can't run an Android emulator, so device setup happens on your Mac. Start a local
-session in the repo folder (Claude Desktop app, or `claude remote-control` in a terminal inside
-`simula/`) and paste the prompt below. The session does everything except the **HAND BACK** steps.
+The emulator runs on a Mac. For this submission these steps were carried out by a local Claude Code
+session in the repo folder, using the prompt below; a person did every **HAND BACK** step (sign-ins,
+passwords, phone checks). The same steps work by hand.
 
 Why Android: the iOS Simulator can't install App Store apps, so OOC/Janitor/Luzia/AOL can't run there.
 The Android emulator with a Google Play system image installs them from the Play Store.

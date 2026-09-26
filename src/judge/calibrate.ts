@@ -1,7 +1,8 @@
 // How we know the judge is any good (BUILD_SPEC D6/T9/T13): a single-fault confusion table.
-//   - 5 positives adapted from KB precedents ([EX-SERIAL], [EX-MUSIC], [EX-DUO], [TAX-10], [TAX-9]),
-//     written as Proposals grounded in THIS model's ids (templates in eval/judge-cal/positives.json);
-//   - ~8 negatives, each changing exactly ONE field of a positive (eval/judge-cal/negatives.json);
+//   - positives adapted from KB precedents (consumable: [EX-SERIAL], [EX-MUSIC], [EX-DUO], [TAX-10],
+//     [TAX-9]; entitlement: sample, decline, tasks), written as Proposals grounded in THIS model's ids
+//     (eval/judge-cal/positives.json); only those the model's economy supports are built;
+//   - negatives, each changing exactly ONE field of an available positive (eval/judge-cal/negatives.json);
 //   - every item is judged once (code gates + one judge call, no revision, no Batch API);
 //   - the table says whether each negative was caught by code, by the judge, or by both.
 // n is tiny: this is a smoke test of what each layer catches, not a statistical claim.

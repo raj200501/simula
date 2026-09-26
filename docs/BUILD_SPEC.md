@@ -1,6 +1,6 @@
 # Build spec: authoritative interfaces and decisions
 
-Read this first. `docs/design/FINAL_PLAN.md` holds the detailed design, and `docs/design/CRITIQUE.md` lists its known gaps. **Where they disagree, this file wins.** Where this file is silent, follow FINAL_PLAN as amended by CRITIQUE.
+Read this first. `docs/design/FINAL_PLAN.md` holds the detailed design, written before the build. **Where they disagree, this file wins.** Where this file is silent, follow FINAL_PLAN.
 
 ## Conventions (all modules)
 

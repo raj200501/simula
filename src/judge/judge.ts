@@ -9,7 +9,7 @@
 import path from "node:path";
 import { z } from "zod";
 import { Candidates, Criterion, Judgments, Proposal, type GateResult, type JudgmentRound, type ProductModel } from "../core/schema.ts";
-import { json } from "../core/llm.ts";
+import { json, llmMode } from "../core/llm.ts";
 import { MODELS } from "../core/config.ts";
 import { save, writeText } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
@@ -127,7 +127,11 @@ export async function judgeOnce(m: ProductModel, p0: Proposal, round: number, di
     return s ? [{ criterion: w.criterion, evidence: s.evidence, score: Math.max(1, Math.min(5, Math.round(s.score))) }] : [];
   });
   const gates = [...code, ...llmGates];
-  const v = verdictOf(gates, scores, round);
+  const v0 = verdictOf(gates, scores, round);
+  // A live judge call that failed and fell back to the heuristic can hold a proposal, never ship it.
+  const v = stubbed && llmMode() !== "stub" && v0.verdict === "SHIP"
+    ? { ...v0, verdict: "REVISE" as const, reasons: [...v0.reasons, "judged by the heuristic fallback after the model call failed: not shipped without a model's review"] }
+    : v0;
   return { ...base, gates, scores, weighted: v.weighted, requiredChanges: out.requiredChanges, topConcern: out.topConcern, verdict: v.verdict, reasons: v.reasons, judgedBy: stubbed ? "stub" : "llm" };
 }
 

@@ -7,7 +7,7 @@
 Local files:
 - `research/mobile-mcp/package/` holds the unpacked npm package.
 - `research/mobile-mcp/install/` holds a working install, `smoke.mts`, `smoke2.mts` and `tools.json`.
-- `research/mobile-mcp/mobile-client.ts` is a typed client wrapper. It passes `tsc --strict --erasableSyntaxOnly` and runs.
+- The typed client wrapper prototyped here became `src/device/mcp.ts`.
 
 ---
 
@@ -310,7 +310,7 @@ await call("mobile_type_keys", { device, text: "hello", submit: false });
 await call("mobile_open_url", { device, url: "myapp://path" });           // needs MOBILEMCP_ALLOW_UNSAFE_URLS=1
 await client.close();
 ```
-A fuller typed wrapper with the same logic (the `MobileMcp` class: `listDevices`, `screenSize`, `screenshot`, `saveScreenshotPng`, `elements`, `tapElement`, `tap`, `tapRef`) is at `research/mobile-mcp/mobile-client.ts`. It passes `tsc --strict` and ran against the server here; it stopped at "no online device", as expected.
+A fuller typed wrapper with the same logic (the `MobileMcp` class: `listDevices`, `screenSize`, `screenshot`, `saveScreenshotPng`, `elements`, `tapElement`, `tap`, `tapRef`) was prototyped during research; its successor is `src/device/mcp.ts`.
 
 ---
 

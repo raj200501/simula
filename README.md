@@ -1,6 +1,6 @@
 # Simula App Monetization Agent
 
-[![ci](https://github.com/raj200501/simula/actions/workflows/ci.yml/badge.svg?branch=claude/serene-brahmagupta-owzz1n)](https://github.com/raj200501/simula/actions/workflows/ci.yml) Every push runs the typecheck, the full test suite (276 tests, including the whole pipeline end to end on a bundled fixture app) and the no-key demo.
+[![ci](https://github.com/raj200501/simula/actions/workflows/ci.yml/badge.svg?branch=claude/serene-brahmagupta-owzz1n)](https://github.com/raj200501/simula/actions/workflows/ci.yml) Every push runs the typecheck, the full offline test suite (including the whole pipeline end to end on a bundled fixture app) and the no-key demo.
 
 **Thesis: understand the app as an economy.** The explorer drives a real Android app through mobile-mcp and measures what users do, what each action costs (when the app shows or meters it), where free users hit a wall and what the app sells. It writes that into **one evidence-backed product model**: every price, cost and wall is quoted from the screen or measured as a counter change, then verified in code. **Everything else is compiled from that model:**
 - the 1:1 interactive mock and its QA loop;
@@ -9,6 +9,17 @@
 - the slide flows, which are screenshots of the patched mock.
 
 Code owns control flow, state identity, arithmetic and verdicts. Models answer narrow, schema-bound questions. Every call is cached and replayable, and falls back to a deterministic stub.
+
+**What the economy model actually holds, per app.** The thesis is fully exercised only where the app meters something a guest can spend. On the real apps it was partly:
+
+| App | Explored | Economy in the model | Spend measured by the drain probe |
+|---|---|---|---|
+| **Luzia** (deep) | 38 screens, 171 transitions, 175 steps | subscription-gated: Luzia+, account access and an AI usage quota; 6 walls, each quoted from its screen; no prices shown to guests | **no**: the final run never got back to a chat (see [Limitations](#limitations)) |
+| Janitor | 16 screens, 60 steps (signed in) | subscription-gated: the Janitor Plus paywall; nothing consumable | no metered resource seen |
+| AOL | 17 screens, 60 steps (guest) | no scarcity: 8 ad placements, no resources, so every idea must be a product change | nothing to spend |
+| Fixture (ours) | 8 screens | a consumable economy: 3 priced packs, 2 sinks, the out-of-credits wall | **yes**: the probe spends the balance down to the wall |
+
+So on Luzia, code prices rewards by what they cost to serve against what a view earns, not by an in-app exchange rate.
 
 ---
 
@@ -30,7 +41,7 @@ Code owns control flow, state identity, arithmetic and verdicts. Models answer n
 | **Rewarded flows** (Goal 4): state → mechanic → ad → value | `out/<app>/slides/deck.pdf` / `deck.html` / `png/`. `flow-<Pn>.gif`: the lead flow played in the mock (the game runs, the reward lands in-app). Every SHIP gets a 5-frame flow slide (Today → What changed → Offer → Ad plays → Value received, with the trigger arrow and a "why" rail) plus a details slide (economics, KPI, holdout, SDK snippet) |
 | **Trajectory**: what ran on its own, where it failed, what was fixed by hand | `out/<app>/trajectory.md` (rendered from `trace.jsonl`), `out/<app>/HUMAN_LOG.md`, `out/<app>/<stage>/manifest.json` (inputs by sha256, outputs, status, LLM calls) |
 | **Cost** | `out/<app>/cost.jsonl` (one row per model call: stage, model that answered, tokens in/out/thinking, ms, cached). Rolled up in the deck appendix and on `out/index.html` |
-| **Recording** (10–15 min) | Script: [`docs/RECORDING_SCRIPT.md`](docs/RECORDING_SCRIPT.md) |
+| **Recording** (10–15 min) | Linked in the submission |
 | **Productionization sketch** (Goal 5) | [Below](#productionization-sketch), plus the last slide of every deck |
 | Test apps | Luzia deep. Janitor and AOL for transfer, with no per-app code. OOC is recorded as blocked (it kills itself on the emulator; see [Decisions](#decisions)). Scorecard across all apps: `out/index.html` |
 
@@ -41,15 +52,16 @@ Code owns control flow, state identity, arithmetic and verdicts. Models answer n
 ```bash
 npm ci
 npx playwright install chromium
-npm run demo          # fixture app, end to end, stub LLM
-open out/index.html   # (Linux: xdg-open)
+open out/index.html        # the committed results for Luzia, Janitor and AOL (Linux: xdg-open)
+npm run demo               # the fixture app, end to end, stub LLM, into out/demo/
+open out/demo/index.html
 ```
 
 What `npm run demo` does:
 - It runs every stage on `fixtures/credit-chat`, a small web app built to be adversarial: a hidden balance, a mic that turns into Send, a sponsored card, a "Log out" row, a billing sheet and an out-of-credits wall.
 - It uses the same explorer, driven through Playwright instead of mobile-mcp.
 - Every model call is replaced by its deterministic stub (`--llm stub`), and outputs are marked `stub`.
-- It writes to `out/fixture/`, which is git-ignored. Add `--out-root <dir>` to write elsewhere.
+- It writes to `out/demo/`, which is git-ignored, and never touches the committed results in `out/`. Add `--out-root <dir>` to write elsewhere.
 - Expected result: 8 screens, a `consumable-economy` model (3 packs, 2 sinks, 1 wall), flow QA 100%, 3 SHIP / 1 REJECT, a 12-slide deck.
 
 Checks: `npm test` (offline, about 3 minutes, including a full pipeline run on the fixture) and `npm run typecheck`.
@@ -58,7 +70,7 @@ Checks: `npm test` (offline, about 3 minutes, including a full pipeline run on t
 
 ## Run it on the real apps
 
-A non-expert, click-by-click guide is in **[START_HERE.md](START_HERE.md)**. Emulator and account setup is in **[docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md)**.
+Emulator, app installs and account setup: **[docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md)**.
 
 ```bash
 cp .env.example .env                      # put GEMINI_API_KEY (free) or ANTHROPIC_API_KEY in it
@@ -183,25 +195,33 @@ Agents never message each other: stages share context only through typed, schema
   - latency;
   - whether it came from cache.
 
-  The Gemini free tier bills $0, but tokens are still logged. As a reference, the full live smoke run on the fixture took 56 live calls: about 1.28M input tokens, 75k output tokens and 253k thinking tokens. Cached calls replay at no cost, so `--llm replay` reproduces a run without a key.
+  The Gemini free tier bills $0, but tokens are still logged, so the ledgers can be priced: at `claude-opus-5` list prices with no prompt caching, Luzia's ledger (every run, including repeated proposal and judge runs) comes to about $34, Janitor's $16 and AOL's $12. Cached calls replay at no cost, so `--llm replay` reproduces a run without a key.
 - **Trajectory.** `trace.jsonl` records every decision, failure, recovery, budget stop, human step and stop reason. `trajectory.md` renders it (phases, discovery over time, failures paired with recoveries, autonomy ratio). Each stage's `manifest.json` pins its inputs by sha256.
-- **HUMAN_LOG.** Anything a person did goes into `out/<app>/HUMAN_LOG.md` and the trace, through `npm run note -- --app <id> "…"`: a sign-in, a blocked app, a hand fix. So do edits to the product model: `model/overrides.json` is a JSON-merge patch keyed by item id, re-applied on every load and logged as a human step.
+- **HUMAN_LOG.** Anything a person did goes into `out/<app>/HUMAN_LOG.md` and the trace, through `npm run note -- --app <id> "…"`: a sign-in, a blocked app, a re-run after a code fix. Edits to the product model would go through `model/overrides.json` (a JSON-merge patch keyed by item id, re-applied on every load and logged as a human step); none of the committed models has one. The only hand edits to artifacts are privacy redactions.
 
 ---
 
 ## Limitations
 
 - **OOC could not be explored** on the emulator (self-termination, above). It is covered by a note, not a model.
-- **Luzia's free-message cap was not measured in the final run.** In earlier runs the drain probe sent guest messages and got replies (about 5 in one run) with no cap showing, then lost the chat between sends: a composer that never exposes its text, keys scrambled by the keyboard, and flaky navigation back to the thread. Each cause is fixed and covered by a regression test (see the commit history), but in the final deep run the probe could not get back to a chat at all (0 sends). So Luzia's model is subscription- and sign-up-gated (six walls, all quoted from the screens), and its flows target those walls. The capped case is exercised end to end on the fixture and in `test/proposejudge.entitlement.test.ts`.
-- **Janitor was explored signed in.** The account's handle and join date are redacted in every artifact (text replaced, screenshots blurred). AOL's run opened Chrome's first-run screen, which showed the device owner's name; that screenshot was removed and the name replaced in text.
+- **Luzia's free-message cap was not measured in the final run.** In earlier runs the drain probe sent guest messages and got replies (about 5 in one run) with no cap showing, then lost the chat between sends: a composer that never exposes its text, keys scrambled by the keyboard, and flaky navigation back to the thread. Each cause is fixed and covered by a regression test (see the commit history), but in the final deep run the probe could not get back to a chat at all (0 sends). So Luzia's model is subscription- and sign-up-gated (six walls, all quoted from the screens), and the obvious Luzia flow, a refill when free messages run out, is not in this run. The capped case is exercised end to end on the fixture and in `test/proposejudge.entitlement.test.ts`.
+- **Janitor was explored signed in.** The account's handle and join date are redacted in the current files (text replaced, screenshots blurred). AOL's run opened Chrome's first-run screen, which showed the device owner's name; that screenshot was removed and the name replaced in text.
 - **Free-tier models.** Output quality depends on which Flash model answered; under quota pressure, calls fall back to Flash-Lite (which answered most calls in the committed runs) and then to stubs. `cost.jsonl` shows which model answered each call. The judge and the proposer are the same model family, so the judge has a shared blind spot. `eval:judge` measures the judge only on single-fault items built from KB precedents.
 - **Only the most important screens are rebuilt as HTML.** The profile caps HTML generation (`htmlScreens` in `config/profiles.json`: 10 on the deep profile used for Luzia, 4 on the shallow profile used for Janitor and AOL), a free-tier budget; the rest are the real screenshots with tap areas, clickable but not editable, and not scored by QA. On Luzia that is 10 of 38, so its mean fidelity (0.72) is over those 10.
 - **Sparse accessibility trees.** React Native and Compose apps expose sparse trees: unlabeled icons and merged text nodes. Some elements are found by vision tap points or not at all.
 - **Mock fidelity** is judged by the QA metrics against one representative screenshot per screen. Animations, gestures and long lists beyond one scroll are not reproduced.
-- **Economics are ranges from public eCPM benchmarks** with a non-game haircut, **priced at US rates.** Luzia's users are mostly in Latin America, where a view earns about $0.0015–$0.003 (`ECON.grossPerViewUsd.LATAM`), roughly a sixth of the US. At LATAM rates, the text rewards that pass the gate here would cost more to serve than a view nets, so a production version would price and cap rewards per region. The ARPDAU on the details slide is a labelled scenario, not a forecast.
-- **The fixture is our own app.** It proves the pipeline end to end, but it is not evidence about the real apps.
+- **Economics are ranges from public eCPM benchmarks** with a non-game haircut, **priced at US rates.** Luzia's users are mostly in Latin America, where a view earns about $0.0015–$0.003 after the haircut (`ECON.grossPerViewUsd.LATAM` is $0.002–$0.004 gross), roughly a sixth of the US. At LATAM rates, the text rewards that pass the gate here would cost more to serve than a view nets, so a production version would price and cap rewards per region. The ARPDAU on the details slide is a labelled scenario, not a forecast.
+- **The fixture is our own app.** It proves the pipeline end to end, but it is not evidence about the real apps. Without a key its QA fix loop has nothing to do (every screen's best round is the first); the loop at work is in Luzia's QA report (s21, Favorite messages: 0.50 → 0.80 → 0.82 over two rounds).
+- **Cannibalization of a subscription is judged, not computed.** With packs, code compares a day of ad rewards with the cheapest pack. A subscription-only app (Luzia, Janitor) has no pack price, so that check falls to the rubric's cannibalization criterion.
+- **English-only heuristics.** Wall, decline and sign-up detection, and several judge gates, use English keyword rules. Luzia's Spanish and Portuguese UI would need a shared lexicon per language.
+- **Flow QA on image screens is mostly self-consistency.** On a screenshot screen the router is built from the same edges QA replays, so the flow score says more about the HTML screens than about the screenshots.
+- **OOC's block is recorded by hand** (`out/ooc/HUMAN_LOG.md`, from the device's logcat); the raw log was not committed.
 
 ---
+
+## How this was built
+
+With AI coding agents (Claude Code), which the brief allows. `docs/design/FINAL_PLAN.md` is the plan written before the build and `docs/BUILD_SPEC.md` the interface spec the build followed. Device work (emulator setup, installs, explore runs) ran on a Mac through a local Claude Code session following `docs/LOCAL_SETUP.md`; a person did every sign-in. `cost.jsonl` logs the pipeline's own model calls; the time and tokens spent on the coding agents themselves are not in it.
 
 ## Productionization sketch
 
@@ -227,8 +247,10 @@ Agents never message each other: stages share context only through typed, schema
 
   | Tier | Model calls | All-in |
   |---|---|---|
-  | Prospect scan (explore, understand, judged proposals, no mock) | ≈ $3–5 | ≈ $5 |
-  | Full pitch pack | ≈ $20–25, plus about 1.5 h of emulator time | ≈ $80–120, including 45–60 min of human review |
+  | Prospect scan (explore, understand, judged proposals, no mock) | ≈ $8 | ≈ $10 |
+  | Full pitch pack | ≈ $16, plus about 1.5 h of emulator time | ≈ $70–120, including 45–60 min of human review |
+
+  Model costs are from Luzia's token ledger priced at `claude-opus-5` list prices, one run of each stage (the repeated proposal and judge runs divided out), no prompt caching; `claude-sonnet-5` is about 40% of that.
 
   People are the dominant cost, so product effort goes into faster review.
 - **Sales and integration:**
@@ -256,11 +278,11 @@ src/judge/              gates, rubric, verdict (pure), judge + revisions, calibr
 src/slides/             captures of the patched mock, deck, PDF/PNG export, SDK snippet
 src/report/             out/index.html, the GitHub gallery (out/README.md), per-app NUMBERS.md and report pages
 kb/rewarded_ads_kb.md   the rewarded-ads knowledge base (chunk ids cited by proposals and the judge)
-eval/                   judge calibration items (read only by src/judge/calibrate.ts)
+eval/                   judge-cal/: calibration items (read by src/judge/calibrate.ts); app-intel.md, ground-truth.json: notes used to pick the deep app, never shown to the pipeline
 fixtures/credit-chat/   the adversarial fixture app used by the demo and the tests
 scripts/device.sh       Android SDK / AVD / boot / install / snapshot helper
 test/                   node:test suites (offline, stub mode), incl. boundaries and the fixture end to end
 cache/llm/              recorded model responses (replayable; no secrets)
-out/<app>/              every artifact per app (out/fixture is regenerated by `npm run demo`)
-docs/                   BUILD_SPEC (interfaces), design/ (plan + critique), LOCAL_SETUP, RECORDING_SCRIPT, SUBMISSION
+out/<app>/              every artifact per app (`npm run demo` writes the fixture app to out/demo/)
+docs/                   BUILD_SPEC (interfaces), design/FINAL_PLAN (the plan before the build), LOCAL_SETUP, research/ (mobile-mcp, device, prior art, Simula SDK)
 ```

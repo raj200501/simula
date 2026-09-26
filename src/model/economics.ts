@@ -78,10 +78,11 @@ export function deriveEconomy(e: Economy): Derived {
 /** Which cost-to-serve bucket a resource's unit falls in, from its own name/unit words. */
 export function cogsKindOf(r: { name: string; unit: string }): string | null {
   const s = `${r.name} ${r.unit}`.toLowerCase();
-  if (/image|photo|picture|art\b|avatar|video|animat|edit/.test(s)) return "image";
-  if (/voice|audio|minute|call|speech/.test(s)) return "voice";
-  if (/premium|reasoning|deep|advanced|pro model/.test(s)) return "text-premium";
-  if (/message|chat|reply|replies|question|prompt|answer|text|conversation|response|turn|use/.test(s)) return "text-cheap";
+  // Whole words only: "credits" is not an edit, "start" and "smart" are not art.
+  if (/\b(images?|photos?|pictures?|art|artwork|avatars?|videos?|animat\w*|edits?|editing)\b/.test(s)) return "image";
+  if (/\b(voice|audio|calls?|speech)\b/.test(s)) return "voice";
+  if (/\b(premium|reasoning|deep|advanced|pro model)\b/.test(s)) return "text-premium";
+  if (/\b(messages?|chats?|reply|replies|questions?|prompts?|answers?|text|conversations?|responses?|turns?|uses?|usage)\b/.test(s)) return "text-cheap";
   return null;
 }
 

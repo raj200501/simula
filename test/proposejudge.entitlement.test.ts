@@ -7,13 +7,13 @@ import path from "node:path";
 import { setLlmContext } from "../src/core/llm.ts";
 import { ROOT } from "../src/core/config.ts";
 import type { Candidates, ProductModel, Proposal } from "../src/core/schema.ts";
-import { proposalEconomics } from "../src/model/economics.ts";
+import { cogsKindOf, proposalEconomics } from "../src/model/economics.ts";
 import { loadModel } from "../src/model/understand.ts";
-import { propose } from "../src/propose/propose.ts";
+import { costFloor, propose } from "../src/propose/propose.ts";
 import { isConsumable, resolveAnchors } from "../src/propose/anchors.ts";
 import { codeGates, grounding, rewardCoherence } from "../src/judge/gates.ts";
 import { stubJudge } from "../src/judge/stub.ts";
-import { judgeAll, lockCost } from "../src/judge/judge.ts";
+import { judgeAll, judgeOnce, lockCost } from "../src/judge/judge.ts";
 import { calibrationItems, evalJudge } from "../src/judge/calibrate.ts";
 import { deriveEconomy, regimeOf } from "../src/model/economics.ts";
 import { quotaFromLimits } from "../src/model/quota.ts";
@@ -261,6 +261,36 @@ describe("reviewer-found holes in the judge", () => {
     assert.deepEqual(grounding(box, m).filter(x => /priority_15m/.test(x)), []);
     const counted = plant(q => { q.reward = { what: "5 priority replies", resource: "priority_replies", amount: 5, grantOn: "REWARD_VERIFIED" }; });
     assert.ok(grounding(counted, m).some(x => /reward resource "priority_replies" does not exist/.test(x)));
+  });
+
+  test("cost classes are whole words: credits are not image edits, start is not art", () => {
+    const k = (name: string) => cogsKindOf({ name, unit: "" });
+    assert.equal(k("Credits"), null);
+    assert.equal(k("Start task uses"), "text-cheap");
+    assert.equal(k("Smart replies"), "text-cheap");
+    assert.equal(k("AI Image credit"), "image");
+    assert.equal(k("Photo edits"), "image");
+    assert.equal(k("Deep Reasoning Trial"), "text-premium");
+  });
+
+  test("the declared cost class is a floor: a reward whose resource is image generation is priced as image", () => {
+    const p = plant(q => { q.reward = { ...q.reward, resource: "AI Image credit", amount: 2 }; q.assumptions = { ...q.assumptions, cogs: "text-cheap", cogsUnitsPerView: 1 }; });
+    const floored = costFloor(p, m);
+    assert.equal(floored.assumptions.cogs, "image");
+    assert.equal(floored.assumptions.cogsUnitsPerView, 2);
+    const dearer = plant(q => { q.assumptions = { ...q.assumptions, cogs: "voice", cogsUnitsPerView: 1 }; });
+    assert.equal(costFloor(dearer, m).assumptions.cogs, "voice", "never lowered");
+  });
+
+  test("a live judge call that fails falls back to the heuristic, which can hold a proposal but never ship it", async () => {
+    setLlmContext({ mode: "replay" }); // every call misses the cache and throws, as a dead API would
+    try {
+      const r = await judgeOnce(m, base, 0, "digest", "fallback-cap-test");
+      assert.equal(r.judgedBy, "stub");
+      assert.notEqual(r.verdict, "SHIP");
+    } finally {
+      setLlmContext({ mode: "stub" });
+    }
   });
 
   test("a revision cannot make the same reward cheaper to serve by relabelling it", () => {

@@ -295,7 +295,8 @@ program.command("note").description("log a manual step (goes into the trajectory
 
 program.command("demo").description("fixture app end to end with no device and no key (--llm stub unless given)")
   .action(async () => {
-    const g = { ...G(), app: "fixture", llm: G().llm || "stub" };
+    // Its own out-root (git-ignored) unless one is given, so the demo never rewrites the committed results.
+    const g = { ...G(), app: "fixture", llm: G().llm || "stub", outRoot: G().outRoot || path.join(ROOT, "out", "demo") };
     const b = base(g, { annotator: "heuristic" });
     for (const s of STAGES) {
       await runStage(s, b);

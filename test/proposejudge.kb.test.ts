@@ -13,6 +13,14 @@ describe("kb", () => {
     assert.ok(kb.text.includes("## Source index"), "the section after Appendix T is kept");
   });
 
+  test("nothing the model sees names a test app or the panel's own reference slides", () => {
+    for (const v of ["proposer", "judge"] as const) {
+      const text = loadKb(v).text;
+      assert.doesNotMatch(text, /\b(Luzia|JanitorAI|Janitor AI|OOC|AOL)\b/, `${v} KB names a test app`);
+      assert.doesNotMatch(text, /reference slide|\[assignment\]/i, `${v} KB cites the assignment's slides`);
+    }
+  });
+
   test("the judge KB also drops [JUDGE-6] and keeps the glossary after it", () => {
     const kb = loadKb("judge");
     assert.ok(!kb.text.includes("## Appendix T"));

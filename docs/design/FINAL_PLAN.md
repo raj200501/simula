@@ -1,5 +1,7 @@
 # Simula take-home: final plan
 
+> The plan as written before the build. Where the code differs, the code and `docs/BUILD_SPEC.md` win. The research notes and design drafts it cites were working files and are not in this repo.
+
 Written 2026-09-25, with about 48 hours left before the deadline.
 
 **Sources.** This plan combines three proposals: `design-mvp-80-20.md`, `design-rigor.md` and `design-reviewer-impact.md`. I checked their claims against:

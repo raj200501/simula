@@ -9,7 +9,7 @@ Version 1.0. Compiled 2026-09-25 for the Simula take-home. The PROPOSER retrieve
 - **[3p]**: third-party blog, review or forum. It is lower confidence and may be stale.
 - **[inf]**: derived or inferred by this KB. Treat it as a heuristic, not a fact.
 
-**Leakage rule.** Appendix T holds facts about the four TEST apps (OOC, JanitorAI, Luzia, AOL). The pipeline MUST drop Appendix T chunks whose `test-app` tag matches the target app. Product understanding for a target app has to come from exploring that app.
+**Leakage rule.** Appendix T holds facts about the four test apps. The pipeline MUST drop Appendix T chunks whose `test-app` tag matches the target app. Product understanding for a target app has to come from exploring that app.
 
 ---
 
@@ -243,7 +243,6 @@ Each entry gives: definition, why it works, real examples, the AI-chat analog, c
   - **ReelShort** check-in with a 7-day streak bonus plus rotating tasks that pay coins. [doc: ReelShort fandom]
   - **Character.AI Charms** quests: daily login (20), creating an intro video (30), posting to feed (30) and others. Charms can be spent on extra images or chats, skipping slow mode, or a 1-hour Ad Free Pass. [3p: https://www.roborhythms.com/character-ai-charms-explained/ ; doc: https://support.character.ai/hc/en-us/articles/43610534413211-Charms-FAQ]
   - **Discord Quests:** Video Quests and Play Quests (often 15 minutes of play) earn **Orbs**, launched globally 2025-07-14. Orbs redeem for Nitro credits, avatar decorations and profile effects. Discord reports a 16× increase in first-time Shop purchasers. [press: https://www.engadget.com/gaming/discord-launches-a-virtual-currency-162136575.html ; https://www.marketingdive.com/news/discord-strengthens-pitch-to-advertisers-with-new-orbs-virtual-reward/753332/]
-  - **Simula's Luzia reference slide** "Daily Tasks = Daily Monetization": sponsored games with the character, then a sponsor ad, then claim the reward. [assignment]
 - **Why it works:** it builds a daily habit (retention) *and* a predictable, capped inventory. It is proactive, not interruptive.
 - **Cannibalization:** Low.
 
@@ -283,7 +282,7 @@ Each entry gives: definition, why it works, real examples, the AI-chat analog, c
 **[TAX-X] Cross-cutting taxonomy notes.** [inf]
 - **Reactive (moment-of-need) archetypes:** 1, 3, 6, 10. Highest opt-in, but they interrupt a flow.
 - **Proactive (hub or daily) archetypes:** 5, 9, 12, 13, plus a refill hub. Lower intent, but zero interruption and a habit loop.
-- **Most strong programs combine one reactive and one proactive surface.** Simula's reference set does exactly this: (1) in-chat when free messages run out, (2) a home "Refills" hub, (3) Daily Tasks.
+- **Most strong programs combine one reactive and one proactive surface:** a reactive offer at the limit, plus a proactive hub or a daily loop.
 
 ---
 
@@ -386,7 +385,7 @@ Each entry gives: definition, why it works, real examples, the AI-chat analog, c
 1. **Moment of need (reactive).** The resource hits zero, or a gated action is tapped. Examples: out of messages, next episode locked, Pandora song search. It has the highest opt-in. Offer it inline at the blocked point, and never as a separate interruption. [inf; AdMob: offer "as soon as users exhausted their last life"; https://admob.google.com/home/resources/rewarded-ads-playbook/]
 2. **Post-action bonus.** After the user earns something (a check-in or a completed quest), offer "2× it." It has no interruption and a positive frame. [TAX-5]
 3. **Paywall-decline fallback.** On paywall dismissal, offer a small sample. [TAX-10]
-4. **Proactive hub.** A "Refills," "Free credits" or "Earn" entry on home or the store that is always open. AdMob recommends high-traffic surfaces such as the home page, which "100% of your users are guaranteed" to reach, and in-app stores. [doc: AdMob playbook] This is Simula Luzia slide 2.
+4. **Proactive hub.** A "Refills," "Free credits" or "Earn" entry on home or the store that is always open. AdMob recommends high-traffic surfaces such as the home page, which "100% of your users are guaranteed" to reach, and in-app stores. [doc: AdMob playbook]
 5. **Daily tasks or quests.** A habit loop with a bounded daily inventory. [TAX-9]
 6. **Pre-session sponsorship.** At session start, sponsor an upgraded session (Spotify, Duolingo). High completion.
 7. **Transition interstitial (rewarded interstitial).** At a natural break *after* a conversation or episode ends, with an intro screen and a "No." Never mid-response.
@@ -634,11 +633,11 @@ Format for each pattern: **anchor** (the scarce thing) · **trigger** · **rewar
 - **[AI-2] Proactive "Refills" hub.**
   - Anchor: any consumable. Trigger: an always-available home or store tile showing the remaining balance.
   - Reward: a smaller refill than [AI-1], with a daily cap. Cannibalization: low to medium.
-  - Simula: RWD from `MiniGameMenu` (entry=button). [Luzia reference slide 2: "non-paying users become serially monetized"]
+  - Simula: RWD from `MiniGameMenu` (entry=button).
 - **[AI-3] Daily Tasks with the character.**
   - Anchor: currency or credits plus a habit. Trigger: app open, via a Daily Tasks sheet or badge dot.
   - Reward: credits per task, 3–5 tasks per day. Cannibalization: low.
-  - Simula: RWD mini-games where the character plays along and the user can chat back during play. [Luzia slide 3]
+  - Simula: RWD mini-games where the character plays along and the user can chat back during play.
   - Analogs: Character.AI Charms quests, Discord Quests, ReelShort tasks.
 - **[AI-4] Premium-model boost ("Upgrade this reply").**
   - Anchor: model tiers sold in the subscription. Trigger: a "✨ Better reply" chip under a finished message, or regenerate on a premium model.
@@ -764,7 +763,7 @@ Format for each pattern: **anchor** (the scarce thing) · **trigger** · **rewar
 
 ### [JUDGE-6] Calibration set (for judge validation)
 - **Positives (expect SHIP):**
-  - Simula's three Luzia patterns: in-chat game after messages run out, the proactive Refills hub, and Daily Tasks with the character plus a sponsor. [assignment]
+  - For an AI chat app: an in-chat game after free messages run out, a proactive refill hub, and daily tasks with the character plus a sponsor.
   - Duolingo energy refill plus pre-lesson sponsorship.
   - Tapas 1 ad = 1 episode, up to 3 per day, 72 h.
   - Pandora on-demand session triggered by a song search.

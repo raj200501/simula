@@ -2,7 +2,7 @@
 
 Written 2026-09-25 for the Simula "App Monetization Agent" take-home. This is not a literature review. For each stage it lists what the published work offers and what to take from it, then gives a specific design with parameters and a TypeScript sketch.
 
-**Code:** `research/sota-sketches/` (absolute path: `/tmp/claude-0/-home-user-simula/25c848c5-fa91-54b9-9b9c-b7d1ed4ee763/scratchpad/research/sota-sketches/`). About 1,350 lines in 11 files. Typecheck is clean (`tsc --noEmit`, strict). Two offline test suites pass:
+**Code:** the sketches were throwaway prototypes and are not in this repo; what survived lives in `src/`. They were about 1,350 lines in 11 files. Typecheck is clean (`tsc --noEmit`, strict). Two offline test suites pass:
 - `selftest.ts` covers state hashing, candidate extraction, effect diffing, Hungarian matching, token measurement, screen comparison and dHash masking.
 - `simtest.ts` runs the real `Explorer` loop against a simulated credit-based chat app. It ends with `frontier_empty` after 44 steps and finds 9 states: 7 in-app plus 2 external surfaces (the Play billing sheet and the launcher). It never taps "Log out". It records the Play billing sheet as an external surface and attributes −30 credits to each sent message. It reaches the out-of-credits paywall through the drain probe.
 

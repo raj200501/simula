@@ -1,4 +1,4 @@
-// The rewarded-ad proposer (FINAL_PLAN §8, as amended by BUILD_SPEC and CRITIQUE T6/T9).
+// The rewarded-ad proposer (FINAL_PLAN §8, as amended by BUILD_SPEC).
 //
 // Inputs are ONLY the product model (already loaded), digest(m), a few key screenshots from the model
 // directory, and the KB. Two kinds of calls:
@@ -18,7 +18,7 @@ import { canonical, fileSha, save, sha256, writeText } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
 import type { StageCtx } from "../core/run.ts";
 import { digest } from "../model/digest.ts";
-import { proposalEconomics } from "../model/economics.ts";
+import { ECON, cogsKindOf, proposalEconomics } from "../model/economics.ts";
 import { kbSystemBlock } from "./kb.ts";
 import { elText } from "./anchors.ts";
 import { Breadth, LlmProposal, fromLlmProposal, normalizeStoryboard, toLlmProposal, verifyEvidence, type LlmIdea } from "./schemas.ts";
@@ -228,7 +228,7 @@ async function depth(c: StageCtx, m: ProductModel, dig: string, idea: LlmIdea, p
     });
     return finishProposal(fromLlmProposal(out, pid, 1), m);
   } catch (e) {
-    // One failed write-up must not sink the others (CRITIQUE T6).
+    // One failed write-up must not sink the others.
     trace("failure", { where: `propose:depth:${pid}`, error: String((e as Error)?.message ?? e).slice(0, 300) });
     return null;
   }
@@ -240,8 +240,22 @@ export function finishProposal(p: Proposal, m: ProductModel): Proposal {
   if (repaired) trace("recovery", { how: `storyboard of ${p.id} v${p.version} normalized to the 5 phases today/change/offer/ad/value` });
   const fixed = canonicalIds({ ...p, storyboard }, m);
   if (fixed.changes.length) trace("recovery", { how: `ids of ${p.id} v${p.version} written in the model's form: ${fixed.changes.slice(0, 6).join("; ")}` });
-  const q: Proposal = { ...fixed.p, evidence: verifyEvidence(fixed.p.evidence, m), economics: undefined };
+  const q: Proposal = { ...costFloor(fixed.p, m), evidence: verifyEvidence(fixed.p.evidence, m), economics: undefined };
   return Proposal.parse({ ...q, economics: proposalEconomics(q, m) });
+}
+
+/**
+ * The cost class the proposer declares is a floor, never a discount: if the reward's own resource names a
+ * dearer class ("AI Image credits" is image generation), that class is used. The judge's economics gate
+ * then prices the reward at what it really costs to serve.
+ */
+export function costFloor(p: Proposal, m: ProductModel): Proposal {
+  const r = p.reward.resource ? m.economy.resources.find(x => x.id === p.reward.resource) : undefined;
+  const named = cogsKindOf(r ? { name: r.name, unit: r.unit ?? "" } : { name: p.reward.resource ?? "", unit: "" });
+  const rank = (k: string | null | undefined) => (k ? ECON.cogsPerUnitUsd[k] ?? 0 : 0);
+  if (!named || rank(named) <= rank(p.assumptions.cogs)) return p;
+  trace("recovery", { how: `${p.id} v${p.version}: cost class raised from ${p.assumptions.cogs} to ${named} (the reward's resource is ${named})` });
+  return { ...p, assumptions: { ...p.assumptions, cogs: named as Proposal["assumptions"]["cogs"], cogsUnitsPerView: Math.max(p.assumptions.cogsUnitsPerView, p.reward.amount ?? 1) } };
 }
 
 /**

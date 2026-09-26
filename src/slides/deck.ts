@@ -1,5 +1,5 @@
 // deck.html: 1920x1080 sections in the order a product team reads them (FINAL_PLAN §10 as amended
-// by CRITIQUE E5/D6/T10). Pure string rendering from typed inputs; images are files next to the
+// by the review notes). Pure string rendering from typed inputs; images are files next to the
 // deck (img/, fonts/), so the page opens from file:// and prints to PDF unchanged.
 //
 // Visual grammar (shared by the recommendation, money and flow slides): one short headline with a

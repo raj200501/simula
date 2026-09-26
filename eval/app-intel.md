@@ -2,7 +2,7 @@
 
 Researched 2026-09-25 from app store listings (Google Play pages downloaded and parsed), help centers, the companies' own posts, press coverage, and Simula's public SDK packages and docs.
 
-> **Do not feed this file to the pipeline.** The assignment says "product understanding must come from the apps themselves." This file has two uses: (1) choosing which app to go deep on, and (2) serving as ground truth for measuring the explorer's recall and checking proposer quality. Keep it under `eval/` and never add it to agent prompts. Say this out loud in the recording; it shows good judgment.
+> **Do not feed this file to the pipeline.** The assignment says "product understanding must come from the apps themselves." This file has two uses: (1) choosing which app to go deep on, and (2) serving as ground truth for measuring the explorer's recall and checking proposer quality. Keep it under `eval/` and never add it to agent prompts.
 
 Confidence tags: **[doc]** = the company's own help center, store listing or post; **[3p]** = third-party review or blog; **[inf]** = my inference; **[verify]** = confirm on the device in the first manual pass.
 
