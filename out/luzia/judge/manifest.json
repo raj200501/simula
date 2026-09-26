@@ -1,15 +1,15 @@
 {
   "stage": "judge",
   "app": "luzia",
-  "runId": "ju0925-193035",
-  "gitSha": "f37f19c",
-  "startedAt": "2026-09-25T19:30:35.838Z",
-  "finishedAt": "2026-09-25T19:32:32.404Z",
+  "runId": "ju0926-060301",
+  "gitSha": "0313056",
+  "startedAt": "2026-09-26T06:03:01.285Z",
+  "finishedAt": "2026-09-26T06:05:29.055Z",
   "status": "ok",
   "inputs": [
     {
       "path": "proposals/candidates.json",
-      "sha256": "95a5066fe1a43ea8912d21c0be8e26ff640ed7dc31b849f6baadffe63ce0866a"
+      "sha256": "c9378d43d97c37ea46ff6293305fdd39028fcfa99bba398080fc5bcb6a3d80c0"
     }
   ],
   "outputs": [
@@ -19,7 +19,7 @@
     "proposals/revisions.json"
   ],
   "llm": {
-    "calls": 19,
+    "calls": 15,
     "cached": 0,
     "usd": 0,
     "mode": "record"
