@@ -462,10 +462,10 @@
         },
         {
           "gate": "economics",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+          "evidence": "15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end."
         },
         {
           "gate": "structure",
@@ -493,116 +493,118 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "News feed content is rated for general audiences and adheres to SFW standards."
+          "evidence": "The placement is on s11 (Account Menu Sidebar) which is dedicated to account settings, saved articles, and support: 'User opens the Account Menu Sidebar and views account options.'"
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The reward is in-app ad-free access, not cash, gift cards, or clicks."
+          "evidence": "The reward is an in-app ad suppression entitlement: 'Play a 15-second game to clear all ads from your news feed for a short sprint.'"
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The offer uses gain framing (ad-free sprint) and provides a clear decline option."
+          "evidence": "The copy uses a positive gain frame with standard CTAs: 'Go Ad-Free for 15 Minutes' / 'Start Sprint' / 'No thanks'."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "User initiates the flow by tapping a dedicated item in the sidebar, followed by the invitation confirmation."
+          "evidence": "The user explicitly initiates the flow via the sidebar button and confirms via the offer CTA: 'Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward.' CTA: 'Start Sprint'."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The proposal states: 'Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward.'"
+          "evidence": "Both the required play duration and the entitlement length are clearly stated prior to engagement: 'Play a 15-second game to clear all ads from your news feed for a short sprint.'"
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The proposal includes an explicit 'No thanks' button in the invitation flow."
+          "evidence": "A standard, unpenalized decline action is provided: 'decline': 'No thanks'."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer is triggered from the Account Menu Sidebar, not during article reading."
+          "evidence": "The trigger occurs outside active content consumption: 'User opens the Account Menu Sidebar and views account options.'"
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Eligibility is explicitly set to 'Non-paying users'."
+          "evidence": "Gated strictly to non-paying users: 'Non-paying users currently exposed to standard ad density.'"
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "Triggering from the sidebar menu (m2/m10) is a passive, proactive discovery rather than a reactive moment-of-need when ads are perceived as intrusive.",
-          "score": 2
+          "evidence": "The offer is placed inside s11 (Account Menu Sidebar) as a proactive option ('User opens the Account Menu Sidebar and views account options') rather than at a moment of acute reader friction or blocked reading intent.",
+          "score": 3
         },
         {
           "criterion": "product-integrity",
-          "evidence": "The time-boxed ad suppression is a clean, non-intrusive value exchange that does not interfere with reading flow.",
+          "evidence": "The proposal introduces an additive mechanic ('Ad-free Sprint') that temporarily removes ads without degrading the free reading experience: 'A time-boxed entitlement that suppresses all native and banner advertisements across news feeds and article pages.'",
           "score": 4
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "15-minute time-boxing is a low-risk, high-intent sampling format; AOL has no clearly defined subscription tier to cannibalize.",
+          "evidence": "The entitlement is time-boxed to 15 minutes, capped at 3 times per day with a 60-minute cooldown, and tested against a holdout: 'The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampling effect'.",
           "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "COGS is effectively zero for ad-suppression, which is well below the US revenue per view ($0.009–$0.015).",
-          "score": 5
+          "evidence": "Code calculation shows: '15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end.' Suppressing display ads produces an opportunity cost ($0.0188) that exceeds the gross revenue of a single rewarded completion ($0.0090–$0.0150).",
+          "score": 2
         },
         {
           "criterion": "reach",
-          "evidence": "The trigger is a menu item in the Account sidebar, which has occasional reach compared to the core Home News Feed.",
+          "evidence": "The Account Menu Sidebar (s11 / m10) has reach=occasional in the digest: 'User opens the sidebar menu to access account settings, saved articles, contacts, and support.' It sits outside the core feed browsing loop.",
           "score": 2
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps directly to SIM-RWD; implementation requires simple UI updates in the sidebar and a flag for the ad-server.",
-          "score": 5
+          "evidence": "Maps cleanly to SIM-RWD using a button entry point in s11, triggering standard client-side ad suppression logic for a 15-minute window: 'unit': 'SIM-RWD', 'entry': 'button'.",
+          "score": 4
         },
         {
           "criterion": "specificity",
-          "evidence": "References sidebar menu s11 and the Home News Feed s02 correctly using established UI patterns.",
-          "score": 4
+          "evidence": "References s11, s02, Taboola ad sections, and element IDs like e12 ('Home'), but the 'Ad-Free Sprint' concept is a standard non-game template that does not tap into unique AOL content mechanics.",
+          "score": 3
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Daily cap of 3 with a 60-minute cooldown effectively prevents spam.",
-          "score": 4
+          "evidence": "Explicitly bounded with reasonable limits and a proactive placement that prevents nagging: 'perDay': 3, 'cooldownMin': 60.",
+          "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Includes a clear primary metric, relevant guardrails, and a 21-day user-level holdout plan.",
-          "score": 5
+          "evidence": "Specifies guardrails and a holdout ('User-level holdout, 10% share, 21 days'), but the primary KPI ('Ad-free Sprint sessions started') tracks feature adoption rather than net monetization or reader ARPU.",
+          "score": 3
         }
       ],
-      "weighted": 3.65,
+      "weighted": 3.3,
       "requiredChanges": [
-        "Move or duplicate the 'Ad-Free Sprint' entry point to the Home News Feed (e.g., as a native component near Taboola ads) to capture users when they are actually reading news and seeing advertisements.",
-        "Clarify how the ad-suppression will be enforced (e.g., via a global variable or remote config) to ensure the 15-minute timer consistently removes banner/native ads."
+        "Shorten the ad-free duration (e.g., from 15 minutes to 5–10 minutes) or switch to an 'ad-light' suppression model so the opportunity cost of suppressed display impressions does not exceed the revenue generated by the rewarded view ($0.0090–$0.0150).",
+        "Move or duplicate the entry point onto core-loop reading surfaces (such as an inline chip between feed sections or at the bottom of an article) instead of isolating it within the occasional Account Menu Sidebar (s11).",
+        "Change the primary KPI from feature starts ('Ad-free Sprint sessions started') to net ARPU / total ad revenue per user to properly capture the net margin impact."
       ],
-      "topConcern": "The current trigger (Account Menu Sidebar) is buried and disconnected from the moment of friction (reading ads). Placing the entry point where the ads actually appear (the feed) would significantly improve value-moment fit and reach.",
+      "topConcern": "The opportunity cost of suppressing 15 minutes of high-density display and native ads ($0.0188) exceeds the revenue generated by one completed rewarded view ($0.0090–$0.0150), leading to negative unit economics.",
       "verdict": "REVISE",
       "reasons": [
-        "value-moment-fit scored 2 (< 3)",
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 2 (< 3)",
         "reach scored 2 (< 3)",
-        "weighted 3.65 < 3.8"
+        "weighted 3.3 < 3.8"
       ],
       "judgedBy": "llm"
     },
@@ -610,6 +612,191 @@
       "proposalId": "P2",
       "version": 2,
       "round": 1,
+      "gates": [
+        {
+          "gate": "schema",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "parses as a Proposal"
+        },
+        {
+          "gate": "grounding",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "every referenced id exists; new ids are declared in the patch"
+        },
+        {
+          "gate": "label",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "declares new mechanic \"Ad-free Sprint\""
+        },
+        {
+          "gate": "already-exists",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad of this format on this surface today"
+        },
+        {
+          "gate": "policy-lint",
+          "pass": true,
+          "by": "code",
+          "severity": "policy",
+          "evidence": "no cash-like reward, incentivized click/install or 'support us' copy"
+        },
+        {
+          "gate": "economics",
+          "pass": false,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "10 ad-free minutes give up about 10 display impressions ($0.0125 at $0.00125 each), more than one view nets ($0.0063) at the low end."
+        },
+        {
+          "gate": "structure",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface"
+        },
+        {
+          "gate": "reward-coherence",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "consumables granted as amounts; entitlements as a time box or a number of uses"
+        },
+        {
+          "gate": "not-for-account-wall",
+          "pass": true,
+          "by": "code",
+          "severity": "fixable",
+          "evidence": "no ad in place of creating an account"
+        },
+        {
+          "gate": "sfw",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The news feed contains general category news (Entertainment, Local, Sports, Business) and the proposal offers ad-free reading."
+        },
+        {
+          "gate": "no-incentivized-action",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The reward is for playing a mini-game to gain a time-boxed ad-free session, not for clicking ads, installing, or rating."
+        },
+        {
+          "gate": "no-loss-framing",
+          "pass": true,
+          "by": "llm",
+          "severity": "policy",
+          "evidence": "The design uses gain-framing ('Enjoy your news', 'Go Ad-Free') and provides a clear 'Keep reading' decline button."
+        },
+        {
+          "gate": "explicit-opt-in",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The user taps an explicit 'Go Ad-Free' button before the ad starts."
+        },
+        {
+          "gate": "disclosed",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The proposal states: 'Play a 15-second game to remove all ads for 10 minutes.'"
+        },
+        {
+          "gate": "free-decline",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The decline option is 'Keep reading' which keeps the user in the feed without penalty."
+        },
+        {
+          "gate": "no-stream-interrupt",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "The ad is placed in the feed (s13) or at the end of an article (s03), not during a stream."
+        },
+        {
+          "gate": "not-for-subscribers",
+          "pass": true,
+          "by": "llm",
+          "severity": "fixable",
+          "evidence": "Eligibility is explicitly limited to 'Non-paying users currently exposed to standard native and banner ad density.'"
+        }
+      ],
+      "scores": [
+        {
+          "criterion": "value-moment-fit",
+          "evidence": "News readers are interrupted by ads in the feed; removing those ads for 10 minutes creates immediate, tangible value for a reader at the moment of peak friction.",
+          "score": 5
+        },
+        {
+          "criterion": "product-integrity",
+          "evidence": "The proposal replaces ads with content directly in the feed; it does not degrade the article content or force transitions.",
+          "score": 5
+        },
+        {
+          "criterion": "cannibalization-safety",
+          "evidence": "The reward is time-boxed (10 mins) and capped (3/day), ensuring heavy readers still encounter ads.",
+          "score": 4
+        },
+        {
+          "criterion": "unit-economics",
+          "evidence": "The code-calculated cost to serve (lost impressions) exceeds the net revenue from the ad view, making the sprint as currently configured net-negative.",
+          "score": 2
+        },
+        {
+          "criterion": "reach",
+          "evidence": "The News Feed is the core loop of the AOL application.",
+          "score": 5
+        },
+        {
+          "criterion": "feasibility",
+          "evidence": "The proposal maps to SIM-RWD units and is a standard UI element implementation.",
+          "score": 4
+        },
+        {
+          "criterion": "specificity",
+          "evidence": "Uses app-specific screens like 'News Feed Home' (s13) and integrates near existing elements like the Taboola section (e46).",
+          "score": 5
+        },
+        {
+          "criterion": "frequency-fatigue",
+          "evidence": "Caps are set to 3 per day with a 60-minute cooldown, which is conservative and prevents nagging.",
+          "score": 5
+        },
+        {
+          "criterion": "measurability",
+          "evidence": "Defines primary metric, guardrails, and specifies a 10% user-level holdout for 28 days.",
+          "score": 5
+        }
+      ],
+      "weighted": 4.45,
+      "requiredChanges": [
+        "Reduce the Ad-Free Sprint duration from 10 minutes to 5 minutes to align the value of the suppressed impressions with the revenue generated by the ad view.",
+        "Add a 'Get AOL Plus' or 'Go Ad-Free Forever' contrast line to the grant or offer screen to explicitly connect the temporary sprint to a long-term subscription upsell."
+      ],
+      "topConcern": "The unit economics are currently negative; 10 minutes of ad-free reading likely suppresses more ad revenue than a single 15-second rewarded ad view generates.",
+      "verdict": "REVISE",
+      "reasons": [
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 2 (< 3)"
+      ],
+      "judgedBy": "llm"
+    },
+    {
+      "proposalId": "P2",
+      "version": 3,
+      "round": 2,
       "gates": [
         {
           "gate": "schema",
@@ -679,122 +866,121 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "AOL is a general news app; the proposal targets news feeds and article views."
+          "evidence": "The AOL mobile app content, including the news feed and article pages, is rated as general news reading. The proposal targets non-paying users within these feeds, which are standard SFW surfaces."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The reward is '15 minutes of ad-free reading'; there is no incentive for clicks, installs, or external actions."
+          "evidence": "The reward is ad-free reading, which is an in-app entitlement and not a cash, gift card, or external incentive. Users are not incentivized to click or download."
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "The proposal uses gain framing ('Go Ad-Free for 15 Minutes')."
+          "evidence": "The proposal uses gain framing: 'Play a 15-second game to remove ads for 5 minutes.' There is no hostage framing or confirmation shaming."
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The user must tap 'Start Sprint' on the invitation screen."
+          "evidence": "The proposal includes an inline card with a 'Play 15s to Go Ad-Free' CTA, requiring an explicit user tap to initiate."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The offer explicitly states: 'Play a 15-second game to clear all ads... for a short sprint'."
+          "evidence": "The proposal states the required action ('Play a 15-second game') and the exact reward ('5 minutes of ad-free reading') in the offer UI."
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "The proposal states the decline option is 'No thanks' (standard Simula behavior)."
+          "evidence": "The offer UI includes a clear decline CTA ('Keep reading') that returns the user to the feed immediately with no penalty."
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "AOL content is static text/article reading; no live streams or AI chats are interrupted."
+          "evidence": "The unit is placed as an inline feed card and an article chip, not in the middle of a streaming interaction."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Eligibility is restricted to 'Non-paying users currently exposed to standard ad density'."
+          "evidence": "The proposal specifies eligibility for 'Non-paying users currently exposed to standard native and banner ad density.'"
         },
         {
           "gate": "portfolio-distinct",
           "pass": true,
           "by": "code",
           "severity": "fixable",
-          "evidence": "distinct from P3 (surface, reward, archetype family; offer copy overlap < 0.7)"
+          "evidence": "the first SHIP of the portfolio"
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "This is a proactive 'sponsored session' pattern (TAX-2) which fits the news reading rhythm well, though AOL does not have a hard ad-wall today. It provides utility by removing frequent native ad units (e47).",
+          "evidence": "Users browsing the News Feed (s13) are in a 'lean back' reading session where removing interruptions is a high-value, immediate need.",
           "score": 4
         },
         {
           "criterion": "product-integrity",
-          "evidence": "The implementation disables specific Taboola units (e47-e50) via remote config. This feels native and preserves the user flow, though it requires precise UI cleanup to prevent layout gaps where ads were removed.",
+          "evidence": "Ad-free reading is a standard and native premium feature. Time-boxing the entitlement preserves the core ad-supported product model.",
           "score": 4
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "15 minutes is a tight time-box, limiting the 'free ride' potential. Caps (3/day) and the 60m cooldown further mitigate the risk of devaluing the ad-supported reading experience.",
+          "evidence": "The 5-minute time box and 3-per-day cap are highly restrictive, limiting the risk of replacing a permanent subscription with ad-views.",
           "score": 4
         },
         {
           "criterion": "unit-economics",
-          "evidence": "The reward has zero COGS and provides a positive (if smaller than non-Sprint) value exchange, assuming user-level holdouts validate that revenue lost from 15 minutes of ad impressions is offset by retention gains.",
-          "score": 4
+          "evidence": "The provided code suggests a COGS of $0.0063 per view against $0.0090 revenue, making it profitable but tighter than the 30% margin criterion for a 5-point score.",
+          "score": 3
         },
         {
           "criterion": "reach",
-          "evidence": "Native ads are frequent in AOL's feed (s02, s03). By triggering near ad units, the offer reaches the majority of DAU.",
-          "score": 4
-        },
-        {
-          "criterion": "feasibility",
-          "evidence": "The proposal uses standard SIM-RWD units and remote config toggles to control ad rendering; the implementation footprint is minimal.",
+          "evidence": "The trigger is placed in the News Feed Home (s13), which is the app's core loop and accessed during every visit.",
           "score": 5
         },
         {
+          "criterion": "feasibility",
+          "evidence": "Uses standard SIM-RWD units with established patterns for native feed integration.",
+          "score": 4
+        },
+        {
           "criterion": "specificity",
-          "evidence": "References specific AOL elements like the 'Account Menu Sidebar' (s11) and Taboola native ad units (e47, e48, e49, e50) by ID.",
+          "evidence": "Proposal references 'Taboola advertising sections' (e46) and 'AOL Plus', using relevant terminology from the AOL product digest.",
           "score": 4
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "Strict frequency caps (3/day) and a 60-minute cooldown prevent 'nagging' and keep the sprint feature feeling like a treat rather than an obligation.",
+          "evidence": "Includes a 3-per-day cap and 60-minute cooldown, which prevents nagging and habituation.",
           "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Primary metric (sessions started), guardrails (CTR, D7), and a 21-day user-level holdout provide a robust experimental framework.",
+          "evidence": "Includes a clearly defined holdout (10% user-level) and tracks both ad revenue and D30 retention as guardrails.",
           "score": 5
         }
       ],
-      "weighted": 4.2,
+      "weighted": 4.1,
       "requiredChanges": [
-        "Add a guardrail to monitor 'Articles read per session' and 'Ad-Supported Impression volume', as removing ad units for 15 minutes may impact inventory volume significantly for power users.",
-        "Specify that the 'ne2' countdown timer badge UI must be implemented to gracefully collapse without shifting the 'Home' title layout when the timer expires.",
-        "Define a fallback for the Ad-Free Sprint trigger (e.g., if a user triggers the sprint but no Taboola ads are currently loading, ensure the '15 minutes' still activates)."
+        "Verify if 'AOL Plus' exists in the product model; if it is unconfirmed, replace 'Go Ad-Free with AOL Plus' with generic language regarding premium subscriptions to avoid misleading users.",
+        "Ensure the countdown badge in the UI (ne3) is visually distinct from core app navigation to avoid confusion."
       ],
-      "topConcern": "The potential loss of native ad inventory volume during peak usage is the highest risk; if 15-minute sprints are too frequent for power readers, revenue degradation could exceed the retention uplift.",
+      "topConcern": "The proposal includes an explicit reference to 'AOL Plus' as an upgrade path, but the product digest flags this as an 'open question' that is not verified. This could be a misleading claim if the service doesn't exist.",
       "verdict": "SHIP",
       "reasons": [
-        "weighted 4.2 >= 3.8, every criterion >= 3, all gates pass"
+        "weighted 4.1 >= 3.8, every criterion >= 3, all gates pass"
       ],
       "judgedBy": "llm"
     },
@@ -1024,10 +1210,10 @@
         },
         {
           "gate": "economics",
-          "pass": true,
+          "pass": false,
           "by": "code",
           "severity": "fixable",
-          "evidence": "reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view"
+          "evidence": "15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end."
         },
         {
           "gate": "structure",
@@ -1055,120 +1241,116 @@
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Proposal is for AOL news reading application, a general news feed service, and the ad surface is SFW."
+          "evidence": "Users interact with the Daily Streak card in the Account Sidebar (s11) to earn credits, or tap 'Go Ad-Free' in Article Details (s03) to redeem credits for ad-free reading."
         },
         {
           "gate": "no-incentivized-action",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Reward is for game play/viewing, not for clicks or installs; currency is in-app and non-transferable."
+          "evidence": "Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading!"
         },
         {
           "gate": "no-loss-framing",
           "pass": true,
           "by": "llm",
           "severity": "policy",
-          "evidence": "Proposal uses positive gain framing ('Earn News Credits') rather than loss framing."
+          "evidence": "Title: 'Earn News Credits', Body: 'Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading!', cta: 'Play Now', decline: 'No thanks'"
         },
         {
           "gate": "explicit-opt-in",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "User explicitly interacts with 'Daily Reader Streak' card or 'Go Ad-Free' button to initiate the rewarded flow."
+          "evidence": "User taps Claim to start the rewarded ad flow."
         },
         {
           "gate": "disclosed",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Proposal discloses 'Play a 15-second game with AOL' before the ad plays."
+          "evidence": "Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading!"
         },
         {
           "gate": "free-decline",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Offer card includes a 'No thanks' button as standard."
+          "evidence": "cta: 'Play Now', decline: 'No thanks'"
         },
         {
           "gate": "no-stream-interrupt",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Triggers are sidebar buttons or article buttons, which are user-initiated entry points, not mid-content interruptions."
+          "evidence": "redemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode."
         },
         {
           "gate": "not-for-subscribers",
           "pass": true,
           "by": "llm",
           "severity": "fixable",
-          "evidence": "Proposal explicitly states 'Offers are gated to non-subscribers'."
-        },
-        {
-          "gate": "portfolio-distinct",
-          "pass": true,
-          "by": "code",
-          "severity": "fixable",
-          "evidence": "the first SHIP of the portfolio"
+          "evidence": "Non-signed-in users and signed-in non-subscribers who have not claimed today's reward."
         }
       ],
       "scores": [
         {
           "criterion": "value-moment-fit",
-          "evidence": "News readers encounter Taboola ads; offering an ad-free session is the direct solution to that user pain point.",
-          "score": 5
+          "evidence": "Credits are redeemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode.",
+          "score": 4
         },
         {
           "criterion": "product-integrity",
-          "evidence": "Ad-free reader mode is a natural value-add for a news app; embedding entry points in the sidebar and article footer is non-intrusive.",
-          "score": 5
+          "evidence": "A habit-building virtual currency earned through daily streaks and rewarded ads. Credits are redeemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode.",
+          "score": 4
         },
         {
           "criterion": "cannibalization-safety",
-          "evidence": "15-minute sessions are highly time-boxed and require active user effort, making them a 'taste' rather than a substitute for a full subscription.",
+          "evidence": "The reward is a small, time-boxed sample of ad-free reading (15m) that provides a 'taste' of premium value, encouraging upgrade intent without giving away unlimited ad-free access. Offers are gated to non-subscribers.",
           "score": 5
         },
         {
           "criterion": "unit-economics",
-          "evidence": "Cost to serve is nil; revenue per view ~$0.012; reward is highly profitable.",
-          "score": 5
+          "evidence": "15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end.",
+          "score": 1
         },
         {
           "criterion": "reach",
-          "evidence": "Article Detail Pages (s03) are a core loop location. Sidebar (s11) is used for account settings.",
-          "score": 4
+          "evidence": "Users interact with the Daily Streak card in the Account Sidebar (s11) to earn credits, or tap 'Go Ad-Free' in Article Details (s03)",
+          "score": 3
         },
         {
           "criterion": "feasibility",
-          "evidence": "Maps directly to SIM-RWD on existing UI elements (article buttons, sidebar).",
-          "score": 5
+          "evidence": "unit: SIM-RWD, entry: button, gamePartner: AOL, minPlaySec: 15",
+          "score": 4
         },
         {
           "criterion": "specificity",
-          "evidence": "References 'Article Details' (s03), 'Account Menu Sidebar' (s11), and 'News Credits' specific to the AOL reader context.",
+          "evidence": "AOL News Credits & Ad-Free Mode... Article Details (s03)... Account Sidebar (s11)... TEMU in Taboola advertising section",
           "score": 4
         },
         {
           "criterion": "frequency-fatigue",
-          "evidence": "3 per day limit with 30m cooldown prevents spamming.",
+          "evidence": "perDay: 3, cooldownMin: 30",
           "score": 5
         },
         {
           "criterion": "measurability",
-          "evidence": "Clear KPI, guardrails, and 10% holdout plan.",
+          "evidence": "primary: D7 Retention, guardrails: [Average Sessions Per DAU, Paid Subscription Conversion Rate], holdout: User-level randomization, 10% share, 28-day duration",
           "score": 5
         }
       ],
-      "weighted": 4.8,
+      "weighted": 3.85,
       "requiredChanges": [
-        "Define 'Ad-Free Reader Mode' clearly in the UI to specify that it suppresses the 'Taboola' native/banner advertising units mentioned in the digest."
+        "Shorten the duration of the Ad-Free Reader Mode session from 15 minutes to 5 minutes to reduce the display ad opportunity cost.",
+        "Increase the required number of News Credits needed to unlock the ad-free session so that it requires multiple rewarded ad views to break even.",
+        "Introduce a strict daily limit on the total number of ad-free sessions a user can redeem in a single day."
       ],
-      "topConcern": "Ensure that the ad-free session does not inadvertently hide critical UI elements or cause layout shifts when Taboola ads are removed.",
-      "verdict": "SHIP",
+      "topConcern": "The current unit economics are negative, as a 15-minute ad-free session results in a $0.0187 loss of display ad revenue, which exceeds the $0.0090–$0.0150 gross revenue generated by a single rewarded view.",
+      "verdict": "REVISE",
       "reasons": [
-        "weighted 4.8 >= 3.8, every criterion >= 3, all gates pass"
+        "fixable gate failed: economics (code)",
+        "unit-economics scored 1 (< 3)"
       ],
       "judgedBy": "llm"
     }
@@ -1183,17 +1365,17 @@
     },
     {
       "proposalId": "P2",
-      "version": 2,
+      "version": 3,
       "verdict": "SHIP",
-      "weighted": 4.2,
-      "summary": "SHIP at 4.2 (v2 after 1 revision)."
+      "weighted": 4.1,
+      "summary": "SHIP at 4.1 (v3 after 2 revisions)."
     },
     {
       "proposalId": "P3",
       "version": 2,
-      "verdict": "SHIP",
-      "weighted": 4.8,
-      "summary": "SHIP at 4.8 (v2 after 1 revision)."
+      "verdict": "REJECT",
+      "weighted": 3.85,
+      "summary": "REJECT after 1 revision: revision stalled (weighted -0.15, below +0.2) with the same gate failures. Top concern: economics (code): 15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end."
     }
   ]
 }

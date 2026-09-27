@@ -22,8 +22,8 @@ Code owns control flow, state identity, arithmetic and verdicts. Models answer n
 So on Luzia, code prices rewards by what they cost to serve against what a view earns, not by an in-app exchange rate.
 
 **What shipped** (every idea, rejected ones included, is in `out/<app>/proposals/judgments.md`; the flows are in [`out/README.md`](out/README.md)):
-- **Luzia, 1 of 5:** on the Animate tool, play a 15-second game to skip the rendering queue at peak times. It began as a free video render, which costs about four times what a view nets; the judge sent it back and the revision found a reward that costs nothing to serve.
-- **AOL, 2 of 3:** fifteen minutes of ad-free reading for one opt-in game, and a daily reader streak that earns ad-free time. AOL has nothing scarce, so both are product changes.
+- **Luzia, 1 of 5:** on the Animate tool, play a 15-second game to skip the rendering queue at peak times. It began as a free video render, which costs about four times what a view nets; the judge sent it back and the revision found a reward that costs nothing to serve. **Its premise is an assumption, not an observation:** as a guest the explorer could not upload a photo (that opens the photo library, out of scope), so it never saw a render or a queue. The judge said so in round one and was talked round by the revision's promise; checking the queue with Luzia comes first.
+- **AOL, 1 of 3:** a few ad-free minutes for one opt-in game. AOL earns from display ads (8 placements), so code prices ad-free time at the impressions it gives up; the judge sent the idea back from 15 minutes to 10 to 5, where one rewarded view just covers them. A reading streak that paid in 15 ad-free minutes was rejected on the same numbers.
 - **Janitor, 0 of 3:** every reward cost more to serve than a view earns (swipes on frontier models, larger context), or failed the content-safety check.
 
 ---
@@ -101,7 +101,7 @@ Useful flags:
 | Flag | Effect |
 |---|---|
 | `--llm record` (default) | Use the cache; call the model on a miss |
-| `--llm replay` | Cache only, no key needed |
+| `--llm replay` | Cache only, no key needed (reproduces propose → slides; see Cost, trajectory, HUMAN_LOG) |
 | `--llm stub` | No model calls at all |
 | `--llm live` | Always call the model |
 | `--out-root <dir>` | Write outputs under `<dir>` |
@@ -121,7 +121,7 @@ Useful flags:
 |---|---|
 | Node | **Node 22+ with npm.** Not pnpm: its layout breaks mobile-mcp's `mobilecli` lookup, and `npm run doctor` checks for this |
 | LLM key (only for `--llm record/live`) | **`GEMINI_API_KEY`**: a free Google AI Studio key, which is what this submission ran on. **Or `ANTHROPIC_API_KEY`**. The provider is picked from whichever key is set (`SIMULA_PROVIDER` forces one) |
-| Models | **Gemini:** configured as `gemini-3.8-flash` for synthesis, HTML, QA fixes, proposals and judging, and `gemini-3.5-flash-lite` for per-screen annotation. When a model is busy (503) or out of its daily quota, the call moves along `gemini-3.7-flash` → `gemini-3.6-flash` → `gemini-3.5-flash` → `gemini-3-flash-preview` → `gemini-2.5-flash` → `gemini-3.1-flash-lite` → Flash-Lite (each free model has its own daily quota). **In the committed runs the free Flash quotas were mostly spent, so about 9 in 10 live calls were answered by Flash-Lite** (`gemini-3.5-flash-lite`, `gemini-3.1-flash-lite`); `cost.jsonl` names the model for every call. **Claude:** `claude-opus-5` for everything |
+| Models | **Gemini:** configured as `gemini-3.8-flash` for synthesis, HTML, QA fixes, proposals and judging, and `gemini-3.5-flash-lite` for per-screen annotation. When a model is busy (503) or out of its daily quota, the call moves along `gemini-3.7-flash` → `gemini-3.6-flash` → `gemini-3.5-flash` → `gemini-3-flash-preview` → `gemini-2.5-flash` → `gemini-3.1-flash-lite` → Flash-Lite (each free model has its own daily quota). **In the committed runs the free Flash quotas were mostly spent, so about 8 in 10 live calls were answered by Flash-Lite** (3 in 4 outside per-screen annotation, which uses it by design) (`gemini-3.5-flash-lite`, `gemini-3.1-flash-lite`); `cost.jsonl` names the model for every call. **Claude:** `claude-opus-5` for everything |
 | Model overrides | `SIMULA_MODEL`, `SIMULA_MODEL_FAST`, `SIMULA_MODEL_FALLBACKS` (comma list), `SIMULA_RPM`, `SIMULA_BUDGET_USD`, `SIMULA_LLM` |
 | Free-tier limits | About **20 requests per day per Flash model** (resets at midnight Pacific), plus per-minute limits. The ledger records the model that actually answered. When every model is out of quota, the stage falls back to its stub and marks it. Re-running the next day reuses every cached call |
 | Android | Android SDK `platform-tools`, `emulator` and `system-images;android-35;google_apis_playstore;arm64-v8a`. AVD `simula_pixel_8_api35` (Pixel 8 profile, Android 15, Play Store). Java 17+. `bash scripts/device.sh setup\|boot\|install\|versions` |
@@ -200,7 +200,7 @@ Agents never message each other: stages share context only through typed, schema
   - latency;
   - whether it came from cache.
 
-  The Gemini free tier bills $0, but tokens are still logged, so the ledgers can be priced: at `claude-opus-5` list prices with no prompt caching, Luzia's ledger (every run, including the repeated proposal and judge runs) comes to about $47, Janitor's $22 and AOL's $20. Cached calls replay at no cost, so `--llm replay` reproduces a run without a key.
+  The Gemini free tier bills $0, but tokens are still logged, so the ledgers can be priced: at `claude-opus-5` list prices with no prompt caching, Luzia's ledger (every run, including the repeated proposal and judge runs) comes to about $47, Janitor's $22 and AOL's $20. Cached calls replay at no cost: with no key, `--llm replay` reproduces `propose`, `judge`, `eval-judge` and `slides` for all three apps from the committed outputs, verdicts unchanged. Explore, understand, mock and QA outputs are committed as recorded; their code and the privacy-redacted screenshots changed after those runs, so their cache keys no longer match: replaying them falls back to the stubs, so use `--out-root` to keep the committed outputs intact.
 - **Trajectory.** `trace.jsonl` records every decision, failure, recovery, budget stop, human step and stop reason. `trajectory.md` renders it (phases, discovery over time, failures paired with recoveries, autonomy ratio). Each stage's `manifest.json` pins its inputs by sha256.
 - **HUMAN_LOG.** Anything a person did goes into `out/<app>/HUMAN_LOG.md` and the trace, through `npm run note -- --app <id> "…"`: a sign-in, a blocked app, a re-run after a code fix. Edits to the product model would go through `model/overrides.json` (a JSON-merge patch keyed by item id, re-applied on every load and logged as a human step); none of the committed models has one. The only hand edits to artifacts are privacy redactions.
 
@@ -221,6 +221,10 @@ Agents never message each other: stages share context only through typed, schema
 - **English-only heuristics.** Wall, decline and sign-up detection, and several judge gates, use English keyword rules. Luzia's Spanish and Portuguese UI would need a shared lexicon per language.
 - **Flow QA on image screens is mostly self-consistency.** On a screenshot screen the router is built from the same edges QA replays, so the flow score says more about the HTML screens than about the screenshots.
 - **OOC's block is recorded by hand** (`out/ooc/HUMAN_LOG.md`, from the device's logcat); the raw log was not committed.
+- **The QA score is kind to sparse screens.** Luzia's Chats Home scores 0.80 while its avatars are blank boxes and some text overlaps, and start screens captured at cold launch (AOL's loading spinner, Janitor's splash) make weak references. Fix rounds made half of Luzia's rebuilt screens worse; keep-best threw those rounds away, so the mean only moved from 0.68 to 0.72.
+- **The drain probe runs last**, because spending cannot be undone, so on Luzia the step budget ran out before it could reach a chat. For a guest chat with nothing to lose it should run first.
+- **The judge can be argued into an unobserved premise.** P5's queue is the example above; a gate that flags product-change premises the model never observed, plus that fault in the self-check, is next.
+- **The knowledge base still carries the brief's reference patterns** (an out-of-messages refill, a refills hub, daily tasks) as generic archetypes for AI chat apps; the lines naming Luzia or the reference slides were removed so the proposer never sees them.
 
 ---
 

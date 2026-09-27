@@ -36,6 +36,20 @@ describe("code gates", () => {
   test("gift-card reward -> policy lint (policy)", () => failsOnly(mutate(p => { p.reward.what = "A $1 gift card every 10 games"; }), "policy-lint", "policy", /gift card/));
   test("'tap the ad' copy -> policy lint", () => failsOnly(mutate(p => { p.offer.body = "Tap the ad to get 50 credits"; }), "policy-lint", "policy"));
   test("risks may say 'never reward installs' without tripping the lint", () => assert.deepEqual(failed(mutate(p => { p.risks = ["Never reward installs or clicks."]; })), []));
+  test("ad-free time on an app that shows ads is priced at the display revenue it gives up", () => {
+    const adFree = (minutes: number | null) => mutate(p => {
+      p.reward = { what: minutes == null ? "Ad-free reading" : `${minutes} minutes of ad-free reading`, duration: minutes == null ? undefined : `${minutes} minutes`, grantOn: "REWARD_VERIFIED" };
+      p.assumptions = { ...p.assumptions, cogs: "none", cogsUnitsPerView: 1 };
+    });
+    const e15 = proposalEconomics(adFree(15), m);
+    assert.ok(e15.cogsPerViewUsd > 0.0063, `15 minutes displaces more than a view nets: ${e15.cogsPerViewUsd}`);
+    assert.match(e15.flags.join(" "), /15 ad-free minutes give up about 15 display impressions/);
+    assert.deepEqual(proposalEconomics(adFree(4), m).flags, [], "4 minutes is covered by one view");
+    assert.match(proposalEconomics(adFree(null), m).flags.join(" "), /for a time it never states/);
+    const noAds = { ...m, economy: { ...m.economy, ads: [] } };
+    assert.equal(proposalEconomics(adFree(15), noAds).cogsPerViewUsd, 0, "an app without ads gives nothing up");
+  });
+
   test("an observed ad placement may be cited by its digest label or its element; an unseen one fails grounding", () => {
     assert.deepEqual(failed(mutate(p => { p.anchor.economy = [...p.anchor.economy, "AD TODAY native on Home (e6)", "Sponsored: SkyBank (e6)"]; })), []);
     failsOnly(mutate(p => { p.anchor.economy = [...p.anchor.economy, "AD TODAY banner on Store (e9)"]; }), "grounding", "fixable", /e9/);

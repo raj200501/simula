@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P2:ne3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne3\" style=\"position:absolute;top:0;left:0;width:411.4px;height:914.3px;pointer-events:none;\">\n  <!-- Badge next to Home -->\n  <div style=\"position:absolute;left:115px;top:63.6px;display:flex;align-items:center;padding:2px 8px;background:var(--c-accent);border-radius:var(--r-sm);color:var(--c-on-accent);font-size:11px;font-weight:700;z-index:2;pointer-events:auto;\">\n    04:59\n  </div>\n\n  <!-- Offer Modal Scrim (visible for mockup) -->\n  <div class=\"scrim\" style=\"pointer-events:auto;z-index:100;backdrop-filter:blur(6px);background:rgba(0,0,0,0.5);\">\n    <div class=\"sheet\" style=\"position:absolute;bottom:0;width:100%;background:var(--c-surface);border-top-left-radius:var(--r-lg);border-top-right-radius:var(--r-lg);padding:24px 20px;display:flex;flex-direction:column;gap:16px;\">\n      <!-- Icon Badge -->\n      <div style=\"width:56px;height:56px;background:var(--c-accent);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:var(--c-on-accent);\">\n        <svg width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n          <path d=\"M20 12c0-4.4-3.6-8-8-8s-8 3.6-8 8 3.6 8 8 8\" />\n          <path d=\"M12 12h.01M16 12h.01M14 10h.01M14 14h.01\" />\n        </svg>\n      </div>\n      <!-- Text -->\n      <div>\n        <div style=\"font-weight:700;font-size:22px;color:var(--c-text);margin-bottom:4px;\">Ad-Free for 5 Minutes</div>\n        <div style=\"color:var(--c-muted);font-size:15px;line-height:1.4;\">Play a 15-second game to remove ads for 5 minutes. Go Ad-Free with AOL Plus.</div>\n        <div style=\"margin-top:8px;font-size:15px;\">Play a 15-second game for <b>+5 minutes</b></div>\n      </div>\n      <!-- CTA -->\n      <button class=\"btn btn-primary\" style=\"width:100%;height:48px;font-size:16px;font-weight:600;\">Go Ad-Free</button>\n      <button style=\"width:100%;height:48px;background:none;border:none;color:var(--c-muted);font-weight:500;font-size:15px;cursor:pointer;\">Keep reading</button>\n    </div>\n  </div>\n</div>\n```",
+ "usage": {
+  "input": 7828,
+  "output": 811,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 4006
+ },
+ "stop": "STOP",
+ "ts": "2026-09-27T01:23:12.765Z"
+}

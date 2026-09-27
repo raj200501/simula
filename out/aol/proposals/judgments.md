@@ -9,8 +9,8 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 | proposal | title | final | weighted | versions | summary |
 |---|---|---|---|---|---|
 | P1 | AOL Guest Commenter | **REJECT** | 3.4 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted -1.2, below +0.2) with the same gate failures. Top concern: grounding (code): economy item "Account sign-in / verified user status" does not exist; evidence "m9" is not an observation or screen in the model; evidence "f1" is not an observation or screen in the model |
-| P2 | AOL Ad-Free Sprint | **SHIP** | 4.2 | v1 → v2 | SHIP at 4.2 (v2 after 1 revision). |
-| P3 | Daily Reader Streak & Ad-Free Access | **SHIP** | 4.8 | v1 → v2 | SHIP at 4.8 (v2 after 1 revision). |
+| P2 | AOL Ad-Free Sprint | **SHIP** | 4.1 | v1 → v2 → v3 | SHIP at 4.1 (v3 after 2 revisions). |
+| P3 | Daily Reader Streak & Ad-Free Access | **REJECT** | 3.85 | v1 → v2 | REJECT after 1 revision: revision stalled (weighted -0.15, below +0.2) with the same gate failures. Top concern: economics (code): 15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end. |
 
 ## P1: AOL Guest Commenter — REJECT
 
@@ -136,11 +136,11 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 
 ## P2: AOL Ad-Free Sprint — SHIP
 
-> Enjoy 15 minutes of ad-free news reading after a quick game.
+> Enjoy 5 minutes of ad-free news reading after a quick game.
 
-- product-change · TAX-2 · surface Home News Feed (s02) · reward 15 minutes of ad-free reading · caps 3/day
+- product-change · TAX-2 · surface News Feed Home (s13) · reward 5 minutes of ad-free reading · caps 3/day
 
-#### Round 0 (v1): **REVISE** · weighted 3.65 · judged by llm
+#### Round 0 (v1): **REVISE** · weighted 3.3 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
@@ -149,72 +149,130 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 | label | code | fixable | pass | declares new mechanic "Ad-free Sprint" |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| economics | code | fixable | **FAIL** | 15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end. |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | News feed content is rated for general audiences and adheres to SFW standards. |
-| no-incentivized-action | llm | policy | pass | The reward is in-app ad-free access, not cash, gift cards, or clicks. |
-| no-loss-framing | llm | policy | pass | The offer uses gain framing (ad-free sprint) and provides a clear decline option. |
-| explicit-opt-in | llm | fixable | pass | User initiates the flow by tapping a dedicated item in the sidebar, followed by the invitation confirmation. |
-| disclosed | llm | fixable | pass | The proposal states: 'Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward.' |
-| free-decline | llm | fixable | pass | The proposal includes an explicit 'No thanks' button in the invitation flow. |
-| no-stream-interrupt | llm | fixable | pass | The offer is triggered from the Account Menu Sidebar, not during article reading. |
-| not-for-subscribers | llm | fixable | pass | Eligibility is explicitly set to 'Non-paying users'. |
+| sfw | llm | policy | pass | The placement is on s11 (Account Menu Sidebar) which is dedicated to account settings, saved articles, and support: 'User opens the Account Menu Sidebar and views account options.' |
+| no-incentivized-action | llm | policy | pass | The reward is an in-app ad suppression entitlement: 'Play a 15-second game to clear all ads from your news feed for a short sprint.' |
+| no-loss-framing | llm | policy | pass | The copy uses a positive gain frame with standard CTAs: 'Go Ad-Free for 15 Minutes' / 'Start Sprint' / 'No thanks'. |
+| explicit-opt-in | llm | fixable | pass | The user explicitly initiates the flow via the sidebar button and confirms via the offer CTA: 'Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-minute reward.' CTA: 'Start Sprint'. |
+| disclosed | llm | fixable | pass | Both the required play duration and the entitlement length are clearly stated prior to engagement: 'Play a 15-second game to clear all ads from your news feed for a short sprint.' |
+| free-decline | llm | fixable | pass | A standard, unpenalized decline action is provided: 'decline': 'No thanks'. |
+| no-stream-interrupt | llm | fixable | pass | The trigger occurs outside active content consumption: 'User opens the Account Menu Sidebar and views account options.' |
+| not-for-subscribers | llm | fixable | pass | Gated strictly to non-paying users: 'Non-paying users currently exposed to standard ad density.' |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 2 | Triggering from the sidebar menu (m2/m10) is a passive, proactive discovery rather than a reactive moment-of-need when ads are perceived as intrusive. |
-| product-integrity | 15 | 4 | The time-boxed ad suppression is a clean, non-intrusive value exchange that does not interfere with reading flow. |
-| cannibalization-safety | 15 | 4 | 15-minute time-boxing is a low-risk, high-intent sampling format; AOL has no clearly defined subscription tier to cannibalize. |
-| unit-economics | 10 | 5 | COGS is effectively zero for ad-suppression, which is well below the US revenue per view ($0.009–$0.015). |
-| reach | 10 | 2 | The trigger is a menu item in the Account sidebar, which has occasional reach compared to the core Home News Feed. |
-| feasibility | 10 | 5 | Maps directly to SIM-RWD; implementation requires simple UI updates in the sidebar and a flag for the ad-server. |
-| specificity | 10 | 4 | References sidebar menu s11 and the Home News Feed s02 correctly using established UI patterns. |
-| frequency-fatigue | 5 | 4 | Daily cap of 3 with a 60-minute cooldown effectively prevents spam. |
-| measurability | 5 | 5 | Includes a clear primary metric, relevant guardrails, and a 21-day user-level holdout plan. |
+| value-moment-fit | 20 | 3 | The offer is placed inside s11 (Account Menu Sidebar) as a proactive option ('User opens the Account Menu Sidebar and views account options') rather than at a moment of acute reader friction or blocked reading intent. |
+| product-integrity | 15 | 4 | The proposal introduces an additive mechanic ('Ad-free Sprint') that temporarily removes ads without degrading the free reading experience: 'A time-boxed entitlement that suppresses all native and banner advertisements across news feeds and article pages.' |
+| cannibalization-safety | 15 | 4 | The entitlement is time-boxed to 15 minutes, capped at 3 times per day with a 60-minute cooldown, and tested against a holdout: 'The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampling effect'. |
+| unit-economics | 10 | 2 | Code calculation shows: '15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end.' Suppressing display ads produces an opportunity cost ($0.0188) that exceeds the gross revenue of a single rewarded completion ($0.0090–$0.0150). |
+| reach | 10 | 2 | The Account Menu Sidebar (s11 / m10) has reach=occasional in the digest: 'User opens the sidebar menu to access account settings, saved articles, contacts, and support.' It sits outside the core feed browsing loop. |
+| feasibility | 10 | 4 | Maps cleanly to SIM-RWD using a button entry point in s11, triggering standard client-side ad suppression logic for a 15-minute window: 'unit': 'SIM-RWD', 'entry': 'button'. |
+| specificity | 10 | 3 | References s11, s02, Taboola ad sections, and element IDs like e12 ('Home'), but the 'Ad-Free Sprint' concept is a standard non-game template that does not tap into unique AOL content mechanics. |
+| frequency-fatigue | 5 | 5 | Explicitly bounded with reasonable limits and a proactive placement that prevents nagging: 'perDay': 3, 'cooldownMin': 60. |
+| measurability | 5 | 3 | Specifies guardrails and a holdout ('User-level holdout, 10% share, 21 days'), but the primary KPI ('Ad-free Sprint sessions started') tracks feature adoption rather than net monetization or reader ARPU. |
 
-- **Verdict reasons (code):** value-moment-fit scored 2 (< 3); reach scored 2 (< 3); weighted 3.65 < 3.8
+- **Verdict reasons (code):** fixable gate failed: economics (code); unit-economics scored 2 (< 3); reach scored 2 (< 3); weighted 3.3 < 3.8
 - **Required changes:**
-  - Move or duplicate the 'Ad-Free Sprint' entry point to the Home News Feed (e.g., as a native component near Taboola ads) to capture users when they are actually reading news and seeing advertisements.
-  - Clarify how the ad-suppression will be enforced (e.g., via a global variable or remote config) to ensure the 15-minute timer consistently removes banner/native ads.
-- **Top concern:** The current trigger (Account Menu Sidebar) is buried and disconnected from the moment of friction (reading ads). Placing the entry point where the ads actually appear (the feed) would significantly improve value-moment fit and reach.
+  - Shorten the ad-free duration (e.g., from 15 minutes to 5–10 minutes) or switch to an 'ad-light' suppression model so the opportunity cost of suppressed display impressions does not exceed the revenue generated by the rewarded view ($0.0090–$0.0150).
+  - Move or duplicate the entry point onto core-loop reading surfaces (such as an inline chip between feed sections or at the bottom of an article) instead of isolating it within the occasional Account Menu Sidebar (s11).
+  - Change the primary KPI from feature starts ('Ad-free Sprint sessions started') to net ARPU / total ad revenue per user to properly capture the net margin impact.
+- **Top concern:** The opportunity cost of suppressing 15 minutes of high-density display and native ads ($0.0188) exceeds the revenue generated by one completed rewarded view ($0.0090–$0.0150), leading to negative unit economics.
 
 #### Changes v1 → v2 (revise() saw the required changes, never the scores)
 
-- `anchor.moments[1]`: "m10" → "m3"
-- `anchor.newMechanic.description`: "A time-boxed entitlement that suppresses all native and banner advertisements across n..." → "A time-boxed entitlement managed via a remote config flag (isAdFree) that toggles the ..."
-- `surface`: "s11" → "s02"
-- `trigger`: "User opens the Account Menu Sidebar and views account options." → "User identifies a native ad unit in the Home News Feed (s02) and taps the 'Ad-Free Spr..."
-- `cannibalizationGuard`: "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampl..." → "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampl..."
-- `patch.newElements[0].near`: "e52" → "e37"
-- `patch.newElements[0].place`: "before" → "after"
-- `storyboard[0].screen`: "s11" → "s02"
-- `storyboard[0].callouts[0].node`: "e52" → "e47"
-- `storyboard[0].callouts[0].text`: "User views standard account options." → "User sees a native ad in the Home News Feed."
-- `storyboard[0].caption`: "The user explores the sidebar menu where news and account settings are managed." → "The user reads news headlines and encounters standard Taboola native advertisement uni..."
-- `storyboard[1].screen`: "s11" → "s02"
-- `storyboard[1].callouts[0].node`: "ne1" → "ne3"
-- `storyboard[1].callouts[0].text`: "New Ad-Free Sprint option appears." → "New Ad-Free Sprint entry point appears."
-- `storyboard[1].caption`: "A new 'Ad-Free Sprint' entry point is added to the menu, offering a premium benefit fo..." → "A new 'Ad-Free Sprint' call-to-action is added to the feed, offering an ad-free experi..."
-- `storyboard[2].screen`: "s11" → "s02"
-- `storyboard[2].callouts[0].node`: "ne1" → "ne3"
-- `storyboard[2].callouts[0].text`: "User taps to see the value exchange." → "User taps to start the sprint."
-- `storyboard[2].caption`: "Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-min..." → "Simula MiniGameInvitation appears, disclosing the 15-second requirement and the 15-min..."
-- `storyboard[3].screen`: "s11" → "s02"
-- `storyboard[4].callouts[0].text`: "Ads are suppressed; timer begins." → "Timer active; ads removed."
-- `storyboard[4].caption`: "The reward is granted; ads are hidden from the feed and a countdown timer confirms the..." → "The reward is granted; native ad units are suppressed via remote config, and a countdo..."
-- `anchor.moments[2]`: (none) → "m4"
-- `anchor.moments[3]`: (none) → "m10"
-- `patch.newElements[2].id`: (none) → "ne3"
-- `patch.newElements[2].in`: (none) → "s02"
-- `patch.newElements[2].near`: (none) → "e47"
-- `patch.newElements[2].place`: (none) → "before"
-- `patch.newElements[2].change`: (none) → "A call-to-action button: 'Play game for 15m ad-free reading'."
-- `patch.newEdges[1].from`: (none) → "s02"
-- ... and 4 more changes
+- `oneLiner`: "Enjoy 15 minutes of ad-free news reading after a quick game." → "Enjoy 10 minutes of ad-free news reading after a quick game."
+- `anchor.moments[0]`: "m2" → "m6"
+- `anchor.moments[1]`: "m10" → "m7"
+- `anchor.economy[1]`: "AD TODAY banner on Article Ad View (e17)" → "AD TODAY native on News Feed Home (e41)"
+- `anchor.economy[2]`: "Ad-free Sprint (new)" → "AD TODAY banner on Article Detail Page (e22)"
+- `anchor.newMechanic.whyNeeded`: "The app is currently high-density in advertisements but lacks a scarcity-based value e..." → "The app currently has high ad density but lacks a scarcity-based value exchange to dri..."
+- `surface`: "s11" → "s13"
+- `trigger`: "User opens the Account Menu Sidebar and views account options." → "User is browsing the News Feed Home (s13) or finishes reading an article."
+- `eligibility`: "Non-paying users currently exposed to standard ad density." → "Non-paying users currently exposed to standard native and banner ad density."
+- `offer.title`: "Go Ad-Free for 15 Minutes" → "Ad-Free for 10 Minutes"
+- `offer.body`: "Play a 15-second game to clear all ads from your news feed for a short sprint." → "Play a 15-second game to remove all ads for 10 minutes. Enjoy your news."
+- `offer.cta`: "Start Sprint" → "Go Ad-Free"
+- `offer.decline`: "No thanks" → "Keep reading"
+- `reward.what`: "15 minutes of ad-free reading" → "10 minutes of ad-free reading"
+- `reward.amount`: 15 → 10
+- `reward.duration`: "15 minutes" → "10 minutes"
+- `cannibalizationGuard`: "The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampl..." → "The reward is strictly time-boxed to 10 minutes and offered inline to non-payers, serv..."
+- `assumptions.engagedShare`: 0.15 → 0.12
+- `assumptions.viewsPerEngager`: 1.5 → 1.8
+- `kpis.primary`: "Ad-free Sprint sessions started" → "Net ARPU (total ad revenue per user)"
+- `kpis.guardrails[1]`: "Native ad CTR (non-sprint)" → "Native ad CTR in non-sprint sessions"
+- `kpis.guardrails[2]`: "D7 Retention" → "D30 Retention"
+- `kpis.holdout`: "User-level holdout, 10% share, 21 days" → "User-level holdout, 10% share, 28 days"
+- `risks[0]`: "Users may grow accustomed to ad-free reading and find the return to standard density j..." → "The 10-minute duration must be carefully monitored to ensure the rewarded eCPM exceeds..."
+- `risks[1]`: "Potential revenue dip if sprint sessions overlap with peak reading times." → "User fatigue if the inline chip appears too frequently in short feeds."
+- `evidence[0].obs`: "s11" → "s13"
+- `evidence[0].quote`: "Unsubscribe" → "TEMU in Taboola advertising section"
+- `evidence[1].obs`: "s02" → "s03"
+- `evidence[1].el`: "e47" → "e22"
+- `evidence[1].quote`: "TEMU in Taboola advertising section" → "ADVERTISEMENT"
+- ... and 42 more changes
 
-#### Round 1 (v2): **SHIP** · weighted 4.2 · judged by llm
+#### Round 1 (v2): **REVISE** · weighted 4.45 · judged by llm
+
+| gate | by | severity | result | evidence |
+|---|---|---|---|---|
+| schema | code | policy | pass | parses as a Proposal |
+| grounding | code | fixable | pass | every referenced id exists; new ids are declared in the patch |
+| label | code | fixable | pass | declares new mechanic "Ad-free Sprint" |
+| already-exists | code | fixable | pass | no ad of this format on this surface today |
+| policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
+| economics | code | fixable | **FAIL** | 10 ad-free minutes give up about 10 display impressions ($0.0125 at $0.00125 each), more than one view nets ($0.0063) at the low end. |
+| structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
+| reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
+| not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
+| sfw | llm | policy | pass | The news feed contains general category news (Entertainment, Local, Sports, Business) and the proposal offers ad-free reading. |
+| no-incentivized-action | llm | policy | pass | The reward is for playing a mini-game to gain a time-boxed ad-free session, not for clicking ads, installing, or rating. |
+| no-loss-framing | llm | policy | pass | The design uses gain-framing ('Enjoy your news', 'Go Ad-Free') and provides a clear 'Keep reading' decline button. |
+| explicit-opt-in | llm | fixable | pass | The user taps an explicit 'Go Ad-Free' button before the ad starts. |
+| disclosed | llm | fixable | pass | The proposal states: 'Play a 15-second game to remove all ads for 10 minutes.' |
+| free-decline | llm | fixable | pass | The decline option is 'Keep reading' which keeps the user in the feed without penalty. |
+| no-stream-interrupt | llm | fixable | pass | The ad is placed in the feed (s13) or at the end of an article (s03), not during a stream. |
+| not-for-subscribers | llm | fixable | pass | Eligibility is explicitly limited to 'Non-paying users currently exposed to standard native and banner ad density.' |
+
+| criterion | weight | score | evidence |
+|---|---|---|---|
+| value-moment-fit | 20 | 5 | News readers are interrupted by ads in the feed; removing those ads for 10 minutes creates immediate, tangible value for a reader at the moment of peak friction. |
+| product-integrity | 15 | 5 | The proposal replaces ads with content directly in the feed; it does not degrade the article content or force transitions. |
+| cannibalization-safety | 15 | 4 | The reward is time-boxed (10 mins) and capped (3/day), ensuring heavy readers still encounter ads. |
+| unit-economics | 10 | 2 | The code-calculated cost to serve (lost impressions) exceeds the net revenue from the ad view, making the sprint as currently configured net-negative. |
+| reach | 10 | 5 | The News Feed is the core loop of the AOL application. |
+| feasibility | 10 | 4 | The proposal maps to SIM-RWD units and is a standard UI element implementation. |
+| specificity | 10 | 5 | Uses app-specific screens like 'News Feed Home' (s13) and integrates near existing elements like the Taboola section (e46). |
+| frequency-fatigue | 5 | 5 | Caps are set to 3 per day with a 60-minute cooldown, which is conservative and prevents nagging. |
+| measurability | 5 | 5 | Defines primary metric, guardrails, and specifies a 10% user-level holdout for 28 days. |
+
+- **Verdict reasons (code):** fixable gate failed: economics (code); unit-economics scored 2 (< 3)
+- **Required changes:**
+  - Reduce the Ad-Free Sprint duration from 10 minutes to 5 minutes to align the value of the suppressed impressions with the revenue generated by the ad view.
+  - Add a 'Get AOL Plus' or 'Go Ad-Free Forever' contrast line to the grant or offer screen to explicitly connect the temporary sprint to a long-term subscription upsell.
+- **Top concern:** The unit economics are currently negative; 10 minutes of ad-free reading likely suppresses more ad revenue than a single 15-second rewarded ad view generates.
+
+#### Changes v2 → v3 (revise() saw the required changes, never the scores)
+
+- `oneLiner`: "Enjoy 10 minutes of ad-free news reading after a quick game." → "Enjoy 5 minutes of ad-free news reading after a quick game."
+- `offer.title`: "Ad-Free for 10 Minutes" → "Ad-Free for 5 Minutes"
+- `offer.body`: "Play a 15-second game to remove all ads for 10 minutes. Enjoy your news." → "Play a 15-second game to remove ads for 5 minutes. Go Ad-Free with AOL Plus."
+- `reward.what`: "10 minutes of ad-free reading" → "5 minutes of ad-free reading"
+- `reward.amount`: 10 → 5
+- `reward.duration`: "10 minutes" → "5 minutes"
+- `cannibalizationGuard`: "The reward is strictly time-boxed to 10 minutes and offered inline to non-payers, serv..." → "The reward is strictly time-boxed to 5 minutes and offered inline to non-payers, servi..."
+- `risks[0]`: "The 10-minute duration must be carefully monitored to ensure the rewarded eCPM exceeds..." → "The 5-minute duration must be monitored to ensure the rewarded eCPM exceeds the opport..."
+- `patch.newElements[1].change`: "A small chip at the end of the article text inviting the user to start an Ad-Free Spri..." → "A small chip at the end of the article text inviting the user to start an Ad-Free Spri..."
+- `patch.newEdges[0].effects[0].delta`: 10 → 5
+- `patch.newEdges[1].effects[0].delta`: 10 → 5
+- `storyboard[2].caption`: "A Simula MiniGameInvitation explains the 15-second game and 10-minute reward." → "A Simula MiniGameInvitation explains the 15-second game and 5-minute reward."
+- `storyboard[4].counters[0].value`: 10 → 5
+- `storyboard[4].caption`: "Ads are removed from the feed for 10 minutes as the reward is granted." → "Ads are removed from the feed for 5 minutes as the reward is granted."
+
+#### Round 2 (v3): **SHIP** · weighted 4.1 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
@@ -227,37 +285,36 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | AOL is a general news app; the proposal targets news feeds and article views. |
-| no-incentivized-action | llm | policy | pass | The reward is '15 minutes of ad-free reading'; there is no incentive for clicks, installs, or external actions. |
-| no-loss-framing | llm | policy | pass | The proposal uses gain framing ('Go Ad-Free for 15 Minutes'). |
-| explicit-opt-in | llm | fixable | pass | The user must tap 'Start Sprint' on the invitation screen. |
-| disclosed | llm | fixable | pass | The offer explicitly states: 'Play a 15-second game to clear all ads... for a short sprint'. |
-| free-decline | llm | fixable | pass | The proposal states the decline option is 'No thanks' (standard Simula behavior). |
-| no-stream-interrupt | llm | fixable | pass | AOL content is static text/article reading; no live streams or AI chats are interrupted. |
-| not-for-subscribers | llm | fixable | pass | Eligibility is restricted to 'Non-paying users currently exposed to standard ad density'. |
-| portfolio-distinct | code | fixable | pass | distinct from P3 (surface, reward, archetype family; offer copy overlap < 0.7) |
+| sfw | llm | policy | pass | The AOL mobile app content, including the news feed and article pages, is rated as general news reading. The proposal targets non-paying users within these feeds, which are standard SFW surfaces. |
+| no-incentivized-action | llm | policy | pass | The reward is ad-free reading, which is an in-app entitlement and not a cash, gift card, or external incentive. Users are not incentivized to click or download. |
+| no-loss-framing | llm | policy | pass | The proposal uses gain framing: 'Play a 15-second game to remove ads for 5 minutes.' There is no hostage framing or confirmation shaming. |
+| explicit-opt-in | llm | fixable | pass | The proposal includes an inline card with a 'Play 15s to Go Ad-Free' CTA, requiring an explicit user tap to initiate. |
+| disclosed | llm | fixable | pass | The proposal states the required action ('Play a 15-second game') and the exact reward ('5 minutes of ad-free reading') in the offer UI. |
+| free-decline | llm | fixable | pass | The offer UI includes a clear decline CTA ('Keep reading') that returns the user to the feed immediately with no penalty. |
+| no-stream-interrupt | llm | fixable | pass | The unit is placed as an inline feed card and an article chip, not in the middle of a streaming interaction. |
+| not-for-subscribers | llm | fixable | pass | The proposal specifies eligibility for 'Non-paying users currently exposed to standard native and banner ad density.' |
+| portfolio-distinct | code | fixable | pass | the first SHIP of the portfolio |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 4 | This is a proactive 'sponsored session' pattern (TAX-2) which fits the news reading rhythm well, though AOL does not have a hard ad-wall today. It provides utility by removing frequent native ad units (e47). |
-| product-integrity | 15 | 4 | The implementation disables specific Taboola units (e47-e50) via remote config. This feels native and preserves the user flow, though it requires precise UI cleanup to prevent layout gaps where ads were removed. |
-| cannibalization-safety | 15 | 4 | 15 minutes is a tight time-box, limiting the 'free ride' potential. Caps (3/day) and the 60m cooldown further mitigate the risk of devaluing the ad-supported reading experience. |
-| unit-economics | 10 | 4 | The reward has zero COGS and provides a positive (if smaller than non-Sprint) value exchange, assuming user-level holdouts validate that revenue lost from 15 minutes of ad impressions is offset by retention gains. |
-| reach | 10 | 4 | Native ads are frequent in AOL's feed (s02, s03). By triggering near ad units, the offer reaches the majority of DAU. |
-| feasibility | 10 | 5 | The proposal uses standard SIM-RWD units and remote config toggles to control ad rendering; the implementation footprint is minimal. |
-| specificity | 10 | 4 | References specific AOL elements like the 'Account Menu Sidebar' (s11) and Taboola native ad units (e47, e48, e49, e50) by ID. |
-| frequency-fatigue | 5 | 5 | Strict frequency caps (3/day) and a 60-minute cooldown prevent 'nagging' and keep the sprint feature feeling like a treat rather than an obligation. |
-| measurability | 5 | 5 | Primary metric (sessions started), guardrails (CTR, D7), and a 21-day user-level holdout provide a robust experimental framework. |
+| value-moment-fit | 20 | 4 | Users browsing the News Feed (s13) are in a 'lean back' reading session where removing interruptions is a high-value, immediate need. |
+| product-integrity | 15 | 4 | Ad-free reading is a standard and native premium feature. Time-boxing the entitlement preserves the core ad-supported product model. |
+| cannibalization-safety | 15 | 4 | The 5-minute time box and 3-per-day cap are highly restrictive, limiting the risk of replacing a permanent subscription with ad-views. |
+| unit-economics | 10 | 3 | The provided code suggests a COGS of $0.0063 per view against $0.0090 revenue, making it profitable but tighter than the 30% margin criterion for a 5-point score. |
+| reach | 10 | 5 | The trigger is placed in the News Feed Home (s13), which is the app's core loop and accessed during every visit. |
+| feasibility | 10 | 4 | Uses standard SIM-RWD units with established patterns for native feed integration. |
+| specificity | 10 | 4 | Proposal references 'Taboola advertising sections' (e46) and 'AOL Plus', using relevant terminology from the AOL product digest. |
+| frequency-fatigue | 5 | 5 | Includes a 3-per-day cap and 60-minute cooldown, which prevents nagging and habituation. |
+| measurability | 5 | 5 | Includes a clearly defined holdout (10% user-level) and tracks both ad revenue and D30 retention as guardrails. |
 
-- **Verdict reasons (code):** weighted 4.2 >= 3.8, every criterion >= 3, all gates pass
+- **Verdict reasons (code):** weighted 4.1 >= 3.8, every criterion >= 3, all gates pass
 - **Required changes:**
-  - Add a guardrail to monitor 'Articles read per session' and 'Ad-Supported Impression volume', as removing ad units for 15 minutes may impact inventory volume significantly for power users.
-  - Specify that the 'ne2' countdown timer badge UI must be implemented to gracefully collapse without shifting the 'Home' title layout when the timer expires.
-  - Define a fallback for the Ad-Free Sprint trigger (e.g., if a user triggers the sprint but no Taboola ads are currently loading, ensure the '15 minutes' still activates).
-- **Top concern:** The potential loss of native ad inventory volume during peak usage is the highest risk; if 15-minute sprints are too frequent for power readers, revenue degradation could exceed the retention uplift.
+  - Verify if 'AOL Plus' exists in the product model; if it is unconfirmed, replace 'Go Ad-Free with AOL Plus' with generic language regarding premium subscriptions to avoid misleading users.
+  - Ensure the countdown badge in the UI (ne3) is visually distinct from core app navigation to avoid confusion.
+- **Top concern:** The proposal includes an explicit reference to 'AOL Plus' as an upgrade path, but the product digest flags this as an 'open question' that is not verified. This could be a misleading claim if the service doesn't exist.
 
 
-## P3: Daily Reader Streak & Ad-Free Access — SHIP
+## P3: Daily Reader Streak & Ad-Free Access — REJECT
 
 > Earn News Credits daily via streaks to unlock 15-minute ad-free news reading sessions.
 
@@ -337,7 +394,7 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 - `storyboard[2].caption`: "The user taps to earn credits, triggering a Simula rewarded game invitation." → "User taps Claim to start the rewarded ad flow."
 - ... and 16 more changes
 
-#### Round 1 (v2): **SHIP** · weighted 4.8 · judged by llm
+#### Round 1 (v2): **REVISE** · weighted 3.85 · judged by llm
 
 | gate | by | severity | result | evidence |
 |---|---|---|---|---|
@@ -346,34 +403,35 @@ Weights: value-moment-fit 20, product-integrity 15, cannibalization-safety 15, u
 | label | code | fixable | pass | declares new mechanic "AOL News Credits & Ad-Free Mode" |
 | already-exists | code | fixable | pass | no ad of this format on this surface today |
 | policy-lint | code | policy | pass | no cash-like reward, incentivized click/install or 'support us' copy |
-| economics | code | fixable | pass | reward within ECON.maxRewardToView of a view, below the cheapest pack per day, COGS below net revenue per view |
+| economics | code | fixable | **FAIL** | 15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end. |
 | structure | code | fixable | pass | REWARD_VERIFIED, decline present, caps >= 1, 5 storyboard phases, allowed surface |
 | reward-coherence | code | fixable | pass | consumables granted as amounts; entitlements as a time box or a number of uses |
 | not-for-account-wall | code | fixable | pass | no ad in place of creating an account |
-| sfw | llm | policy | pass | Proposal is for AOL news reading application, a general news feed service, and the ad surface is SFW. |
-| no-incentivized-action | llm | policy | pass | Reward is for game play/viewing, not for clicks or installs; currency is in-app and non-transferable. |
-| no-loss-framing | llm | policy | pass | Proposal uses positive gain framing ('Earn News Credits') rather than loss framing. |
-| explicit-opt-in | llm | fixable | pass | User explicitly interacts with 'Daily Reader Streak' card or 'Go Ad-Free' button to initiate the rewarded flow. |
-| disclosed | llm | fixable | pass | Proposal discloses 'Play a 15-second game with AOL' before the ad plays. |
-| free-decline | llm | fixable | pass | Offer card includes a 'No thanks' button as standard. |
-| no-stream-interrupt | llm | fixable | pass | Triggers are sidebar buttons or article buttons, which are user-initiated entry points, not mid-content interruptions. |
-| not-for-subscribers | llm | fixable | pass | Proposal explicitly states 'Offers are gated to non-subscribers'. |
-| portfolio-distinct | code | fixable | pass | the first SHIP of the portfolio |
+| sfw | llm | policy | pass | Users interact with the Daily Streak card in the Account Sidebar (s11) to earn credits, or tap 'Go Ad-Free' in Article Details (s03) to redeem credits for ad-free reading. |
+| no-incentivized-action | llm | policy | pass | Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading! |
+| no-loss-framing | llm | policy | pass | Title: 'Earn News Credits', Body: 'Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading!', cta: 'Play Now', decline: 'No thanks' |
+| explicit-opt-in | llm | fixable | pass | User taps Claim to start the rewarded ad flow. |
+| disclosed | llm | fixable | pass | Play a 15-second game with AOL to earn 10 News Credits, or unlock 15m of Ad-Free reading! |
+| free-decline | llm | fixable | pass | cta: 'Play Now', decline: 'No thanks' |
+| no-stream-interrupt | llm | fixable | pass | redemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode. |
+| not-for-subscribers | llm | fixable | pass | Non-signed-in users and signed-in non-subscribers who have not claimed today's reward. |
 
 | criterion | weight | score | evidence |
 |---|---|---|---|
-| value-moment-fit | 20 | 5 | News readers encounter Taboola ads; offering an ad-free session is the direct solution to that user pain point. |
-| product-integrity | 15 | 5 | Ad-free reader mode is a natural value-add for a news app; embedding entry points in the sidebar and article footer is non-intrusive. |
-| cannibalization-safety | 15 | 5 | 15-minute sessions are highly time-boxed and require active user effort, making them a 'taste' rather than a substitute for a full subscription. |
-| unit-economics | 10 | 5 | Cost to serve is nil; revenue per view ~$0.012; reward is highly profitable. |
-| reach | 10 | 4 | Article Detail Pages (s03) are a core loop location. Sidebar (s11) is used for account settings. |
-| feasibility | 10 | 5 | Maps directly to SIM-RWD on existing UI elements (article buttons, sidebar). |
-| specificity | 10 | 4 | References 'Article Details' (s03), 'Account Menu Sidebar' (s11), and 'News Credits' specific to the AOL reader context. |
-| frequency-fatigue | 5 | 5 | 3 per day limit with 30m cooldown prevents spamming. |
-| measurability | 5 | 5 | Clear KPI, guardrails, and 10% holdout plan. |
+| value-moment-fit | 20 | 4 | Credits are redeemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode. |
+| product-integrity | 15 | 4 | A habit-building virtual currency earned through daily streaks and rewarded ads. Credits are redeemed in the Article Details view to unlock a 15-minute Ad-Free Reader Mode. |
+| cannibalization-safety | 15 | 5 | The reward is a small, time-boxed sample of ad-free reading (15m) that provides a 'taste' of premium value, encouraging upgrade intent without giving away unlimited ad-free access. Offers are gated to non-subscribers. |
+| unit-economics | 10 | 1 | 15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end. |
+| reach | 10 | 3 | Users interact with the Daily Streak card in the Account Sidebar (s11) to earn credits, or tap 'Go Ad-Free' in Article Details (s03) |
+| feasibility | 10 | 4 | unit: SIM-RWD, entry: button, gamePartner: AOL, minPlaySec: 15 |
+| specificity | 10 | 4 | AOL News Credits & Ad-Free Mode... Article Details (s03)... Account Sidebar (s11)... TEMU in Taboola advertising section |
+| frequency-fatigue | 5 | 5 | perDay: 3, cooldownMin: 30 |
+| measurability | 5 | 5 | primary: D7 Retention, guardrails: [Average Sessions Per DAU, Paid Subscription Conversion Rate], holdout: User-level randomization, 10% share, 28-day duration |
 
-- **Verdict reasons (code):** weighted 4.8 >= 3.8, every criterion >= 3, all gates pass
+- **Verdict reasons (code):** fixable gate failed: economics (code); unit-economics scored 1 (< 3)
 - **Required changes:**
-  - Define 'Ad-Free Reader Mode' clearly in the UI to specify that it suppresses the 'Taboola' native/banner advertising units mentioned in the digest.
-- **Top concern:** Ensure that the ad-free session does not inadvertently hide critical UI elements or cause layout shifts when Taboola ads are removed.
+  - Shorten the duration of the Ad-Free Reader Mode session from 15 minutes to 5 minutes to reduce the display ad opportunity cost.
+  - Increase the required number of News Credits needed to unlock the ad-free session so that it requires multiple rewarded ad views to break even.
+  - Introduce a strict daily limit on the total number of ad-free sessions a user can redeem in a single day.
+- **Top concern:** The current unit economics are negative, as a 15-minute ad-free session results in a $0.0187 loss of display ad revenue, which exceeds the $0.0090–$0.0150 gross revenue generated by a single rewarded view.
 

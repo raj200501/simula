@@ -1,6 +1,6 @@
 # Trajectory: aol
 
-Autonomous decisions: **109**. Human interventions: **2**. Autonomy ratio: **98.2%**. Sign-in walls noted for a human and skipped: 2 (2 distinct).
+Autonomous decisions: **119**. Human interventions: **2**. Autonomy ratio: **98.3%**. Sign-in walls noted for a human and skipped: 2 (2 distinct).
 
 ## Stage runs
 
@@ -33,6 +33,12 @@ Autonomous decisions: **109**. Human interventions: **2**. Autonomy ratio: **98.
 | slides | sl0926-072717 | 07:27:17 | 07:27:38 | 12 | 0 |  |
 | slides | sl0926-072846 | 07:28:46 | 07:29:07 | 12 | 0 |  |
 | slides | sl0926-074910 | 07:49:10 | 07:49:31 | 12 | 0 |  |
+| propose | pr0927-012059 | 01:20:59 | 01:21:00 | 9 | 0 |  |
+| judge | ju0927-012101 | 01:21:01 | 01:22:01 | 33 | 2 | revision stalled: weighted 4.6 -> 3.4 |
+| eval-judge | ev0927-012201 | 01:22:01 | 01:22:02 | 3 | 0 |  |
+| slides | sl0927-012235 | 01:22:35 | 01:23:28 | 15 | 0 |  |
+| slides | sl0927-012404 | 01:24:04 | 01:24:20 | 9 | 0 |  |
+| slides | sl0927-015814 | 01:58:14 | 01:58:29 | 9 | 0 |  |
 
 ## New states discovered over time
 
@@ -182,6 +188,13 @@ failed to get foreground
   - recovered: retrying on gemini-3.5-flash-lite (next fallback model)
 - 07:20:58 **gemini:judge:P2:v1**: 503 on gemini-3.7-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
   - recovered: retrying on gemini-3.6-flash (next fallback model)
+
+### judge · run ju0927-012101
+
+- 01:21:04 **gemini:judge:P2:v1**: 503 on gemini-3.8-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.7-flash (next fallback model)
+- 01:21:11 **gemini:judge:P3:v2**: 503 on gemini-3.6-flash (attempt 1/12): {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again l
+  - recovered: retrying on gemini-3.5-flash (next fallback model)
 
 
 ## Human interventions

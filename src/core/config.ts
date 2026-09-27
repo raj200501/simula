@@ -84,12 +84,13 @@ export function paths(appId: string, opts: { modelDir?: string; outRoot?: string
 
 /**
  * Which LLM provider to call. Explicit SIMULA_PROVIDER wins; otherwise whichever key is present
- * (a Gemini key from Google AI Studio works on the free tier). Stub/replay modes need no key.
+ * (a Gemini key from Google AI Studio works on the free tier). Stub/replay modes need no key; with
+ * no key the default is Gemini, the provider the committed cache was recorded with, because cache
+ * keys name the requested model and `--llm replay` must find them.
  */
 export type Provider = "anthropic" | "gemini";
 export const PROVIDER: Provider =
-  (process.env.SIMULA_PROVIDER as Provider) ||
-  (process.env.ANTHROPIC_API_KEY ? "anthropic" : process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY ? "gemini" : "anthropic");
+  (process.env.SIMULA_PROVIDER as Provider) || (process.env.ANTHROPIC_API_KEY ? "anthropic" : "gemini");
 
 const DEFAULT_MODELS: Record<Provider, { main: string; fast: string }> = {
   // Claude: the most capable general model for everything.

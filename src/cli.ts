@@ -134,8 +134,9 @@ async function runStage(name: StageName, b: Base): Promise<void> {
       const candFile = path.join(p.proposals, "candidates.json");
       await stage("judge", b, [candFile], async c => {
         const m = await loadModelFrom(b);
-        const cands = load(Candidates, candFile);
-        const { judgeAll } = await mod("judge/judge.ts");
+        const { judgeAll, unjudged } = await mod("judge/judge.ts");
+        const { cands, restored } = unjudged(load(Candidates, candFile), path.join(p.proposals, "revisions.json"));
+        if (restored.length) trace("decision", { stage: "judge", what: "re-judging from the proposer's versions", restored });
         const j = await judgeAll(c, m, cands);
         const count = (v: string) => j.final.filter((f: { verdict: string }) => f.verdict === v).length;
         console.log(`judge: SHIP ${count("SHIP")}, REVISE ${count("REVISE")}, REJECT ${count("REJECT")} (${j.rounds.length} judgment rounds)`);

@@ -5,7 +5,7 @@ One section per app, all produced by the same pipeline with no per-app code. Thi
 | App | State | Explored | Regime | Verdicts | QA fidelity · flows |
 |---|---|---|---|---|---|
 | [Luzia](#luzia) | complete | 38 screens · 171 transitions | subscription-gated | 1 SHIP · 0 REVISE · 4 REJECT | 0.72 · 134/135 |
-| [AOL](#aol) | complete | 17 screens · 58 transitions | no-scarcity | 2 SHIP · 0 REVISE · 1 REJECT | 0.77 · 22/22 |
+| [AOL](#aol) | complete | 17 screens · 58 transitions | no-scarcity | 1 SHIP · 0 REVISE · 2 REJECT | 0.77 · 22/22 |
 | [Janitor](#janitor) | complete | 16 screens · 60 transitions | subscription-gated | 0 SHIP · 0 REVISE · 3 REJECT | 0.90 · 45/45 |
 | [OOC](#ooc) | blocked | – | – | – | – |
 
@@ -61,21 +61,17 @@ AOL mobile app for browsing curated news feeds, reading articles, viewing commen
 
 [Numbers](aol/NUMBERS.md) · [Product model digest](aol/model/digest.md) · [Candidates](aol/proposals/candidates.md) · [Judgments (every score, with evidence)](aol/proposals/judgments.md) · [Judge self-check](aol/proposals/judge-eval.md) · [Trajectory](aol/trajectory.md) · [Slides (PDF)](aol/slides/deck.pdf)
 
-### P3 in motion
+### P2 in motion
 
-<img src="aol/slides/flow-P3.gif" width="300" alt="P3: Daily Reader Streak & Ad-Free Access, played in the generated mock">
+<img src="aol/slides/flow-P2.gif" width="300" alt="P2: AOL Ad-Free Sprint, played in the generated mock">
 
 _The lead flow played in the generated mock: today → what changed → the offer → the game → the reward confirmed in-app._
 
 ### Shipped flows
 
-**P3: Daily Reader Streak & Ad-Free Access**
-
-![P3: Daily Reader Streak & Ad-Free Access](aol/slides/png/03-flow-P3.png)
-
 **P2: AOL Ad-Free Sprint**
 
-![P2: AOL Ad-Free Sprint](aol/slides/png/05-flow-P2.png)
+![P2: AOL Ad-Free Sprint](aol/slides/png/03-flow-P2.png)
 
 <details><summary>Recommendation slide</summary>
 

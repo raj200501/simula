@@ -1,0 +1,110 @@
+{
+ "purpose": "judge:P2:v3",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "parsed": {
+  "gates": [
+   {
+    "gate": "sfw",
+    "pass": true,
+    "evidence": "The AOL mobile app content, including the news feed and article pages, is rated as general news reading. The proposal targets non-paying users within these feeds, which are standard SFW surfaces."
+   },
+   {
+    "gate": "no-incentivized-action",
+    "pass": true,
+    "evidence": "The reward is ad-free reading, which is an in-app entitlement and not a cash, gift card, or external incentive. Users are not incentivized to click or download."
+   },
+   {
+    "gate": "no-loss-framing",
+    "pass": true,
+    "evidence": "The proposal uses gain framing: 'Play a 15-second game to remove ads for 5 minutes.' There is no hostage framing or confirmation shaming."
+   },
+   {
+    "gate": "explicit-opt-in",
+    "pass": true,
+    "evidence": "The proposal includes an inline card with a 'Play 15s to Go Ad-Free' CTA, requiring an explicit user tap to initiate."
+   },
+   {
+    "gate": "disclosed",
+    "pass": true,
+    "evidence": "The proposal states the required action ('Play a 15-second game') and the exact reward ('5 minutes of ad-free reading') in the offer UI."
+   },
+   {
+    "gate": "free-decline",
+    "pass": true,
+    "evidence": "The offer UI includes a clear decline CTA ('Keep reading') that returns the user to the feed immediately with no penalty."
+   },
+   {
+    "gate": "no-stream-interrupt",
+    "pass": true,
+    "evidence": "The unit is placed as an inline feed card and an article chip, not in the middle of a streaming interaction."
+   },
+   {
+    "gate": "not-for-subscribers",
+    "pass": true,
+    "evidence": "The proposal specifies eligibility for 'Non-paying users currently exposed to standard native and banner ad density.'"
+   }
+  ],
+  "scores": [
+   {
+    "criterion": "value-moment-fit",
+    "evidence": "Users browsing the News Feed (s13) are in a 'lean back' reading session where removing interruptions is a high-value, immediate need.",
+    "score": 4
+   },
+   {
+    "criterion": "product-integrity",
+    "evidence": "Ad-free reading is a standard and native premium feature. Time-boxing the entitlement preserves the core ad-supported product model.",
+    "score": 4
+   },
+   {
+    "criterion": "cannibalization-safety",
+    "evidence": "The 5-minute time box and 3-per-day cap are highly restrictive, limiting the risk of replacing a permanent subscription with ad-views.",
+    "score": 4
+   },
+   {
+    "criterion": "unit-economics",
+    "evidence": "The provided code suggests a COGS of $0.0063 per view against $0.0090 revenue, making it profitable but tighter than the 30% margin criterion for a 5-point score.",
+    "score": 3
+   },
+   {
+    "criterion": "reach",
+    "evidence": "The trigger is placed in the News Feed Home (s13), which is the app's core loop and accessed during every visit.",
+    "score": 5
+   },
+   {
+    "criterion": "feasibility",
+    "evidence": "Uses standard SIM-RWD units with established patterns for native feed integration.",
+    "score": 4
+   },
+   {
+    "criterion": "specificity",
+    "evidence": "Proposal references 'Taboola advertising sections' (e46) and 'AOL Plus', using relevant terminology from the AOL product digest.",
+    "score": 4
+   },
+   {
+    "criterion": "frequency-fatigue",
+    "evidence": "Includes a 3-per-day cap and 60-minute cooldown, which prevents nagging and habituation.",
+    "score": 5
+   },
+   {
+    "criterion": "measurability",
+    "evidence": "Includes a clearly defined holdout (10% user-level) and tracks both ad revenue and D30 retention as guardrails.",
+    "score": 5
+   }
+  ],
+  "requiredChanges": [
+   "Verify if 'AOL Plus' exists in the product model; if it is unconfirmed, replace 'Go Ad-Free with AOL Plus' with generic language regarding premium subscriptions to avoid misleading users.",
+   "Ensure the countdown badge in the UI (ne3) is visually distinct from core app navigation to avoid confusion."
+  ],
+  "topConcern": "The proposal includes an explicit reference to 'AOL Plus' as an upgrade path, but the product digest flags this as an 'open question' that is not verified. This could be a misleading claim if the service doesn't exist."
+ },
+ "usage": {
+  "input": 35238,
+  "output": 1160,
+  "cacheRead": 20158,
+  "cacheWrite": 0,
+  "thoughts": 1756
+ },
+ "stop": "STOP",
+ "ts": "2026-09-27T01:22:00.843Z"
+}
