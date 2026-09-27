@@ -1,6 +1,6 @@
 // Fixed explanatory copy shared by the report site and the deck appendix: the brief's six
 // "how you operate" questions answered in one line each, and the productionization sketch
-// (docs/design/FINAL_PLAN.md §18). Kept in one place so the two never drift apart.
+// (docs/design/FINAL_PLAN.md §16). Kept in one place so the two never drift apart.
 
 export const HOW_IT_WORKS: { q: string; a: string }[] = [
   { q: "How is the device controlled?",
