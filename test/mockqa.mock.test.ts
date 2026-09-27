@@ -200,6 +200,63 @@ describe("mock: stub generation and runtime", () => {
     assert.doesNotMatch((await page.locator(".mock-reward-toast").allInnerTexts()).join(" "), /queue_skip/);
   });
 
+  test("an item the proposal introduces is used at the control its entry sits next to", async () => {
+    await open("?frame=0&screen=s04&proposal=P2");
+    await node("s04", "n1").click();
+    await ev(`window.__mock.openRewarded("verified", "P2")`);
+    await ev(`window.__mock.openRewarded("close", "P2")`);
+    await page.waitForTimeout(300);
+    assert.match((await page.locator(".mock-reward-toast").allInnerTexts()).join(" "), /Tap Refill now to use it/);
+    assert.equal(await ev("window.__mock.get('queue_skip')"), 1);
+    await node("s04", "e2").click();
+    await page.waitForTimeout(300);
+    assert.equal(await ev("window.__mock.get('queue_skip')"), 0, "one used");
+    assert.match((await page.locator(".mock-reward-toast").allInnerTexts()).join(" "), /Queue skip used/);
+  });
+
+  test("an ad-free reward hides every ad node and counts down; an edgeless timer is left to the runtime", async () => {
+    const p = sampleProposal();
+    p.id = "P4";
+    p.surface = "s01";
+    p.offer = { title: "10 minutes ad-free", body: "Play a 15-second game to read ad-free for 10 minutes.", cta: "Go ad-free", decline: "No thanks" };
+    p.reward = { what: "10 minutes ad-free", resource: "adfree", amount: 10, duration: "10 minutes", grantOn: "REWARD_VERIFIED" };
+    p.patch = {
+      newScreens: [],
+      newElements: [{ id: "n1", in: "s01", near: "e3", place: "before", change: "Go ad-free for 10 minutes" }, { id: "n2", in: "s01", near: "e1", place: "after", change: "A countdown timer badge with the remaining ad-free time" }],
+      newEdges: [{ from: "s01", el: "n1", to: "rwd", effects: [{ resource: "adfree", delta: 10 }] }],
+    };
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2ForTests(), p] });
+    await open("?frame=0&screen=s01&proposal=P4");
+    const shown = () => ev<number>(`[...document.querySelectorAll('[data-screen-layer="s01"] [data-ad]')].filter(n => getComputedStyle(n).visibility !== "hidden").length`);
+    assert.ok((await shown()) > 0, "the ad is there before");
+    assert.equal(await page.locator('[data-node="n2"]').count(), 0, "no dead timer button");
+    await node("s01", "n1").click();
+    await ev(`window.__mock.openRewarded("verified", "P4")`);
+    await ev(`window.__mock.openRewarded("close", "P4")`);
+    await page.waitForTimeout(300);
+    assert.equal(await shown(), 0, "every ad node hidden");
+    assert.match(await page.locator(".mock-adfree-pill").innerText(), /^Ad-free · (10:00|9:5\d)$/);
+    assert.ok((await ev<number>("window.__mock.adFreeLeft()")) > 590);
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2ForTests()] });
+  });
+
+  test("an edgeless element with no fragment is a badge, not a button, and shows the new resource's count", async () => {
+    const p2 = p2ForTests();
+    p2.patch.newElements.push({ id: "n2", in: "s04", near: "e1", place: "after", change: "Queue skip badge" });
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2] });
+    await open("?frame=0&screen=s04&proposal=P2");
+    const badge = node("s04", "n2");
+    assert.equal(await badge.evaluate(n => n.tagName), "SPAN");
+    assert.match(await badge.getAttribute("class") ?? "", /mock-new-badge/);
+    assert.match(await badge.innerText(), /0$/);
+    await node("s04", "n1").click();
+    await ev(`window.__mock.openRewarded("verified", "P2")`);
+    await ev(`window.__mock.openRewarded("close", "P2")`);
+    await page.waitForTimeout(200);
+    assert.match(await badge.innerText(), /1$/, "repainted with the counter");
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2ForTests()] });
+  });
+
   test("proposal patch: new element is marked, opens the rewarded invite, reward granted on verify", async () => {
     await open("?frame=0&screen=s04&proposal=P1");
     const pill = node("s04", "n1");
@@ -314,5 +371,8 @@ describe("mock: new-element fragments", () => {
     assert.equal(coversScreen(`<div style="position:absolute;left:16px;top:320px;width:379px;">card</div>`), false);
     assert.equal(coversScreen(`<button style="height:100%">fills its row</button>`), false);
     assert.equal(coversScreen(`<div style="position:absolute;top:0;left:0"><div class="counter" style="position:absolute;left:50px">15m</div><div class="scrim" style="position:fixed;top:0;left:0;width:100%;height:100%">sheet</div></div>`), true, "a badge that carries a fixed scrim");
+    assert.equal(coversScreen(`<div data-new="ne3" style="position:absolute;top:0;left:0;width:411.4px;height:914.3px;pointer-events:none;"><div>04:59</div></div>`, { w: 411, h: 914 }), true, "the whole screen in pixels");
+    assert.equal(coversScreen(`<div style="position:absolute;left:115px;top:63px"><span>04:59</span><div class="scrim" style="z-index:100">modal</div></div>`), true, "a scrim by class");
+    assert.equal(coversScreen(`<div style="position:absolute;left:20px;top:395px;width:371px;height:180px">card</div>`, { w: 411, h: 914 }), false, "a card is not the screen");
   });
 });

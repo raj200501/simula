@@ -11,7 +11,7 @@
  *   - proposals (?proposal=Pn or __mock.applyPatch) add screens / elements / edges, and edges to
  *     "rwd" open the rewarded flow (rewarded.js), whose effects apply only on REWARD_VERIFIED.
  *
- * Test / slide API: window.__mock = { go, state, get, set, openRewarded, applyPatch, history, select, avoid }.
+ * Test / slide API: window.__mock = { go, state, get, set, openRewarded, applyPatch, history, select, avoid, adFreeLeft }.
  * URL params: ?screen=sNN  ?proposal=Pn  ?debug=1  ?slide=1  ?frame=0
  */
 (function () {
@@ -197,6 +197,25 @@
       el.appendChild(textEl("span", "mock-new-label", label));
       if (sp.sub) el.appendChild(textEl("small", "", sp.sub));
       if (sp.kind === "button" && wide) el.classList.add("mock-new-wide");
+    }
+    return el;
+  }
+
+  /**
+   * A new element with no edge and no fragment: a non-tappable badge. A resource the proposal
+   * introduces shows its live count; a timer is left to the runtime's own ad-free countdown.
+   */
+  function newBadge(ne) {
+    var X = window.__PATCHES && window.__PATCHES[ne.pid], p = X && X.proposal;
+    if (X && X.adFreeMin && /\b(?:timer|countdown|remaining)\b/i.test(ne.change || "")) return null;
+    var sp = specOf(ne.change), el = document.createElement("span");
+    el.className = "mock-new-badge";
+    el.appendChild(textEl("span", "", cleanLabel(sp.label) || sp.label));
+    var r = p && p.reward && p.reward.resource;
+    if (r && !(X && X.adFreeMin) && !M.counters.some(function (c) { return c.id === resId(r); })) {
+      var n = textEl("b", "", String(S.counters[resId(r)] || 0));
+      n.setAttribute("data-bind", r);
+      el.appendChild(n);
     }
     return el;
   }
@@ -659,6 +678,53 @@
     return false;
   }
 
+  /**
+   * A guarded earn edge ("play for a credit while you have none") that grants a resource the proposal
+   * introduces: the edge's entry sits next to an existing control (its `near`), and that control is
+   * where the reward is used. While the user holds one, tapping it spends one and says so, then does
+   * whatever it did before; otherwise the prototype would grant something nothing can use.
+   */
+  function spendRule(screen, el) {
+    for (var i = 0; i < S.patchEdges.length; i++) {
+      var pe = S.patchEdges[i];
+      if (pe.from !== screen || pe.to !== "rwd" || !pe.guard) continue;
+      var r = resId(pe.guard.resource);
+      if (M.counters.some(function (c) { return c.id === r; })) continue; // the app's own resource: its own sinks use it
+      if (!(pe.effects || []).some(function (d) { return resId(d.resource) === r && d.delta > 0; })) continue;
+      var ne = (S.patchElements[screen] || []).filter(function (x) { return x.id === pe.el; })[0];
+      if (ne && ne.near && (el == null || ne.near === el)) return { edge: pe, near: ne.near, resource: r };
+    }
+    return null;
+  }
+  function spendAt(screen, el) {
+    var sr = spendRule(screen, el);
+    if (!sr || !(S.counters[sr.resource] >= 1)) return false;
+    applyDeltas([{ resource: sr.resource, delta: -1 }]);
+    var X = window.__PATCHES && window.__PATCHES[sr.edge.pid], what = X && X.proposal && X.proposal.reward && X.proposal.reward.what;
+    showRewardToast({ used: String(what || sr.resource).replace(/^\+?\d+\s*/, "") + " used" });
+    return true;
+  }
+
+  // ------------------------------------------------------------------ ad-free time box
+  // A reward that turns the app's ads off carries its minutes (build.ts): after REWARD_VERIFIED every
+  // node marked data-ad is hidden and a countdown shows the time left; at zero the ads come back.
+  var adFree = { end: 0, timer: null };
+  function startAdFree(minutes) {
+    if (!(minutes > 0)) return;
+    adFree.end = Date.now() + minutes * 60000;
+    screenEl.classList.add("mock-adfree");
+    tickAdFree();
+  }
+  function tickAdFree() {
+    clearTimeout(adFree.timer);
+    var left = Math.max(0, Math.round((adFree.end - Date.now()) / 1000));
+    var pill = screenEl.querySelector(".mock-adfree-pill");
+    if (!left) { screenEl.classList.remove("mock-adfree"); if (pill) pill.remove(); return; }
+    if (!pill) { pill = document.createElement("div"); pill.className = "mock-adfree-pill"; pill.setAttribute("role", "timer"); screenEl.appendChild(pill); }
+    pill.textContent = "Ad-free · " + Math.floor(left / 60) + ":" + ("0" + (left % 60)).slice(-2);
+    if (!P.slide) adFree.timer = setTimeout(tickAdFree, 1000);
+  }
+
   function runProposalEdge(pe) {
     if (pe.to === "rwd") openRewarded("invite", pe.pid, pe);
     else { applyDeltas(pe.effects); navigate(pe.to, transitionFor(pe.to)); }
@@ -669,6 +735,7 @@
     var node = nodeIn(layer, el);
     if (node && node.matches('[data-role="composer"],input,textarea,[contenteditable="true"]')) return "focus";
     if (node && node.matches('[data-role="send"]')) return sendFrom(layer, screen);
+    var spent = spendAt(screen, el); // the control's own action (if any) still runs after the item is used
     var label = labelMatch(ownText(node));
     var pe = proposalEdge(screen, el);
     if (pe) { runProposalEdge(pe); return true; }
@@ -684,7 +751,7 @@
       select([cur === label ? g.labels[(g.labels.indexOf(label) + 1) % g.labels.length] : label]);
       return true;
     }
-    return false;
+    return spent;
   }
 
   function transitionFor(id) {
@@ -795,9 +862,16 @@
     clearTimeout(rewardTimer);
     screenEl.querySelectorAll(".mock-reward-toast").forEach(function (t) { t.remove(); });
   }
+  /** "Tap Animate to use it": where a granted item is spent (see spendRule), when that control is on screen. */
+  function useHint(cfg) {
+    var top = topLayer(), sr = top && cfg && cfg.pid ? spendRule(top.id, null) : null;
+    if (!sr || sr.edge.pid !== cfg.pid) return "";
+    var n = nodeIn(top.el, sr.near), label = n ? clean(n.textContent || n.getAttribute("aria-label") || "") : "";
+    return label && label.length <= 24 ? "Tap " + label + " to use it" : "";
+  }
   function showRewardToast(cfg) {
     clearRewardToast();
-    var info = rewardText(cfg);
+    var info = cfg.used ? { title: cfg.used, resource: null } : rewardText(cfg);
     var t = document.createElement("div");
     t.className = "mock-reward-toast";
     t.setAttribute("role", "status");
@@ -812,6 +886,8 @@
       bal.setAttribute("data-bind", c.id); // repainted with the counter, like any bound number
       body.appendChild(bal);
     }
+    var hint = cfg.used ? "" : useHint(cfg);
+    if (hint) body.appendChild(textEl("small", "", hint));
     t.appendChild(body);
     screenEl.appendChild(t);
     placeRewardToast();
@@ -917,7 +993,10 @@
       }
       var near = ne.near && nodeIn(layer, ne.near);
       var fallback = !el;
-      if (!el) el = newControl(ne, !!near && near.offsetWidth >= 0.6 * M.device.w);
+      // No fragment and no edge of its own: a display (a badge, a timer), never a button.
+      if (!el) el = S.patchEdges.some(function (e) { return e.el === ne.id && e.from === id; })
+        ? newControl(ne, !!near && near.offsetWidth >= 0.6 * M.device.w) : newBadge(ne);
+      if (!el) return;
       if (!el.getAttribute("data-node")) el.setAttribute("data-node", ne.id);
       el.setAttribute("data-new", "");
       if (el.style.position === "absolute" && el.style.left && el.style.top) { root.appendChild(el); return; } // placed by its author
@@ -988,6 +1067,7 @@
       decline: (p && p.offer && p.offer.decline) || "No thanks",
       seconds: (p && p.simula && p.simula.minPlaySec) || 15,
       effects: effects,
+      adFreeMin: (X && X.adFreeMin) || 0,
       slide: P.slide,
     };
   }
@@ -1000,7 +1080,7 @@
     var cfg = rewardedConfig(pid || S.proposals[S.proposals.length - 1], edge);
     R.open(phase, cfg, {
       host: screenEl,
-      onVerified: function (effects) { applyDeltas(effects); S.granted = cfg; },
+      onVerified: function (effects) { applyDeltas(effects); S.granted = cfg; startAdFree(cfg.adFreeMin); },
       onClose: function () {
         // Back to the saved screen; its layer (and any unsent draft) is still there.
         if (S.rewardedFrom && current() !== S.rewardedFrom && meta(S.rewardedFrom)) navigate(S.rewardedFrom, "back");
@@ -1065,6 +1145,7 @@
     history: function () { return S.stack.slice(); },
     select: select, // extra: choose the mode context (e.g. ["Premium · 30"]) that disambiguates consume edges
     avoid: function (ids) { S.avoid = (ids || []).slice(); placeRewardToast(); }, // extra: nodes the reward confirmation keeps clear
+    adFreeLeft: function () { return screenEl.classList.contains("mock-adfree") ? Math.max(0, Math.round((adFree.end - Date.now()) / 1000)) : 0; }, // extra: seconds of ad-free time left
   };
 
   // ------------------------------------------------------------------ boot
