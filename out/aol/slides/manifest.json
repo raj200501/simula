@@ -1,10 +1,10 @@
 {
   "stage": "slides",
   "app": "aol",
-  "runId": "sl0927-015814",
-  "gitSha": "3ffac37",
-  "startedAt": "2026-09-27T01:58:14.205Z",
-  "finishedAt": "2026-09-27T01:58:29.586Z",
+  "runId": "sl0927-031206",
+  "gitSha": "bd545eb",
+  "startedAt": "2026-09-27T03:12:06.303Z",
+  "finishedAt": "2026-09-27T03:12:22.600Z",
   "status": "ok",
   "inputs": [
     {

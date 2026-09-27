@@ -8,7 +8,7 @@
 - the judge, which checks each proposal against the same model;
 - the slide flows, which are screenshots of the patched mock.
 
-Code owns control flow, state identity, arithmetic and verdicts. Models answer narrow, schema-bound questions. Every call is cached and replayable, and falls back to a deterministic stub.
+Code owns control flow, state identity, arithmetic and verdicts. Models answer narrow, schema-bound questions. Every call is cached and falls back to a deterministic stub; the proposal, judge and slide stages replay from the cache without a key (see Cost, trajectory, HUMAN_LOG for why the earlier stages don't).
 
 **What the economy model actually holds, per app.** The thesis is fully exercised only where the app meters something a guest can spend. On the real apps it was partly:
 
@@ -39,7 +39,7 @@ So on Luzia, code prices rewards by what they cost to serve against what a view 
 | Required models, keys, emulator, services | [Requirements](#requirements) |
 | **Product model** (Goal 1): what was explored, what was learned, how it is represented | `out/<app>/model/product-model.json` (schema: `src/core/schema.ts`), `digest.md` (what the proposer and judge read), `viewer.html` (human view: economy with evidence, screens, flows, coverage and what was *not* explored) |
 | "Could another agent mock the app from your output alone?" | Yes. Downstream stages read only the model directory (enforced by `test/boundaries.test.ts`); `--model-dir <dir>` runs the mock from a copied model |
-| **Mock + QA evidence** (Goal 2) | `out/<app>/mock/index.html` (clickable, opens from `file://`). `out/<app>/qa/report.html`, with per screen and round: `mock.png`, `heat.png`, `metrics.json`, `diffs.json`, `changelog.md`. Flow QA replays every model edge on the mock |
+| **Mock + QA evidence** (Goal 2) | `out/<app>/mock/index.html` (clickable, opens from `file://`). `out/<app>/qa/report.html`, with per screen and round: `mock.png`, `heat.png`, `metrics.json`, `diffs.json`, `changelog.md`. Flow QA replays every in-scope model edge that has a tappable element (Luzia: 134 of 135 pass; `g0035` lands on s10 instead of s14) |
 | **Proposals** (Goal 3): existing opportunity vs product change | `out/<app>/proposals/candidates.md`: baseline ideas, moment sweep, all ideas, full proposals with `case: existing / product-change` |
 | **Judge scores and reasoning for every candidate, rejected ones included** | `out/<app>/proposals/judgments.md` (gates, 9-criterion rubric, verdict, required changes, every revision round). The deck's "Ideas we rejected" slide |
 | "How do you know the judge is good?" | `npm run eval:judge` writes `out/<app>/proposals/judge-eval.md`: a single-fault confusion table (known-good positives built from the KB precedents that fit the app, 3 on Luzia; each negative breaks one field of a positive), showing whether code or the LLM caught each fault |
@@ -149,7 +149,7 @@ Android emulator ⇄ mobile-mcp 1.0.5 (stdio) ⇄ EXPLORE ──► graph.json +
      MOCK: LLM HTML per screen    QA: Playwright render vs      PROPOSE: KB in context; baseline →
      (spec renderer fallback) +   original → element diffs →    moment sweep → ideas → full proposals
      fixed runtime (router,       LLM fix → keep-best; flow     (economics computed in code)
-     counters, chat, wall,        QA replays every edge                   │
+     counters, chat, wall,        QA replays model edges                  │
      rewarded overlay, patches)                                           ▼
                │                                         JUDGE: code gates → LLM rubric → verdict in
                │                                         code → ≤ 2 blind revisions → portfolio check
@@ -219,10 +219,13 @@ Agents never message each other: stages share context only through typed, schema
 - **The fixture is our own app.** It proves the pipeline end to end, but it is not evidence about the real apps. Without a key its QA fix loop has nothing to do (every screen's best round is the first); the loop at work is in Luzia's QA report (s21, Favorite messages: 0.50 → 0.80 → 0.82 over two rounds).
 - **Cannibalization of a subscription is judged, not computed.** With packs, code compares a day of ad rewards with the cheapest pack. A subscription-only app (Luzia, Janitor) has no pack price, so that check falls to the rubric's cannibalization criterion.
 - **English-only heuristics.** Wall, decline and sign-up detection, and several judge gates, use English keyword rules. Luzia's Spanish and Portuguese UI would need a shared lexicon per language.
-- **Flow QA on image screens is mostly self-consistency.** On a screenshot screen the router is built from the same edges QA replays, so the flow score says more about the HTML screens than about the screenshots.
+- **Flow QA on image screens is mostly self-consistency.** On a screenshot screen the router is built from the same edges QA replays, so the flow score says more about the HTML screens than about the screenshots. It skips out-of-scope edges and edges with no element to tap, and one Luzia edge fails (`g0035` reaches s10, not s14).
 - **OOC's block is recorded by hand** (`out/ooc/HUMAN_LOG.md`, from the device's logcat); the raw log was not committed.
 - **The QA score is kind to sparse screens.** Luzia's Chats Home scores 0.80 while its avatars are blank boxes and some text overlaps, and start screens captured at cold launch (AOL's loading spinner, Janitor's splash) make weak references. Fix rounds made half of Luzia's rebuilt screens worse; keep-best threw those rounds away, so the mean only moved from 0.68 to 0.72.
 - **The drain probe runs last**, because spending cannot be undone, so on Luzia the step budget ran out before it could reach a chat. For a guest chat with nothing to lose it should run first.
+- **Verification proves the evidence exists, not that it proves the claim.** Every quote in Luzia's model was found on its screen and every number in a quote or a counter change, but a found quote can still be thin: `r3` "AI Usage Quota" rests only on a "Usage limits" support topic, with no value or state, and `w6` ties "Start a task" to the subscription from a sign-up prompt. A semantic check (does this quote establish this fact?) is next.
+- **Prototype rewards stop where the model stops.** Luzia's Fast-Track credit can be earned and spent at Animate in the prototype, but the mock has no render queue or export to skip, because the explorer never saw one. AOL's ad-free minutes really hide the feed's ad nodes, with a countdown; ads baked into screenshot screens stay.
+- **Cost per view follows the proposer's units.** P4 asks for three games per image credit but kept `cogsUnitsPerView` at 1, so the code gate compared a $0.025 image with one view ($0.0063); per its own bundle it is $0.025 against three views (about $0.019), still a loss, same verdict. The economics should read games per reward from the offer.
 - **The judge can be argued into an unobserved premise.** P5's queue is the example above; a gate that flags product-change premises the model never observed, plus that fault in the self-check, is next.
 - **The knowledge base still carries the brief's reference patterns** (an out-of-messages refill, a refills hub, daily tasks) as generic archetypes for AI chat apps; the lines naming Luzia or the reference slides were removed so the proposer never sees them.
 
