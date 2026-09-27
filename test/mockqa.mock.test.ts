@@ -25,17 +25,21 @@ async function open(q = ""): Promise<void> {
 const ev = <T = unknown>(js: string) => page.evaluate(js) as Promise<T>;
 const node = (screen: string, el: string) => page.locator(`[data-screen-layer="${screen}"] [data-node="${el}"]`).first();
 
+/** P2 guards its offer on a resource the proposal introduces (no counter until the first grant). */
+function p2ForTests() {
+  const p2 = sampleProposal();
+  p2.id = "P2";
+  p2.reward = { what: "1 Queue skip", resource: "queue_skip", amount: 1, grantOn: "REWARD_VERIFIED" };
+  p2.patch.newEdges = [{ from: "s04", el: "n1", to: "rwd", effects: [{ resource: "queue_skip", delta: 1 }], guard: { resource: "queue_skip", lt: 1 } }];
+  return p2;
+}
+
 describe("mock: stub generation and runtime", () => {
   before(async () => {
     // s06 (daily check-in) becomes an image screen so hotspots and the badge are exercised too.
     fx = await makeFixture("mock", m => { m.screens.find(s => s.id === "s06")!.render = "image"; });
     ({ indexHtml } = await generateMock(fx.c, fx.m, fx.modelDir));
-    // P2 guards its offer on a resource the proposal introduces (no counter until the first grant).
-    const p2 = sampleProposal();
-    p2.id = "P2";
-    p2.reward = { what: "1 Queue skip", resource: "queue_skip", amount: 1, grantOn: "REWARD_VERIFIED" };
-    p2.patch.newEdges = [{ from: "s04", el: "n1", to: "rwd", effects: [{ resource: "queue_skip", delta: 1 }], guard: { resource: "queue_skip", lt: 1 } }];
-    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2] });
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2ForTests()] });
     browser = await chromium.launch();
     page = await browser.newPage({ viewport: { width: 411, height: 914 } });
     page.on("pageerror", e => errors.push(e.message));
@@ -162,6 +166,27 @@ describe("mock: stub generation and runtime", () => {
     assert.equal(await ev("window.__mock.state()"), "s01");
     assert.equal(await ev("window.__mock.get('r1')"), 750);
     assert.match(await node("s01", "e2").innerText(), /^750 credits$/, "bound counter repainted");
+  });
+
+  test("an offer card drawn as a new element: its decline dismisses it (no ad), and a verified reward retires it", async () => {
+    const card = `<div data-new="n1" style="position:absolute;left:16px;top:300px;width:360px"><p>Skip the queue</p><button>Play now</button><button>Wait in queue</button></div>`;
+    const p3 = sampleProposal();
+    p3.id = "P3";
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), { proposal: p3, html: [{ id: "n1", html: card }] }] });
+    await open("?frame=0&screen=s04&proposal=P3");
+    await ev("window.__mock.set('r1', 0)");
+    await page.locator('[data-node="n1"] button', { hasText: "Wait in queue" }).click();
+    assert.equal(await page.locator(".mock-rw").count(), 0, "the decline never opens the ad");
+    assert.equal(await page.locator('[data-node="n1"]').isVisible(), false, "the card is dismissed");
+    await open("?frame=0&screen=s04&proposal=P3");
+    await ev("window.__mock.set('r1', 0)");
+    await page.locator('[data-node="n1"] button', { hasText: "Play now" }).click();
+    assert.equal(await page.locator(".mock-rw").getAttribute("data-phase"), "invite");
+    await ev(`window.__mock.openRewarded("verified", "P3")`);
+    await ev(`window.__mock.openRewarded("close", "P3")`);
+    await page.waitForTimeout(200);
+    assert.equal(await page.locator('[data-node="n1"]').isVisible(), false, "the offer card is retired after the grant");
+    buildMock(fx.m, fx.modelDir, fx.c.paths.mock, { proposals: [sampleProposal(), p2ForTests()] });
   });
 
   test("a new resource starts empty: its guarded offer opens, and the grant is named by the reward's words", async () => {

@@ -53,7 +53,7 @@ long chats..
 - propose: 28 live, 14 cached.
 - judge: 38 live, 25 cached.
 - slides: 6 live, 14 cached.
-- Trace: 96 decisions, 49 failures, 54 recoveries.
+- Trace: 97 decisions, 49 failures, 54 recoveries.
 
 ## Human notes
 

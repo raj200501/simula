@@ -1,0 +1,15 @@
+{
+ "purpose": "variant:P2:ne1",
+ "model": "gemini-3.1-flash-lite",
+ "effort": "high",
+ "text": "```html\n<div data-new=\"ne1\" style=\"position:absolute;left:20px;top:395px;width:371.4px;padding:20px;background:linear-gradient(135deg, #1E88E5, #1565C0);border-radius:var(--r-lg);box-shadow:0 8px 16px rgba(0,0,0,0.15);color:#ffffff;z-index:10;\">\n  <div style=\"display:flex;align-items:center;gap:12px;margin-bottom:16px;\">\n    <div style=\"display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.2);border-radius:var(--r-md);\">\n      <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n        <path d=\"M13 2L3 14h9l-1 8 10-12h-9l1-8z\"/>\n      </svg>\n    </div>\n    <div style=\"font-weight:700;font-size:18px;\">Ad-Free Sprint</div>\n  </div>\n  <div style=\"font-weight:600;font-size:16px;margin-bottom:8px;\">Ad-Free for 5 Minutes</div>\n  <div style=\"font-size:14px;margin-bottom:20px;opacity:0.9;line-height:1.4;\">Play a 15-second game for <b>+5 minutes of ad-free reading</b>. Go Ad-Free with AOL Plus.</div>\n  <button style=\"width:100%;height:48px;border:none;border-radius:var(--r-md);background:var(--c-accent);color:var(--c-on-accent);font-weight:600;font-size:16px;margin-bottom:8px;cursor:pointer;\">Go Ad-Free</button>\n  <button style=\"width:100%;height:48px;background:transparent;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;\">Keep reading</button>\n</div>\n```",
+ "usage": {
+  "input": 7844,
+  "output": 595,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thoughts": 6889
+ },
+ "stop": "STOP",
+ "ts": "2026-09-27T01:22:58.812Z"
+}

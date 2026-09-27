@@ -104,9 +104,9 @@ All checks pass.
 - **Cannibalization guard:** The reward is strictly time-boxed to 15 minutes, serving as a 'taste of premium' sampling effect rather than a permanent replacement for ad-free tiers.
 - Exchange rate: n/a (the reward is not a priced resource).
 - One completed US view earns $0.0090–$0.0150; the reward is worth n/a at list (n/ax a view); max per day n/a vs cheapest pack n/a.
-- Cost to serve per view: $0.0000 (none x 0).
+- Cost to serve per view: $0.0188 (none x 0).
 - Scenario, not a forecast: 15% of DAU engage, 1.5 views each, US mid eCPM after a 25% non-game haircut. Impressions/DAU 0.225, ARPDAU $0.0027.
-- Flags: none.
+- **Flags:** 15 ad-free minutes give up about 15 display impressions ($0.0187 at $0.00125 each), more than one view nets ($0.0063) at the low end.
 - **KPIs:** Ad-free Sprint sessions started. Guardrails: Daily active news reading time; Native ad CTR (non-sprint); D7 Retention. Holdout: User-level holdout, 10% share, 21 days
 - **Precedents:** TAX-2, EX-MUSIC, CORE-2 · **Risks:** Users may grow accustomed to ad-free reading and find the return to standard density jarring. Potential revenue dip if sprint sessions overlap with peak reading times.
 - **Evidence:** s11 "Unsubscribe" ✓; s02/e47 "TEMU in Taboola advertising section" ✓

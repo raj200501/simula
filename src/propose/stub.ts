@@ -11,7 +11,7 @@
 // Output is marked generatedBy "stub" by the caller. Every id it emits comes from resolveAnchors().
 import type { Candidates, Moment, ProductModel, Proposal, Screen, UiElement } from "../core/schema.ts";
 import type { Profile } from "../core/config.ts";
-import { ECON, cogsKindOf, deriveEconomy, proposalEconomics } from "../model/economics.ts";
+import { ECON, adFreeMinutesPerView, cogsKindOf, deriveEconomy, proposalEconomics } from "../model/economics.ts";
 import { ACCOUNT_LIKE, SIGNUP, elText, isAccountResource, isConsumable, isSignupScreen, resolveAnchors, type Anchors, type Cogs, type Gated } from "./anchors.ts";
 import { midSentence, modeName, repeatsUnit, unitCount } from "../core/humanize.ts";
 import type { LlmIdea } from "./schemas.ts";
@@ -676,9 +676,10 @@ export function templates(m: ProductModel, a: Anchors = resolveAnchors(m)): Temp
           why: `${plan0.plan} can only be felt by subscribing; a sponsored time box samples it [CANN-1].`, paid: "plan",
           precedents: ["TAX-11", "TAX-2", "EX-MUSIC"], risk: `Sampling ${plan0.plan}'s core benefit can substitute for subscribing: keep it short.` }
       : hub && hasAds
-        ? { where: hub.screen, mo: hub.moment, near: hub.anchorEl, minutes: 60, cogs: "none", units: 0, archetype: "AI-17", title: `Sponsored ad-free hour on ${hub.screen.name}`,
+        // Sized so one view covers the display impressions the ad-free minutes give up.
+        ? { where: hub.screen, mo: hub.moment, near: hub.anchorEl, minutes: adFreeMinutesPerView(), cogs: "none", units: 0, archetype: "AI-17", title: `Sponsored ad-free minutes on ${hub.screen.name}`,
             what: min => `${min} minutes of ${hub.screen.name} without in-feed ads`, today: "Ads today",
-            why: "The app already shows ads; an ad-light hour is the one thing ads make scarce.", paid: "plan",
+            why: "The app already shows ads; a few ad-free minutes are the one thing ads make scarce, sized so one view covers the ads they replace.", paid: "plan",
             precedents: ["AI-17", "TAX-11", "EX-MUSIC"], risk: "Ad-free time only has value while other ads keep interrupting." }
         : undefined;
   if (session) {

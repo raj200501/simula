@@ -16,7 +16,35 @@ export const ECON = {
   maxRewardToView: 3,
   // Serving a reward should cost at most this share of what a view nets at the low end. [TRIG-4]
   cogsTargetShare: 0.6,
+  // Display and native ads the app already runs: net per impression after the platform's share (US news
+  // display at roughly $1-4 eCPM gross), and how many a reader sees per minute. [inf]
+  displayNetPerImpressionUsd: [0.0005, 0.002] as [number, number],
+  displayImpressionsPerMinute: 1,
 };
+
+const AD_FREE = /\bad[- ]?free\b|\bno ads\b|\bwithout ads\b|\bremoves? (?:the |all )?ads\b|\bads? off\b/i;
+
+/** The most ad-free minutes one rewarded view pays for: what a view nets at the low end over the display it displaces. */
+export function adFreeMinutesPerView(): number {
+  const net = ECON.grossPerViewUsd.US[0] * (1 - ECON.nonGameHaircut) * (1 - ECON.platformShare);
+  const mid = (ECON.displayNetPerImpressionUsd[0] + ECON.displayNetPerImpressionUsd[1]) / 2;
+  return Math.max(1, Math.floor(net / (mid * ECON.displayImpressionsPerMinute)));
+}
+
+/**
+ * Minutes of ad-free time a reward buys, when it removes ads at all: from its duration, else from the
+ * first "N minute(s)" / "N-minute" / "N hour(s)" in its own words. null = the reward does not remove ads;
+ * NaN = it does, for a time it never states.
+ */
+export function adFreeMinutes(p: Proposal): number | null {
+  const words = [p.reward.what, p.reward.duration, p.offer.title, p.offer.body, p.oneLiner, p.anchor.newMechanic?.description].filter(Boolean).join(" · ");
+  if (!AD_FREE.test(words)) return null;
+  for (const t of [p.reward.duration ?? "", p.reward.what, words]) {
+    const x = /(\d+(?:\.\d+)?)\s*-?\s*(minutes?|mins?|hours?|hrs?)\b/i.exec(t);
+    if (x) return Number(x[1]) * (/^h/i.test(x[2]) ? 60 : 1);
+  }
+  return NaN;
+}
 
 /** At cost to serve: the most units one view can pay for while serving them stays under ECON.cogsTargetShare. */
 export function maxUnitsAtCost(upv: { min: number }): number {
@@ -123,7 +151,11 @@ export function proposalEconomics(p: Proposal, m: ProductModel): ProposalEconomi
   const vv = derived.viewValueUsd.US;
   const u = p.reward.resource ? derived.unitPriceUsd.find(x => x.resource === p.reward.resource) : undefined;
   const rewardValue = u && p.reward.amount ? p.reward.amount * u.min : null;
-  const cogs = (ECON.cogsPerUnitUsd[p.assumptions.cogs] ?? 0) * p.assumptions.cogsUnitsPerView;
+  // Ad-free time is not free to serve when the app already shows ads: it gives up their impressions.
+  const adMinutes = m.economy.ads.length ? adFreeMinutes(p) : null;
+  const displayMid = (ECON.displayNetPerImpressionUsd[0] + ECON.displayNetPerImpressionUsd[1]) / 2;
+  const displaced = adMinutes != null && Number.isFinite(adMinutes) ? adMinutes * ECON.displayImpressionsPerMinute * displayMid : 0;
+  const cogs = (ECON.cogsPerUnitUsd[p.assumptions.cogs] ?? 0) * p.assumptions.cogsUnitsPerView + displaced;
   const impressionsPerDau = p.assumptions.engagedShare * p.assumptions.viewsPerEngager;
   const midGross = (ECON.grossPerViewUsd.US[0] + ECON.grossPerViewUsd.US[1]) / 2 * (1 - ECON.nonGameHaircut);
   const arpdau = impressionsPerDau * midGross;
@@ -137,7 +169,11 @@ export function proposalEconomics(p: Proposal, m: ProductModel): ProposalEconomi
   const costBasis = !u && p.reward.resource ? derived.unitsPerView.find(x => x.resource === p.reward.resource && x.basis === "cost-to-serve") : undefined;
   if (costBasis && p.reward.amount && p.reward.amount > costBasis.max)
     flags.push(`Reward of ${p.reward.amount} costs more to serve than one view nets (break-even ≈ ${fmt(costBasis.min)}–${fmt(costBasis.max)} per view).`);
-  if (cogs > netPerView) flags.push(`Cost to serve the reward ($${cogs.toFixed(4)}) exceeds net revenue per view ($${netPerView.toFixed(4)}) at the low end.`);
+  if (adMinutes != null && !Number.isFinite(adMinutes))
+    flags.push(`The reward turns off the app's ${m.economy.ads.length} ad placements for a time it never states: give the minutes, so code can price the display revenue it gives up.`);
+  else if (displaced > 0 && cogs > netPerView)
+    flags.push(`${adMinutes} ad-free minutes give up about ${adMinutes! * ECON.displayImpressionsPerMinute} display impressions ($${displaced.toFixed(4)} at $${displayMid.toFixed(5)} each), more than one view nets ($${netPerView.toFixed(4)}) at the low end.`);
+  else if (cogs > netPerView) flags.push(`Cost to serve the reward ($${cogs.toFixed(4)}) exceeds net revenue per view ($${netPerView.toFixed(4)}) at the low end.`);
   return {
     viewValueUsd: vv,
     rewardValueUsdAtList: rewardValue != null ? r4(rewardValue) : null,

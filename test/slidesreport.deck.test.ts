@@ -6,7 +6,7 @@ import type { Frame } from "../src/slides/capture.ts";
 import { phaseSteps } from "../src/slides/capture.ts";
 import { flowPins, renderDeck, zoomInset, type FlowGeo, type FlowInput } from "../src/slides/deck.ts";
 import {
-  accentOf, claimOf, clampWords, clip, declineTarget, econTable, gamesNeeded, headlineOf, ideaRows, judgeChanges, normalizeStoryboard, recommendationHeadline, shipped, shortCaption, whyBullets, wrappedLines, PHASES,
+  accentOf, claimOf, clampWords, clip, declineTarget, oneLine, econTable, gamesNeeded, headlineOf, ideaRows, judgeChanges, normalizeStoryboard, recommendationHeadline, shipped, shortCaption, whyBullets, wrappedLines, PHASES,
 } from "../src/slides/facts.ts";
 import { integrationSnippet } from "../src/slides/integration.ts";
 import type { CostRollup } from "../src/report/data.ts";
@@ -46,6 +46,12 @@ describe("slide facts", () => {
     const s = shipped(sampleCandidates(), sampleJudgments());
     assert.deepEqual(s.map(x => `${x.p.id}v${x.p.version}`), ["P1v2"]);
     assert.equal(shipped(sampleCandidates(), sampleJudgments({ shipVerdict: "REVISE" })).length, 0, "a REVISE is never promoted");
+  });
+
+  test("slide text never shows the model's internal ids", () => {
+    assert.equal(oneLine("Taps 'Animate' (e13) on the Account Sidebar (s11) or (ne1, e3)."), "Taps 'Animate' on the Account Sidebar or.");
+    assert.equal(clip("Tap 'Clapping' (e24) to start", 60), "Tap 'Clapping' to start");
+    assert.equal(oneLine("Model e2e (end to end) stays"), "Model e2e (end to end) stays");
   });
 
   test("storyboard always has the five phases in order", () => {

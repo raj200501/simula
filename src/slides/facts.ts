@@ -248,7 +248,8 @@ export function spacing(p: Proposal, lead = ""): string {
   return `, ${lead}${m >= 60 ? `${Math.round((m / 60) * 10) / 10} h` : `${m} min`} apart`;
 }
 
-export const oneLine = (s: string | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
+// Slide text for people: one line, and never the model's internal ids ("taps 'Animate' (e13)").
+export const oneLine = (s: string | undefined) => (s ?? "").replace(/\s*\((?:(?:n?[es])\d+(?:\s*,\s*)?)+\)/g, "").replace(/\s+/g, " ").trim();
 const firstSentence = (s: string) => (/^(.+?[.!?])(\s|$)/.exec(s)?.[1] ?? s);
 
 // ---------------------------------------------------------------------------------------------- economics copy
@@ -301,7 +302,9 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
     out.push({ stat: `${Math.round(pct)}% of the cheapest pack`, text: `Max earnable per day ≈ $${e.maxDailyEarnUsdAtList.toFixed(2)} at list vs $${e.cheapestPaidUnitUsd.toFixed(2)} for the cheapest pack.`,
       line: `A full day of ads earns ≈ $${e.maxDailyEarnUsdAtList.toFixed(2)} at list, below the cheapest pack.` });
   } else {
-    out.push({ stat: "Paid path untouched", text: clip(p.cannibalizationGuard, 150), line: clip(firstSentence(oneLine(p.cannibalizationGuard)), 120) });
+    // With nothing for sale there is no paid path to protect; the guard is about what stays free.
+    const stat = m.regime === "no-scarcity" ? "Nothing free taken away" : "Paid path untouched";
+    out.push({ stat, text: clip(p.cannibalizationGuard, 150), line: clip(firstSentence(oneLine(p.cannibalizationGuard)), 120) });
   }
 
   // 3. Caps and eligibility: how often, and for whom.

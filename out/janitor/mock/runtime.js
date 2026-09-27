@@ -692,10 +692,28 @@
     return m && OVERLAY[m.kind] ? (m.kind === "sheet" ? "sheet" : "modal") : "push";
   }
 
+  // A proposal's new element drawn as an offer card carries its own decline ("No thanks", "Wait in
+  // Queue", ×): that button dismisses the card and never opens the ad. After a verified reward the
+  // card has done its job and goes away too.
+  var DECLINE_LABEL = /^(?:no,? thanks|no|not now|maybe later|later|skip|close|cancel|dismiss|keep (?:reading|browsing|chatting|going)|continue(?: reading)?|wait\b.*|×|✕|x)$/i;
+  function offerCards(root) {
+    return Array.prototype.filter.call(root.querySelectorAll("[data-new]"), function (n) {
+      return Array.prototype.some.call(n.querySelectorAll("button,[role=button]"), function (b) { return DECLINE_LABEL.test((b.textContent || "").trim()); });
+    });
+  }
+  function hideOfferCards() {
+    var top = topLayer();
+    if (top) offerCards(top.el).forEach(function (n) { n.style.display = "none"; });
+  }
+
   screenEl.addEventListener("click", function (ev) {
     if (ev.target.closest(".mock-external,.mock-rw,.mock-toast,.mock-reward-toast")) return;
     var top = topLayer();
     if (!top || !top.el.contains(ev.target)) return;
+    var card = ev.target.closest("[data-new]"), btn = ev.target.closest("button,[role=button]");
+    if (card && btn && card.contains(btn) && DECLINE_LABEL.test((btn.textContent || "").trim())) {
+      card.style.display = "none"; ev.preventDefault(); ev.stopPropagation(); return;
+    }
     var ids = candidates(ev, top.el);
     for (var i = 0; i < ids.length; i++) {
       var r = activate(top.id, ids[i], top.el);
@@ -988,7 +1006,7 @@
         if (S.rewardedFrom && current() !== S.rewardedFrom && meta(S.rewardedFrom)) navigate(S.rewardedFrom, "back");
         S.rewardedFrom = null;
         // The grant is confirmed where the user is, once the overlay is gone.
-        if (S.granted) { showRewardToast(S.granted); S.granted = null; }
+        if (S.granted) { hideOfferCards(); showRewardToast(S.granted); S.granted = null; }
       },
     });
     return R.phase();
