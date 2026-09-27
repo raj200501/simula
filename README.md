@@ -101,7 +101,7 @@ Useful flags:
 | Flag | Effect |
 |---|---|
 | `--llm record` (default) | Use the cache; call the model on a miss |
-| `--llm replay` | Cache only, no key needed |
+| `--llm replay` | Cache only, no key needed (reproduces propose → slides; see Cost, trajectory, HUMAN_LOG) |
 | `--llm stub` | No model calls at all |
 | `--llm live` | Always call the model |
 | `--out-root <dir>` | Write outputs under `<dir>` |
@@ -200,7 +200,7 @@ Agents never message each other: stages share context only through typed, schema
   - latency;
   - whether it came from cache.
 
-  The Gemini free tier bills $0, but tokens are still logged, so the ledgers can be priced: at `claude-opus-5` list prices with no prompt caching, Luzia's ledger (every run, including the repeated proposal and judge runs) comes to about $47, Janitor's $22 and AOL's $20. Cached calls replay at no cost, so `--llm replay` reproduces a run without a key.
+  The Gemini free tier bills $0, but tokens are still logged, so the ledgers can be priced: at `claude-opus-5` list prices with no prompt caching, Luzia's ledger (every run, including the repeated proposal and judge runs) comes to about $47, Janitor's $22 and AOL's $20. Cached calls replay at no cost: with no key, `--llm replay` reproduces `propose`, `judge`, `eval-judge` and `slides` for all three apps from the committed outputs, verdicts unchanged. Explore, understand, mock and QA outputs are committed as recorded; their code and the privacy-redacted screenshots changed after those runs, so their cache keys no longer match: replaying them falls back to the stubs, so use `--out-root` to keep the committed outputs intact.
 - **Trajectory.** `trace.jsonl` records every decision, failure, recovery, budget stop, human step and stop reason. `trajectory.md` renders it (phases, discovery over time, failures paired with recoveries, autonomy ratio). Each stage's `manifest.json` pins its inputs by sha256.
 - **HUMAN_LOG.** Anything a person did goes into `out/<app>/HUMAN_LOG.md` and the trace, through `npm run note -- --app <id> "…"`: a sign-in, a blocked app, a re-run after a code fix. Edits to the product model would go through `model/overrides.json` (a JSON-merge patch keyed by item id, re-applied on every load and logged as a human step); none of the committed models has one. The only hand edits to artifacts are privacy redactions.
 

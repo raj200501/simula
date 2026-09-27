@@ -106,6 +106,14 @@ describe("slide facts", () => {
     assert.equal(wrappedLines("Out of credits gains a secondary rewarded option.", 28), 2);
   });
 
+  test("with a third line, a caption stays whole rather than cut to a fragment or ended with …", () => {
+    assert.equal(shortCaption("When queues are active, users play a game to skip wait times.", 60, 3), "When queues are active, users play a game to skip wait times.");
+    assert.equal(shortCaption("The news feed displays integrated advertising units alongside the top stories."), "The news feed displays integrated advertising…");
+    assert.equal(shortCaption("The news feed displays integrated advertising units alongside the top stories.", 60, 3), "The news feed displays integrated advertising units alongside the top stories.");
+    // Too long for three lines: still cut before a qualifier, never mid-phrase.
+    assert.equal(shortCaption("Guest user opens Custom Bestie creator and encounters the mandatory signup wall right now today.", 60, 3), "Guest user opens Custom Bestie creator.");
+  });
+
   test("pins never cover a control: a pin with no free spot keeps its ring and loses its letter", () => {
     const p = sampleCandidates().proposals[1];
     const [flow] = flowsFor();

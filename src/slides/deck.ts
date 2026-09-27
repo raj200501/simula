@@ -221,7 +221,7 @@ function flowSlide(d: DeckInput, f: FlowInput, i: number, g: FlowGeo, pins: PinS
   f.frames.forEach((fr, k) => {
     const target = targets[k];
     const zoom = fr.phase === "change" ? zoomInset(fr, pins[k], g, target, targets[k + 1] ?? null) : "";
-    const cap = shortCaption(fr.caption);
+    const cap = shortCaption(fr.caption, 60, 3);
     const decline = fr.phase === "offer"
       ? `<div class="decline"><span class="ret" aria-hidden="true">↩</span><span><b>${h(f.p.offer.decline || "No thanks")}</b> → back to ${h(f.declineTo)}, nothing lost</span></div>` : "";
     cols.push(`<div class="f-col" data-phase="${fr.phase}" style="left:${g.xs[k]}px;top:${TRIG_H}px;width:${g.pw}px">
@@ -248,7 +248,7 @@ ${elbow(target, g.ph)}${marker(k + 1, g.ph)}<span class="ph" style="top:${g.ph +
 function triggerHtml(f: FlowInput, g: FlowGeo): string {
   const left = g.xs[1], width = g.xs[2] + g.pw - g.xs[1];
   const a = g.pw / 2, b = g.xs[2] - g.xs[1] + g.pw / 2, top = TRIG_H - 30, end = TRIG_H - 6, r = 8;
-  const text = clip(firstSentenceOf(f.p.trigger).replace(/[.;:]+$/, ""), 118);
+  const text = clip(firstSentenceOf(f.p.trigger).replace(/[.;:]+$/, ""), 165);
   return `<div class="trigger" style="left:${left}px;width:${width}px;height:${TRIG_H}px">
 <div class="trig-label" style="bottom:${TRIG_H - top + 8}px"><div class="t">Trigger</div><p>${h(text)}</p></div>
 <svg class="trig-arrow" width="${width}" height="${TRIG_H}" viewBox="0 0 ${width} ${TRIG_H}" aria-hidden="true"><path d="M${a} ${end - 2}V${top + r}Q${a} ${top} ${a + r} ${top}H${b - r}Q${b} ${top} ${b} ${top + r}V${end - 7}" stroke="var(--accent)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M${b - 7} ${end - 9}L${b} ${end}L${b + 7} ${end - 9}Z" fill="var(--accent)"/><circle cx="${a}" cy="${end - 2}" r="4.5" fill="var(--accent)"/></svg></div>`;
@@ -679,7 +679,7 @@ h1.h2{font-size:40px}
 .elbow{position:absolute;overflow:visible}
 .ph{position:absolute;left:${MK / 2 + 16}px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
 .cap-block{position:absolute;left:${-MK / 2 + 6}px}
-.cap{font-size:19px;line-height:1.32;font-weight:750;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:-.012em}
+.cap{font-size:19px;line-height:1.32;font-weight:750;color:var(--ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:-.012em}
 .cap.long{font-size:17.5px}
 .decline{display:flex;gap:8px;align-items:flex-start;margin-top:10px;font-size:14.5px;line-height:1.35;color:var(--body)}
 .decline .ret{flex:none;width:20px;height:20px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:12px;display:grid;place-items:center;margin-top:0}
@@ -724,7 +724,7 @@ h1.h2{font-size:40px}
 .trig-arrow{position:absolute;left:0;top:0;overflow:visible}
 .trig-label{position:absolute;left:-40px;right:-40px;display:flex;gap:10px;align-items:flex-start;justify-content:center}
 .trig-label .t{flex:none;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:7px;margin-top:1px}
-.trig-label p{margin:0;font-size:16px;line-height:1.35;font-weight:600;color:var(--ink);max-width:470px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.trig-label p{margin:0;font-size:16px;line-height:1.35;font-weight:600;color:var(--ink);max-width:500px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .rail{position:absolute;right:${PAD_X}px;width:${RAIL}px;display:flex;flex-direction:column;gap:16px}
 .rail h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 0;font-weight:700}
 .why{list-style:none;margin:0;padding:0}

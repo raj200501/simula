@@ -1,10 +1,10 @@
 {
   "stage": "slides",
   "app": "aol",
-  "runId": "sl0927-012404",
-  "gitSha": "b932075",
-  "startedAt": "2026-09-27T01:24:04.399Z",
-  "finishedAt": "2026-09-27T01:24:20.070Z",
+  "runId": "sl0927-015814",
+  "gitSha": "3ffac37",
+  "startedAt": "2026-09-27T01:58:14.205Z",
+  "finishedAt": "2026-09-27T01:58:29.586Z",
   "status": "ok",
   "inputs": [
     {
@@ -24,6 +24,6 @@
     "calls": 2,
     "cached": 2,
     "usd": 0,
-    "mode": "record"
+    "mode": "replay"
   }
 }

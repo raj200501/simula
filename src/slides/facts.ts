@@ -61,10 +61,10 @@ export function normalizeStoryboard(p: Proposal, m: ProductModel): Story[] {
     ad: `${p.simula.minPlaySec}s sponsored game${p.simula.gamePartner ? ` with ${p.simula.gamePartner}` : ""}`,
     value: p.reward.amount != null && res ? `+${p.reward.amount} ${unitOf(res)}, right where they were` : p.reward.what,
   };
-  // Captions are at most 12 words (E5) whatever the proposer wrote.
+  // Captions are at most 12 words (E5) whatever the proposer wrote, cut where the sentence allows.
   return PHASES.map(phase => {
     const s = by.get(phase) ?? { phase, screen: fallbackScreen[phase], counters: [], overlay: "none" as const, callouts: [], caption: fallbackCaption[phase] };
-    return { ...s, caption: clampWords(s.caption, 12) };
+    return { ...s, caption: clampCaption(s.caption, 12) };
   });
 }
 
@@ -182,21 +182,25 @@ export function recommendationHeadline(m: ProductModel, ps: Proposal[]): Headlin
  * A flow-slide caption that fits two lines: the caption itself when short enough, else its first
  * clause, else a word-boundary cut. The full caption stays on the details slide.
  */
-export function shortCaption(s: string, max = 60): string {
+export function shortCaption(s: string, max = 60, lines = 2): string {
   const t = oneLine(s);
   // The caption box shows two lines of ~28 characters (19px bold under a phone); a longer caption is
   // cut by CSS mid-phrase, so every candidate must wrap into two lines, not just be short.
   const fits = (x: string) => x.length <= max && wrappedLines(x, CAPTION_LINE_CHARS) <= 2;
-  if (fits(t)) return t;
+  // Where the layout has a third line, the whole sentence beats any cut of it.
+  const fits3 = (x: string) => lines > 2 && x.length <= max + 24 && wrappedLines(x, CAPTION_LINE_CHARS) <= lines;
+  if (fits(t) || fits3(t)) return t;
   const stop = (x: string) => `${x.replace(/[.,;:\-–—]+$/, "")}.`;
   const sentence1 = firstSentence(t);
   if (sentence1 !== t && fits(sentence1) && wordCount(sentence1) >= 3) return sentence1;
-  const clause = t.split(/[,;(]\s|\s[–—]\s/)[0].trim();
-  if (fits(stop(clause)) && wordCount(clause) >= 4) return stop(clause);
+  const clause = firstClause(t);
+  if (clause && fits(stop(clause))) return stop(clause);
   // Drop a trailing qualifier ("… option under "Refill now"") so the caption stays a sentence.
-  const cuts = [...t.matchAll(/\s(?:under|above|below|next to|with|for|in|on|at|after|before|until|when|while|so|and|which|where|from|beyond|than|without|into|via|through|because)\s/gi)]
-    .map(x => t.slice(0, x.index).trim()).filter(x => fits(stop(x)) && wordCount(x) >= 4);
+  const heads = qualifierHeads(t);
+  const cuts = heads.filter(x => fits(stop(x)));
   if (cuts.length) return stop(cuts[cuts.length - 1]);
+  const cuts3 = heads.filter(x => fits3(stop(x)));
+  if (cuts3.length) return stop(cuts3[cuts3.length - 1]);
   let out = "";
   for (const w of t.split(" ")) { if (!fits(`${`${out} ${w}`.trim().replace(/[,;:.\-–—]+$/, "")}…`)) break; out = `${out} ${w}`.trim(); }
   return `${out.replace(/[,;:.\-–—]+$/, "")}…`;
@@ -228,7 +232,46 @@ export function surfaceLabel(p: Proposal, m: ProductModel): string {
   return `${name} (new ${ns.kind === "screen" ? "screen" : ns.kind}${ns.basedOn ? ` on ${screenName(m, ns.basedOn)}` : ""})`;
 }
 
-/** Captions are at most 12 words (E5); longer proposer copy is cut at a word boundary. */
+const QUALIFIER = /\s(?:under|above|below|next to|alongside|within|across|with|for|to|as|in|on|at|after|before|until|when|while|so|and|which|where|from|beyond|than|without|into|via|through|because)\s/gi;
+
+/**
+ * The text before its first comma, semicolon, bracket or dash, when that can stand as a sentence: at
+ * least four words, not a subordinate opener ("When trying to comment") and not cut inside a noun
+ * phrase ("The reward is a small, time-boxed sample").
+ */
+function firstClause(t: string): string | null {
+  const c = t.split(/[,;(]\s|\s[–—]\s/)[0].trim();
+  if (c === t || wordCount(c) < 4) return null;
+  if (/^(?:when|if|once|after|before|while|upon|as|because|since|although|though|unless|until|today|currently)\b/i.test(c)) return null;
+  const w = c.split(/\s+/);
+  return /^(?:a|an|the|this|that|its|their|our|your|his|her|my)$/i.test(w[w.length - 2] ?? "") ? null : c;
+}
+
+/** Every head of `t` that ends just before a qualifier ("… for 5 minutes as the reward is granted"), shortest first. */
+function qualifierHeads(t: string): string[] {
+  return [...t.matchAll(QUALIFIER)].map(x => t.slice(0, x.index).trim()).filter(x => wordCount(x) >= 4);
+}
+
+/**
+ * The longest clean head of a text that fits: the whole text, its first sentence, its first clause,
+ * or a cut before a trailing qualifier. `cut` (which ends with "…") only when none of those fits.
+ */
+export function cleanHead(s: string, fits: (x: string) => boolean, cut: (t: string) => string): string {
+  const t = oneLine(s);
+  if (fits(t)) return t;
+  const stop = (x: string) => `${x.replace(/[.,;:\-–—]+$/, "")}.`;
+  const sentence1 = firstSentence(t);
+  if (sentence1 !== t && fits(sentence1) && wordCount(sentence1) >= 3) return sentence1;
+  const clause = firstClause(t);
+  if (clause && fits(stop(clause))) return stop(clause);
+  const heads = qualifierHeads(t).filter(x => fits(stop(x)));
+  return heads.length ? stop(heads[heads.length - 1]) : cut(t);
+}
+
+/** Captions are at most 12 words (E5); longer proposer copy is cut at a clean boundary, else a word boundary. */
+export const clampCaption = (s: string, n = 12) => cleanHead(s, x => wordCount(x) <= n, t => clampWords(t, n));
+
+/** Cut at a word boundary with "…" once over `n` words. */
 export function clampWords(s: string, n = 12): string {
   const w = oneLine(s).split(" ").filter(Boolean);
   if (w.length <= n) return w.join(" ");
@@ -304,7 +347,7 @@ export function whyBullets(p: Proposal, m: ProductModel, e: ProposalEconomics): 
   } else {
     // With nothing for sale there is no paid path to protect; the guard is about what stays free.
     const stat = m.regime === "no-scarcity" ? "Nothing free taken away" : "Paid path untouched";
-    out.push({ stat, text: clip(p.cannibalizationGuard, 150), line: clip(firstSentence(oneLine(p.cannibalizationGuard)), 120) });
+    out.push({ stat, text: clip(p.cannibalizationGuard, 150), line: cleanHead(p.cannibalizationGuard, x => x.length <= 120, t => clip(t, 120)) });
   }
 
   // 3. Caps and eligibility: how often, and for whom.
