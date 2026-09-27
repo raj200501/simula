@@ -6,12 +6,13 @@
 //   REVISE is a REJECT: REVISE is never promoted to the slides.
 // Then the portfolio check (portfolio.ts): a SHIP that near-duplicates a better-scored SHIP fails the
 // "portfolio-distinct" code gate, gets the same revision loop once, and is rejected if still a duplicate.
+import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { Candidates, Criterion, Judgments, Proposal, type GateResult, type JudgmentRound, type ProductModel } from "../core/schema.ts";
 import { json, llmMode } from "../core/llm.ts";
 import { MODELS } from "../core/config.ts";
-import { save, writeText } from "../core/io.ts";
+import { load, save, writeText } from "../core/io.ts";
 import { trace } from "../core/trace.ts";
 import type { StageCtx } from "../core/run.ts";
 import { digest } from "../model/digest.ts";
@@ -258,6 +259,25 @@ function summary(j: ProposalJudgment): string {
   const gate = last.gates.find(g => !g.pass);
   const concern = gate ? `${gate.gate} (${gate.by}): ${gate.evidence}` : last.topConcern;
   return `REJECT${after}: ${j.note || last.reasons.join("; ")}. Top concern: ${concern}`;
+}
+
+/**
+ * judgeAll writes each proposal's final version back into candidates.json, so judging that file again
+ * would revise the revisions. A proposal newer than the first version revisions.json keeps for it is
+ * put back to that version: re-running `judge` on its own output replays the same run.
+ */
+export function unjudged(cands: Candidates, revisionsFile: string): { cands: Candidates; restored: string[] } {
+  if (!fs.existsSync(revisionsFile)) return { cands, restored: [] };
+  const first = new Map<string, Proposal>();
+  for (const p of load(Revisions, revisionsFile).proposals) if ((first.get(p.id)?.version ?? Infinity) > p.version) first.set(p.id, p);
+  const restored: string[] = [];
+  const proposals = cands.proposals.map(p => {
+    const f = first.get(p.id);
+    if (!f || p.version <= f.version) return p;
+    restored.push(`${p.id}v${p.version}->v${f.version}`);
+    return f;
+  });
+  return { cands: { ...cands, proposals }, restored };
 }
 
 export async function judgeAll(c: StageCtx, m: ProductModel, cands: Candidates): Promise<Judgments> {

@@ -7,7 +7,7 @@ import { setLlmContext } from "../src/core/llm.ts";
 import { load } from "../src/core/io.ts";
 import { Candidates, Judgments } from "../src/core/schema.ts";
 import { propose } from "../src/propose/propose.ts";
-import { judgeAll, Revisions } from "../src/judge/judge.ts";
+import { judgeAll, Revisions, unjudged } from "../src/judge/judge.ts";
 import { calibrationItems, evalJudge } from "../src/judge/calibrate.ts";
 import { sampleModel } from "./helpers/sample-model.ts";
 import { ctx, tmpDir } from "./helpers/proposejudge-ctx.ts";
@@ -59,6 +59,16 @@ describe("judgeAll (stub)", () => {
     for (const f of j.final) assert.equal(disk.proposals.find(p => p.id === f.proposalId)?.version, f.version);
     const revs = load(Revisions, path.join(dir, "revisions.json"));
     assert.equal(revs.proposals.length, j.rounds.length, "one version per judged round");
+  });
+
+  test("judging candidates.json again starts from the proposer's versions and gives the same verdicts", async () => {
+    const onDisk = load(Candidates, path.join(dir, "candidates.json"));
+    const { cands: again, restored } = unjudged(onDisk, path.join(dir, "revisions.json"));
+    assert.ok(restored.length > 0, "the stub run revised at least one proposal");
+    assert.deepEqual(again.proposals.map(p => p.version), cands.proposals.map(() => 1));
+    const j2 = await judgeAll(c, m, again);
+    assert.deepEqual(j2.final, j.final);
+    assert.deepEqual(unjudged(cands, path.join(out, "none.json")).restored, [], "no revisions file: nothing to restore");
   });
 
   test("judgments.md shows every round with gates, scores, reasons and version diffs", () => {
