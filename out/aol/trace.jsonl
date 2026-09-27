@@ -1295,3 +1295,12 @@
 {"ts":"2026-09-27T03:12:19.989Z","app":"aol","run":"sl0927-031206","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P2.gif"}}
 {"ts":"2026-09-27T03:12:22.542Z","app":"aol","run":"sl0927-031206","stage":"slides","type":"info","data":{"stage":"slides","slides":8,"flowSlides":1,"deck":"slides/deck.html"}}
 {"ts":"2026-09-27T03:12:22.601Z","app":"aol","run":"sl0927-031206","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":16295,"llm":{"calls":2,"cached":2,"usd":0,"mode":"replay"}}}
+{"ts":"2026-09-27T03:28:28.785Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"replay"}}
+{"ts":"2026-09-27T03:28:29.364Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"decision","data":{"stage":"slides","ships":["P2"],"why":"every final SHIP gets a flow slide; REVISE is never promoted"}}
+{"ts":"2026-09-27T03:28:29.366Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"llm_call","data":{"purpose":"variant:P2:ne1","key":"0df2994124f1d34516ad38d5","cached":true,"usd":0}}
+{"ts":"2026-09-27T03:28:29.366Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"decision","data":{"stage":"slides","proposal":"P2","entry":"ne2","choice":"runtime-default","why":"no HTML base screen in the mock"}}
+{"ts":"2026-09-27T03:28:29.367Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"llm_call","data":{"purpose":"variant:P2:ne3","key":"4c3be644f590d199d7683640","cached":true,"usd":0}}
+{"ts":"2026-09-27T03:28:33.807Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P2","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":1}}
+{"ts":"2026-09-27T03:28:42.246Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P2.gif"}}
+{"ts":"2026-09-27T03:28:45.227Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"info","data":{"stage":"slides","slides":8,"flowSlides":1,"deck":"slides/deck.html"}}
+{"ts":"2026-09-27T03:28:45.291Z","app":"aol","run":"sl0927-032828","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":16445,"llm":{"calls":2,"cached":2,"usd":0,"mode":"replay"}}}

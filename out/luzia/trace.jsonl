@@ -9294,3 +9294,11 @@
 {"ts":"2026-09-27T03:12:02.747Z","app":"luzia","run":"sl0927-031150","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P5.gif"}}
 {"ts":"2026-09-27T03:12:05.289Z","app":"luzia","run":"sl0927-031150","stage":"slides","type":"info","data":{"stage":"slides","slides":8,"flowSlides":1,"deck":"slides/deck.html"}}
 {"ts":"2026-09-27T03:12:05.338Z","app":"luzia","run":"sl0927-031150","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":14684,"llm":{"calls":2,"cached":2,"usd":0,"mode":"replay"}}}
+{"ts":"2026-09-27T03:28:11.465Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"replay"}}
+{"ts":"2026-09-27T03:28:12.392Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"decision","data":{"stage":"slides","ships":["P5"],"why":"every final SHIP gets a flow slide; REVISE is never promoted"}}
+{"ts":"2026-09-27T03:28:12.394Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"llm_call","data":{"purpose":"variant:P5:ne1","key":"ab509dab36b610f1028727e1","cached":true,"usd":0}}
+{"ts":"2026-09-27T03:28:12.394Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"llm_call","data":{"purpose":"variant:P5:ne2","key":"1416682e5e40728ef1a89f4c","cached":true,"usd":0}}
+{"ts":"2026-09-27T03:28:17.099Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"info","data":{"stage":"slides","proposal":"P5","frames":["today:mock","change:mock","offer:mock","ad:mock","value:mock"],"pins":4}}
+{"ts":"2026-09-27T03:28:24.671Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"info","data":{"stage":"slides","gif":"flow-P5.gif"}}
+{"ts":"2026-09-27T03:28:27.797Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"info","data":{"stage":"slides","slides":8,"flowSlides":1,"deck":"slides/deck.html"}}
+{"ts":"2026-09-27T03:28:27.869Z","app":"luzia","run":"sl0927-032811","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":16404,"llm":{"calls":2,"cached":2,"usd":0,"mode":"replay"}}}

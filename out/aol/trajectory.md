@@ -1,6 +1,6 @@
 # Trajectory: aol
 
-Autonomous decisions: **121**. Human interventions: **2**. Autonomy ratio: **98.4%**. Sign-in walls noted for a human and skipped: 2 (2 distinct).
+Autonomous decisions: **123**. Human interventions: **2**. Autonomy ratio: **98.4%**. Sign-in walls noted for a human and skipped: 2 (2 distinct).
 
 ## Stage runs
 
@@ -40,6 +40,7 @@ Autonomous decisions: **121**. Human interventions: **2**. Autonomy ratio: **98.
 | slides | sl0927-012404 | 01:24:04 | 01:24:20 | 9 | 0 |  |
 | slides | sl0927-015814 | 01:58:14 | 01:58:29 | 9 | 0 |  |
 | slides | sl0927-031206 | 03:12:06 | 03:12:22 | 9 | 0 |  |
+| slides | sl0927-032828 | 03:28:28 | 03:28:45 | 9 | 0 |  |
 
 ## New states discovered over time
 

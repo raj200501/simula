@@ -6,7 +6,7 @@ import type { Frame } from "../src/slides/capture.ts";
 import { phaseSteps } from "../src/slides/capture.ts";
 import { flowPins, renderDeck, zoomInset, type FlowGeo, type FlowInput } from "../src/slides/deck.ts";
 import {
-  accentOf, claimOf, clampWords, clip, declineTarget, oneLine, econTable, gamesNeeded, headlineOf, ideaRows, judgeChanges, normalizeStoryboard, recommendationHeadline, shipped, shortCaption, whyBullets, wrappedLines, PHASES,
+  accentOf, claimOf, clampWords, clip, declineTarget, oneLine, econTable, gamesNeeded, headlineOf, ideaRows, judgeChanges, normalizeStoryboard, recommendationHeadline, shipped, shortCaption, spendAnchor, whyBullets, wrappedLines, PHASES,
 } from "../src/slides/facts.ts";
 import { integrationSnippet } from "../src/slides/integration.ts";
 import type { CostRollup } from "../src/report/data.ts";
@@ -104,6 +104,21 @@ describe("slide facts", () => {
     // Short enough is not enough: it must wrap into the two lines the caption box shows.
     assert.equal(shortCaption("Two 15-second games with Luzia; unlock one Deep reasoning answer."), "Two 15-second games with Luzia.");
     assert.equal(wrappedLines("Out of credits gains a secondary rewarded option.", 28), 2);
+  });
+
+  test("an item the proposal introduces and the prototype spends: the value frame says where, nothing more", () => {
+    const p = structuredClone(sampleCandidates().proposals[1]);
+    p.reward = { what: "1 Queue skip", resource: "queue_skip", amount: 1, grantOn: "REWARD_VERIFIED" };
+    const entry = p.patch.newElements[0];
+    const near = m.screens.find(s => s.id === entry.in)!.elements.find(e => e.id === entry.near)!;
+    p.patch.newEdges = [{ from: entry.in, el: entry.id, to: "rwd", effects: [{ resource: "queue_skip", delta: 1 }], guard: { resource: "queue_skip", lt: 1 } }];
+    p.storyboard = p.storyboard.map(s => s.phase === "value" ? { ...s, caption: "The user instantly bypasses the queue and exports.", callouts: [{ node: entry.id, text: "Now unlocked to render instantly." }] } : s);
+    assert.deepEqual(spendAnchor(p, m), { entry: entry.id, label: near.text || near.label });
+    const value = normalizeStoryboard(p, m).find(s => s.phase === "value")!;
+    assert.equal(value.caption, `+1 Queue skip, used by tapping ${near.text || near.label}.`);
+    assert.deepEqual(value.callouts, [], "no callout on the entry the grant retires");
+    p.patch.newEdges[0].guard = undefined;
+    assert.equal(spendAnchor(p, m), null, "no guard: nothing to spend");
   });
 
   test("with a third line, a caption stays whole rather than cut to a fragment or ended with …", () => {
