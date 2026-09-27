@@ -1268,3 +1268,7 @@
 {"ts":"2026-09-27T01:58:31.167Z","app":"janitor","run":"sl0927-015830","stage":"slides","type":"decision","data":{"stage":"slides","ships":[],"why":"no final SHIP: the deck says so and lists every idea in the review table"}}
 {"ts":"2026-09-27T01:58:32.478Z","app":"janitor","run":"sl0927-015830","stage":"slides","type":"info","data":{"stage":"slides","slides":6,"flowSlides":0,"deck":"slides/deck.html"}}
 {"ts":"2026-09-27T01:58:32.520Z","app":"janitor","run":"sl0927-015830","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":1960,"llm":{"calls":0,"cached":0,"usd":0,"mode":"replay"}}}
+{"ts":"2026-09-27T03:28:46.163Z","app":"janitor","run":"sl0927-032846","stage":"slides","type":"stage","data":{"event":"start","stage":"slides","llm":"replay"}}
+{"ts":"2026-09-27T03:28:46.690Z","app":"janitor","run":"sl0927-032846","stage":"slides","type":"decision","data":{"stage":"slides","ships":[],"why":"no final SHIP: the deck says so and lists every idea in the review table"}}
+{"ts":"2026-09-27T03:28:47.981Z","app":"janitor","run":"sl0927-032846","stage":"slides","type":"info","data":{"stage":"slides","slides":6,"flowSlides":0,"deck":"slides/deck.html"}}
+{"ts":"2026-09-27T03:28:48.015Z","app":"janitor","run":"sl0927-032846","stage":"slides","type":"stage","data":{"event":"end","stage":"slides","ms":1851,"llm":{"calls":0,"cached":0,"usd":0,"mode":"replay"}}}

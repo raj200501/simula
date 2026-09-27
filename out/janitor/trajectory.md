@@ -1,6 +1,6 @@
 # Trajectory: janitor
 
-Autonomous decisions: **98**. Human interventions: **2**. Autonomy ratio: **98.0%**.
+Autonomous decisions: **99**. Human interventions: **2**. Autonomy ratio: **98.0%**.
 
 ## Stage runs
 
@@ -36,6 +36,7 @@ Autonomous decisions: **98**. Human interventions: **2**. Autonomy ratio: **98.0
 | slides | sl0926-072843 | 07:28:43 | 07:28:45 | 4 | 0 |  |
 | slides | sl0927-012232 | 01:22:32 | 01:22:34 | 4 | 0 |  |
 | slides | sl0927-015830 | 01:58:30 | 01:58:32 | 4 | 0 |  |
+| slides | sl0927-032846 | 03:28:46 | 03:28:48 | 4 | 0 |  |
 
 ## New states discovered over time
 

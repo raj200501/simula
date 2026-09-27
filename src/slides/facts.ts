@@ -61,11 +61,37 @@ export function normalizeStoryboard(p: Proposal, m: ProductModel): Story[] {
     ad: `${p.simula.minPlaySec}s sponsored game${p.simula.gamePartner ? ` with ${p.simula.gamePartner}` : ""}`,
     value: p.reward.amount != null && res ? `+${p.reward.amount} ${unitOf(res)}, right where they were` : p.reward.what,
   };
+  // An item the proposal introduces, earned while the user has none: the prototype spends it at the
+  // control its entry sits next to (runtime.js spendRule), so the value frame says exactly that, not
+  // what the proposer imagined beyond the mock, and drops callouts on the entry the grant retires.
+  const use = spendAnchor(p, m);
   // Captions are at most 12 words (E5) whatever the proposer wrote, cut where the sentence allows.
   return PHASES.map(phase => {
     const s = by.get(phase) ?? { phase, screen: fallbackScreen[phase], counters: [], overlay: "none" as const, callouts: [], caption: fallbackCaption[phase] };
+    if (phase === "value" && use) {
+      const name = oneLine(p.reward.what).replace(/^\+?\d+\s*/, "");
+      return { ...s, caption: `+${p.reward.amount ?? 1} ${name}, used by tapping ${use.label}.`, callouts: s.callouts.filter(c => c.node !== use.entry) };
+    }
     return { ...s, caption: clampCaption(s.caption, 12) };
   });
+}
+
+/**
+ * Where a proposal's new item is used in the prototype: a guarded rewarded edge that grants a resource
+ * the model doesn't have, while the user has none, from an element placed next to an existing control.
+ * Mirrors spendRule in src/mock/runtime/runtime.js.
+ */
+export function spendAnchor(p: Proposal, m: ProductModel): { entry: string; label: string } | null {
+  const known = new Set(m.economy.resources.map(r => r.id));
+  for (const e of p.patch.newEdges) {
+    if (e.to !== "rwd" || !e.guard || known.has(e.guard.resource)) continue;
+    if (!e.effects.some(d => d.resource === e.guard!.resource && d.delta > 0)) continue;
+    const ne = p.patch.newElements.find(x => x.id === e.el && x.in === e.from);
+    const near = ne?.near && m.screens.find(sc => sc.id === ne.in)?.elements.find(el => el.id === ne.near);
+    const label = near ? oneLine(near.text || near.label || "") : "";
+    if (label && label.length <= 24) return { entry: e.el, label };
+  }
+  return null;
 }
 
 /** "10 credits" without repeating the amount when the proposer's text already states it. */

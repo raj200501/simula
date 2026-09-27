@@ -8,7 +8,7 @@ export const HOW_IT_WORKS: { q: string; a: string }[] = [
   { q: "How does the agent decide what to explore?",
     a: "Code owns the frontier and stop rules; a model annotates each new screen once (name, kind, action priorities 0–3, monetization signals), a drain probe spends any metered resource until the wall, and guard rails block destructive taps, ads and purchases." },
   { q: "How is app knowledge represented?",
-    a: "One typed, schema-validated product model: screens with element rects and styles, edges with observed effects, an economy (resources, sinks, sources, offers, walls, ads) with verified evidence, moments, flows and design tokens." },
+    a: "One typed, schema-validated product model: screens with element rects and styles, edges with observed effects, an economy (resources, sinks, sources, offers, walls, ads) whose quotes are checked against the screens, moments, flows and design tokens." },
   { q: "How do agents share context?",
     a: "Typed files on disk as a blackboard (graph.json → product-model.json → mock → qa → candidates.json → judgments.json → deck); agents never message each other, and every artifact is validated on read and write." },
   { q: "What is deterministic vs model-driven?",

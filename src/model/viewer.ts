@@ -97,7 +97,7 @@ th,td{text-align:left;vertical-align:top;padding:6px 8px;border-bottom:1px solid
 </style></head><body><main>
 <h1>${h(m.app.name)}</h1>
 <p><small>${h(m.app.package)} · captured ${h(m.app.capturedAt.slice(0, 19))} · run ${h(m.app.runId)} · account ${h(m.app.accountState)}</small></p>
-<p>Regime: <b>${h(m.regime)}</b> · synthesized by <b>${h(m.provenance.synthesizedBy)}</b> · ${m.provenance.verifiedClaims} verified / ${m.provenance.inferredClaims} inferred claims · HTML screens ${m.screens.filter(s => s.render === "html").length}/${m.screens.length}</p>
+<p>Regime: <b>${h(m.regime)}</b> · synthesized by <b>${h(m.provenance.synthesizedBy)}</b> · ${m.provenance.verifiedClaims} claims with a quote found on screen / ${m.provenance.inferredClaims} without · HTML screens ${m.screens.filter(s => s.render === "html").length}/${m.screens.length}</p>
 <h2>Brief</h2><dl>
 <dt>One-liner</dt><dd>${h(m.brief.oneLiner)}</dd><dt>Audience</dt><dd>${h(m.brief.audience)}</dd>
 <dt>Core loop</dt><dd>${m.brief.coreLoop.map(h).join(" → ")}</dd><dt>Makes money</dt><dd>${h(m.brief.howItMakesMoney)}</dd>
