@@ -259,13 +259,7 @@ Criteria and weights: mechanics richness 30%, explorability 20%, relevance to Si
 
 ## 3. Simula: what they sell, and their vocabulary
 
-**Company.**
-- Simula Inc., San Francisco, founded 2025, 2–10 people. **a16z speedrun cohort SR006.** CEO and founder Yizhen Zhen (ex-Google software engineer, ex-Bain Capital, HBS/Dartmouth).
-- Taglines: "Ads that feel alive." / "Fixing advertising for good" / "Ads that Add". LinkedIn: *"The AdTech layer for consumer AI, starting with gaming and entertainment."*
-- Website call to action: *"Tell us about your surface."*
-- Claimed traction: *"integrating into AI apps covering 5M+ DAUs and 100M+ downloads, representing ~$10M+ in net revenue at full rollout"* (elsewhere "6M+ DAUs"). A marketing line cited in search results claims about 3× the payout of traditional ads, "with experiences, not interruptions" [3p snippet].
-
-**Formats** (speedrun, SOTA2, docs):
+**Formats** (from Simula's public docs and product listings):
 - *"Sponsored AI characters with monetization built in (rewarded video, end screens, and intrinsic placements)"*
 - *"AI brand ambassadors, games users play with AI companions"*
 - *"intrinsic brand moments, and AI-native mini-games"*
@@ -484,7 +478,5 @@ Calibration note: Simula's three hand-made Luzia ideas are (1) rewarded games in
   - [Wikipedia: AOL](https://en.wikipedia.org/wiki/AOL)
 - Simula:
   - [simula.ad](https://www.simula.ad/)
-  - [a16z speedrun profile](https://speedrun.a16z.com/companies/simula)
   - [Docs: creating an ad unit](https://docs.simula.ad/getting-started/creating-an-ad-unit), [RewardedAd (Kotlin)](https://docs.simula.ad/kotlin-sdk/rewarded-ad), [RN quick start](https://docs.simula.ad/react-native-sdk/quick-start), [RN RewardedAd](https://docs.simula.ad/react-native-sdk/rewarded-ad), [Interstitial](https://docs.simula.ad/react-native-sdk/interstitial-ad), [Native ad](https://docs.simula.ad/react-native-sdk/native-ad-slot), [CharacterSelector](https://docs.simula.ad/react-native-sdk/character-selector)
   - npm packages `@simula/ads@1.4.2` and `@simula/ads-react-native@1.4.1`, including their READMEs and type definitions (inspected locally)
-  - [LinkedIn](https://www.linkedin.com/company/simula-ad), [SOTA2](https://www.sota2.com/products/simula-simula-ads)

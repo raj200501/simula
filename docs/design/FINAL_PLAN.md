@@ -2,117 +2,6 @@
 
 > The plan as written before the build. Where the code differs, the code and `docs/BUILD_SPEC.md` win. The research notes and design drafts it cites were working files and are not in this repo.
 
-Written 2026-09-25, with about 48 hours left before the deadline.
-
-**Sources.** This plan combines three proposals: `design-mvp-80-20.md`, `design-rigor.md` and `design-reviewer-impact.md`. I checked their claims against:
-- `research/mobile-mcp.md`;
-- `research/device-setup.md`;
-- `research/rewarded_ads_kb.md`;
-- `research/app-intel.md`;
-- the `@simula/ads-react-native` 1.4.1 type definitions in `research/pkgs/`;
-- the claude-api skill, for model IDs, prices, `effort`, structured outputs and image limits.
-
----
-
-## 0. Verdict on the three proposals
-
-### 0.1 Scores (1–10)
-
-| | mvp-80-20 | rigor | reviewer-impact |
-|---|---|---|---|
-| Can be built end to end in 48 h | **8** | 4 | 6 |
-| Technical maturity | 7 | **9** | 8 |
-| Impact on the evaluators | 7 | 6 | **9** |
-| Simplicity | **9** | 4 | 6 |
-| Technical claims are correct | **9** | 7 | 8 |
-| **Mean** | **8.0** | 6.0 | 7.4 |
-
-### 0.2 Why
-
-**mvp-80-20: 8 / 7 / 7 / 9 / 9**
-
-- **Feasibility.** It is about 2,500 lines of code with a single judge. It builds a walking skeleton on a fixture app, and its cut list is realistic.
-- **Maturity.** Its strengths:
-  - a content-addressed LLM cache and a cost ledger;
-  - one `Device` interface with a web driver;
-  - the verdict is computed in code, and the judge is calibrated.
-
-  Its weaknesses:
-  - the LLM fills in the economics numbers itself, so arithmetic that ends up on slides comes from the model;
-  - there is no test that enforces its "no app-specific code" claim;
-  - there are no stage manifests.
-- **Impact on the evaluators.** It is solid, but nothing in it protects against generic proposals. Slides and the recording come late in the plan.
-- **Correctness.** It uses the right tool names and arguments. It taps by coordinates rather than by `ref`, parses errors from the response text, respects the working-directory rule for `save_screenshot`, and handles the Opus 5.5 constraints. It has these gaps:
-  - it does not warn that pnpm breaks the lookup of the mobilecli binary;
-  - it crops the status and navigation bars even though Android 15 apps draw edge to edge;
-  - its "button-like types" rule for state signatures does not match React Native trees.
-
-**rigor: 4 / 9 / 6 / 4 / 7**
-
-- **Maturity.** It has the best engineering: typed artifacts, manifests, import-boundary tests, economics computed in code, and a check that each patch applies to the spec.
-- **Scope.** It is too much for one person in 48 hours:
-  - three Device drivers and a raw-tree side channel;
-  - a panel of personas plus a chair plus pairwise ranking;
-  - invariance tests, held-out tuning and inter-rater agreement (κ);
-  - a round-trip check;
-  - 25 mock screens.
-- **Impact on the evaluators.** The brief says "extra complexity is not rewarded".
-- **Correctness.** `mobilecli dump ui --format raw` exists, but its JSON shape has not been verified on a device, and it needs the path to the npm-installed binary. Reading the foreground package from the "top window" of the raw tree must skip the systemui windows. 300 steps in 75 minutes means about 15 seconds per step, which is tight when a single dump can wait up to 2 seconds for the UI to go idle.
-
-**reviewer-impact: 6 / 8 / 9 / 6 / 8**
-
-- **Impact on the evaluators.** This is the proposal that best maps to what the evaluators look for:
-  - it treats the app as an economy, with an exchange rate computed in code;
-  - it asks the proposer for the obvious ideas first, then for ideas beyond them;
-  - it plans the recording from the start;
-  - it frames transfer as four monetization regimes;
-  - it uses the app's own character as the Game Partner;
-  - it produces an integration spec.
-
-  I checked the SDK calls it uses against the 1.4.1 type definitions: `SimulaAds.checkFrequencyCap`, `useRewardedAd(id).load({charId,charName,charImage,charDesc})`, `rewardVerified` and `no_fill`. They are correct. So is its arithmetic: one US view is worth about 6.5–10.8 OOC credits at list price.
-- **Scope.** It still carries a persona panel, a cold-read test, a separate rediscovery eval, a capture phase, two Google accounts and a review UI.
-- **Sequencing error.** Hours 7–9 of its plan have the human checking ground truth on the device while the deep exploration run is using the same emulator. Only one UiAutomation connection is allowed per device.
-
-### 0.3 What this plan takes from each
-
-- **Backbone: mvp-80-20.**
-  - A deterministic explorer that makes one Sonnet call per new screen.
-  - The product model as the only contract between stages.
-  - Screen HTML plus a fixed runtime.
-  - Proposals written as model patches.
-  - A single judge whose verdict is computed in code.
-  - `WebDevice` running on a fixture app.
-  - Image screens for the long tail of screens.
-- **From reviewer-impact:**
-  - the economy, plus derived numbers computed in code (the exchange rate);
-  - the list of moments;
-  - the proposer's "obvious ideas first, then beyond" structure;
-  - the app's own character as the Game Partner;
-  - the integration snippet written against the real SDK;
-  - recording segments captured as each stage starts working, with the report site as the backbone of the recording;
-  - the transfer framing as monetization regimes;
-  - a bounded gap-check call;
-  - blind human labels written before the judge runs.
-- **From rigor:**
-  - economics computed as pure code;
-  - a boundary test (no app strings, no device imports downstream);
-  - a replay mode for the LLM cache;
-  - minimal per-stage manifests;
-  - no consume actions during dev runs;
-  - a diversity validator for the proposal set;
-  - calibration tuned on half the items and reported on the held-out half.
-
-### 0.4 Errors in all three proposals, fixed in this plan
-
-1. **The calibration set leaks into the judge's prompt.** All three give the judge the whole KB, or all of §8. §8 includes **[JUDGE-6]**, which is the calibration set itself: for example, "Watch an ad or your chat history is deleted" is listed with the answer REJECT. **Fix:** the judge's KB excludes JUDGE-6, and the negative calibration items are paraphrased and grounded in an app, never copied verbatim.
-2. **Status and navigation bars are cropped.** All four apps target SDK 34–36, and on Android 15 an app targeting SDK 35 or later is drawn edge to edge, underneath the status bar. Cropping the bars and shrinking the viewport shifts every element rect. **Fix:** render the mock full-screen (411×914 dp at DPR 2.625), draw a static 09:41 status bar in the mock frame, and *mask* the inset rows when computing metrics.
-3. **The chrome signature doesn't fit React Native trees.** OOC and Janitor expose buttons as `ViewGroup` elements with a content-desc, not as `Button`, so a rule based on type misses them. **Fix:** decide what counts as chrome by position band, by selected or checked state, and by short labels outside repeated groups.
-4. **The dp viewport width is not a whole number.** 1080 / 2.625 = 411.43 dp, but Playwright takes a whole-number viewport. **Fix:** render at 411×914 and resize the mock capture to 1080×2400 with sharp before diffing. The error is under 0.2%.
-5. **Image size limits are out of date.** The research note says images are shrunk to 1568 px anyway. That is stale: Opus 5.5 and Sonnet 5 accept images up to 2576 px on the long edge. **Fix:** send the full-resolution 1080×2400 PNG for screen generation and QA fixes, where coordinates then map 1:1. Keep the 1024 px JPEG only for the high-volume annotator.
-6. **npm, not pnpm.** pnpm's strict layout breaks mobile-mcp's lookup of the mobilecli binary (mobile-mcp.md §1).
-7. **The repository would be too large.** A full-resolution PNG is 1–3 MB, and a deep run produces hundreds of observations. **Fix:** don't commit raw observations. Commit only representative screens and the QA filmstrips, saved as JPEG except the best round.
-8. **The daily check-in is lost on day 1.** The human's first login to OOC uses up the day-1 check-in modal. **Fix:** a short explorer run on the first app open of day 2 captures it.
-
 ---
 
 ## 1. Thesis and architecture
@@ -1294,84 +1183,7 @@ The ledger replaces these estimates with measured figures.
 
 ---
 
-## 15. Hour-by-hour plan (H0 = now; submit by H46; sleep H14.5–21.5 and H37.5–43.5)
-
-**Two tracks:**
-- **L** is the Mac: the human, a local Claude Code session and the emulator. Real runs, prompt tuning, reviews and recording happen here.
-- **C** is Claude Code sessions in the cloud container. They build modules that don't need a device, test them against the fixture with `--llm stub` or replay, and push to `origin`. **At H0, check that the container can push.** If it can't, C becomes a second local Claude Code session in a git worktree.
-
-The human reviews every merge.
-
-### Day 1: device, explorer, model, first mock
-
-| Hours | L (Mac) | C (cloud) |
-|---|---|---|
-| H0–0.5 | Write the recording storyboard (§16) against the grading criteria. Create a dedicated adult US Google account with no payment method. Start `npm run device -- setup` (45 minutes of downloads). | Check that git push works. Scaffold `package.json` with npm pins and `tsconfig`. Write `core/{schema,config,llm,trace,run}.ts`, `device/types.ts`, `device/mcp.ts` (ported from `mobile-client.ts`), the unit and boundary tests. |
-| H0.5–2.5 | Boot and sign in to Play. Install the 4 apps, turn auto-update off, run `versions` and `pull-apks`, then `snapshot-save fresh`. Log in to OOC, Janitor (Safe Mode) and AOL. Luzia uses limited access. `snapshot-save simula_ready`. **Start OBS recording for every real run from now on.** | `fixtures/credit-chat` and `device/web.ts`. `explore/*`: signature, `arrive`, frontier, settle, `travel`/relaunch, guards, externals, budgets, drain, checkpoint/resume, heuristic annotator. **Exit:** the fixture e2e reaches the paywall and never taps "Log out". |
-| **H2.5–3** | **GO/NO-GO:** `npm run probe` on all 4 apps, then the 4 manual checks on OOC. Record the decision with `npm run note`. If an app is blocked, email Yizhen and Athreya in one line. | `annotate.ts` (Sonnet schema and prompt), `gapCheck`. |
-| H3–7 | Wire the annotator to live calls. Run 40-step OOC explorations with `--no-consume`, and fix what breaks: timeouts, settle, element keys, escaping from other apps, the chrome rule on the RN tree. **Record S1:** about 60 s of the explorer and the trace. | `model/*`: compile, tokens, redact, synthesize (stubbed), verify, economics, moments, digest, `viewer.html`. |
-| H7–8.5 | **Deep OOC run** in the background, about 60–75 minutes: crawl, gap check, drain. Meanwhile, draft the README skeleton and prepare the Luzia calibration positives from Simula's slide text. Keep your hands off the device. | `mock/build.ts`, `runtime.js`, `rewarded.js`, image screens, `validate.ts`. **Exit:** fixture flow QA at 100%. |
-| H8.5–10 | `npm run understand -- --app ooc`. **Review the economy by hand (15 minutes)** and put corrections in `overrides.json`. If a P0 item is missing, run a targeted `--resume`. **Record S2:** the drain probe hitting the wall, and the economy table with the exchange rate. | `mock/generate.ts`: design-system and screen prompts, stub tests. |
-| H10–13 | `npm run mock -- --app ooc`. Iterate the design-system and screen prompts on 3 screens (home, session, store or wall). Then generate all 14 and click through them. | `qa/{render,compare,flows}.ts` on the fixture. |
-| H13–14.5 | Commit and push. **Night batch:** `for a in luzia janitor aol; do npm run explore -- --app $a && npm run understand -- --app $a; done` under `caffeinate -i`. Add a `HUMAN_LOG` note. | Overnight work against the committed OOC model, with stubs: `qa/loop.ts`, `qa/report.ts`; `propose/*`; `judge/*`, including `calibrate.ts` and `--make-negatives`; `slides/*` and `deck.html`; `report.ts`. |
-
-**Day 1 exit:**
-- a real OOC model in which the wall and prices were found autonomously;
-- every command exists;
-- the fixture passes end to end;
-- the OOC mock renders;
-- segments S1 and S2 are recorded.
-
-### Day 2: QA, propose, judge, slides, transfer, main recording
-
-| Hours | L (Mac) | C (cloud) |
-|---|---|---|
-| H21.5–22.5 | **First, before anything else opens OOC:** `npm run explore -- --app ooc --resume --steps 15 --no-consume` to capture the first-open-of-day check-in modal, then re-run `understand`. Triage the night runs from `trajectory.md`, and re-run any that crashed. | Fix what the triage finds. |
-| H22.5–25.5 | `npm run qa -- --app ooc`. **Record S3:** the QA filmstrip, and a side-by-side click-through where credits drop and then the wall appears. | Finish `report.ts`: tabs, scorecard, cost roll-up. |
-| H25.5–27.5 | `npm run propose`. Read every candidate and tune the prompt **once**. **Blind-label** the candidates (10 minutes). Then `npm run judge`. **Record S4:** one REVISE→SHIP and one REJECT. | Write the 5 Luzia calibration positives against the night Luzia model. Generate the negatives. |
-| H27.5–29.5 | Hand-check the negatives. Run `npm run eval:judge` (Batch). Tune the rubric wording on the dev half and report the held-out half. | `slides/integration.ts`, and polish the deck template. |
-| H29.5–32 | `npm run slides -- --app ooc`. Polish the template by hand **once**. **Record S5:** walk through 2 flows and click through one prototype. | Prepare the transfer runs. |
-| H32–34.5 | Transfer: `npm run all -- --app <a> --from mock` for Luzia, Janitor and AOL **in parallel** (no device needed). Run `eval:explorer` for each app, and check the misses by hand on the now-free device. Fill in the scorecard. Compare the blind Luzia output with Simula's slides. Make generic fixes only. **Record S6.** | README, the ADRs, the cost roll-up, the trajectory summaries. |
-| H34.5–35.5 | Freeze. Run `npm test`, then a fresh clone with `npm ci && npm run demo && npm run all -- --app ooc --from mock --llm replay`. Commit `cache/llm` and `out/`. | Check the README line by line against the brief's list of deliverables. |
-| H35.5–37.5 | **Main take:** rehearse once, then record 13–14 minutes, cutting S1–S6 into the walkthrough of the report site. | – |
-
-### Final morning
-
-| Hours | Work |
-|---|---|
-| H43.5–45 | Watch the take at 1.5× with the grading criteria next to it. Re-record the 1–2 weakest segments. Fix factual slips. |
-| H45–46 | Final push, tag `submission`, submit through the link, email Yizhen. |
-| H46–48 | Buffer. |
-
-**Time allocation** (stated in the README):
-
-| Share | Work |
-|---|---|
-| ~55% | OOC end to end |
-| 15% | transfer |
-| 15% | judge evaluation and the deck |
-| 15% | README, trajectory, recording |
-
----
-
-## 16. Recording outline (target 13:30; the report site is the spine)
-
-| Time | Segment | On screen | The point it makes |
-|---|---|---|---|
-| 0:00–0:40 | Thesis | "Understand the app as an economy; one product model; compile everything else from it" | the architecture in one sentence |
-| 0:40–1:40 | Architecture | The pipeline diagram and the table of what code and models decide. Why Android: the iOS Simulator can't install App Store apps. Why the explorer is code plus an LLM per screen rather than an LLM calling MCP tools: cost, replay and debugging. LLM-Explorer reported $0.11 against $16 for DroidAgent. | technical maturity |
-| 1:40–3:40 | **Explore** (S1, S2) | A sped-up OOC run with the trace alongside. The chosen action and the reason for it. State identity: 3 messages and 30 are the same state. The **gap check** finding the earning source. **The drain probe hitting "insufficient credits" and landing in the store.** The billing sheet recorded as an external and escaped. One real failure and its recovery. The stop reason. | how the agent decides what to explore |
-| 3:40–4:40 | **Understand** | The viewer: the economy with evidence thumbnails; "−90 while Superb is selected"; **the exchange-rate line**; one item downgraded to "inferred"; the human override. | what was learned, and how it is represented |
-| 4:40–6:30 | **Mock and QA** (S3) | The original and the mock side by side. A click-through that reaches the wall. `?debug=1`. The QA filmstrip and one fix changelog. The flow pass rate. Where fidelity is still weak. | the mock is generated from the model |
-| 6:30–7:30 | **Propose** | The moments. The obvious baseline written out, then the sweep beyond it. One proposal with numbers computed by code. | curiosity |
-| 7:30–9:30 | **Judge** (S4) | Code gates, then the judge's evidence and scores. REVISE→SHIP with the diff. A REJECT and its reason. **The report card**, including what code caught versus what the LLM caught. Human agreement and disagreements. | judgment, and a judge that is shown to be good |
-| 9:30–11:00 | **Flows** (S5) | 2 OOC flow slides, read at the pace of a product team. A click-through of the prototype. The integration snippet in Simula's own SDK. | "put this in front of the product team" |
-| 11:00–12:15 | **Transfer** (S6) | The scorecard: 4 apps, 4 regimes. An AOL or Janitor product-change flow. The Luzia blind rediscovery compared with Simula's slides. `git grep` finding no app names in `src/`. | a system, not a demo |
-| 12:15–13:30 | Honest wrap-up | The cost ledger, the autonomy ratio, `HUMAN_LOG`. Limitations: manual logins, emulator only, sparse Skia trees, the same model family judging, a small human sample. Productionization. Next steps: iOS through the same `Device` interface, incremental re-explore, a cross-model judge, learning from deal outcomes. | clarity |
-
----
-
-## 17. Risk register
+## 15. Risk register
 
 | # | Risk | Likelihood / impact | Mitigation | Trigger |
 |---|---|---|---|---|
@@ -1380,7 +1192,7 @@ The human reviews every merge.
 | 3 | Streaming replies and animations stop the screen from settling | H/M | Animations off; content-aware settle of 25 s; the on-device server dumps anyway after 2 s. Slow settles are flagged in the trace. | settle timeouts in the trace |
 | 4 | Credits are drained and can't be restored; the check-in appears once a day | H/M | `--no-consume` on dev runs; drain once, last; day-2 first-open capture; daily check-in refill; a spare account only if needed. | balance below 200 |
 | 5 | mobile-mcp hangs (`execFileSync`, no timeout on most calls) | M/M | 45 s client timeout, respawn, `daemon stop`, sequential calls. | timeouts |
-| 6 | **Proposals read as generic**, the top risk with the evaluators | M/VH | Economy-first numbers; baseline stated first; moment sweep; specificity at 10%; the diversity validator; a manual check against the OOC expectations in §8 before the judge runs. | a candidate without app nouns |
+| 6 | **Proposals read as generic**, the top quality risk | M/VH | Economy-first numbers; baseline stated first; moment sweep; specificity at 10%; the diversity validator; a manual check against the OOC expectations in §8 before the judge runs. | a candidate without app nouns |
 | 7 | The judge looks like a rubber stamp | M/H | Verdict computed in code; JUDGE-6 excluded; single-fault negatives; code and LLM catches reported separately; rejected ideas shown in the deck; human disagreements discussed. | all candidates SHIP |
 | 8 | Mock fidelity is mediocre on art-heavy screens | M/M | Measured tokens and native crops; full-resolution input; keep-best; effort on the 8 slide screens; image screens for the long tail, labelled honestly. | composite below 0.8 |
 | 9 | The slides aren't ready for a product team | M/H | Template polished once by hand; the recommendation first; captions of 12 words or fewer; callouts at real DOM positions. | – |
@@ -1435,7 +1247,7 @@ The human reviews every merge.
 
 ---
 
-## 18. Productionization sketch (README section and the last slide)
+## 16. Productionization sketch (README section and the last slide)
 
 - **Storage and versioning.**
   - Blobs (screenshots, element lists, assets, HTML) are content-addressed in S3 or GCS and deduplicated across runs.
